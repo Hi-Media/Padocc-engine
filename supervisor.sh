@@ -15,7 +15,7 @@ ERROR_LOG_FILE=$LOG_DIR/$SCRIPT_NAME.$ID.error.log
 
 # Validation du nom du script en paramètre :
 if [ -z "$SCRIPT_NAME" ]; then
-	displayMsg error "Missing script name."
+	displayMsg error "Missing script name!"
 	echo "`getDateWithCS`;$ID;NO SCRIPT;FAILED" >> $SUPERVISOR_LOG_FILE
 	exit 1
 else
@@ -29,7 +29,7 @@ else
 	fi
 	
 	if [ ! -f "$DIR/$SCRIPT_NAME" ]; then
-		displayMsg error "Script not found."
+		displayMsg error "Script '$DIR/$SCRIPT_NAME' not found!"
 		echo "`getDateWithCS`;$ID;$SCRIPT_NAME;SCRIPT NOT FOUND" >> $SUPERVISOR_LOG_FILE
 		exit 2
 	fi
@@ -50,15 +50,15 @@ done
 # Gestion des erreurs et affichage :
 if [ -s $ERROR_LOG_FILE ]; then
 	echo "`getDateWithCS`;$ID;$SCRIPT_NAME;ERROR" >> $SUPERVISOR_LOG_FILE
-	displayMsg error "$SCRIPT_NAME failed!"
+	displayMsg error "Script '$DIR/$SCRIPT_NAME' failed!"
 	echo ''
 	
-	displayMsg subtitle "`basename $SUPERVISOR_LOG_FILE` :"
+	displayMsg subtitle "`basename $SUPERVISOR_LOG_FILE`:"
 	cat $SUPERVISOR_LOG_FILE | grep ";$ID;" | while read line; do displayMsg info "$line"; done
 	echo ''
 	
-	displayMsg subtitle "`basename $ERROR_LOG_FILE` :"
-	cat $ERROR_LOG_FILE | ( read line; displayMsg info "$line"; while read line; do displayMsg info "$line"; done )
+	displayMsg subtitle "`basename $ERROR_LOG_FILE`:"
+	cat $ERROR_LOG_FILE | ( read line; displayMsg error "$line"; while read line; do displayMsg error "$line"; done )
 	echo ''
 else
 	result=OK
