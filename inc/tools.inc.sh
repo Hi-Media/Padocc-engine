@@ -15,7 +15,7 @@ declare -A UI
 UI=(
 	[error.header]='\033[33m /!\ '
 	[error.color]='\033[1;31m'
-	[info.header]='\033[35m (i) '
+	[info.header]='\033[1;36m (i) '
 	[info.color]='\033[0;39m'
 	[normal.color]='\033[0;39m'
 	[subtitle.color]='\033[1;35m'
