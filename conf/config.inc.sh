@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# PATHS
+ROOT_DIR=/home/gaubry/deployment
+CONF_DIR=$ROOT_DIR/conf
+INC_DIR=$ROOT_DIR/inc
+SCRIPTS_DIR=$ROOT_DIR/scripts
+SHELL_SCRIPTS_DIR=$SCRIPTS_DIR/shell
+PHP_SCRIPTS_DIR=$SCRIPTS_DIR/php
+LOG_DIR=$ROOT_DIR/logs
+DATA_DIR=$ROOT_DIR/data
+BACKUPS_DIR=$ROOT_DIR/backups
+
+SUPERVISOR_LOG_FILE=$LOG_DIR/supervisor.log
+
+# PHP
+PHP_CMD='/usr/bin/php -q'
