@@ -9,7 +9,7 @@ array_shift($argv);
 
 // On traite le paramètre fichier de log :
 if ($argc < 2) {
-	throw new PrestadevBadMethodCallException('Missing PHP script to exectue or error log file!');
+	throw new PrestadevBadMethodCallException('Missing PHP script to execute or missing error log file!');
 } else {
 	$argc--;
 	$error_log_file = array_pop($argv);
@@ -17,7 +17,5 @@ if ($argc < 2) {
 }
 
 // Exécution du script PHP :
-$argc--;
-$script_name = CLI_PHP_SCRIPTS_DIR . '/' . array_shift($argv);
-
+$script_name = CLI_PHP_SCRIPTS_DIR . '/' . $argv[0];
 include_once($script_name);

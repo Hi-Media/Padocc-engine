@@ -3,6 +3,7 @@
 RES_COL=60
 MOVE_TO_COL="echo -en \\033[${RES_COL}G"
 
+# Map des colorations et en-têtes des messages du superviseur :
 declare -A UI
 UI=(
 	[error.header]='\033[33m /!\ '
@@ -58,12 +59,12 @@ function displayMsg {
 
 # Affiche un message provenant du flux de sortie du script exécuté.
 # Met en valeur certains types de messages :
-#   - les alertes sont des messages commençant par '[WARNING] '
+#   - les alertes sont des messages commençant par 'WARNING '
 #
 # @param string $1 message à afficher
 function displayScriptMsg {
 	MSG=$1
-	if [ "${MSG:26:10}" = '[WARNING] ' ]; then # la ligne commence par un timestamp suivi de ','
+	if [ "${MSG:26:8}" = 'WARNING ' ]; then # la ligne commence par un timestamp suivi de ','
 		displayMsg warning "$MSG"
 	else
 		displayMsg info "$MSG"

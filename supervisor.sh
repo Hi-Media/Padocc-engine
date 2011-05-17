@@ -39,6 +39,7 @@ fi
 # Initialisation des logs :
 > $ERROR_LOG_FILE
 echo "`getDateWithCS`;$ID;$SCRIPT_NAME;START" >> $SUPERVISOR_LOG_FILE
+echo ''
 displayMsg title "Starting '$SCRIPT_NAME' script with id '$ID'"
 
 # Appel du script passé en paramètres, en empilant le log d'erreurs à la suite des paramètres déjà fournis :
