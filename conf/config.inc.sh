@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # PATHS
-ROOT_DIR=/home/gaubry/deployment
+ROOT_DIR=`dirname $0`
 CONF_DIR=$ROOT_DIR/conf
 INC_DIR=$ROOT_DIR/inc
 SCRIPTS_DIR=$ROOT_DIR/scripts

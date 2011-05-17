@@ -1,7 +1,8 @@
 #!/bin/bash
+# find /home/gaubry/deployment -type f -name "*sh" -exec chmod +x {} \;;  ~/deployment/supervisor.sh
 
 # Includes :
-. /home/gaubry/deployment/conf/config.inc.sh
+. `dirname $0`/conf/config.inc.sh
 . $INC_DIR/tools.inc.sh
 
 # Variables :
@@ -25,11 +26,11 @@ else
 		CMD="$SHELL_SCRIPTS_DIR/$SCRIPT_NAME $*"
 	else
 		DIR=$PHP_SCRIPTS_DIR
-		CMD="$PHP_CMD $PHP_SCRIPTS_DIR/$SCRIPT_NAME $*"
+		CMD="$PHP_CMD $INC_DIR/supervisor.inc.php $SCRIPT_NAME $*"
 	fi
 	
 	if [ ! -f "$DIR/$SCRIPT_NAME" ]; then
-		displayMsg error "Script '$DIR/$SCRIPT_NAME' not found!"
+		displayMsg error "Script '$DIR/$SCRIPT_NAME' NOT FOUND!"
 		echo "`getDateWithCS`;$ID;$SCRIPT_NAME;SCRIPT NOT FOUND" >> $SUPERVISOR_LOG_FILE
 		exit 2
 	fi
@@ -44,13 +45,13 @@ displayMsg title "Starting '$SCRIPT_NAME' script with id '$ID'"
 $CMD $ERROR_LOG_FILE 2>>$ERROR_LOG_FILE | while read LINE ; do
 	NOW="`getDateWithCS`"
 	echo "$NOW;$ID;$SCRIPT_NAME;$LINE" >> $SUPERVISOR_LOG_FILE
-	displayLog "$NOW, $LINE";
+	displayScriptMsg "$NOW, $LINE";
 done
 
 # Gestion des erreurs et affichage :
 if [ -s $ERROR_LOG_FILE ]; then
 	echo "`getDateWithCS`;$ID;$SCRIPT_NAME;ERROR" >> $SUPERVISOR_LOG_FILE
-	displayMsg error "Script '$DIR/$SCRIPT_NAME' failed!"
+	displayMsg error "Script '$DIR/$SCRIPT_NAME' FAILED!"
 	echo ''
 	
 	displayMsg subtitle "`basename $SUPERVISOR_LOG_FILE`:"
@@ -58,12 +59,11 @@ if [ -s $ERROR_LOG_FILE ]; then
 	echo ''
 	
 	displayMsg subtitle "`basename $ERROR_LOG_FILE`:"
-	cat $ERROR_LOG_FILE | ( read line; displayMsg error "$line"; while read line; do displayMsg error "$line"; done )
+	cat $ERROR_LOG_FILE | while read line; do displayMsg error "$line"; done
 	echo ''
 else
-	result=OK
-	echo "`getDateWithCS`;$ID;$SCRIPT_NAME;$result" >> $SUPERVISOR_LOG_FILE
-	displayMsg success "$result"
+	echo "`getDateWithCS`;$ID;$SCRIPT_NAME;OK" >> $SUPERVISOR_LOG_FILE
+	displayMsg success 'OK'
 	echo ''
 	rm -f $ERROR_LOG_FILE
 fi
