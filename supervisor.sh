@@ -27,7 +27,7 @@ else
 		CMD="$SHELL_SCRIPTS_DIR/$SCRIPT_NAME $*"
 	else
 		DIR=$PHP_SCRIPTS_DIR
-		CMD="$PHP_CMD $INC_DIR/supervisor.inc.php $SCRIPT_NAME $*"
+		CMD="$PHP_CMD $PHP_SCRIPTS_DIR/$SCRIPT_NAME $*"
 	fi
 	
 	if [ ! -f "$DIR/$SCRIPT_NAME" ]; then
@@ -44,11 +44,13 @@ echo ''
 displayMsg title "Starting '$SCRIPT_NAME' script with id '$ID'"
 
 # Appel du script passé en paramètres, en empilant le log d'erreurs à la suite des paramètres déjà fournis :
-$CMD $ID $ERROR_LOG_FILE 2>>$ERROR_LOG_FILE | while read LINE ; do
+SRC_IFS=$IFS # Internal Field Separator
+$CMD $ID $ERROR_LOG_FILE 2>>$ERROR_LOG_FILE | while IFS="" read LINE ; do
 	NOW="`getDateWithCS`"
 	echo "$NOW;$ID;$SCRIPT_NAME;$LINE" >> $SUPERVISOR_LOG_FILE
 	displayScriptMsg "$NOW, $LINE";
 done
+IFS=$SRC_IFS
 
 # Gestion des erreurs et affichage :
 if [ -s $ERROR_LOG_FILE ]; then
@@ -57,11 +59,13 @@ if [ -s $ERROR_LOG_FILE ]; then
 	echo ''
 	
 	displayMsg subtitle "`basename $SUPERVISOR_LOG_FILE`:"
-	cat $SUPERVISOR_LOG_FILE | grep ";$ID;" | while read line; do displayMsg info "$line"; done
+	cat $SUPERVISOR_LOG_FILE | grep ";$ID;" | while IFS="" read line; do displayMsg info "$line"; done
+	IFS=$SRC_IFS
 	echo ''
 	
 	displayMsg subtitle "`basename $ERROR_LOG_FILE`:"
-	cat $ERROR_LOG_FILE | while read line; do displayMsg error "$line"; done
+	cat $ERROR_LOG_FILE | ( IFS="" read line; displayMsg error "$line"; while IFS="" read line; do displayMsg error_detail "$line"; done )
+	IFS=$SRC_IFS
 	echo ''
 else
 	echo "`getDateWithCS`;$ID;$SCRIPT_NAME;OK" >> $SUPERVISOR_LOG_FILE

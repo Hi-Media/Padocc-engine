@@ -2,26 +2,27 @@
 
 class Deployment {
 
-	public function __construct ($sProjectName, $sEnvName) {
-		$oEnv = $this->_getEnvironment($sProjectName, $sEnvName);
-		/*die;
+	public function __construct ($sProjectName, $sTargetName, $sExecutionID) {
+		$sBackupDir = DEPLOYMENT_BACKUP_DIR . '/' . $sExecutionID;
+		Shell::exec('mkdir -p "' . $sBackupDir . '"');
 
-		$aProject = Tools::simpleXMLToArray($oSXE, false, false, false);
-		print_r($aProject);
+		echo 'Initialize tasks...';
+		$oTarget = $this->_getTarget($sProjectName, $sTargetName);
+		$aTasks = Tasks::getTaskInstances($oTarget, $sBackupDir);
+		echo 'OK' . "\n";
 
-		$oSelectedEnv = NULL;
-		foreach ($aProject['@children'] as $aEnv) {
-			if (isset($aEnv['@attributes']['name']) && $aEnv['@attributes']['name'] === $sEnvName) {
-				$oSelectedEnv = $oEnv;
-				break;
-			}
-		}*/
-
-		$aTasks = Tasks::getTaskInstances($oEnv);
-		//print_r($aTasks);
+		echo 'Execute tasks...';
+		$this->_execute($aTasks);
+		echo 'OK' . "\n";
 	}
 
-	private function _getEnvironment ($sProjectName, $sEnvName) {
+	private function _execute ($aTasks) {
+		foreach ($aTasks as $oTask) {
+			$oTask->execute();
+		}
+	}
+
+	private function _getTarget ($sProjectName, $sTargetName) {
 		$sProjectFilename = DEPLOYMENT_PROJECTS_DIR . '/' . $sProjectName . '.xml';
 		if ( ! file_exists($sProjectFilename)) {
 			throw new Exception("Project definition not found: $sProjectFilename!");
@@ -32,18 +33,18 @@ class Deployment {
 			throw new Exception("Project's attribute name ('" . $oSXE['name'] . "') must be eqal to project filename ('$sProjectName').");
 		}
 
-		$oSelectedEnv = NULL;
-		foreach ($oSXE->children() as $sTag => $oEnv) {
-			if ((string)$sTag === 'target' && (string)$oEnv['name'] === $sEnvName) {
-				$oSelectedEnv = $oEnv;
+		$oSelectedTarget = NULL;
+		foreach ($oSXE->children() as $sTag => $oTarget) {
+			if ((string)$sTag === 'target' && (string)$oTarget['name'] === $sTargetName) {
+				$oSelectedTarget = $oTarget;
 				break;
 			}
 		}
-		if ($oSelectedEnv === NULL) {
-			throw new Exception("Environment '$sEnvName' not found in project '$sProjectFilename'!");
+		if ($oSelectedTarget === NULL) {
+			throw new Exception("Target '$sTargetName' not found in project '$sProjectFilename'!");
 		}
 
-		return $oSelectedEnv;
+		return $oSelectedTarget;
 	}
 }
 

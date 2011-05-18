@@ -2,6 +2,8 @@
 
 abstract class Task {
 
+	private static $iCounter = 0;
+
 	public static function getTagName () {
 		throw new RuntimeException('Unimplemented!');
 	}
@@ -18,31 +20,22 @@ abstract class Task {
 	 */
 	protected $aAttributes;
 
-	public function __construct (SimpleXMLElement $oTask) {
+	protected $sBackupDir;
+
+	public function __construct (SimpleXMLElement $oTask, $sBackupDir) {
 		$this->oTask = $oTask;
+		$this->sBackupDir = $sBackupDir . '/' . (++self::$iCounter) . '_' . get_class($this);
 
 		$this->aAttributes = array();
 		foreach ($this->oTask->attributes() as $key => $val) {
 			$this->aAttributes[$key] = (string)$val;
 		}
-		print_r($this->aAttributes);
+		//print_r($this->aAttributes);
 
-		$aAvailableAttributes = array_flip($this->getAvailableAttributes());
-		foreach ($this->aAttributes as $sAttribute => $foo) {
-			if ( ! isset($aAvailableAttributes[$sAttribute])) {
-				throw new Exception("Unknown '$sAttribute' attribute! XML: " . print_r($this->oTask, true));
-			}
-		}
-
-		foreach ($this->getMandatoryAttributes() as $sAttribute) {
-			if (empty($this->aAttributes[$sAttribute])) {
-				throw new Exception("Empty or missing '$sAttribute' attribute! XML: " . print_r($this->oTask, true));
-			}
-		}
+		$this->_check();
 	}
 
-	protected abstract function getAvailableAttributes();
-	protected abstract function getMandatoryAttributes();
+	protected abstract function _check();
 
 	public abstract function execute ();
 }
