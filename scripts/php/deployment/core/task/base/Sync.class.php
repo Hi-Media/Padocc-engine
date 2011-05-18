@@ -6,16 +6,12 @@ class Task_Base_Sync extends Task {
 		return 'sync';
 	}
 
-	public function __construct (SimpleXMLElement $oTask) {
-		parent::__construct($oTask);
+	public function __construct (SimpleXMLElement $oTask, $sBackupDir) {
+		parent::__construct($oTask, $sBackupDir);
 	}
 
-	protected function getAvailableAttributes() {
-		return array('src', 'dest');
-	}
+	protected function _check () {
 
-	protected function getMandatoryAttributes () {
-		return array();
 	}
 
 	public function execute () {}

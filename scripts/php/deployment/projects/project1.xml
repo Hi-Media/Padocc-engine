@@ -2,12 +2,16 @@
 <project name="project1">
 	<target name="dev">
 		<copy src="/home/gaubry/test/src/a.txt" dest="/home/gaubry/test/dest/a2.txt" />
-		<copy src="a2" dest="b2" />
+		<copy src="/home/gaubry/test/src/a.txt" dest="gaubry@dv2:/home/gaubry/a3.txt" />
+		<copy src="/home/gaubry/test/src" dest="gaubry@dv2:/home/gaubry/T" />
 		<sync src="c" dest="d" />
-		<copy src="a2" dest="rr" />
+		
 	</target>
 	<target name="qa">
 		<copy src="1" dest="2" />
 		<sync src="3" dest="4" />
+		<call target="languages" />
+	</target>
+	<target name="languages">
 	</target>
 </project>

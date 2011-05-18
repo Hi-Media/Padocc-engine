@@ -1,11 +1,19 @@
 <?php
 
-// /usr/bin/php -q ~/deployment/scripts/php/deployment.php project1 dev
+// ID=`date +'%Y%m%d%H%M%S'`; /usr/bin/php -q ~/deployment/scripts/php/deployment.php project1 dev $ID /home/gaubry/deployment/logs/deployment.php.xxx.error.log
+// tail -fn 500 /home/gaubry/deployment/logs/deployment.php.xxx.error.log
 
-error_reporting(-1);
 include_once(__DIR__ . '/deployment/conf/config.inc.php');
+include_once(DEPLOYMENT_INC_DIR . '/error.inc.php');
 
-set_include_path(DEPLOYMENT_CORE_DIR . '/' . PATH_SEPARATOR . get_include_path());
+if (function_exists('xdebug_disable')) {
+	xdebug_disable();
+}
+
+set_include_path(
+	DEPLOYMENT_CORE_DIR . '/' . PATH_SEPARATOR
+	. DEPLOYMENT_INC_DIR . '/' . PATH_SEPARATOR
+	. get_include_path());
 spl_autoload_register(function($sClass) {
 	$sPath = str_replace('_', '/', $sClass) . '.class.php';
 	$iPos = strrpos($sPath, '/');
@@ -17,17 +25,15 @@ spl_autoload_register(function($sClass) {
 $argc--;
 array_shift($argv);
 
-echo 'Parameters: ' . implode('|', $argv) . "\n";
-echo 'WARNING alert!' . "\n";
-echo '...' . "\n";
-
-/*$result = Shell::exec('ls -la | wc -l');
-var_dump($result);*/
-
-if ($argc < 2) {
-	throw new Exception('You must specify both a project name and a environment!');
+if ($argc < 4) {
+	throw new Exception('Example: /usr/bin/php -q ~/deployment/scripts/php/deployment.php project1 dev 20110518121106 /home/gaubry/deployment/logs/deployment.php.20110518121106.error.log');
 } else {
+	$sErrorLogFile = $argv[count($argv)-1];
+	$sExecutionID = $argv[count($argv)-2];
 	$sProjectName = $argv[0];
-	$sEnvName = $argv[1];
-	$oDeployment = new Deployment($sProjectName, $sEnvName);
+	$sTargetName = $argv[1];
 }
+
+errorInit(0, $sErrorLogFile);
+
+$oDeployment = new Deployment($sProjectName, $sTargetName, $sExecutionID);
