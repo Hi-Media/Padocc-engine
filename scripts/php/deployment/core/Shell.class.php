@@ -68,4 +68,8 @@ class Shell {
 		}
 		return Shell::exec($sCmd);
 	}
+
+	public static function sync ($sSrcPath, $sDestPath) {
+		// rsync -aqz --delete --delete-excluded --cvs-exclude -e ssh --cvs-exclude --exclude=.cvsignore
+	}
 }
