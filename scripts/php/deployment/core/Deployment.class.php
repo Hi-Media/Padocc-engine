@@ -1,7 +1,5 @@
 <?php
 
-include_once(DEPLOYMENT_CORE_DIR . '/Tools.class.php');
-
 class Deployment {
 
 	public function __construct ($sProjectName, $sEnvName) {
@@ -19,8 +17,8 @@ class Deployment {
 			}
 		}*/
 
-		$aTasks = Task::getTaskInstances($oEnv);
-		print_r($aTasks);
+		$aTasks = Tasks::getTaskInstances($oEnv);
+		//print_r($aTasks);
 	}
 
 	private function _getEnvironment ($sProjectName, $sEnvName) {
@@ -36,7 +34,7 @@ class Deployment {
 
 		$oSelectedEnv = NULL;
 		foreach ($oSXE->children() as $sTag => $oEnv) {
-			if ((string)$sTag === 'env' && (string)$oEnv['name'] === $sEnvName) {
+			if ((string)$sTag === 'target' && (string)$oEnv['name'] === $sEnvName) {
 				$oSelectedEnv = $oEnv;
 				break;
 			}

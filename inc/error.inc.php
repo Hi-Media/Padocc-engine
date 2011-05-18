@@ -1,19 +1,14 @@
 <?php
 
-/**
- *
- * @param $display_errors
- * @param $error_log_path
- * @return unknown_type
- */
 function errorInit ($display_errors=0, $error_log_path=NULL, $error_reporting=-1) {
 	error_reporting($error_reporting);
 	ini_set('display_errors', $display_errors);
 	ini_set('log_errors', true);
 	ini_set('html_errors', false);
 	ini_set('display_startup_errors',true);
-	if ($error_log_path !== NULL)
+	if ($error_log_path !== NULL) {
 		ini_set('error_log', $error_log_path);
+	}
 	ini_set('ignore_repeated_errors', true);
 	ini_set('max_execution_time', 0);
 
@@ -91,8 +86,9 @@ function errorHandler ($errno, $errstr, $errfile, $errline) {
 function addExcludePathErrorHandler ($path) {
 	global $_error_handler_exclude_path;
 
-	if (substr($path, -1) !== '/')
+	if (substr($path, -1) !== '/') {
 		$path .= '/';
+	}
 	$path = realpath($path);
 	if ( ! in_array($path, $_error_handler_exclude_path)) {
 		$_error_handler_exclude_path[] = $path;

@@ -7,13 +7,16 @@ include_once(CLI_INC_DIR . '/error.inc.php');
 $argc--;
 array_shift($argv);
 
-// On traite le paramètre fichier de log :
-if ($argc < 2) {
-	throw new PrestadevBadMethodCallException('Missing PHP script to execute or missing error log file!');
+// On traite le paramètre fichier de log et l'ID d'exécution :
+if ($argc < 3) {
+	throw new Exception('Missing PHP script to execute or execution ID or missing error log file!');
 } else {
 	$argc--;
-	$error_log_file = array_pop($argv);
-	errorInit(0, $error_log_file);
+	$GLOBALS['ERROR_LOG_FILE'] = array_pop($argv);
+	errorInit(0, $ERROR_LOG_FILE);
+
+	$argc--;
+	$GLOBALS['EXECUTION_ID'] = array_pop($argv);
 }
 
 // Exécution du script PHP :

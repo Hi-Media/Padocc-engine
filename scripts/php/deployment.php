@@ -1,14 +1,9 @@
 <?php
 
-// /usr/bin/php -q ~/deployement/
+// /usr/bin/php -q ~/deployment/scripts/php/deployment.php project1 dev
 
+error_reporting(-1);
 include_once(__DIR__ . '/deployment/conf/config.inc.php');
-include_once(DEPLOYMENT_CORE_DIR . '/Shell.class.php');
-include_once(DEPLOYMENT_CORE_DIR . '/Deployment.class.php');
-
-// On supprime le 1er paramètre correspondant au nom du script courant :
-$argc--;
-array_shift($argv);
 
 set_include_path(DEPLOYMENT_CORE_DIR . '/' . PATH_SEPARATOR . get_include_path());
 spl_autoload_register(function($sClass) {
@@ -17,6 +12,10 @@ spl_autoload_register(function($sClass) {
 	$sPath = strtolower(substr($sPath, 0, $iPos)) . substr($sPath, $iPos);
 	include_once($sPath);
 });
+
+// On supprime le 1er paramètre correspondant au nom du script courant :
+$argc--;
+array_shift($argv);
 
 echo 'Parameters: ' . implode('|', $argv) . "\n";
 echo 'WARNING alert!' . "\n";
