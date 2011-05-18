@@ -2,6 +2,11 @@
 
 class Task_Base_Sync extends Task {
 
+	/**
+	 * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
+	 *
+	 * @return string nom du tag XML correspondant à cette tâche dans les config projet.
+	 */
 	public static function getTagName () {
 		return 'sync';
 	}

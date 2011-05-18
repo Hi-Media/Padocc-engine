@@ -2,6 +2,11 @@
 
 class Task_Base_Copy extends Task {
 
+	/**
+	 * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
+	 *
+	 * @return string nom du tag XML correspondant à cette tâche dans les config projet.
+	 */
 	public static function getTagName () {
 		return 'copy';
 	}
@@ -14,8 +19,10 @@ class Task_Base_Copy extends Task {
 		$aAvailablesAttributes = array('src', 'dest');
 		$aUnknownAttributes = array_diff(array_keys($this->aAttributes), $aAvailablesAttributes);
 		if (count($aUnknownAttributes) > 0) {
-			throw new Exception("Available attributes: " . print_r($aAvailablesAttributes, true)
-				. " => Unknown attributes: " . print_r($aUnknownAttributes, true));
+			throw new Exception(
+				"Available attributes: " . print_r($aAvailablesAttributes, true)
+				. " => Unknown attribute(s): " . print_r($aUnknownAttributes, true)
+			);
 		}
 
 		if (empty($this->aAttributes['src']) || empty($this->aAttributes['dest'])) {
