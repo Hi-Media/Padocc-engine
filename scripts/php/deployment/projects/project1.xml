@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="project1">
-	<env name="dev">
-		<cp src="a" dest="b" />
-		<cp src="a2" dest="b2" />
-		<synchronize src="c" dest="d" />
-		<cp src="a2" dest="b2" />
-	</env>
-	<env name="qa">
-		<cp src="1" dest="2" />
-		<synchronize src="3" dest="4" />
-	</env>
+	<target name="dev">
+		<copy src="/home/gaubry/test/src/a.txt" dest="/home/gaubry/test/dest/a2.txt" />
+		<copy src="a2" dest="b2" />
+		<sync src="c" dest="d" />
+		<copy src="a2" dest="rr" />
+	</target>
+	<target name="qa">
+		<copy src="1" dest="2" />
+		<sync src="3" dest="4" />
+	</target>
 </project>

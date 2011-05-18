@@ -1,12 +1,13 @@
 #!/bin/bash
-# find /home/gaubry/deployment -type f -name "*sh" -exec chmod +x {} \;;  ~/deployment/supervisor.sh
+# find /home/gaubry/deployment -type f -name "*sh" -exec chmod +x {} \;;  ~/deployment/supervisor.sh deployment.php project1 dev
 
 # Includes :
 . `dirname $0`/conf/config.inc.sh
 . $INC_DIR/tools.inc.sh
 
 # Variables :
-ID=`getRandomString 8`
+#ID=`getRandomString 8`
+ID=`date +'%Y%m%d%H%M%S'`
 SCRIPT_NAME=$1
 shift
 
@@ -43,7 +44,7 @@ echo ''
 displayMsg title "Starting '$SCRIPT_NAME' script with id '$ID'"
 
 # Appel du script passé en paramètres, en empilant le log d'erreurs à la suite des paramètres déjà fournis :
-$CMD $ERROR_LOG_FILE 2>>$ERROR_LOG_FILE | while read LINE ; do
+$CMD $ID $ERROR_LOG_FILE 2>>$ERROR_LOG_FILE | while read LINE ; do
 	NOW="`getDateWithCS`"
 	echo "$NOW;$ID;$SCRIPT_NAME;$LINE" >> $SUPERVISOR_LOG_FILE
 	displayScriptMsg "$NOW, $LINE";
