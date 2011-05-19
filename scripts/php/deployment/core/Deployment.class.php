@@ -3,6 +3,10 @@
 class Deployment {
 
 	public function __construct ($sProjectName, $sTargetName, $sExecutionID) {
+		echo 'Generate and load servers.ini...';
+		$servers = $this->_loadServersIniFile(DEPLOYMENT_CONF_DIR . "/master_synchro.cfg");
+		echo 'OK' . "\n";
+
 		$sBackupDir = DEPLOYMENT_BACKUP_DIR . '/' . $sExecutionID;
 		Shell::exec('mkdir -p "' . $sBackupDir . '"');
 
@@ -14,6 +18,13 @@ class Deployment {
 		echo 'Execute tasks...';
 		$this->_execute($aTasks);
 		echo 'OK' . "\n";
+	}
+
+	private function _loadServersIniFile ($sMasterSynchroPath) {
+		$sServersIniPath = DEPLOYMENT_CONF_DIR . "/servers.ini";
+		Shell:exec("~/deployment/scripts/php/deployment/inc/cfg2ini.inc.sh $sMasterSynchroPath $sServersIniPath");
+		$servers = parse_ini_file($sServersIniPath);
+		return $servers;
 	}
 
 	private function _execute ($aTasks) {
