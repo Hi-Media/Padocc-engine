@@ -11,13 +11,36 @@ class Task_Base_Sync extends Task {
 		return 'sync';
 	}
 
-	public function __construct (SimpleXMLElement $oTask, $sBackupDir) {
-		parent::__construct($oTask, $sBackupDir);
+	public function __construct (SimpleXMLElement $oTask, $sBackupPath) {
+		parent::__construct($oTask, $sBackupPath);
 	}
 
 	protected function _check () {
+		$aAvailablesAttributes = array('src', 'dest');
+		$aUnknownAttributes = array_diff(array_keys($this->aAttributes), $aAvailablesAttributes);
+		if (count($aUnknownAttributes) > 0) {
+			throw new Exception("Available attributes: " . print_r($aAvailablesAttributes, true) . " => Unknown attribute(s): " . print_r($aUnknownAttributes, true));
+		}
 
+		if (empty($this->aAttributes['src']) || empty($this->aAttributes['dest'])) {
+			throw new Exception("Must define both 'src' and 'dest' attributes!");
+		}
+
+		if (preg_match('/[*?]/', $this->aAttributes['src'] . $this->aAttributes['dest']) !== 0) {
+			throw new Exception("'*' and '?' are not authorized in 'src' or 'dest' attribute!");
+		}
+
+		$this->aAttributes['src'] = preg_replace('#/$#', '', $this->aAttributes['src']);
+		$this->aAttributes['dest'] = preg_replace('#/$#', '', $this->aAttributes['dest']);
+
+		if (Shell::getFileStatus($this->aAttributes['src']) === 0) {
+			throw new Exception("File '" . $this->aAttributes['src'] . "' not found!");
+		}
 	}
 
-	public function execute () {}
+	public function execute () {
+		Shell::sync($this->aAttributes['src'], $this->aAttributes['dest']);
+	}
+
+	protected function _backup () {}
 }

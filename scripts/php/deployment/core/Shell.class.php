@@ -2,6 +2,8 @@
 
 class Shell {
 
+	private static $aFileStatus = array();
+
 	/**
 	 * Classe outil : pas de constructeur.
 	 */
@@ -20,56 +22,117 @@ class Shell {
 			echo "[Debug] (Shell) $sCmd\n";
 		}
 		$sFullCmd = DEPLOYMENT_SHELL_INCLUDE . '; ( ' . $sCmd . ' ) 2>&1';
-		$sErrorMsg = exec($sFullCmd, $sResult, $iReturnCode);
+		$sErrorMsg = exec($sFullCmd, $aResult, $iReturnCode);
 		if ($iReturnCode !== 0) {
-			throw new Exception($sErrorMsg);
+			//throw new Exception($sErrorMsg);
+			throw new Exception(implode("\n", $aResult));
 		}
-		return $sResult;
+		return $aResult;
 	}
 
+	/**
+	 * Retourne 0 si le chemin spécifié n'existe pas, 1 si c'est un fichier 'classique', 2 si c'est un répertoire.
+	 * Passe par ssh au besoin.
+	 *
+	 * @param string $sPath chemin à tester
+	 * @return int 0 si le chemin spécifié n'existe pas, 1 si c'est un fichier, 2 si c'est un répertoire.
+	 */
 	public static function getFileStatus ($sPath) {
-		$format = '[ -d %1$s ] && echo 2 || ( [ -f %1$s ] && echo 1 || echo 0 )';
-		list($bIsRemote, $aMatches) = self::isRemotePath($sPath);
-		if ($bIsRemote) {
-			$sCmd = 'ssh ' . $aMatches[1] . ' "' . sprintf($format, $aMatches[2]) . '"';
+		if (isset(self::$aFileStatus[$sPath])) {
+			$iStatus = self::$aFileStatus[$sPath];
 		} else {
-			$sCmd = sprintf($format, $sPath);
+			$sFormat = '[ -d "%1$s" ] && echo 2 || ( [ -f "%1$s" ] && echo 1 || echo 0 )';
+			list($bIsRemote, $aMatches) = self::isRemotePath($sPath);
+			if ($bIsRemote) {
+				$sCmd = 'ssh ' . $aMatches[1] . ' "' . sprintf($sFormat, $aMatches[2]) . '"';
+			} else {
+				$sCmd = sprintf($sFormat, $sPath);
+			}
+			$aResult = self::exec($sCmd);
+			$iStatus = (int)$aResult[0];
+			if ($iStatus !== 0) {
+				self::$aFileStatus[$sPath] = $iStatus;
+			}
 		}
-		$result = self::exec($sCmd);
-		return (int)$result[0];
+		return $iStatus;
 	}
 
 	public static function isRemotePath ($sPath) {
 		$result = preg_match('/^((?:[a-z0-9_-]+@)[a-z0-9_-]+):(.+)$/i', $sPath, $aMatches);
+		if ( ! isset($aMatches[1])) {
+			$aMatches[1] = '';
+		}
 		return array($result === 1, $aMatches);
 	}
 
+	// TODO ajouter gestion tar/gz
 	public static function copy ($sSrcPath, $sDestPath) {
+		if (self::getFileStatus($sSrcPath) === 2) {
+			self::mkdir($sDestPath);
+			$sDirectoryStar = '/*';
+		} else {
+			self::mkdir($sDestPath, true);
+			$sDirectoryStar = '';
+		}
+		//$sDirectoryStar = (Shell::getFileStatus($sSrcPath) === 2 ? '/*' : '');
 		list($bIsSrcRemote, $aSrcMatches) = self::isRemotePath($sSrcPath);
 		list($bIsDestRemote, $aDestMatches) = self::isRemotePath($sDestPath);
 
 		if ($bIsSrcRemote && $bIsDestRemote && $aSrcMatches[1] == $aDestMatches[1]) {
-			$sCmd = 'ssh ' . $aSrcMatches[1] . ' cp -rf "' . $aSrcMatches[2] . '" "' . $aDestMatches[2] . '"';
+			$sCmd = 'ssh ' . $aSrcMatches[1] . ' cp -ar "' . $aSrcMatches[2] . '"' . $sDirectoryStar . ' "' . $aDestMatches[2] . '"';
 		} else if ($bIsSrcRemote || $bIsDestRemote) {
-			$sCmd = 'scp -rp "' . $sSrcPath . '" "' . $sDestPath . '"';
+			$sCmd = 'scp -rpq "' . $sSrcPath . '"' . $sDirectoryStar . ' "' . $sDestPath . '"';
 		} else {
-			$sCmd = 'cp -rf "' . $sSrcPath . '" "' . $sDestPath . '"';
+			$sCmd = 'cp -ar "' . $sSrcPath . '"' . $sDirectoryStar . ' "' . $sDestPath . '"';
 		}
 		return Shell::exec($sCmd);
 	}
 
-	public static function mkdir ($sPath) {
-		$format = 'mkdir -p "%s"';
+	/*
+cd `dirname /home/gaubry/deployment_test/T`; tar cfpz /home/gaubry/deployment_backup/`basename "/home/gaubry/deployment_test/T"`.tar.gz ./`basename "/home/gaubry/deployment_test/T"`
+cd `dirname /home/gaubry/deployment_test/a3.txt`; tar cfpz /home/gaubry/deployment_backup/`basename "/home/gaubry/deployment_test/a3.txt"`.tar.gz ./`basename "/home/gaubry/deployment_test/a3.txt"`
+
+cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubry/deployment_test/T"`.tar.gz
+cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubry/deployment_test/a3.txt"`.tar.gz
+	 */
+	public static function backup ($sSrcPath, $sBackupPath) {
+		list($bIsSrcRemote, $aSrcMatches) = self::isRemotePath($sSrcPath);
+		list($bIsBackupRemote, $aBackupMatches) = self::isRemotePath($sBackupPath);
+		var_dump($sSrcPath);
+		var_dump($sBackupPath);
+
+		if ($bIsSrcRemote != $bIsBackupRemote || $aSrcMatches[1] != $aBackupMatches[1]) {
+			throw new Exception('Not handled case!');
+		} else if ($bIsSrcRemote) {
+			$sFormat = 'ssh %3$s "cd `dirname \"%1$s\"`; tar cfpz \"%2$s\"/`basename \"%1$s\"`.tar.gz ./`basename \"%1$s\"`"';
+			$sCmd = sprintf($sFormat, $aSrcMatches[2], $aBackupMatches[2], $aSrcMatches[1]);
+		} else {
+			$sFormat = 'cd `dirname "%1$s"`; tar cfpz "%2$s"/`basename "%1$s"`.tar.gz ./`basename "%1$s"`';
+			$sCmd = sprintf($sFormat, $sSrcPath, $sBackupPath);
+		}
+		return Shell::exec($sCmd);
+	}
+
+	public static function mkdir ($sPath, $bDoDirname=false) {
+		//$format = (Shell::getFileStatus($sPath) === 2 ? 'mkdir -p "%s"' : 'mkdir -p "`dirname \"%s\"`"');
+		//$format = 'mkdir -p "%s"';
+		$sFormat = ($bDoDirname ? 'mkdir -p "`dirname \"%s\"`"' : 'mkdir -p "%s"');
 		list($bIsRemote, $aMatches) = self::isRemotePath($sPath);
 		if ($bIsRemote) {
-			$sCmd = 'ssh ' . $aMatches[1] . ' ' . sprintf($format, $aMatches[2]);
+			$sCmd = 'ssh ' . $aMatches[1] . ' ' . sprintf($sFormat, $aMatches[2]);
 		} else {
-			$sCmd = sprintf($format, $sPath);
+			$sCmd = sprintf($sFormat, $sPath);
 		}
 		return Shell::exec($sCmd);
 	}
 
 	public static function sync ($sSrcPath, $sDestPath) {
-		// rsync -aqz --delete --delete-excluded --cvs-exclude -e ssh --cvs-exclude --exclude=.cvsignore
+		Shell::mkdir($sDestPath);
+		$sCVSExclude = '--cvs-exclude --exclude=.cvsignore';
+		// rsync -aqz --delete --delete-excluded -e ssh --cvs-exclude --exclude=.cvsignore --stats
+		// rsync -az --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats "/home/gaubry/test/src/[EXT] Phing 2.4.5" "gaubry@dv2:/home/gaubry/rsync_test"
+		// rsync -az --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats "/home/gaubry/test/src/merchant_logos" "gaubry@dv2:/home/gaubry/rsync_test"
+		$sCmd = 'rsync -az --delete --delete-excluded ' . $sCVSExclude . ' --stats "' . $sSrcPath . '" "' . $sDestPath . '"';
+		return Shell::exec($sCmd);
 	}
 }

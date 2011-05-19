@@ -2,10 +2,9 @@
 <project name="project1">
 	<target name="dev">
 		<copy src="/home/gaubry/test/src/a.txt" dest="/home/gaubry/test/dest/a2.txt" />
-		<copy src="/home/gaubry/test/src/a.txt" dest="gaubry@dv2:/home/gaubry/a3.txt" />
-		<copy src="/home/gaubry/test/src" dest="gaubry@dv2:/home/gaubry/T" />
-		<sync src="c" dest="d" />
-		
+		<copy src="/home/gaubry/test/src/a.txt" dest="gaubry@dv2:/home/gaubry/deployment_test/a3.txt" />
+		<copy src="/home/gaubry/test/src/light/" dest="gaubry@dv2:/home/gaubry/deployment_test/T" />
+		<sync src="/home/gaubry/test/src/merchant_logos/" dest="gaubry@dv2:/home/gaubry/deployment_test/rsync" />
 	</target>
 	<target name="qa">
 		<copy src="1" dest="2" />

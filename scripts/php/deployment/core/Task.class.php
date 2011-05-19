@@ -5,7 +5,7 @@ abstract class Task {
 	/**
 	 * Compteur d'instances pour s'y retrouver dans les backups des tâches.
 	 * @var int
-	 * @see $sBackupDir
+	 * @see $sBackupPath
 	 */
 	private static $iCounter = 0;
 
@@ -31,11 +31,11 @@ abstract class Task {
 	 */
 	protected $aAttributes;
 
-	protected $sBackupDir;
+	protected $sBackupPath;
 
-	public function __construct (SimpleXMLElement $oTask, $sBackupDir) {
+	public function __construct (SimpleXMLElement $oTask, $sBackupPath) {
 		$this->oTask = $oTask;
-		$this->sBackupDir = $sBackupDir . '/' . (++self::$iCounter) . '_' . get_class($this);
+		$this->sBackupPath = $sBackupPath . '/' . (++self::$iCounter) . '_' . get_class($this);
 
 		// Récupération des attributs :
 		$this->aAttributes = array();
@@ -49,4 +49,6 @@ abstract class Task {
 	protected abstract function _check();
 
 	public abstract function execute ();
+
+	protected abstract function _backup ();
 }
