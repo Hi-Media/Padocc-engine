@@ -10,4 +10,4 @@ define('DEPLOYMENT_BACKUP_DIR', '$HOME/deployment_backup');
 
 define('DEPLOYMENT_SHELL_INCLUDE', '. ' . DEPLOYMENT_CONF_DIR . '/config.inc.sh');
 
-define('DEPLOYMENT_DEBUG_MODE', 0);
+define('DEPLOYMENT_DEBUG_MODE', 1);

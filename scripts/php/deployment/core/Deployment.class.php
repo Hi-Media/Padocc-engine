@@ -7,12 +7,12 @@ class Deployment {
 		$servers = $this->_loadServersIniFile(DEPLOYMENT_CONF_DIR . "/master_synchro.cfg");
 		echo 'OK' . "\n";
 
-		$sBackupDir = DEPLOYMENT_BACKUP_DIR . '/' . $sExecutionID;
-		Shell::exec('mkdir -p "' . $sBackupDir . '"');
+		$sBackupPath = DEPLOYMENT_BACKUP_DIR . '/' . $sExecutionID;
+		Shell::exec('mkdir -p "' . $sBackupPath . '"');
 
 		echo 'Initialize tasks...';
 		$oTarget = $this->_getTarget($sProjectName, $sTargetName);
-		$aTasks = Tasks::getTaskInstances($oTarget, $sBackupDir);
+		$aTasks = Tasks::getTaskInstances($oTarget, $sBackupPath);
 		echo 'OK' . "\n";
 
 		echo 'Execute tasks...';
