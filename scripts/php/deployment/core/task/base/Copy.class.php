@@ -45,7 +45,8 @@ class Task_Base_Copy extends Task {
 	public function backup () {
 		if (Shell::getFileStatus($this->aAttributes['dest']) !== 0) {
 			list($bIsRemote, $aMatches) = Shell::isRemotePath($this->aAttributes['dest']);
-			$sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '') . $this->sBackupPath;
+			$sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '') . $this->sBackupPath . '/'
+				. pathinfo($aMatches[2], PATHINFO_BASENAME) . '.tar.gz';
 			Shell::backup($this->aAttributes['dest'], $sBackupPath);
 		}
 	}

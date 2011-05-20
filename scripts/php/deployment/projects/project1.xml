@@ -5,6 +5,7 @@
 		<copy src="/home/gaubry/test/src/a.txt" dest="gaubry@dv2:/home/gaubry/deployment_test/a3.txt" />
 		<copy src="/home/gaubry/test/src/light/" dest="gaubry@dv2:/home/gaubry/deployment_test/T" />
 		<sync src="/home/gaubry/test/src/merchant_logos/" dest="gaubry@dv2:/home/gaubry/deployment_test/rsync" />
+		<backup src="/home/gaubry/test/src/[EXT] Phing 2.4.5" dest="gaubry@dv2:/home/gaubry/deployment_test/deployment_test.tar.gz" />
 	</target>
 	<target name="qa">
 		<copy src="1" dest="2" />

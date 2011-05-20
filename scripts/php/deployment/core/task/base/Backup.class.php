@@ -1,6 +1,6 @@
 <?php
 
-class Task_Base_Sync extends Task {
+class Task_Base_Backup extends Task {
 
 	/**
 	 * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
@@ -8,7 +8,7 @@ class Task_Base_Sync extends Task {
 	 * @return string nom du tag XML correspondant à cette tâche dans les config projet.
 	 */
 	public static function getTagName () {
-		return 'sync';
+		return 'backup';
 	}
 
 	public function __construct (SimpleXMLElement $oTask, $sBackupPath) {
@@ -39,15 +39,14 @@ class Task_Base_Sync extends Task {
 	}
 
 	public function execute () {
-		Shell::sync($this->aAttributes['src'], $this->aAttributes['dest']);
+		Shell::backup($this->aAttributes['src'], $this->aAttributes['dest']);
 	}
 
 	public function backup () {
 		if (Shell::getFileStatus($this->aAttributes['dest']) !== 0) {
 			list($bIsRemote, $aMatches) = Shell::isRemotePath($this->aAttributes['dest']);
-			$sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '') . $this->sBackupPath . '/'
-				. pathinfo($aMatches[2], PATHINFO_BASENAME) . '.tar.gz';
-			Shell::backup($this->aAttributes['dest'], $sBackupPath);
+			$sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '') . $this->sBackupPath . '/' . pathinfo($aMatches[2], PATHINFO_BASENAME);
+			Shell::copy($this->aAttributes['dest'], $sBackupPath);
 		}
 	}
 }

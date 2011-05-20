@@ -3,6 +3,9 @@
 // ID=`date +'%Y%m%d%H%M%S'`; /usr/bin/php -q ~/deployment/scripts/php/deployment.php project1 dev $ID /home/gaubry/deployment/logs/deployment.php.xxx.error.log
 // tail -fn 500 /home/gaubry/deployment/logs/deployment.php.xxx.error.log
 
+// TODO implémenter rollback
+// TODO si fatal error, demander au supervisor de proposer un rollback ?
+
 include_once(__DIR__ . '/deployment/conf/config.inc.php');
 include_once(DEPLOYMENT_INC_DIR . '/error.inc.php');
 
