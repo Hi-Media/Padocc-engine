@@ -57,10 +57,17 @@ class Shell {
 		return $iStatus;
 	}
 
+	/**
+	 * Retourne un couple dont la 1re valeur indique si oui ou non le chemin spécifié commence par '[user@]servername_or_ip:'
+	 * et la 2nde est un tableau indexé contenant le chemin initial, le serveur et le chemin dépourvu du serveur.
+	 *
+	 * @param string $sPath
+	 * @return array
+	 */
 	public static function isRemotePath ($sPath) {
-		$result = preg_match('/^((?:[a-z0-9_-]+@)[a-z0-9_-]+):(.+)$/i', $sPath, $aMatches);
-		if ( ! isset($aMatches[1])) {
-			$aMatches[1] = '';
+		$result = preg_match('/^((?:[a-z0-9_-]+@)[a-z0-9_.-]+):(.+)$/i', $sPath, $aMatches);
+		if ($result !== 1) {
+			$aMatches = array($sPath, '', $sPath);
 		}
 		return array($result === 1, $aMatches);
 	}
@@ -71,7 +78,7 @@ class Shell {
 			self::mkdir($sDestPath);
 			$sDirectoryStar = '/*';
 		} else {
-			self::mkdir($sDestPath, true);
+			self::mkdir(pathinfo($sDestPath, PATHINFO_DIRNAME));
 			$sDirectoryStar = '';
 		}
 		//$sDirectoryStar = (Shell::getFileStatus($sSrcPath) === 2 ? '/*' : '');
@@ -96,27 +103,31 @@ cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubr
 cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubry/deployment_test/a3.txt"`.tar.gz
 	 */
 	public static function backup ($sSrcPath, $sBackupPath) {
+		self::mkdir($sBackupPath);
+
 		list($bIsSrcRemote, $aSrcMatches) = self::isRemotePath($sSrcPath);
 		list($bIsBackupRemote, $aBackupMatches) = self::isRemotePath($sBackupPath);
-		var_dump($sSrcPath);
-		var_dump($sBackupPath);
 
 		if ($bIsSrcRemote != $bIsBackupRemote || $aSrcMatches[1] != $aBackupMatches[1]) {
 			throw new Exception('Not handled case!');
-		} else if ($bIsSrcRemote) {
-			$sFormat = 'ssh %3$s "cd `dirname \"%1$s\"`; tar cfpz \"%2$s\"/`basename \"%1$s\"`.tar.gz ./`basename \"%1$s\"`"';
-			$sCmd = sprintf($sFormat, $aSrcMatches[2], $aBackupMatches[2], $aSrcMatches[1]);
+		}
+
+		if ($bIsSrcRemote) {
+			$sSrcDir = pathinfo($aSrcMatches[2], PATHINFO_DIRNAME);
+			$sSrcFile = pathinfo($aSrcMatches[2], PATHINFO_BASENAME);
+			$sFormat = 'ssh %4$s "cd \"%1$s\"; tar cfpz \"%2$s\"/\"%3$s\".tar.gz ./\"%3$s\""';
+			$sCmd = sprintf($sFormat, $sSrcDir, $aBackupMatches[2], $sSrcFile, $aSrcMatches[1]);
 		} else {
-			$sFormat = 'cd `dirname "%1$s"`; tar cfpz "%2$s"/`basename "%1$s"`.tar.gz ./`basename "%1$s"`';
-			$sCmd = sprintf($sFormat, $sSrcPath, $sBackupPath);
+			$sSrcDir = pathinfo($sSrcPath, PATHINFO_DIRNAME);
+			$sSrcFile = pathinfo($sSrcPath, PATHINFO_BASENAME);
+			$sFormat = 'cd "%1$s"; tar cfpz "%2$s"/"%3$s".tar.gz ./"%3$s"';
+			$sCmd = sprintf($sFormat, $sSrcDir, $sBackupPath, $sSrcFile);
 		}
 		return Shell::exec($sCmd);
 	}
 
-	public static function mkdir ($sPath, $bDoDirname=false) {
-		//$format = (Shell::getFileStatus($sPath) === 2 ? 'mkdir -p "%s"' : 'mkdir -p "`dirname \"%s\"`"');
-		//$format = 'mkdir -p "%s"';
-		$sFormat = ($bDoDirname ? 'mkdir -p "`dirname \"%s\"`"' : 'mkdir -p "%s"');
+	public static function mkdir ($sPath) {
+		$sFormat = 'mkdir -p "%s"';
 		list($bIsRemote, $aMatches) = self::isRemotePath($sPath);
 		if ($bIsRemote) {
 			$sCmd = 'ssh ' . $aMatches[1] . ' ' . sprintf($sFormat, $aMatches[2]);

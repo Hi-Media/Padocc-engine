@@ -42,5 +42,11 @@ class Task_Base_Sync extends Task {
 		Shell::sync($this->aAttributes['src'], $this->aAttributes['dest']);
 	}
 
-	protected function _backup () {}
+	public function backup () {
+		if (Shell::getFileStatus($this->aAttributes['dest']) !== 0) {
+			list($bIsRemote, $aMatches) = Shell::isRemotePath($this->aAttributes['dest']);
+			$sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '') . $this->sBackupPath;
+			Shell::backup($this->aAttributes['dest'], $sBackupPath);
+		}
+	}
 }
