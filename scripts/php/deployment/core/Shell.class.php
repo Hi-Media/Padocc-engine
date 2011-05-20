@@ -92,7 +92,17 @@ class Shell {
 		} else {
 			$sCmd = 'cp -ar "' . $sSrcPath . '"' . $sDirectoryStar . ' "' . $sDestPath . '"';
 		}
-		return Shell::exec($sCmd);
+		return self::exec($sCmd);
+	}
+
+	public static function remove ($sPath) {
+		list($bIsRemote, $aMatches) = self::isRemotePath($sPath);
+		if ($bIsRemote) {
+			$sCmd = 'ssh ' . $aMatches[1] . ' rm -rf "' . $aMatches[2] . '"';
+		} else {
+			$sCmd = 'rm -rf "' . $sPath . '"';
+		}
+		return self::exec($sCmd);
 	}
 
 	/*
@@ -103,27 +113,34 @@ cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubr
 cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubry/deployment_test/a3.txt"`.tar.gz
 	 */
 	public static function backup ($sSrcPath, $sBackupPath) {
-		self::mkdir($sBackupPath);
-
 		list($bIsSrcRemote, $aSrcMatches) = self::isRemotePath($sSrcPath);
 		list($bIsBackupRemote, $aBackupMatches) = self::isRemotePath($sBackupPath);
 
-		if ($bIsSrcRemote != $bIsBackupRemote || $aSrcMatches[1] != $aBackupMatches[1]) {
-			throw new Exception('Not handled case!');
-		}
+		if ($aSrcMatches[1] != $aBackupMatches[1]) {
+			//throw new Exception('Not handled case!');
 
-		if ($bIsSrcRemote) {
-			$sSrcDir = pathinfo($aSrcMatches[2], PATHINFO_DIRNAME);
-			$sSrcFile = pathinfo($aSrcMatches[2], PATHINFO_BASENAME);
-			$sFormat = 'ssh %4$s "cd \"%1$s\"; tar cfpz \"%2$s\"/\"%3$s\".tar.gz ./\"%3$s\""';
-			$sCmd = sprintf($sFormat, $sSrcDir, $aBackupMatches[2], $sSrcFile, $aSrcMatches[1]);
+			// echo sys_get_temp_dir() . '/' . uniqid('deployment_', true);
+			$sTmpDir = ($bIsSrcRemote ? $aSrcMatches[1]. ':' : '') . '/tmp/' . uniqid('deployment_', true);
+			$sTmpPath = $sTmpDir . '/' . pathinfo($sBackupPath, PATHINFO_BASENAME);
+			return array_merge(
+				self::backup($sSrcPath, $sTmpPath),
+				self::copy($sTmpPath, $sBackupPath),
+				self::remove($sTmpDir));
 		} else {
-			$sSrcDir = pathinfo($sSrcPath, PATHINFO_DIRNAME);
-			$sSrcFile = pathinfo($sSrcPath, PATHINFO_BASENAME);
-			$sFormat = 'cd "%1$s"; tar cfpz "%2$s"/"%3$s".tar.gz ./"%3$s"';
-			$sCmd = sprintf($sFormat, $sSrcDir, $sBackupPath, $sSrcFile);
+			self::mkdir(pathinfo($sBackupPath, PATHINFO_DIRNAME));
+			if ($bIsSrcRemote) {
+				$sSrcDir = pathinfo($aSrcMatches[2], PATHINFO_DIRNAME);
+				$sSrcFile = pathinfo($aSrcMatches[2], PATHINFO_BASENAME);
+				$sFormat = 'ssh %4$s "cd \"%1$s\"; tar cfpz \"%2$s\" ./\"%3$s\""';
+				$sCmd = sprintf($sFormat, $sSrcDir, $aBackupMatches[2], $sSrcFile, $aSrcMatches[1]);
+			} else {
+				$sSrcDir = pathinfo($sSrcPath, PATHINFO_DIRNAME);
+				$sSrcFile = pathinfo($aSrcMatches[2], PATHINFO_BASENAME);
+				$sFormat = 'cd "%1$s"; tar cfpz "%2$s" ./"%3$s"';
+				$sCmd = sprintf($sFormat, $sSrcDir, $sBackupPath, $sSrcFile);
+			}
+			return self::exec($sCmd);
 		}
-		return Shell::exec($sCmd);
 	}
 
 	public static function mkdir ($sPath) {
@@ -134,16 +151,19 @@ cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubr
 		} else {
 			$sCmd = sprintf($sFormat, $sPath);
 		}
-		return Shell::exec($sCmd);
+		return self::exec($sCmd);
 	}
 
 	public static function sync ($sSrcPath, $sDestPath) {
-		Shell::mkdir($sDestPath);
+		if (substr($sSrcPath, -1) !== '/') {
+			$sSrcPath .= '/';
+		}
+		self::mkdir($sDestPath);
 		$sCVSExclude = '--cvs-exclude --exclude=.cvsignore';
 		// rsync -aqz --delete --delete-excluded -e ssh --cvs-exclude --exclude=.cvsignore --stats
 		// rsync -az --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats "/home/gaubry/test/src/[EXT] Phing 2.4.5" "gaubry@dv2:/home/gaubry/rsync_test"
 		// rsync -az --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats "/home/gaubry/test/src/merchant_logos" "gaubry@dv2:/home/gaubry/rsync_test"
 		$sCmd = 'rsync -az --delete --delete-excluded ' . $sCVSExclude . ' --stats "' . $sSrcPath . '" "' . $sDestPath . '"';
-		return Shell::exec($sCmd);
+		return self::exec($sCmd);
 	}
 }
