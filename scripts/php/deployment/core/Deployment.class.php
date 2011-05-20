@@ -8,7 +8,7 @@ class Deployment {
 		echo 'OK' . "\n";
 
 		$sBackupPath = DEPLOYMENT_BACKUP_DIR . '/' . $sExecutionID;
-		Shell::exec('mkdir -p "' . $sBackupPath . '"');
+		//Shell::exec('mkdir -p "' . $sBackupPath . '"');
 
 		echo 'Initialize tasks...';
 		$oTarget = $this->_getTarget($sProjectName, $sTargetName);
@@ -29,6 +29,7 @@ class Deployment {
 
 	private function _execute ($aTasks) {
 		foreach ($aTasks as $oTask) {
+			$oTask->backup();
 			$oTask->execute();
 		}
 	}

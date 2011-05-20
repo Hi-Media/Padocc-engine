@@ -39,16 +39,13 @@ class Task_Base_Copy extends Task {
 	}
 
 	public function execute () {
-		$this->_backup();
 		Shell::copy($this->aAttributes['src'], $this->aAttributes['dest']);
 	}
 
-	// TODO tar/gz ?
-	protected function _backup () {
+	public function backup () {
 		if (Shell::getFileStatus($this->aAttributes['dest']) !== 0) {
 			list($bIsRemote, $aMatches) = Shell::isRemotePath($this->aAttributes['dest']);
 			$sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '') . $this->sBackupPath;
-			//Shell::copy($this->aAttributes['dest'], $sBackupPath . '/' . pathinfo($this->aAttributes['dest'], PATHINFO_BASENAME));
 			Shell::backup($this->aAttributes['dest'], $sBackupPath);
 		}
 	}

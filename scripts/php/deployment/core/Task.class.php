@@ -50,5 +50,5 @@ abstract class Task {
 
 	public abstract function execute ();
 
-	protected abstract function _backup ();
+	public abstract function backup ();
 }
