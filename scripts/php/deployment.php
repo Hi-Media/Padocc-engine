@@ -1,6 +1,6 @@
 <?php
 
-// ID=`date +'%Y%m%d%H%M%S'`; /usr/bin/php -q ~/deployment/scripts/php/deployment.php project1 dev $ID /home/gaubry/deployment/logs/deployment.php.xxx.error.log
+// /usr/bin/php -q ~/deployment/scripts/php/deployment.php project1 dev `date +'%Y%m%d%H%M%S'` /home/gaubry/deployment/logs/deployment.php.xxx.error.log
 // tail -fn 500 /home/gaubry/deployment/logs/deployment.php.xxx.error.log
 
 // TODO implémenter rollback
@@ -38,5 +38,26 @@ if ($argc < 4) {
 }
 
 errorInit(0, $sErrorLogFile);
+/*$s = '*?/aa/aa';
+$s = preg_replace('#(\*|\?)#', '"\1"', '"' . $s . '"');
+$s = str_replace('""', '', $s);
+echo "$s\n";
+$s = '/aa/aa*';
+$s = preg_replace('#(\*|\?)#', '"\1"', '"' . $s . '"');
+$s = str_replace('""', '', $s);
+echo "$s\n";
+$s = '/aa/aa*b';
+$s = preg_replace('#(\*|\?)#', '"\1"', '"' . $s . '"');
+$s = str_replace('""', '', $s);
+echo "$s\n";
+$s = '/aa/aa?';
+$s = preg_replace('#(\*|\?)#', '"\1"', '"' . $s . '"');
+$s = str_replace('""', '', $s);
+echo "$s\n";
+$s = '/aa/aa?b';
+$s = preg_replace('#(\*|\?)#', '"\1"', '"' . $s . '"');
+$s = str_replace('""', '', $s);
+echo "$s\n";
+die;*/
 
 $oDeployment = new Deployment($sProjectName, $sTargetName, $sExecutionID);
