@@ -16,38 +16,49 @@ class Task_Base_Sync extends Task {
 	}
 
 	protected function _check () {
-		$aAvailablesAttributes = array('src', 'dest');
+		$aAvailablesAttributes = array('src', 'destdir');
 		$aUnknownAttributes = array_diff(array_keys($this->aAttributes), $aAvailablesAttributes);
 		if (count($aUnknownAttributes) > 0) {
 			throw new Exception("Available attributes: " . print_r($aAvailablesAttributes, true) . " => Unknown attribute(s): " . print_r($aUnknownAttributes, true));
 		}
 
-		if (empty($this->aAttributes['src']) || empty($this->aAttributes['dest'])) {
-			throw new Exception("Must define both 'src' and 'dest' attributes!");
+		if (empty($this->aAttributes['src']) || empty($this->aAttributes['destdir'])) {
+			throw new Exception("Must define both 'src' and 'destdir' attributes!");
 		}
 
-		if (preg_match('/[*?]/', $this->aAttributes['src'] . $this->aAttributes['dest']) !== 0) {
-			throw new Exception("'*' and '?' are not authorized in 'src' or 'dest' attribute!");
+		if (preg_match('#[*?].*/#', $this->aAttributes['src']) !== 0) {
+			throw new Exception("'*' and '?' are only authorized for filename in 'src' attribute!");
+		}
+		if (preg_match('#[*?].*/#', $this->aAttributes['destdir']) !== 0) {
+			throw new Exception("'*' and '?' are only authorized for filename in 'destdir' attribute!");
 		}
 
 		$this->aAttributes['src'] = preg_replace('#/$#', '', $this->aAttributes['src']);
-		$this->aAttributes['dest'] = preg_replace('#/$#', '', $this->aAttributes['dest']);
+		$this->aAttributes['destdir'] = preg_replace('#/$#', '', $this->aAttributes['destdir']);
 
-		if (Shell::getFileStatus($this->aAttributes['src']) === 0) {
-			throw new Exception("File '" . $this->aAttributes['src'] . "' not found!");
+		if (preg_match('#\*|\?#', $this->aAttributes['src']) === 0) {
+			$iSrcFileStatus = Shell::getFileStatus($this->aAttributes['src']);
+			if ($iSrcFileStatus === 0) {
+				throw new Exception("File '" . $this->aAttributes['src'] . "' not found!");
+			} else if ($iSrcFileStatus === 2) {
+				$this->aAttributes['destdir'] .= '/' . substr(strrchr($this->aAttributes['src'], '/'), 1);
+				$this->aAttributes['src'] .= '/*';
+			} else {
+				//$this->aAttributes['dest'] .= '/' . substr(strrchr($this->aAttributes['src'], '/'), 1);
+			}
 		}
 	}
 
 	public function execute () {
-		Shell::sync($this->aAttributes['src'], $this->aAttributes['dest']);
+		Shell::sync($this->aAttributes['src'], $this->aAttributes['destdir']);
 	}
 
 	public function backup () {
-		if (Shell::getFileStatus($this->aAttributes['dest']) !== 0) {
-			list($bIsRemote, $aMatches) = Shell::isRemotePath($this->aAttributes['dest']);
+		if (Shell::getFileStatus($this->aAttributes['destdir']) !== 0) {
+			list($bIsRemote, $aMatches) = Shell::isRemotePath($this->aAttributes['destdir']);
 			$sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '') . $this->sBackupPath . '/'
 				. pathinfo($aMatches[2], PATHINFO_BASENAME) . '.tar.gz';
-			Shell::backup($this->aAttributes['dest'], $sBackupPath);
+			Shell::backup($this->aAttributes['destdir'], $sBackupPath);
 		}
 	}
 }

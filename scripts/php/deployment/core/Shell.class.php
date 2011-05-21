@@ -73,26 +73,38 @@ class Shell {
 	}
 
 	// TODO ajouter gestion tar/gz
-	public static function copy ($sSrcPath, $sDestPath) {
-		if (self::getFileStatus($sSrcPath) === 2) {
-			self::mkdir($sDestPath);
-			$sDirectoryStar = '/*';
-		} else {
+	public static function copy ($sSrcPath, $sDestPath, $bIsDestFile=false) {
+		if ($bIsDestFile) {
 			self::mkdir(pathinfo($sDestPath, PATHINFO_DIRNAME));
-			$sDirectoryStar = '';
+		} else {
+			self::mkdir($sDestPath);
 		}
-		//$sDirectoryStar = (Shell::getFileStatus($sSrcPath) === 2 ? '/*' : '');
+		$sDirectoryStar = '';
 		list($bIsSrcRemote, $aSrcMatches) = self::isRemotePath($sSrcPath);
 		list($bIsDestRemote, $aDestMatches) = self::isRemotePath($sDestPath);
 
 		if ($bIsSrcRemote && $bIsDestRemote && $aSrcMatches[1] == $aDestMatches[1]) {
-			$sCmd = 'ssh ' . $aSrcMatches[1] . ' cp -ar "' . $aSrcMatches[2] . '"' . $sDirectoryStar . ' "' . $aDestMatches[2] . '"';
+			$sCmd = 'ssh ' . $aSrcMatches[1] . ' cp -ar ' . self::escapePath($aSrcMatches[2]) . ' ' . self::escapePath($aDestMatches[2]);
 		} else if ($bIsSrcRemote || $bIsDestRemote) {
-			$sCmd = 'scp -rpq "' . $sSrcPath . '"' . $sDirectoryStar . ' "' . $sDestPath . '"';
+			$sCmd = 'scp -rpq ' . self::escapePath($sSrcPath) . ' ' . self::escapePath($sDestPath);
 		} else {
-			$sCmd = 'cp -ar "' . $sSrcPath . '"' . $sDirectoryStar . ' "' . $sDestPath . '"';
+			$sCmd = 'cp -ar ' . self::escapePath($sSrcPath) . ' ' . self::escapePath($sDestPath);
 		}
 		return self::exec($sCmd);
+	}
+
+	/**
+	 * Entoure le chemin de guillemets doubles en tenant compte des jokers '*' et '?' qui ne les supportent pas.
+	 * Par exemple : '/a/b/img*jpg', donnera : '"/a/b/img"*"jpg"'.
+	 * Pour rappel, '*' vaut pour 0 à n caractères, '?' vaut pour exactement 1 caractère (et non 0 à 1).
+	 *
+	 * @param string $sPath
+	 * @return string
+	 */
+	private static function escapePath ($sPath) {
+		$sEscapedPath = preg_replace('#(\*|\?)#', '"\1"', '"' . $sPath . '"');
+		$sEscapedPath = str_replace('""', '', $sEscapedPath);
+		return $sEscapedPath;
 	}
 
 	public static function remove ($sPath) {
@@ -124,20 +136,22 @@ cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubr
 			$sTmpPath = $sTmpDir . '/' . pathinfo($sBackupPath, PATHINFO_BASENAME);
 			return array_merge(
 				self::backup($sSrcPath, $sTmpPath),
-				self::copy($sTmpPath, $sBackupPath),
+				self::copy($sTmpPath, $sBackupPath, true),
 				self::remove($sTmpDir));
 		} else {
 			self::mkdir(pathinfo($sBackupPath, PATHINFO_DIRNAME));
 			if ($bIsSrcRemote) {
 				$sSrcDir = pathinfo($aSrcMatches[2], PATHINFO_DIRNAME);
 				$sSrcFile = pathinfo($aSrcMatches[2], PATHINFO_BASENAME);
-				$sFormat = 'ssh %4$s "cd \"%1$s\"; tar cfpz \"%2$s\" ./\"%3$s\""';
-				$sCmd = sprintf($sFormat, $sSrcDir, $aBackupMatches[2], $sSrcFile, $aSrcMatches[1]);
+				$sFormat = 'ssh %4$s <<EOF
+cd %1$s && tar cfpz %2$s ./%3$s
+EOF';
+				$sCmd = sprintf($sFormat, self::escapePath($sSrcDir), self::escapePath($aBackupMatches[2]), self::escapePath($sSrcFile), $aSrcMatches[1]);
 			} else {
 				$sSrcDir = pathinfo($sSrcPath, PATHINFO_DIRNAME);
 				$sSrcFile = pathinfo($aSrcMatches[2], PATHINFO_BASENAME);
-				$sFormat = 'cd "%1$s"; tar cfpz "%2$s" ./"%3$s"';
-				$sCmd = sprintf($sFormat, $sSrcDir, $sBackupPath, $sSrcFile);
+				$sFormat = 'cd %1$s; tar cfpz %2$s ./%3$s';
+				$sCmd = sprintf($sFormat, self::escapePath($sSrcDir), self::escapePath($sBackupPath), self::escapePath($sSrcFile));
 			}
 			return self::exec($sCmd);
 		}
@@ -155,15 +169,12 @@ cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubr
 	}
 
 	public static function sync ($sSrcPath, $sDestPath) {
-		if (substr($sSrcPath, -1) !== '/') {
-			$sSrcPath .= '/';
-		}
 		self::mkdir($sDestPath);
 		$sCVSExclude = '--cvs-exclude --exclude=.cvsignore';
 		// rsync -aqz --delete --delete-excluded -e ssh --cvs-exclude --exclude=.cvsignore --stats
 		// rsync -az --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats "/home/gaubry/test/src/[EXT] Phing 2.4.5" "gaubry@dv2:/home/gaubry/rsync_test"
 		// rsync -az --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats "/home/gaubry/test/src/merchant_logos" "gaubry@dv2:/home/gaubry/rsync_test"
-		$sCmd = 'rsync -az --delete --delete-excluded ' . $sCVSExclude . ' --stats "' . $sSrcPath . '" "' . $sDestPath . '"';
+		$sCmd = 'rsync -az --delete --delete-excluded ' . $sCVSExclude . ' --stats -e ssh ' . self::escapePath($sSrcPath) . ' ' . self::escapePath($sDestPath);
 		return self::exec($sCmd);
 	}
 }
