@@ -31,11 +31,19 @@ abstract class Task {
 	 */
 	protected $aAttributes;
 
+	/**
+	 * Chemin du répertoire backup dédié à la tâche.
+	 * De la forme : '[base]/[index]_[name]',
+	 *    où 'base' est fourni au constructeur,
+	 *    où 'index' est l'ordre d'exécution de la tâche
+	 *    et où 'name' est le nom de la classe de la tâche.
+	 * @var string
+	 */
 	protected $sBackupPath;
 
 	public function __construct (SimpleXMLElement $oTask, $sBackupPath) {
 		$this->oTask = $oTask;
-		$this->sBackupPath = $sBackupPath . '/' . (++self::$iCounter) . '_' . get_class($this);
+		$this->sBackupPath = $sBackupPath . '/' . sprintf('%03d', (++self::$iCounter)) . '_' . get_class($this);
 
 		// Récupération des attributs :
 		$this->aAttributes = array();
