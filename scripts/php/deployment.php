@@ -42,4 +42,4 @@ if ($argc < 4) {
 
 errorInit(0, $sErrorLogFile);
 
-$oDeployment = new Deployment($sProjectName, $sTargetName, $sExecutionID);
+new Deployment($sProjectName, $sTargetName, $sExecutionID);
