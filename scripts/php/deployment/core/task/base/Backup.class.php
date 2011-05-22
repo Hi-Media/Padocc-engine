@@ -11,18 +11,16 @@ class Task_Base_Backup extends Task {
 		return 'backup';
 	}
 
-	public function __construct (SimpleXMLElement $oTask, $sBackupPath) {
-		parent::__construct($oTask, $sBackupPath);
+	public function __construct (SimpleXMLElement $oTask, SimpleXMLElement $oProject, $sBackupPath) {
+		parent::__construct($oTask, $oProject, $sBackupPath);
 		$this->aAttributeProperties = array(
-			'src' => array('srcpath', 'file', 'dir', 'filejoker'),
-			'destfile' => array('file'),
+			'src' => array('srcpath', 'file', 'dir', 'filejoker', 'required'),
+			'destfile' => array('file', 'required')
 		);
 	}
 
 	protected function _check () {
-		if (empty($this->aAttributes['src']) || empty($this->aAttributes['destfile'])) {
-			throw new Exception("Must define both 'src' and 'destfile' attributes!");
-		}
+		parent::check();
 	}
 
 	public function execute () {

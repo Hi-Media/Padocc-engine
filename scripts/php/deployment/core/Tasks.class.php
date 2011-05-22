@@ -27,13 +27,13 @@ class Tasks {
 		return self::$AVAILABLE_TASKS;
 	}
 
-	public static function getTaskInstances (SimpleXMLElement $oEnv, $sBackupPath) {
+	public static function getTaskInstances (SimpleXMLElement $oTarget, SimpleXMLElement $oProject, $sBackupPath) {
 		$aAvailableTasks = self::_getAvailableTasks();
 
 		// Mise à plat des tâches car SimpleXML regroupe celles successives de même nom
 		// dans un tableau et les autres sont hors tableau :
 		$aTasks = array();
-		foreach ($oEnv->children() as $sTag => $mTasks) {
+		foreach ($oTarget->children() as $sTag => $mTasks) {
 			if (is_array($mTasks)) {
 				foreach ($mTasks as $oTask) {
 					$aTasks[] = array($sTag, $oTask);
@@ -50,12 +50,37 @@ class Tasks {
 			if ( ! isset($aAvailableTasks[$sTag])) {
 				throw new Exception("Unkown task tag: '$sTag'!");
 			} else {
-				$aTaskInstances[] = new $aAvailableTasks[$sTag]($oTask, $sBackupPath);
+				$aTaskInstances[] = new $aAvailableTasks[$sTag]($oTask, $oProject, $sBackupPath);
 			}
 		}
 
 		return $aTaskInstances;
 	}
 
+	public static function getProject ($sProjectName) {
+		$sProjectFilename = DEPLOYMENT_PROJECTS_DIR . '/' . $sProjectName . '.xml';
+		if ( ! file_exists($sProjectFilename)) {
+			throw new Exception("Project definition not found: '$sProjectFilename'!");
+		}
+
+		$oProject = new SimpleXMLElement($sProjectFilename, NULL, true);
+		if ((string)$oProject['name'] !== $sProjectName) {
+			throw new Exception("Project's attribute name ('" . $oProject['name'] . "') must be eqal to project filename ('$sProjectName').");
+		}
+
+		return $oProject;
+	}
+
+	public static function getTarget (SimpleXMLElement $oProject, $sTargetName) {
+		$aTargets = $oProject->xpath("target[@name='$sTargetName']");
+		if (count($aTargets) !== 1) {
+			throw new Exception("Target '$sTargetName' not found or not unique in project!");
+		}
+		return $aTargets[0];
+	}
+
+	/**
+	 * Classe outil : pas d'instance.
+	 */
 	private function __construct () {}
 }
