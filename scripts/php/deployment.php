@@ -38,26 +38,5 @@ if ($argc < 4) {
 }
 
 errorInit(0, $sErrorLogFile);
-/*$s = '*?/aa/aa';
-$s = preg_replace('#(\*|\?)#', '"\1"', '"' . $s . '"');
-$s = str_replace('""', '', $s);
-echo "$s\n";
-$s = '/aa/aa*';
-$s = preg_replace('#(\*|\?)#', '"\1"', '"' . $s . '"');
-$s = str_replace('""', '', $s);
-echo "$s\n";
-$s = '/aa/aa*b';
-$s = preg_replace('#(\*|\?)#', '"\1"', '"' . $s . '"');
-$s = str_replace('""', '', $s);
-echo "$s\n";
-$s = '/aa/aa?';
-$s = preg_replace('#(\*|\?)#', '"\1"', '"' . $s . '"');
-$s = str_replace('""', '', $s);
-echo "$s\n";
-$s = '/aa/aa?b';
-$s = preg_replace('#(\*|\?)#', '"\1"', '"' . $s . '"');
-$s = str_replace('""', '', $s);
-echo "$s\n";
-die;*/
 
 $oDeployment = new Deployment($sProjectName, $sTargetName, $sExecutionID);

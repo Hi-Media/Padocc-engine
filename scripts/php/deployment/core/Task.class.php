@@ -31,6 +31,8 @@ abstract class Task {
 	 */
 	protected $aAttributes;
 
+	protected $aAttributeProperties;
+
 	/**
 	 * Chemin du répertoire backup dédié à la tâche.
 	 * De la forme : '[base]/[index]_[name]',
@@ -51,10 +53,44 @@ abstract class Task {
 			$this->aAttributes[$key] = (string)$val;
 		}
 
-		$this->_check();
+		$this->aAttributeProperties = array();
+		//$this->_check();
 	}
 
-	protected abstract function _check();
+	public function check () {
+		$aAvailablesAttributes = array_keys($this->aAttributeProperties);
+		$aUnknownAttributes = array_diff(array_keys($this->aAttributes), $aAvailablesAttributes);
+		if (count($aUnknownAttributes) > 0) {
+			throw new Exception("Available attributes: " . print_r($aAvailablesAttributes, true) . " => Unknown attribute(s): " . print_r($aUnknownAttributes, true));
+		}
+
+		foreach ($this->aAttributeProperties as $sAttribute => $aProperties) {
+			if (in_array('dir', $aProperties) || in_array('file', $aProperties)) {
+				$this->aAttributes[$sAttribute] = str_replace('\\', '/', $this->aAttributes[$sAttribute]);
+			}
+
+			if (preg_match('#[*?].*/#', $this->aAttributes[$sAttribute]) !== 0 && ! in_array('dirjoker', $aProperties)) {
+				throw new Exception("'*' and '?' jokers are not authorized for directory in '$sAttribute' attribute!");
+			}
+
+			if (preg_match('#[*?][^/]*$#', $this->aAttributes[$sAttribute]) !== 0 && ! in_array('filejoker', $aProperties)) {
+				throw new Exception("'*' and '?' jokers are not authorized for filename in '$sAttribute' attribute!");
+			}
+
+			// Suppression de l'éventuel slash terminal :
+			if (in_array('dir', $aProperties)) {
+				$this->aAttributes[$sAttribute] = preg_replace('#/$#', '', $this->aAttributes[$sAttribute]);
+			}
+
+			if (
+					in_array('srcpath', $aProperties)
+					&& preg_match('#\*|\?#', $this->aAttributes[$sAttribute]) === 0
+					&& Shell::getFileStatus($this->aAttributes[$sAttribute]) === 0
+			) {
+				throw new Exception("File or directory '" . $this->aAttributes[$sAttribute] . "' not found!");
+			}
+		}
+	}
 
 	public abstract function execute ();
 

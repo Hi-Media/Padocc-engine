@@ -15,6 +15,10 @@ class Deployment {
 		$aTasks = Tasks::getTaskInstances($oTarget, $sBackupPath);
 		echo 'OK' . "\n";
 
+		echo 'Check tasks...';
+		$this->_check($aTasks);
+		echo 'OK' . "\n";
+
 		echo 'Execute tasks...';
 		$this->_execute($aTasks);
 		echo 'OK' . "\n";
@@ -27,7 +31,13 @@ class Deployment {
 		return $servers;
 	}
 
-	private function _execute ($aTasks) {
+	private function _check (array $aTasks) {
+		foreach ($aTasks as $oTask) {
+			$oTask->check();
+		}
+	}
+
+	private function _execute (array $aTasks) {
 		foreach ($aTasks as $oTask) {
 			$oTask->backup();
 			$oTask->execute();
