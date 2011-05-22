@@ -19,15 +19,28 @@ class Shell {
 	 */
 	public static function exec ($sCmd) {
 		if (DEPLOYMENT_DEBUG_MODE > 0) {
-			echo "[Debug] (Shell) $sCmd\n";
+			echo "[Debug][Shell] $sCmd\n";
 		}
-		$sFullCmd = DEPLOYMENT_SHELL_INCLUDE . '; ( ' . $sCmd . ' ) 2>&1';
+		$sFullCmd = '( ' . $sCmd . ' ) 2>&1';
 		$sErrorMsg = exec($sFullCmd, $aResult, $iReturnCode);
 		if ($iReturnCode !== 0) {
 			//throw new Exception($sErrorMsg);
 			throw new Exception(implode("\n", $aResult));
 		}
 		return $aResult;
+	}
+
+	public static function execSSH ($sPatternCmd, $sParam) {
+		/*if ( ! is_array($mParams)) {
+			$mParams = array($mParams);
+		}*/
+		list($bIsRemote, $aMatches) = self::isRemotePath($sParam);
+		$sCmd = sprintf($sPatternCmd, self::escapePath($aMatches[2]));
+		//$sCmd = vsprintf($sPatternCmd, array_map(array(self, 'escapePath'), $mParams));
+		if ($bIsRemote) {
+			$sCmd = 'ssh -T ' . $aMatches[1] . " <<EOF\n$sCmd\nEOF\n";
+		}
+		return self::exec($sCmd);
 	}
 
 	/**
@@ -41,14 +54,8 @@ class Shell {
 		if (isset(self::$aFileStatus[$sPath])) {
 			$iStatus = self::$aFileStatus[$sPath];
 		} else {
-			$sFormat = '[ -d "%1$s" ] && echo 2 || ( [ -f "%1$s" ] && echo 1 || echo 0 )';
-			list($bIsRemote, $aMatches) = self::isRemotePath($sPath);
-			if ($bIsRemote) {
-				$sCmd = 'ssh ' . $aMatches[1] . ' "' . sprintf($sFormat, $aMatches[2]) . '"';
-			} else {
-				$sCmd = sprintf($sFormat, $sPath);
-			}
-			$aResult = self::exec($sCmd);
+			$sFormat = '[ -d %1$s ] && echo 2 || ( [ -f %1$s ] && echo 1 || echo 0 )';
+			$aResult = self::execSSH($sFormat, $sPath);
 			$iStatus = (int)$aResult[0];
 			if ($iStatus !== 0) {
 				self::$aFileStatus[$sPath] = $iStatus;
@@ -108,13 +115,7 @@ class Shell {
 	}
 
 	public static function remove ($sPath) {
-		list($bIsRemote, $aMatches) = self::isRemotePath($sPath);
-		if ($bIsRemote) {
-			$sCmd = 'ssh ' . $aMatches[1] . ' rm -rf "' . $aMatches[2] . '"';
-		} else {
-			$sCmd = 'rm -rf "' . $sPath . '"';
-		}
-		return self::exec($sCmd);
+		return self::execSSH('rm -rf %s', $sPath);
 	}
 
 	/*
@@ -129,9 +130,6 @@ cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubr
 		list($bIsBackupRemote, $aBackupMatches) = self::isRemotePath($sBackupPath);
 
 		if ($aSrcMatches[1] != $aBackupMatches[1]) {
-			//throw new Exception('Not handled case!');
-
-			// echo sys_get_temp_dir() . '/' . uniqid('deployment_', true);
 			$sTmpDir = ($bIsSrcRemote ? $aSrcMatches[1]. ':' : '') . '/tmp/' . uniqid('deployment_', true);
 			$sTmpPath = $sTmpDir . '/' . pathinfo($sBackupPath, PATHINFO_BASENAME);
 			return array_merge(
@@ -159,14 +157,7 @@ EOF
 	}
 
 	public static function mkdir ($sPath) {
-		$sFormat = 'mkdir -p "%s"';
-		list($bIsRemote, $aMatches) = self::isRemotePath($sPath);
-		if ($bIsRemote) {
-			$sCmd = 'ssh ' . $aMatches[1] . ' ' . sprintf($sFormat, $aMatches[2]);
-		} else {
-			$sCmd = sprintf($sFormat, $sPath);
-		}
-		return self::exec($sCmd);
+		return self::execSSH('mkdir -p %s', $sPath);
 	}
 
 	public static function sync ($sSrcPath, $sDestPath) {
