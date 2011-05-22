@@ -5,7 +5,7 @@ class Shell {
 	private static $aFileStatus = array();
 
 	/**
-	 * Classe outil : pas de constructeur.
+	 * Classe outil : pas d'instance.
 	 */
 	private function __construct () {}
 

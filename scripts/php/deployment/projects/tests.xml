@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="project1">
+<project name="tests">
 	<target name="dev">
 		<copy src="/home/gaubry/test/src/a.txt" destdir="/home/gaubry/test/dest/a2.txt" />
 		<copy src="/home/gaubry/test/src/a.txt" destdir="gaubry@dv2:/home/gaubry/deployment_test/a3.txt" />
@@ -37,6 +37,12 @@
 		<backup src="/home/gaubry/test/src/test_backup/a.txt" destfile="gaubry@dv2:/home/gaubry/deployment_test/test_backup1.tar.gz" />
 		<backup src="/home/gaubry/test/src/test_backup/*.jpg" destfile="gaubry@dv2:/home/gaubry/deployment_test/test_backup2.tar.gz" />
 		<backup src="/home/gaubry/test/src/test_backup/[EXT] Phing 2.4.5" destfile="gaubry@dv2:/home/gaubry/deployment_test/test_backup3.tar.gz" />
+	</target>
+	
+	<target name="all_tests">
+		<call target="test_copy" />
+		<call target="test_sync" />
+		<call target="test_backup" />
 	</target>
 	
 	<target name="languages">

@@ -11,11 +11,11 @@ class Task_Base_Copy extends Task {
 		return 'copy';
 	}
 
-	public function __construct (SimpleXMLElement $oTask, $sBackupPath) {
-		parent::__construct($oTask, $sBackupPath);
+	public function __construct (SimpleXMLElement $oTask, SimpleXMLElement $oProject, $sBackupPath) {
+		parent::__construct($oTask, $oProject, $sBackupPath);
 		$this->aAttributeProperties = array(
-			'src' => array('srcpath', 'file', 'dir', 'filejoker'),
-			'destdir' => array('dir'),
+			'src' => array('srcpath', 'file', 'dir', 'filejoker', 'required'),
+			'destdir' => array('dir', 'required')
 		);
 	}
 
@@ -23,11 +23,6 @@ class Task_Base_Copy extends Task {
 	// TODO droit seulement à \w et / et ' ' ?
 	public function check () {
 		parent::check();
-
-		if (empty($this->aAttributes['src']) || empty($this->aAttributes['destdir'])) {
-			throw new Exception("Must define both 'src' and 'destdir' attributes!");
-		}
-
 		if (preg_match('#\*|\?#', $this->aAttributes['src']) === 0) {
 			if (Shell::getFileStatus($this->aAttributes['src']) === 2) {
 				$this->aAttributes['destdir'] .= '/' . substr(strrchr($this->aAttributes['src'], '/'), 1);

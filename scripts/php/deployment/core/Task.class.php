@@ -24,6 +24,8 @@ abstract class Task {
 	 */
 	private $oTask;
 
+	protected $oProject;
+
 	/**
 	 * Attributs XML de la tâche.
 	 * Tableau ((string) clé, (string) valeur).
@@ -43,9 +45,11 @@ abstract class Task {
 	 */
 	protected $sBackupPath;
 
-	public function __construct (SimpleXMLElement $oTask, $sBackupPath) {
+	public function __construct (SimpleXMLElement $oTask, SimpleXMLElement $oProject, $sBackupPath) {
 		$this->oTask = $oTask;
-		$this->sBackupPath = $sBackupPath . '/' . sprintf('%03d', (++self::$iCounter)) . '_' . get_class($this);
+		$this->oProject = $oProject;
+		$this->sName = sprintf('%03d', (++self::$iCounter)) . '_' . get_class($this);
+		$this->sBackupPath = $sBackupPath . '/' . $this->sName;
 
 		// Récupération des attributs :
 		$this->aAttributes = array();
@@ -58,6 +62,8 @@ abstract class Task {
 	}
 
 	public function check () {
+		echo "Check '" . $this->sName . "' task...";
+
 		$aAvailablesAttributes = array_keys($this->aAttributeProperties);
 		$aUnknownAttributes = array_diff(array_keys($this->aAttributes), $aAvailablesAttributes);
 		if (count($aUnknownAttributes) > 0) {
@@ -65,6 +71,10 @@ abstract class Task {
 		}
 
 		foreach ($this->aAttributeProperties as $sAttribute => $aProperties) {
+			if (in_array('required', $aProperties) && empty($this->aAttributes[$sAttribute])) {
+				throw new Exception("'$sAttribute' attribute is required!");
+			}
+
 			if (in_array('dir', $aProperties) || in_array('file', $aProperties)) {
 				$this->aAttributes[$sAttribute] = str_replace('\\', '/', $this->aAttributes[$sAttribute]);
 			}
@@ -90,6 +100,8 @@ abstract class Task {
 				throw new Exception("File or directory '" . $this->aAttributes[$sAttribute] . "' not found!");
 			}
 		}
+
+		echo "OK.\n";
 	}
 
 	public abstract function execute ();

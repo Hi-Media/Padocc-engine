@@ -1,10 +1,13 @@
 <?php
 
-// /usr/bin/php -q ~/deployment/scripts/php/deployment.php project1 dev `date +'%Y%m%d%H%M%S'` /home/gaubry/deployment/logs/deployment.php.xxx.error.log
+// /usr/bin/php -q ~/deployment/scripts/php/deployment.php tests all_tests `date +'%Y%m%d%H%M%S'` /home/gaubry/deployment/logs/deployment.php.xxx.error.log
 // tail -fn 500 /home/gaubry/deployment/logs/deployment.php.xxx.error.log
 
 // TODO implémenter rollback
 // TODO si fatal error, demander au supervisor de proposer un rollback ?
+// TODO permettre fournir ini ou cfg à l'appel
+// TODO description des tâches
+// TODO classe log
 
 include_once(__DIR__ . '/deployment/conf/config.inc.php');
 include_once(DEPLOYMENT_INC_DIR . '/error.inc.php');

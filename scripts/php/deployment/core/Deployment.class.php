@@ -8,11 +8,11 @@ class Deployment {
 		echo 'OK' . "\n";
 
 		$sBackupPath = DEPLOYMENT_BACKUP_DIR . '/' . $sExecutionID;
-		//Shell::exec('mkdir -p "' . $sBackupPath . '"');
 
 		echo 'Initialize tasks...';
-		$oTarget = $this->_getTarget($sProjectName, $sTargetName);
-		$aTasks = Tasks::getTaskInstances($oTarget, $sBackupPath);
+		$oProject = Tasks::getProject($sProjectName);
+		$oTarget = Tasks::getTarget($oProject, $sTargetName);
+		$aTasks = Tasks::getTaskInstances($oTarget, $oProject, $sBackupPath);
 		echo 'OK' . "\n";
 
 		echo 'Check tasks...';
@@ -42,31 +42,6 @@ class Deployment {
 			$oTask->backup();
 			$oTask->execute();
 		}
-	}
-
-	private function _getTarget ($sProjectName, $sTargetName) {
-		$sProjectFilename = DEPLOYMENT_PROJECTS_DIR . '/' . $sProjectName . '.xml';
-		if ( ! file_exists($sProjectFilename)) {
-			throw new Exception("Project definition not found: $sProjectFilename!");
-		}
-
-		$oSXE = new SimpleXMLElement($sProjectFilename, NULL, true);
-		if ((string)$oSXE['name'] !== $sProjectName) {
-			throw new Exception("Project's attribute name ('" . $oSXE['name'] . "') must be eqal to project filename ('$sProjectName').");
-		}
-
-		$oSelectedTarget = NULL;
-		foreach ($oSXE->children() as $sTag => $oTarget) {
-			if ((string)$sTag === 'target' && (string)$oTarget['name'] === $sTargetName) {
-				$oSelectedTarget = $oTarget;
-				break;
-			}
-		}
-		if ($oSelectedTarget === NULL) {
-			throw new Exception("Target '$sTargetName' not found in project '$sProjectFilename'!");
-		}
-
-		return $oSelectedTarget;
 	}
 }
 
