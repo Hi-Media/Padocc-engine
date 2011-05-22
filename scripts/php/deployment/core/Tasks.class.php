@@ -17,7 +17,7 @@ class Tasks {
 					$sTag = $sFullClassName::getTagName();
 					if (isset($aAvailableTasks[$sTag])) {
 						throw new Exception("Already defined task tag '$sTag' in '$aAvailableTasks[$sTag]'!");
-					} else {
+					} else if ($sTag != 'project') {
 						$aAvailableTasks[$sTag] = $sFullClassName;
 					}
 				}

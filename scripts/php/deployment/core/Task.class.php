@@ -4,10 +4,12 @@ abstract class Task {
 
 	/**
 	 * Compteur d'instances pour s'y retrouver dans les backups des tâches.
+	 * Défini à -1 pour que la tâche projet soit en 0 et la 1re 'vraie' tâche en 1.
 	 * @var int
+	 * @see $sName
 	 * @see $sBackupPath
 	 */
-	private static $iCounter = 0;
+	private static $iCounter = -1;
 
 	/**
 	 * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
@@ -25,6 +27,8 @@ abstract class Task {
 	private $oTask;
 
 	protected $oProject;
+
+	protected $sName;
 
 	/**
 	 * Attributs XML de la tâche.
