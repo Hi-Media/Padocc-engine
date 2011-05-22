@@ -145,7 +145,8 @@ cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubr
 				$sSrcFile = pathinfo($aSrcMatches[2], PATHINFO_BASENAME);
 				$sFormat = 'ssh %4$s <<EOF
 cd %1$s && tar cfpz %2$s ./%3$s
-EOF';
+EOF
+';
 				$sCmd = sprintf($sFormat, self::escapePath($sSrcDir), self::escapePath($aBackupMatches[2]), self::escapePath($sSrcFile), $aSrcMatches[1]);
 			} else {
 				$sSrcDir = pathinfo($sSrcPath, PATHINFO_DIRNAME);

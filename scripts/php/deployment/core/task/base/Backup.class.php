@@ -13,32 +13,15 @@ class Task_Base_Backup extends Task {
 
 	public function __construct (SimpleXMLElement $oTask, $sBackupPath) {
 		parent::__construct($oTask, $sBackupPath);
+		$this->aAttributeProperties = array(
+			'src' => array('srcpath', 'file', 'dir', 'filejoker'),
+			'destfile' => array('file'),
+		);
 	}
 
 	protected function _check () {
-		$aAvailablesAttributes = array('src', 'destfile');
-		$aUnknownAttributes = array_diff(array_keys($this->aAttributes), $aAvailablesAttributes);
-		if (count($aUnknownAttributes) > 0) {
-			throw new Exception("Available attributes: " . print_r($aAvailablesAttributes, true) . " => Unknown attribute(s): " . print_r($aUnknownAttributes, true));
-		}
-
 		if (empty($this->aAttributes['src']) || empty($this->aAttributes['destfile'])) {
 			throw new Exception("Must define both 'src' and 'destfile' attributes!");
-		}
-
-		if (preg_match('#[*?].*/#', $this->aAttributes['src']) !== 0) {
-			throw new Exception("'*' and '?' are only authorized for filename in 'src' attribute!");
-		}
-
-		if (preg_match('/[*?]/', $this->aAttributes['destfile']) !== 0) {
-			throw new Exception("'*' and '?' are not authorized in 'destfile' attribute!");
-		}
-
-		$this->aAttributes['src'] = preg_replace('#/$#', '', $this->aAttributes['src']);
-		$this->aAttributes['destfile'] = preg_replace('#/$#', '', $this->aAttributes['destfile']);
-
-		if (preg_match('#\*|\?#', $this->aAttributes['src']) === 0 && Shell::getFileStatus($this->aAttributes['src']) === 0) {
-			throw new Exception("File '" . $this->aAttributes['src'] . "' not found!");
 		}
 	}
 
