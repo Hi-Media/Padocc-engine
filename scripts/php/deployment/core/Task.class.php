@@ -24,8 +24,11 @@ abstract class Task {
 	 * Contenu XML de la tâche.
 	 * @var SimpleXMLElement
 	 */
-	private $oTask;
+	protected $oTask;
 
+	/**
+	 * @var Task_Base_Project
+	 */
 	protected $oProject;
 
 	protected $sName;
@@ -49,7 +52,7 @@ abstract class Task {
 	 */
 	protected $sBackupPath;
 
-	public function __construct (SimpleXMLElement $oTask, SimpleXMLElement $oProject, $sBackupPath) {
+	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath) {
 		$this->oTask = $oTask;
 		$this->oProject = $oProject;
 		$this->sName = sprintf('%03d', (++self::$iCounter)) . '_' . get_class($this);
@@ -75,33 +78,35 @@ abstract class Task {
 		}
 
 		foreach ($this->aAttributeProperties as $sAttribute => $aProperties) {
-			if (in_array('required', $aProperties) && empty($this->aAttributes[$sAttribute])) {
-				throw new Exception("'$sAttribute' attribute is required!");
-			}
+			if (empty($this->aAttributes[$sAttribute])) {
+				if (in_array('required', $aProperties)) {
+					throw new Exception("'$sAttribute' attribute is required!");
+				}
+			} else {
+				if (in_array('dir', $aProperties) || in_array('file', $aProperties)) {
+					$this->aAttributes[$sAttribute] = str_replace('\\', '/', $this->aAttributes[$sAttribute]);
+				}
 
-			if (in_array('dir', $aProperties) || in_array('file', $aProperties)) {
-				$this->aAttributes[$sAttribute] = str_replace('\\', '/', $this->aAttributes[$sAttribute]);
-			}
+				if (preg_match('#[*?].*/#', $this->aAttributes[$sAttribute]) !== 0 && ! in_array('dirjoker', $aProperties)) {
+					throw new Exception("'*' and '?' jokers are not authorized for directory in '$sAttribute' attribute!");
+				}
 
-			if (preg_match('#[*?].*/#', $this->aAttributes[$sAttribute]) !== 0 && ! in_array('dirjoker', $aProperties)) {
-				throw new Exception("'*' and '?' jokers are not authorized for directory in '$sAttribute' attribute!");
-			}
+				if (preg_match('#[*?][^/]*$#', $this->aAttributes[$sAttribute]) !== 0 && ! in_array('filejoker', $aProperties)) {
+					throw new Exception("'*' and '?' jokers are not authorized for filename in '$sAttribute' attribute!");
+				}
 
-			if (preg_match('#[*?][^/]*$#', $this->aAttributes[$sAttribute]) !== 0 && ! in_array('filejoker', $aProperties)) {
-				throw new Exception("'*' and '?' jokers are not authorized for filename in '$sAttribute' attribute!");
-			}
+				// Suppression de l'éventuel slash terminal :
+				if (in_array('dir', $aProperties)) {
+					$this->aAttributes[$sAttribute] = preg_replace('#/$#', '', $this->aAttributes[$sAttribute]);
+				}
 
-			// Suppression de l'éventuel slash terminal :
-			if (in_array('dir', $aProperties)) {
-				$this->aAttributes[$sAttribute] = preg_replace('#/$#', '', $this->aAttributes[$sAttribute]);
-			}
-
-			if (
-					in_array('srcpath', $aProperties)
-					&& preg_match('#\*|\?#', $this->aAttributes[$sAttribute]) === 0
-					&& Shell::getFileStatus($this->aAttributes[$sAttribute]) === 0
-			) {
-				throw new Exception("File or directory '" . $this->aAttributes[$sAttribute] . "' not found!");
+				if (
+						in_array('srcpath', $aProperties)
+						&& preg_match('#\*|\?#', $this->aAttributes[$sAttribute]) === 0
+						&& Shell::getFileStatus($this->aAttributes[$sAttribute]) === 0
+				) {
+					throw new Exception("File or directory '" . $this->aAttributes[$sAttribute] . "' not found!");
+				}
 			}
 		}
 

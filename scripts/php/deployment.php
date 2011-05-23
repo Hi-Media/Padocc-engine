@@ -10,6 +10,16 @@
 // TODO permettre fournir ini ou cfg à l'appel
 // TODO description des tâches
 // TODO classe log
+// TODO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="biblio10.xsd"
+
+/*
+ * Features :
+ *  - load sh config files
+ *  - recursive rollback (coming soon)
+ *  - XML project config file
+ *  - handling all errors
+ */
+
 
 include_once(__DIR__ . '/deployment/conf/config.inc.php');
 include_once(DEPLOYMENT_INC_DIR . '/error.inc.php');
