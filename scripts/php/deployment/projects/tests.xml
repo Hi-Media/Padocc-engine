@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="tests">
-	<target name="dev">
-		<copy src="/home/gaubry/test/src/a.txt" destdir="/home/gaubry/test/dest/a2.txt" />
-		<copy src="/home/gaubry/test/src/a.txt" destdir="gaubry@dv2:/home/gaubry/deployment_test/a3.txt" />
-		<copy src="/home/gaubry/test/src/light/" destdir="gaubry@dv2:/home/gaubry/deployment_test/T" />
-		<sync src="/home/gaubry/test/src/merchant_logos/" destdir="gaubry@dv2:/home/gaubry/deployment_test/rsync" />
-		<backup src="/home/gaubry/test/src/[EXT] Phing 2.4.5" destfile="gaubry@dv2:/home/gaubry/deployment_test/deployment_test.tar.gz" />
-	</target>
-	
+<!-- <project name="tests" propertyfile="/home/gaubry/deployment/scripts/php/deployment/projects/tests_property_file.ini"> -->
+<project name="tests" propertyshellfile="/home/gaubry/deployment/scripts/php/deployment/projects/master_synchro.cfg">
 	<target name="tests_copy">
 		<copy src="/home/gaubry/test/src/test_copy/a.txt" destdir="/home/gaubry/test/dest/test_copy1" />
 		<copy src="/home/gaubry/test/src/test_copy/light" destdir="/home/gaubry/test/dest/test_copy2" />
@@ -45,8 +38,7 @@
 		<call target="tests_backup" />
 	</target>
 	
-	<target name="languages">
-		<call target="" />
+	<target name="todo">
 		<call script="" />
 	</target>
 </project>

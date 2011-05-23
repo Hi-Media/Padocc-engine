@@ -27,7 +27,7 @@ class Tasks {
 		return self::$AVAILABLE_TASKS;
 	}
 
-	public static function getTaskInstances (SimpleXMLElement $oTarget, SimpleXMLElement $oProject, $sBackupPath) {
+	public static function getTaskInstances (SimpleXMLElement $oTarget, Task_Base_Project $oProject, $sBackupPath) {
 		$aAvailableTasks = self::_getAvailableTasks();
 
 		// Mise à plat des tâches car SimpleXML regroupe celles successives de même nom

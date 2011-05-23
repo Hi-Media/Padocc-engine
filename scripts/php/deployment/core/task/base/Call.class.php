@@ -13,12 +13,12 @@ class Task_Base_Call extends Task {
 		return 'call';
 	}
 
-	public function __construct (SimpleXMLElement $oTask, SimpleXMLElement $oProject, $sBackupPath) {
+	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath) {
 		parent::__construct($oTask, $oProject, $sBackupPath);
 		$this->aAttributeProperties = array(
 			'target' => array('required')
 		);
-		$oTarget = Tasks::getTarget($this->oProject, $this->aAttributes['target']);
+		$oTarget = Tasks::getTarget($this->oProject->getSXE(), $this->aAttributes['target']);
 		$this->aTasks = Tasks::getTaskInstances($oTarget, $this->oProject, $sBackupPath); // et non $this->sBackupPath, pour les sous-tâches
 	}
 
