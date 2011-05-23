@@ -31,9 +31,6 @@ class Shell {
 	}
 
 	public static function execSSH ($sPatternCmd, $sParam) {
-		/*if ( ! is_array($mParams)) {
-			$mParams = array($mParams);
-		}*/
 		list($bIsRemote, $aMatches) = self::isRemotePath($sParam);
 		$sCmd = sprintf($sPatternCmd, self::escapePath($aMatches[2]));
 		//$sCmd = vsprintf($sPatternCmd, array_map(array(self, 'escapePath'), $mParams));
@@ -86,18 +83,16 @@ class Shell {
 		} else {
 			self::mkdir($sDestPath);
 		}
-		$sDirectoryStar = '';
 		list($bIsSrcRemote, $aSrcMatches) = self::isRemotePath($sSrcPath);
 		list($bIsDestRemote, $aDestMatches) = self::isRemotePath($sDestPath);
 
-		if ($bIsSrcRemote && $bIsDestRemote && $aSrcMatches[1] == $aDestMatches[1]) {
-			$sCmd = 'ssh ' . $aSrcMatches[1] . ' cp -ar ' . self::escapePath($aSrcMatches[2]) . ' ' . self::escapePath($aDestMatches[2]);
-		} else if ($bIsSrcRemote || $bIsDestRemote) {
+		if ($aSrcMatches[1] != $aDestMatches[1]) {
 			$sCmd = 'scp -rpq ' . self::escapePath($sSrcPath) . ' ' . self::escapePath($sDestPath);
+			return self::exec($sCmd);
 		} else {
-			$sCmd = 'cp -ar ' . self::escapePath($sSrcPath) . ' ' . self::escapePath($sDestPath);
+			$sCmd = 'cp -ar %s ' . self::escapePath($aDestMatches[2]);
+			return self::execSSH($sCmd, $sSrcPath);
 		}
-		return self::exec($sCmd);
 	}
 
 	/**
@@ -138,18 +133,14 @@ cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubr
 				self::remove($sTmpDir));
 		} else {
 			self::mkdir(pathinfo($sBackupPath, PATHINFO_DIRNAME));
+			$sSrcFile = pathinfo($aSrcMatches[2], PATHINFO_BASENAME);
+			$sFormat = 'cd %1$s; tar cfpz %2$s ./%3$s';
 			if ($bIsSrcRemote) {
 				$sSrcDir = pathinfo($aSrcMatches[2], PATHINFO_DIRNAME);
-				$sSrcFile = pathinfo($aSrcMatches[2], PATHINFO_BASENAME);
-				$sFormat = 'ssh %4$s <<EOF
-cd %1$s && tar cfpz %2$s ./%3$s
-EOF
-';
+				$sFormat = 'ssh %4$s <<EOF' . "\n" . $sFormat . "\nEOF\n";
 				$sCmd = sprintf($sFormat, self::escapePath($sSrcDir), self::escapePath($aBackupMatches[2]), self::escapePath($sSrcFile), $aSrcMatches[1]);
 			} else {
 				$sSrcDir = pathinfo($sSrcPath, PATHINFO_DIRNAME);
-				$sSrcFile = pathinfo($aSrcMatches[2], PATHINFO_BASENAME);
-				$sFormat = 'cd %1$s; tar cfpz %2$s ./%3$s';
 				$sCmd = sprintf($sFormat, self::escapePath($sSrcDir), self::escapePath($sBackupPath), self::escapePath($sSrcFile));
 			}
 			return self::exec($sCmd);

@@ -19,7 +19,7 @@ class Task_Base_Call extends Task {
 			'target' => array('required')
 		);
 		$oTarget = Tasks::getTarget($this->oProject, $this->aAttributes['target']);
-		$this->aTasks = Tasks::getTaskInstances($oTarget, $this->oProject, $this->sBackupPath);
+		$this->aTasks = Tasks::getTaskInstances($oTarget, $this->oProject, $sBackupPath); // et non $this->sBackupPath, pour les sous-tâches
 	}
 
 	public function check () {

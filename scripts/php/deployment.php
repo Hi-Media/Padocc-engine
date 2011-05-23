@@ -2,6 +2,8 @@
 
 // /usr/bin/php -q ~/deployment/scripts/php/deployment.php tests all_tests `date +'%Y%m%d%H%M%S'` /home/gaubry/deployment/logs/deployment.php.xxx.error.log
 // tail -fn 500 /home/gaubry/deployment/logs/deployment.php.xxx.error.log
+// rm -rf /home/gaubry/deployment_backup/* && rm -rf /home/gaubry/test/dest/*
+// rm -rf /home/gaubry/deployment_backup/* && rm -rf /home/gaubry/deployment_test/*
 
 // TODO implémenter rollback
 // TODO si fatal error, demander au supervisor de proposer un rollback ?

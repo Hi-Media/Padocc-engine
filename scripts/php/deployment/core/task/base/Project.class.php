@@ -22,7 +22,7 @@ class Task_Base_Project extends Task {
 			'name' => array('required')
 		);
 		$oTarget = Tasks::getTarget($this->oProject, $sTargetName);
-		$this->aTasks = Tasks::getTaskInstances($oTarget, $this->oProject, $this->sBackupPath);
+		$this->aTasks = Tasks::getTaskInstances($oTarget, $this->oProject, $sBackupPath);	// et non $this->sBackupPath, pour les sous-tâches
 	}
 
 	public function check () {

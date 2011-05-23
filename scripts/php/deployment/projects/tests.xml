@@ -8,7 +8,7 @@
 		<backup src="/home/gaubry/test/src/[EXT] Phing 2.4.5" destfile="gaubry@dv2:/home/gaubry/deployment_test/deployment_test.tar.gz" />
 	</target>
 	
-	<target name="test_copy">
+	<target name="tests_copy">
 		<copy src="/home/gaubry/test/src/test_copy/a.txt" destdir="/home/gaubry/test/dest/test_copy1" />
 		<copy src="/home/gaubry/test/src/test_copy/light" destdir="/home/gaubry/test/dest/test_copy2" />
 		<copy src="/home/gaubry/test/src/test_copy/light/*" destdir="/home/gaubry/test/dest/test_copy3" />
@@ -21,7 +21,7 @@
 		<copy src="/home/gaubry/test/src/test_copy/light/a???.txt" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy5" />
 	</target>
 	
-	<target name="test_sync">
+	<target name="tests_sync">
 		<sync src="/home/gaubry/test/src/test_sync/merchant_logos" destdir="/home/gaubry/test/dest/test_sync1" />
 		<sync src="/home/gaubry/test/src/test_sync/merchant_logos/*" destdir="/home/gaubry/test/dest/test_sync2" />
 		<sync src="/home/gaubry/test/src/test_sync/merchant_logos/*.jpg" destdir="/home/gaubry/test/dest/test_sync3" />
@@ -30,7 +30,7 @@
 		<sync src="/home/gaubry/test/src/test_sync/merchant_logos/*.jpg" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_sync3" />
 	</target>
 	
-	<target name="test_backup">
+	<target name="tests_backup">
 		<backup src="/home/gaubry/test/src/test_backup/a.txt" destfile="/home/gaubry/test/dest/test_backup1.tar.gz" />
 		<backup src="/home/gaubry/test/src/test_backup/*.jpg" destfile="/home/gaubry/test/dest/test_backup2.tar.gz" />
 		<backup src="/home/gaubry/test/src/test_backup/[EXT] Phing 2.4.5" destfile="/home/gaubry/test/dest/test_backup3.tar.gz" />
@@ -40,9 +40,9 @@
 	</target>
 	
 	<target name="all_tests">
-		<call target="test_copy" />
-		<call target="test_sync" />
-		<call target="test_backup" />
+		<call target="tests_copy" />
+		<call target="tests_sync" />
+		<call target="tests_backup" />
 	</target>
 	
 	<target name="languages">
