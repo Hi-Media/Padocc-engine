@@ -18,6 +18,7 @@ class Shell {
 	 * @return array Tableau indexé du flux de sortie découpé par ligne
 	 */
 	public static function exec ($sCmd) {
+		echo 'XXX EXEC'; die;
 		if (DEPLOYMENT_DEBUG_MODE > 0) {
 			echo "[Debug][Shell] $sCmd\n";
 		}
@@ -31,13 +32,13 @@ class Shell {
 	}
 
 	public static function execSSH ($sPatternCmd, $sParam) {
-		list($bIsRemote, $aMatches) = self::isRemotePath($sParam);
-		$sCmd = sprintf($sPatternCmd, self::escapePath($aMatches[2]));
+		list($bIsRemote, $aMatches) = static::isRemotePath($sParam);
+		$sCmd = sprintf($sPatternCmd, static::escapePath($aMatches[2]));
 		//$sCmd = vsprintf($sPatternCmd, array_map(array(self, 'escapePath'), $mParams));
 		if ($bIsRemote) {
 			$sCmd = 'ssh -T ' . $aMatches[1] . " <<EOF\n$sCmd\nEOF\n";
 		}
-		return self::exec($sCmd);
+		return static::exec($sCmd);
 	}
 
 	/**
@@ -48,14 +49,14 @@ class Shell {
 	 * @return int 0 si le chemin spécifié n'existe pas, 1 si c'est un fichier, 2 si c'est un répertoire.
 	 */
 	public static function getFileStatus ($sPath) {
-		if (isset(self::$aFileStatus[$sPath])) {
-			$iStatus = self::$aFileStatus[$sPath];
+		if (isset(static::$aFileStatus[$sPath])) {
+			$iStatus = static::$aFileStatus[$sPath];
 		} else {
 			$sFormat = '[ -d %1$s ] && echo 2 || ( [ -f %1$s ] && echo 1 || echo 0 )';
-			$aResult = self::execSSH($sFormat, $sPath);
+			$aResult = static::execSSH($sFormat, $sPath);
 			$iStatus = (int)$aResult[0];
 			if ($iStatus !== 0) {
-				self::$aFileStatus[$sPath] = $iStatus;
+				static::$aFileStatus[$sPath] = $iStatus;
 			}
 		}
 		return $iStatus;
@@ -79,19 +80,19 @@ class Shell {
 	// TODO ajouter gestion tar/gz
 	public static function copy ($sSrcPath, $sDestPath, $bIsDestFile=false) {
 		if ($bIsDestFile) {
-			self::mkdir(pathinfo($sDestPath, PATHINFO_DIRNAME));
+			static::mkdir(pathinfo($sDestPath, PATHINFO_DIRNAME));
 		} else {
-			self::mkdir($sDestPath);
+			static::mkdir($sDestPath);
 		}
-		list($bIsSrcRemote, $aSrcMatches) = self::isRemotePath($sSrcPath);
-		list($bIsDestRemote, $aDestMatches) = self::isRemotePath($sDestPath);
+		list($bIsSrcRemote, $aSrcMatches) = static::isRemotePath($sSrcPath);
+		list($bIsDestRemote, $aDestMatches) = static::isRemotePath($sDestPath);
 
 		if ($aSrcMatches[1] != $aDestMatches[1]) {
-			$sCmd = 'scp -rpq ' . self::escapePath($sSrcPath) . ' ' . self::escapePath($sDestPath);
-			return self::exec($sCmd);
+			$sCmd = 'scp -rpq ' . static::escapePath($sSrcPath) . ' ' . static::escapePath($sDestPath);
+			return static::exec($sCmd);
 		} else {
-			$sCmd = 'cp -ar %s ' . self::escapePath($aDestMatches[2]);
-			return self::execSSH($sCmd, $sSrcPath);
+			$sCmd = 'cp -ar %s ' . static::escapePath($aDestMatches[2]);
+			return static::execSSH($sCmd, $sSrcPath);
 		}
 	}
 
@@ -110,7 +111,7 @@ class Shell {
 	}
 
 	public static function remove ($sPath) {
-		return self::execSSH('rm -rf %s', $sPath);
+		return static::execSSH('rm -rf %s', $sPath);
 	}
 
 	/*
@@ -121,43 +122,43 @@ cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubr
 cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubry/deployment_test/a3.txt"`.tar.gz
 	 */
 	public static function backup ($sSrcPath, $sBackupPath) {
-		list($bIsSrcRemote, $aSrcMatches) = self::isRemotePath($sSrcPath);
-		list($bIsBackupRemote, $aBackupMatches) = self::isRemotePath($sBackupPath);
+		list($bIsSrcRemote, $aSrcMatches) = static::isRemotePath($sSrcPath);
+		list($bIsBackupRemote, $aBackupMatches) = static::isRemotePath($sBackupPath);
 
 		if ($aSrcMatches[1] != $aBackupMatches[1]) {
 			$sTmpDir = ($bIsSrcRemote ? $aSrcMatches[1]. ':' : '') . '/tmp/' . uniqid('deployment_', true);
 			$sTmpPath = $sTmpDir . '/' . pathinfo($sBackupPath, PATHINFO_BASENAME);
 			return array_merge(
-				self::backup($sSrcPath, $sTmpPath),
-				self::copy($sTmpPath, $sBackupPath, true),
-				self::remove($sTmpDir));
+				static::backup($sSrcPath, $sTmpPath),
+				static::copy($sTmpPath, $sBackupPath, true),
+				static::remove($sTmpDir));
 		} else {
-			self::mkdir(pathinfo($sBackupPath, PATHINFO_DIRNAME));
+			static::mkdir(pathinfo($sBackupPath, PATHINFO_DIRNAME));
 			$sSrcFile = pathinfo($aSrcMatches[2], PATHINFO_BASENAME);
 			$sFormat = 'cd %1$s; tar cfpz %2$s ./%3$s';
 			if ($bIsSrcRemote) {
 				$sSrcDir = pathinfo($aSrcMatches[2], PATHINFO_DIRNAME);
 				$sFormat = 'ssh %4$s <<EOF' . "\n" . $sFormat . "\nEOF\n";
-				$sCmd = sprintf($sFormat, self::escapePath($sSrcDir), self::escapePath($aBackupMatches[2]), self::escapePath($sSrcFile), $aSrcMatches[1]);
+				$sCmd = sprintf($sFormat, static::escapePath($sSrcDir), static::escapePath($aBackupMatches[2]), static::escapePath($sSrcFile), $aSrcMatches[1]);
 			} else {
 				$sSrcDir = pathinfo($sSrcPath, PATHINFO_DIRNAME);
-				$sCmd = sprintf($sFormat, self::escapePath($sSrcDir), self::escapePath($sBackupPath), self::escapePath($sSrcFile));
+				$sCmd = sprintf($sFormat, static::escapePath($sSrcDir), static::escapePath($sBackupPath), static::escapePath($sSrcFile));
 			}
-			return self::exec($sCmd);
+			return static::exec($sCmd);
 		}
 	}
 
 	public static function mkdir ($sPath) {
-		return self::execSSH('mkdir -p %s', $sPath);
+		return static::execSSH('mkdir -p %s', $sPath);
 	}
 
 	public static function sync ($sSrcPath, $sDestPath) {
-		self::mkdir($sDestPath);
+		static::mkdir($sDestPath);
 		$sCVSExclude = '--cvs-exclude --exclude=.cvsignore';
 		// rsync -aqz --delete --delete-excluded -e ssh --cvs-exclude --exclude=.cvsignore --stats
 		// rsync -az --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats "/home/gaubry/test/src/[EXT] Phing 2.4.5" "gaubry@dv2:/home/gaubry/rsync_test"
 		// rsync -az --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats "/home/gaubry/test/src/merchant_logos" "gaubry@dv2:/home/gaubry/rsync_test"
-		$sCmd = 'rsync -az --delete --delete-excluded ' . $sCVSExclude . ' --stats -e ssh ' . self::escapePath($sSrcPath) . ' ' . self::escapePath($sDestPath);
-		return self::exec($sCmd);
+		$sCmd = 'rsync -az --delete --delete-excluded ' . $sCVSExclude . ' --stats -e ssh ' . static::escapePath($sSrcPath) . ' ' . static::escapePath($sDestPath);
+		return static::exec($sCmd);
 	}
 }
