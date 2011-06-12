@@ -9,10 +9,4 @@
 	processIsolation="false"
 	colors="true">
 
-<testsuites>
-	<testsuite name="MySuite">
-		<directory suffix="Test.php">./core/tasks/base</directory>
-	</testsuite>
-</testsuites>
-
 </phpunit>
