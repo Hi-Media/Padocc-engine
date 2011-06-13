@@ -2,7 +2,7 @@
 
 //include_once(DEPLOYMENT_CORE_DIR . '/Shell.class.php');
 
-include_once(__DIR__ . '/../../../../..' . '/deployment/conf/config.inc.php');
+/*include_once(__DIR__ . '/../../../../..' . '/deployment/conf/config.inc.php');
 set_include_path(
 	DEPLOYMENT_CORE_DIR . '/' . PATH_SEPARATOR
 	. DEPLOYMENT_INC_DIR . '/' . PATH_SEPARATOR
@@ -12,7 +12,7 @@ spl_autoload_register(function($sClass) {
 	$iPos = strrpos($sPath, '/');
 	$sPath = strtolower(substr($sPath, 0, $iPos)) . substr($sPath, $iPos);
 	include_once($sPath);
-});
+});*/
 
 class CopyTest extends PHPUnit_Framework_TestCase {
     public function testXXX () {
