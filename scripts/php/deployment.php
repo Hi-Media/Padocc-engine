@@ -11,6 +11,7 @@
 // TODO description des tâches
 // TODO classe log
 // TODO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="biblio10.xsd"
+// TODO PHPUnit : bootstrap
 
 /*
  * Features :

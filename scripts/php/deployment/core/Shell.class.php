@@ -7,7 +7,8 @@ class Shell {
 	/**
 	 * Classe outil : pas d'instance.
 	 */
-	private function __construct () {}
+	private function __construct () {
+	}
 
 	/**
 	 * Exécute la commande shell spécifiée et retourne la sortie découpée par ligne dans un tableau.
@@ -18,7 +19,6 @@ class Shell {
 	 * @return array Tableau indexé du flux de sortie découpé par ligne
 	 */
 	public static function exec ($sCmd) {
-		echo 'XXX EXEC'; die;
 		if (DEPLOYMENT_DEBUG_MODE > 0) {
 			echo "[Debug][Shell] $sCmd\n";
 		}
@@ -49,14 +49,14 @@ class Shell {
 	 * @return int 0 si le chemin spécifié n'existe pas, 1 si c'est un fichier, 2 si c'est un répertoire.
 	 */
 	public static function getFileStatus ($sPath) {
-		if (isset(static::$aFileStatus[$sPath])) {
-			$iStatus = static::$aFileStatus[$sPath];
+		if (isset(self::$aFileStatus[$sPath])) {
+			$iStatus = self::$aFileStatus[$sPath];
 		} else {
 			$sFormat = '[ -d %1$s ] && echo 2 || ( [ -f %1$s ] && echo 1 || echo 0 )';
 			$aResult = static::execSSH($sFormat, $sPath);
 			$iStatus = (int)$aResult[0];
 			if ($iStatus !== 0) {
-				static::$aFileStatus[$sPath] = $iStatus;
+				self::$aFileStatus[$sPath] = $iStatus;
 			}
 		}
 		return $iStatus;
@@ -78,6 +78,8 @@ class Shell {
 	}
 
 	// TODO ajouter gestion tar/gz
+	// TODO ajouter gestion destfile
+	// TODO a priori, $sSrcPath est un $sSrcFilePath
 	public static function copy ($sSrcPath, $sDestPath, $bIsDestFile=false) {
 		if ($bIsDestFile) {
 			static::mkdir(pathinfo($sDestPath, PATHINFO_DIRNAME));
@@ -104,7 +106,7 @@ class Shell {
 	 * @param string $sPath
 	 * @return string
 	 */
-	private static function escapePath ($sPath) {
+	public static function escapePath ($sPath) {
 		$sEscapedPath = preg_replace('#(\*|\?)#', '"\1"', '"' . $sPath . '"');
 		$sEscapedPath = str_replace('""', '', $sEscapedPath);
 		return $sEscapedPath;
