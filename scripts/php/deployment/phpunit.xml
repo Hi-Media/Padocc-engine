@@ -7,15 +7,28 @@
 	convertWarningsToExceptions="true"
 	syntaxCheck="false"
 	processIsolation="false"
-	colors="true">
+	colors="true"
+>
 
-<logging>
-	<log type="coverage-html" target="/tmp/report" charset="UTF-8"
-		yui="true" highlight="false"
-		lowUpperBound="35" highLowerBound="70"/>
-	<log type="testdox-text" target="/tmp/testdox.txt"/>
-	<log type="testdox-html" target="/tmp/testdox.html"/>
-</logging>
+	<testsuite name="My Test Suite">
+		<file>tests/AllTests.class.php</file>
+	</testsuite>
 
+	<filter>
+		<blacklist>
+			<directory suffix=".php">tests</directory>
+		</blacklist>
+		<whitelist>
+			<directory suffix=".php">core</directory>
+		</whitelist>
+	</filter>
+
+	<logging>
+		<log type="coverage-html" target="/var/www/deployment/report" charset="UTF-8"
+			yui="true" highlight="false"
+			lowUpperBound="35" highLowerBound="70"/>
+		<log type="testdox-text" target="/var/www/deployment/report/testdox.txt"/>
+		<log type="testdox-html" target="/var/www/deployment/report/testdox.html"/>
+	</logging>
 
 </phpunit>
