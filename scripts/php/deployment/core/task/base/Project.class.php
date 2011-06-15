@@ -42,7 +42,7 @@ class Task_Base_Project extends Task {
 				throw new Exception("Property file '" . $this->aAttributes['propertyshellfile'] . "' not found!");
 			}
 			$sPropertyIniPath = DEPLOYMENT_PROJECTS_DIR . "/$sProjectName.ini";
-			Shell:exec(DEPLOYMENT_INC_DIR . '/cfg2ini.inc.sh "' . $this->aAttributes['propertyshellfile'] . '" "' . $sPropertyIniPath . '"');
+			Shell::exec(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_INC_DIR . '/cfg2ini.inc.sh "' . $this->aAttributes['propertyshellfile'] . '" "' . $sPropertyIniPath . '"');
 			$this->_loadPropertyFile($sPropertyIniPath);
 		} else {
 			$this->aProperties = array();

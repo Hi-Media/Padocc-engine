@@ -13,7 +13,7 @@
 		<copy src="/home/gaubry/test/src/test_copy/light/a*.txt" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy4" />
 		<copy src="/home/gaubry/test/src/test_copy/light/a???.txt" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy5" />
 	</target>
-	
+
 	<target name="tests_sync">
 		<sync src="/home/gaubry/test/src/test_sync/merchant_logos" destdir="/home/gaubry/test/dest/test_sync1" />
 		<sync src="/home/gaubry/test/src/test_sync/merchant_logos/*" destdir="/home/gaubry/test/dest/test_sync2" />
@@ -22,7 +22,7 @@
 		<sync src="/home/gaubry/test/src/test_sync/merchant_logos/*" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_sync2" />
 		<sync src="/home/gaubry/test/src/test_sync/merchant_logos/*.jpg" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_sync3" />
 	</target>
-	
+
 	<target name="tests_backup">
 		<backup src="/home/gaubry/test/src/test_backup/a.txt" destfile="/home/gaubry/test/dest/test_backup1.tar.gz" />
 		<backup src="/home/gaubry/test/src/test_backup/*.jpg" destfile="/home/gaubry/test/dest/test_backup2.tar.gz" />
@@ -31,13 +31,17 @@
 		<backup src="/home/gaubry/test/src/test_backup/*.jpg" destfile="gaubry@dv2:/home/gaubry/deployment_test/test_backup2.tar.gz" />
 		<backup src="/home/gaubry/test/src/test_backup/[EXT] Phing 2.4.5" destfile="gaubry@dv2:/home/gaubry/deployment_test/test_backup3.tar.gz" />
 	</target>
-	
+
+	<target name="tests_gitexport">
+		<gitexport repository="git@git.twenga.com:rts/rts.git" branch="stable" destdir="/home/gaubry/test/dest/test_gitexport1" />
+	</target>
+
 	<target name="all_tests">
 		<call target="tests_copy" />
 		<call target="tests_sync" />
 		<call target="tests_backup" />
 	</target>
-	
+
 	<target name="todo">
 		<call script="" />
 	</target>
