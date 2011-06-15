@@ -33,7 +33,7 @@
 	</target>
 
 	<target name="tests_gitexport">
-		<gitexport repository="git@git.twenga.com:rts/rts.git" branch="stable" destdir="/home/gaubry/test/dest/test_gitexport1" />
+		<gitexport repository="git@git.twenga.com:rts/rts.git" branch="v4.11.0" srcdir="/home/gaubry/test/src/test_gitexport1" destdir="/home/gaubry/test/dest/test_gitexport1" />
 	</target>
 
 	<target name="all_tests">
