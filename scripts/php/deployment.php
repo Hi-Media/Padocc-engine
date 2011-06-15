@@ -12,6 +12,8 @@
 // TODO classe log
 // TODO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="biblio10.xsd"
 // TODO PHPUnit : bootstrap
+// TODO les sous-target pourraient être préfixées par un underscore
+// TODO passer l'ID du superviseur sur un timestamp+random
 
 /*
  * Features :

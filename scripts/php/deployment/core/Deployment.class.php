@@ -10,7 +10,7 @@ class Deployment {
 		$oProject->check();
 		echo 'OK' . "\n";
 		echo 'Execute tasks...';
-		//$oProject->execute();
+		$oProject->execute();
 		echo 'OK' . "\n";
 	}
 }
