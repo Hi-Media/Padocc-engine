@@ -14,6 +14,11 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(array(true, array('gaubry@dv2:/path/to/my file', 'gaubry@dv2', '/path/to/my file')), Shell::isRemotePath('gaubry@dv2:/path/to/my file'));
 	}
 
+	public function testIsRemotePathThrowExceptionWithParameter () {
+		$this->setExpectedException('RuntimeException');
+		Shell::isRemotePath('${sdg}');
+	}
+
 
 
 	public function testEscapePathWithEmptyPath () {
@@ -34,6 +39,28 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 
 	public function testEscapePathWithBoundJokersPath () {
 		$this->assertEquals('?"/a/b/img"*', Shell::escapePath('?/a/b/img*'));
+	}
+
+
+
+	public function testExecThrowExceptionOnShellError () {
+		$this->setExpectedException('Exception', "abc\ndef", 101);
+		$aResult = Shell::exec('echo abc; echo def; exit 101');
+	}
+
+	public function testExecOneLineResult () {
+		$aResult = Shell::exec('echo abc');
+		$this->assertEquals(array('abc'), $aResult);
+	}
+
+	public function testExecMultiLineResult () {
+		$aResult = Shell::exec('echo abc; echo def');
+		$this->assertEquals(array('abc', 'def'), $aResult);
+	}
+
+	public function testExecErrorMultiLineResult () {
+		$aResult = Shell::exec('(echo abc; echo def) >&2');
+		$this->assertEquals(array('abc', 'def'), $aResult);
 	}
 
 

@@ -26,7 +26,7 @@ class Shell {
 		$sErrorMsg = exec($sFullCmd, $aResult, $iReturnCode);
 		if ($iReturnCode !== 0) {
 			//throw new Exception($sErrorMsg);
-			throw new Exception(implode("\n", $aResult));
+			throw new Exception(implode("\n", $aResult), $iReturnCode);
 		}
 		return $aResult;
 	}
@@ -70,7 +70,11 @@ class Shell {
 	 * @return array
 	 */
 	public static function isRemotePath ($sPath) {
-		$result = preg_match('/^((?:[a-z0-9_-]+@)[a-z0-9_.-]+):(.+)$/i', $sPath, $aMatches);
+		if (preg_match('/\$\{[^}]*\}/i', $sPath) === 1) {
+			throw new RuntimeException("Invalid syntax: '$sPath'.");
+		}
+
+		$result = preg_match('/^((?:[a-z0-9_.-]+@)[a-z0-9_.-]+):(.+)$/i', $sPath, $aMatches);
 		if ($result !== 1) {
 			$aMatches = array($sPath, '', $sPath);
 		}
@@ -161,6 +165,10 @@ cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubr
 		// rsync -az --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats "/home/gaubry/test/src/[EXT] Phing 2.4.5" "gaubry@dv2:/home/gaubry/rsync_test"
 		// rsync -az --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats "/home/gaubry/test/src/merchant_logos" "gaubry@dv2:/home/gaubry/rsync_test"
 		$sCmd = 'rsync -az --delete --delete-excluded ' . $sCVSExclude . ' --stats -e ssh ' . static::escapePath($sSrcPath) . ' ' . static::escapePath($sDestPath);
-		return static::exec($sCmd);
+		$aResult = static::exec($sCmd);
+
+
+
+		return $aResult;
 	}
 }

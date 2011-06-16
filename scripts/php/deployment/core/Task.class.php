@@ -17,7 +17,7 @@ abstract class Task {
 	 * @return string nom du tag XML correspondant à cette tâche dans les config projet.
 	 */
 	public static function getTagName () {
-		throw new RuntimeException('Unimplemented!');
+		throw new RuntimeException('Not implemented!');
 	}
 
 	/**
@@ -66,6 +66,27 @@ abstract class Task {
 
 		$this->aAttributeProperties = array();
 		//$this->_check();
+	}
+
+	protected function _expandPaths ($sPath) {
+		if (preg_match_all('/\$\{([^}]*)\}/i', $sPath, $aMatches) > 0) {
+			$aPaths = array($sPath);
+			foreach ($aMatches[1] as $property) {
+				$aToProcessPaths = $aPaths;
+				$aPaths = array();
+
+				$raw_value = $this->oProject->getProperty($property);
+				$values = explode(' ', $raw_value);
+				foreach ($aToProcessPaths as $s) {
+					foreach ($values as $value) {
+						$aPaths[] = str_replace('${' . $property . '}', $value, $s);
+					}
+				}
+			}
+		} else {
+			$aPaths = array($sPath);
+		}
+		return $aPaths;
 	}
 
 	public function check () {

@@ -15,8 +15,7 @@ class Task_Base_Gitexport extends Task {
 		parent::__construct($oTask, $oProject, $sBackupPath);
 		$this->aAttributeProperties = array(
 			'repository' => array('file', 'required'),
-			'branch' => array('required'),
-			//'tag' => array(),
+			'ref' => array('required'),
 			'srcdir' => array('dir', 'required'),
 			'destdir' => array('dir', 'required')
 		);
@@ -30,14 +29,15 @@ class Task_Base_Gitexport extends Task {
 	}
 
 	public function execute () {
-		//$ref = ( ! empty($this->aAttributes['branch']) ? 'origin/' . $this->aAttributes['branch'] : $this->aAttributes['tag']);
 		$result = Shell::exec(
 			DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_INC_DIR . '/gitexport.inc.sh'
 			. ' "' . $this->aAttributes['repository'] . '"'
-			. ' "' . $this->aAttributes['branch'] . '"'
+			. ' "' . $this->aAttributes['ref'] . '"'
 			. ' "' . $this->aAttributes['srcdir'] . '"'
 			. ' "' . $this->aAttributes['destdir'] . '"'
 		);
+		var_dump(implode("\n", $result));
+		$result = Shell::sync($this->aAttributes['srcdir'] . '/*', $this->aAttributes['destdir']);
 		var_dump(implode("\n", $result));
 	}
 
