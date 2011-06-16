@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- <project name="tests" propertyfile="/home/gaubry/deployment/scripts/php/deployment/projects/tests_property_file.ini"> -->
-<project name="tests" propertyshellfile="/home/gaubry/deployment/scripts/php/deployment/projects/master_synchro.cfg">
+<project name="tests" propertyshellfile="/home/gaubry/deployment/scripts/php/deployment/projects/tests_property_file.cfg">
 	<target name="tests_copy">
 		<copy src="/home/gaubry/test/src/test_copy/a.txt" destdir="/home/gaubry/test/dest/test_copy1" />
 		<copy src="/home/gaubry/test/src/test_copy/light" destdir="/home/gaubry/test/dest/test_copy2" />
@@ -33,7 +33,10 @@
 	</target>
 
 	<target name="tests_gitexport">
-		<gitexport repository="git@git.twenga.com:rts/rts.git" branch="v4.11.0" srcdir="/home/gaubry/test/src/test_gitexport1" destdir="/home/gaubry/test/dest/test_gitexport1" />
+		<gitexport repository="git@git.twenga.com:demo/demo.git" ref="feature-1234"
+			srcdir="/home/gaubry/test/src/test_gitexport1"
+			destdir="${SERVER_AAI}:/home/gaubry/test/dest/test_gitexport1" />
+		<!-- <gitexport repository="git@git.twenga.com:rts/rts.git" ref="v4.11.0" srcdir="/home/gaubry/test/src/test_gitexport1" destdir="/home/gaubry/test/dest/test_gitexport1" /> -->
 	</target>
 
 	<target name="all_tests">
