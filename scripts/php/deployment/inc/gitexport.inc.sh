@@ -4,9 +4,8 @@ repository="$1"
 reponame='origin'
 ref="$2"
 srcdir="$3"
-destdir="$4"
 
-if [ -z "$repository" ] || [ -z "$ref" ] || [ -z "$srcdir" ] || [ -z "$destdir" ]; then
+if [ -z "$repository" ] || [ -z "$ref" ] || [ -z "$srcdir" ]; then
 	echo 'Missing parameters!' >&2
 	exit 1
 fi

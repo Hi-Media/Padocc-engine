@@ -17,7 +17,7 @@ class Task_Base_Gitexport extends Task {
 			'repository' => array('file', 'required'),
 			'ref' => array('required'),
 			'srcdir' => array('dir', 'required'),
-			'destdir' => array('dir', 'required')
+			'destdir' => array('dir', 'required', 'allow_parameters')
 		);
 	}
 
@@ -34,10 +34,10 @@ class Task_Base_Gitexport extends Task {
 			. ' "' . $this->aAttributes['repository'] . '"'
 			. ' "' . $this->aAttributes['ref'] . '"'
 			. ' "' . $this->aAttributes['srcdir'] . '"'
-			. ' "' . $this->aAttributes['destdir'] . '"'
 		);
 		var_dump(implode("\n", $result));
-		$result = Shell::sync($this->aAttributes['srcdir'] . '/*', $this->aAttributes['destdir']);
+
+		$result = Shell::sync($this->aAttributes['srcdir'] . '/*', $this->_expandPaths($this->aAttributes['destdir']));
 		var_dump(implode("\n", $result));
 	}
 

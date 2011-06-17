@@ -2,41 +2,43 @@
 <!-- <project name="tests" propertyfile="/home/gaubry/deployment/scripts/php/deployment/projects/tests_property_file.ini"> -->
 <project name="tests" propertyshellfile="/home/gaubry/deployment/scripts/php/deployment/projects/tests_property_file.cfg">
 	<target name="tests_copy">
-		<copy src="/home/gaubry/test/src/test_copy/a.txt" destdir="/home/gaubry/test/dest/test_copy1" />
-		<copy src="/home/gaubry/test/src/test_copy/light" destdir="/home/gaubry/test/dest/test_copy2" />
-		<copy src="/home/gaubry/test/src/test_copy/light/*" destdir="/home/gaubry/test/dest/test_copy3" />
-		<copy src="/home/gaubry/test/src/test_copy/light/a*.txt" destdir="/home/gaubry/test/dest/test_copy4" />
-		<copy src="/home/gaubry/test/src/test_copy/light/a???.txt" destdir="/home/gaubry/test/dest/test_copy5" />
-		<copy src="/home/gaubry/test/src/test_copy/a.txt" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy1" />
-		<copy src="/home/gaubry/test/src/test_copy/light" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy2" />
-		<copy src="/home/gaubry/test/src/test_copy/light/*" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy3" />
-		<copy src="/home/gaubry/test/src/test_copy/light/a*.txt" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy4" />
-		<copy src="/home/gaubry/test/src/test_copy/light/a???.txt" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy5" />
+		<copy src="/home/gaubry/deployment_test/src/test_copy/a.txt" destdir="/home/gaubry/deployment_test/dest/test_copy1" />
+		<copy src="/home/gaubry/deployment_test/src/test_copy/light" destdir="/home/gaubry/deployment_test/dest/test_copy2" />
+		<copy src="/home/gaubry/deployment_test/src/test_copy/light/*" destdir="/home/gaubry/deployment_test/dest/test_copy3" />
+		<copy src="/home/gaubry/deployment_test/src/test_copy/light/a*.txt" destdir="/home/gaubry/deployment_test/dest/test_copy4" />
+		<copy src="/home/gaubry/deployment_test/src/test_copy/light/a???.txt" destdir="/home/gaubry/deployment_test/dest/test_copy5" />
+		<copy src="/home/gaubry/deployment_test/src/test_copy/a.txt" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy1" />
+		<copy src="/home/gaubry/deployment_test/src/test_copy/light" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy2" />
+		<copy src="/home/gaubry/deployment_test/src/test_copy/light/*" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy3" />
+		<copy src="/home/gaubry/deployment_test/src/test_copy/light/a*.txt" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy4" />
+		<copy src="/home/gaubry/deployment_test/src/test_copy/light/a???.txt" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy5" />
 	</target>
 
 	<target name="tests_sync">
-		<sync src="/home/gaubry/test/src/test_sync/merchant_logos" destdir="/home/gaubry/test/dest/test_sync1" />
-		<sync src="/home/gaubry/test/src/test_sync/merchant_logos/*" destdir="/home/gaubry/test/dest/test_sync2" />
-		<sync src="/home/gaubry/test/src/test_sync/merchant_logos/*.jpg" destdir="/home/gaubry/test/dest/test_sync3" />
-		<sync src="/home/gaubry/test/src/test_sync/merchant_logos/" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_sync1" />
-		<sync src="/home/gaubry/test/src/test_sync/merchant_logos/*" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_sync2" />
-		<sync src="/home/gaubry/test/src/test_sync/merchant_logos/*.jpg" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_sync3" />
+		<sync src="/home/gaubry/deployment_test/src/test_sync/merchant_logos" destdir="/home/gaubry/deployment_test/dest/test_sync1" />
+		<sync src="/home/gaubry/deployment_test/src/test_sync/merchant_logos/*" destdir="/home/gaubry/deployment_test/dest/test_sync2" />
+		<sync src="/home/gaubry/deployment_test/src/test_sync/merchant_logos/*.jpg" destdir="/home/gaubry/deployment_test/dest/test_sync3" />
+		<sync src="/home/gaubry/deployment_test/src/test_sync/merchant_logos/" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_sync1" />
+		<sync src="/home/gaubry/deployment_test/src/test_sync/merchant_logos/*" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_sync2" />
+		<sync src="/home/gaubry/deployment_test/src/test_sync/merchant_logos/*.jpg" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_sync3" />
 	</target>
 
 	<target name="tests_backup">
-		<backup src="/home/gaubry/test/src/test_backup/a.txt" destfile="/home/gaubry/test/dest/test_backup1.tar.gz" />
-		<backup src="/home/gaubry/test/src/test_backup/*.jpg" destfile="/home/gaubry/test/dest/test_backup2.tar.gz" />
-		<backup src="/home/gaubry/test/src/test_backup/[EXT] Phing 2.4.5" destfile="/home/gaubry/test/dest/test_backup3.tar.gz" />
-		<backup src="/home/gaubry/test/src/test_backup/a.txt" destfile="gaubry@dv2:/home/gaubry/deployment_test/test_backup1.tar.gz" />
-		<backup src="/home/gaubry/test/src/test_backup/*.jpg" destfile="gaubry@dv2:/home/gaubry/deployment_test/test_backup2.tar.gz" />
-		<backup src="/home/gaubry/test/src/test_backup/[EXT] Phing 2.4.5" destfile="gaubry@dv2:/home/gaubry/deployment_test/test_backup3.tar.gz" />
+		<backup src="/home/gaubry/deployment_test/src/test_backup/a.txt" destfile="/home/gaubry/deployment_test/dest/test_backup1.tar.gz" />
+		<backup src="/home/gaubry/deployment_test/src/test_backup/*.jpg" destfile="/home/gaubry/deployment_test/dest/test_backup2.tar.gz" />
+		<backup src="/home/gaubry/deployment_test/src/test_backup/[EXT] Phing 2.4.5" destfile="/home/gaubry/deployment_test/dest/test_backup3.tar.gz" />
+		<backup src="/home/gaubry/deployment_test/src/test_backup/a.txt" destfile="gaubry@dv2:/home/gaubry/deployment_test/test_backup1.tar.gz" />
+		<backup src="/home/gaubry/deployment_test/src/test_backup/*.jpg" destfile="gaubry@dv2:/home/gaubry/deployment_test/test_backup2.tar.gz" />
+		<backup src="/home/gaubry/deployment_test/src/test_backup/[EXT] Phing 2.4.5" destfile="gaubry@dv2:/home/gaubry/deployment_test/test_backup3.tar.gz" />
 	</target>
 
 	<target name="tests_gitexport">
-		<gitexport repository="git@git.twenga.com:demo/demo.git" ref="feature-1234"
-			srcdir="/home/gaubry/test/src/test_gitexport1"
-			destdir="${SERVER_AAI}:/home/gaubry/test/dest/test_gitexport1" />
-		<!-- <gitexport repository="git@git.twenga.com:rts/rts.git" ref="v4.11.0" srcdir="/home/gaubry/test/src/test_gitexport1" destdir="/home/gaubry/test/dest/test_gitexport1" /> -->
+		<!-- <gitexport repository="git@git.twenga.com:demo/demo.git" ref="feature-1234"
+			srcdir="/home/gaubry/deployment_test/src/test_gitexport1"
+			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1" /> -->
+		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="v4.11.0"
+			srcdir="/home/gaubry/deployment_test/src/test_gitexport1"
+			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1" />
 	</target>
 
 	<target name="all_tests">

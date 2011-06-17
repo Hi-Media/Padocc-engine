@@ -7,13 +7,16 @@
 
 // TODO implémenter rollback
 // TODO si fatal error, demander au supervisor de proposer un rollback ?
-// TODO permettre fournir ini ou cfg à l'appel
 // TODO description des tâches
-// TODO classe log
+// TODO classe log !! notamment pour ne plus avoir d'affichage en unittest, et éventuellement un autre affiche si dans superviseur
 // TODO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="biblio10.xsd"
 // TODO PHPUnit : bootstrap
 // TODO les sous-target pourraient être préfixées par un underscore
 // TODO passer l'ID du superviseur sur un timestamp+random
+// TODO passer les types de paramètres de tâches en champ de bits
+// TODO mieux différencier les différents types d'exception
+// TODO mettre en forme le retour des appels rsync ?
+// TODO Clarification de l'affichage : début et fin de tâche, de target
 
 /*
  * Features :
