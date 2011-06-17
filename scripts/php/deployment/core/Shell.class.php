@@ -158,17 +158,39 @@ cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubr
 		return static::execSSH('mkdir -p %s', $sPath);
 	}
 
-	public static function sync ($sSrcPath, $sDestPath) {
-		static::mkdir($sDestPath);
-		$sCVSExclude = '--cvs-exclude --exclude=.cvsignore';
-		// rsync -aqz --delete --delete-excluded -e ssh --cvs-exclude --exclude=.cvsignore --stats
-		// rsync -az --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats "/home/gaubry/test/src/[EXT] Phing 2.4.5" "gaubry@dv2:/home/gaubry/rsync_test"
-		// rsync -az --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats "/home/gaubry/test/src/merchant_logos" "gaubry@dv2:/home/gaubry/rsync_test"
-		$sCmd = 'rsync -az --delete --delete-excluded ' . $sCVSExclude . ' --stats -e ssh ' . static::escapePath($sSrcPath) . ' ' . static::escapePath($sDestPath);
-		$aResult = static::exec($sCmd);
+	/*
+time ( \
+	rsync -az --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats -e ssh "/home/gaubry/deployment_test/src/test_gitexport1/"* "aai@aai-01:/home/aai/deployment_test/dest/test_gitexport1" & \
+	rsync -az --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats -e ssh "/home/gaubry/deployment_test/src/test_gitexport1/"* "aai@aai-02:/home/aai/deployment_test/dest/test_gitexport1" & \
+	rsync -az --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats -e ssh "/home/gaubry/deployment_test/src/test_gitexport1/"* "gaubry@dv2:/home/gaubry/deployment_test/dest/test_gitexport1" & \
+	wait)
 
+t="$(tempfile)"; ls sss 2>>$t & ls dfhdfh 2>>$t & wait; [ ! -s "$t" ] && echo ">>OK" || (cat $t; rm -f $t; exit 2)
 
+rsync  --bwlimit=4000
+	 */
+	public static function sync ($sSrcPath, $mDestPath) {
+		$aPaths = (is_array($mDestPath) ? $mDestPath : array($mDestPath));
 
-		return $aResult;
+		$aAllResults = array();
+		for ($i=0; $i<count($aPaths); $i++) {
+			$aResult = static::mkdir($aPaths[$i]);
+			$aAllResults = array_merge($aAllResults, $aResult);
+		}
+
+		for ($i=0; $i<count($aPaths); $i++) {
+			$aCmd = array();
+			for ($j=$i; $j<count($aPaths) && $j<$i+DEPLOYMENT_RSYNC_MAX_NB_PROCESSES; $j++) {
+				$aCmd[] =
+					'rsync -az --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats -e'
+					. ' ssh ' . static::escapePath($sSrcPath) . ' ' . static::escapePath($aPaths[$j]);
+			}
+			$i = $j-1;
+			$sCmd = implode(" & \\\n", $aCmd) . " & \\\nwait";
+			$aResult = static::exec($sCmd);
+			$aAllResults = array_merge($aAllResults, $aResult);
+		}
+
+		return $aAllResults;
 	}
 }
