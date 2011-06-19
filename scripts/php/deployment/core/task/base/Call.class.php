@@ -2,7 +2,7 @@
 
 class Task_Base_Call extends Task {
 
-	private $aTasks;
+	protected $aTasks;
 
 	/**
 	 * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
@@ -13,13 +13,13 @@ class Task_Base_Call extends Task {
 		return 'call';
 	}
 
-	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath) {
-		parent::__construct($oTask, $oProject, $sBackupPath);
+	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, IShell $oShell, ILog $oLog) {
+		parent::__construct($oTask, $oProject, $sBackupPath, $oShell, $oLog);
 		$this->aAttributeProperties = array(
 			'target' => array('required')
 		);
 		$oTarget = Tasks::getTarget($this->oProject->getSXE(), $this->aAttributes['target']);
-		$this->aTasks = Tasks::getTaskInstances($oTarget, $this->oProject, $sBackupPath); // et non $this->sBackupPath, pour les sous-tâches
+		$this->aTasks = Tasks::getTaskInstances($oTarget, $this->oProject, $sBackupPath, $this->oShell, $this->oLog); // et non $this->sBackupPath, pour les sous-tâches
 	}
 
 	public function check () {

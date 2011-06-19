@@ -11,8 +11,8 @@ class Task_Base_Backup extends Task {
 		return 'backup';
 	}
 
-	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath) {
-		parent::__construct($oTask, $oProject, $sBackupPath);
+	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, IShell $oShell, ILog $oLog) {
+		parent::__construct($oTask, $oProject, $sBackupPath, $oShell, $oLog);
 		$this->aAttributeProperties = array(
 			'src' => array('srcpath', 'file', 'dir', 'filejoker', 'required'),
 			'destfile' => array('file', 'required')
@@ -24,14 +24,14 @@ class Task_Base_Backup extends Task {
 	}
 
 	public function execute () {
-		Shell::backup($this->aAttributes['src'], $this->aAttributes['destfile']);
+		$this->oShell->backup($this->aAttributes['src'], $this->aAttributes['destfile']);
 	}
 
 	public function backup () {
-		if (Shell::getFileStatus($this->aAttributes['destfile']) !== 0) {
-			list($bIsRemote, $aMatches) = Shell::isRemotePath($this->aAttributes['destfile']);
+		if ($this->oShell->getFileStatus($this->aAttributes['destfile']) !== 0) {
+			list($bIsRemote, $aMatches) = $this->oShell->isRemotePath($this->aAttributes['destfile']);
 			$sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '') . $this->sBackupPath . '/' . pathinfo($aMatches[2], PATHINFO_BASENAME);
-			Shell::copy($this->aAttributes['destfile'], $sBackupPath, true);
+			$this->oShell->copy($this->aAttributes['destfile'], $sBackupPath, true);
 		}
 	}
 }

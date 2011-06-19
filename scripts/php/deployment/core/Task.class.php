@@ -21,6 +21,18 @@ abstract class Task {
 	}
 
 	/**
+	 * Adaptater shell.
+	 * @var IShell
+	 */
+	protected $oShell;
+
+	/**
+	 * Adaptater log.
+	 * @var ILog
+	 */
+	protected $oLog;
+
+	/**
 	 * Contenu XML de la tâche.
 	 * @var SimpleXMLElement
 	 */
@@ -52,19 +64,22 @@ abstract class Task {
 	 */
 	protected $sBackupPath;
 
-	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath) {
+	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, IShell $oShell, ILog $oLog) {
 		$this->oTask = $oTask;
 		$this->oProject = $oProject;
 		$this->sName = sprintf('%03d', (++self::$iCounter)) . '_' . get_class($this);
 		$this->sBackupPath = $sBackupPath . '/' . $this->sName;
+		$this->oShell = $oShell;
+		$this->oLog = $oLog;
+		$this->aAttributeProperties = array();
+		$this->fetchAttributes();
+	}
 
-		// Récupération des attributs :
+	protected function fetchAttributes () {
 		$this->aAttributes = array();
 		foreach ($this->oTask->attributes() as $key => $val) {
 			$this->aAttributes[$key] = (string)$val;
 		}
-
-		$this->aAttributeProperties = array();
 	}
 
 	/**
@@ -80,7 +95,7 @@ abstract class Task {
 				$aToProcessPaths = $aPaths;
 				$aPaths = array();
 
-				$raw_value = $this->oProject->getProperty($property);
+					$raw_value = $this->oProject->getProperty($property);
 				$values = explode(' ', $raw_value);
 				foreach ($aToProcessPaths as $s) {
 					foreach ($values as $value) {
@@ -133,7 +148,7 @@ abstract class Task {
 				if (
 						in_array('srcpath', $aProperties)
 						&& preg_match('#\*|\?#', $this->aAttributes[$sAttribute]) === 0
-						&& Shell::getFileStatus($this->aAttributes[$sAttribute]) === 0
+						&& $this->oShell->getFileStatus($this->aAttributes[$sAttribute]) === 0
 				) {
 					throw new RuntimeException("File or directory '" . $this->aAttributes[$sAttribute] . "' not found!");
 				}

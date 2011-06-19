@@ -11,8 +11,8 @@ class Task_Base_Gitexport extends Task {
 		return 'gitexport';
 	}
 
-	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath) {
-		parent::__construct($oTask, $oProject, $sBackupPath);
+	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, IShell $oShell, ILog $oLog) {
+		parent::__construct($oTask, $oProject, $sBackupPath, $oShell, $oLog);
 		$this->aAttributeProperties = array(
 			'repository' => array('file', 'required'),
 			'ref' => array('required'),
@@ -29,7 +29,7 @@ class Task_Base_Gitexport extends Task {
 	}
 
 	public function execute () {
-		$result = Shell::exec(
+		$result = $this->oShell->exec(
 			DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_INC_DIR . '/gitexport.inc.sh'
 			. ' "' . $this->aAttributes['repository'] . '"'
 			. ' "' . $this->aAttributes['ref'] . '"'
@@ -37,16 +37,16 @@ class Task_Base_Gitexport extends Task {
 		);
 		var_dump(implode("\n", $result));
 
-		$result = Shell::sync($this->aAttributes['srcdir'] . '/*', $this->_expandPaths($this->aAttributes['destdir']));
+		$result = $this->oShell->sync($this->aAttributes['srcdir'] . '/*', $this->_expandPaths($this->aAttributes['destdir']));
 		var_dump(implode("\n", $result));
 	}
 
 	public function backup () {
-		/*if (Shell::getFileStatus($this->aAttributes['destdir']) !== 0) {
-			list($bIsRemote, $aMatches) = Shell::isRemotePath($this->aAttributes['destdir']);
+		/*if ($this->oShell->getFileStatus($this->aAttributes['destdir']) !== 0) {
+			list($bIsRemote, $aMatches) = $this->oShell->isRemotePath($this->aAttributes['destdir']);
 			$sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '') . $this->sBackupPath . '/'
 				. pathinfo($aMatches[2], PATHINFO_BASENAME) . '.tar.gz';
-			Shell::backup($this->aAttributes['destdir'], $sBackupPath);
+			$this->oShell->backup($this->aAttributes['destdir'], $sBackupPath);
 		}*/
 	}
 }

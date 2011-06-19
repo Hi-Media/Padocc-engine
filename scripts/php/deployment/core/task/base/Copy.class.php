@@ -11,8 +11,8 @@ class Task_Base_Copy extends Task {
 		return 'copy';
 	}
 
-	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath) {
-		parent::__construct($oTask, $oProject, $sBackupPath);
+	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, IShell $oShell, ILog $oLog) {
+		parent::__construct($oTask, $oProject, $sBackupPath, $oShell, $oLog);
 		$this->aAttributeProperties = array(
 			'src' => array('srcpath', 'file', 'dir', 'filejoker', 'required'),
 			'destdir' => array('dir', 'required')
@@ -24,7 +24,7 @@ class Task_Base_Copy extends Task {
 	public function check () {
 		parent::check();
 		if (preg_match('#\*|\?#', $this->aAttributes['src']) === 0) {
-			if (Shell::getFileStatus($this->aAttributes['src']) === 2) {
+			if ($this->oShell->getFileStatus($this->aAttributes['src']) === 2) {
 				$this->aAttributes['destdir'] .= '/' . substr(strrchr($this->aAttributes['src'], '/'), 1);
 				$this->aAttributes['src'] .= '/*';
 			}
@@ -32,15 +32,15 @@ class Task_Base_Copy extends Task {
 	}
 
 	public function execute () {
-		Shell::copy($this->aAttributes['src'], $this->aAttributes['destdir']);
+		$this->oShell->copy($this->aAttributes['src'], $this->aAttributes['destdir']);
 	}
 
 	public function backup () {
-		if (Shell::getFileStatus($this->aAttributes['destdir']) !== 0) {
-			list($bIsRemote, $aMatches) = Shell::isRemotePath($this->aAttributes['destdir']);
+		if ($this->oShell->getFileStatus($this->aAttributes['destdir']) !== 0) {
+			list($bIsRemote, $aMatches) = $this->oShell->isRemotePath($this->aAttributes['destdir']);
 			$sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '') . $this->sBackupPath . '/'
 				. pathinfo($aMatches[2], PATHINFO_BASENAME) . '.tar.gz';
-			Shell::backup($this->aAttributes['destdir'], $sBackupPath);
+			$this->oShell->backup($this->aAttributes['destdir'], $sBackupPath);
 		}
 	}
 }

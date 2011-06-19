@@ -27,7 +27,7 @@ class Tasks {
 		return self::$AVAILABLE_TASKS;
 	}
 
-	public static function getTaskInstances (SimpleXMLElement $oTarget, Task_Base_Project $oProject, $sBackupPath) {
+	public static function getTaskInstances (SimpleXMLElement $oTarget, Task_Base_Project $oProject, $sBackupPath, IShell $oShell, ILog $oLog) {
 		$aAvailableTasks = self::_getAvailableTasks();
 
 		// Mise à plat des tâches car SimpleXML regroupe celles successives de même nom
@@ -50,7 +50,7 @@ class Tasks {
 			if ( ! isset($aAvailableTasks[$sTag])) {
 				throw new Exception("Unkown task tag: '$sTag'!");
 			} else {
-				$aTaskInstances[] = new $aAvailableTasks[$sTag]($oTask, $oProject, $sBackupPath);
+				$aTaskInstances[] = new $aAvailableTasks[$sTag]($oTask, $oProject, $sBackupPath, $oShell, $oLog);
 			}
 		}
 
