@@ -17,6 +17,7 @@
 // TODO mieux différencier les différents types d'exception
 // TODO mettre en forme le retour des appels rsync ?
 // TODO Clarification de l'affichage : début et fin de tâche, de target
+// TODO Que doit retourner Shell->exec() : array ou string ?
 
 /*
  * Features :

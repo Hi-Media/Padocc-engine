@@ -3,8 +3,9 @@
 class Deployment {
 
 	public function __construct ($sProjectName, $sTargetName, $sExecutionID) {
+		$oShell = new Shell();
 		echo 'Initialize tasks...';
-		$oProject = new Task_Base_Project($sProjectName, $sTargetName, $sExecutionID);
+		$oProject = new Task_Base_Project($sProjectName, $sTargetName, $sExecutionID, $oShell);
 		echo 'OK' . "\n";
 		echo 'Check tasks...';
 		$oProject->check();
