@@ -71,10 +71,10 @@ class Tasks {
 		return $oProject;
 	}
 
-	public static function getTarget (SimpleXMLElement $oProject, $sTargetName) {
-		$aTargets = $oProject->xpath("target[@name='$sTargetName']");
+	public static function getTarget (SimpleXMLElement $oProject, $sEnvName) {
+		$aTargets = $oProject->xpath("target[@name='$sEnvName']");
 		if (count($aTargets) !== 1) {
-			throw new Exception("Target '$sTargetName' not found or not unique in project!");
+			throw new Exception("Environment '$sEnvName' not found or not unique in project!");
 		}
 		return $aTargets[0];
 	}

@@ -1,7 +1,7 @@
 <?php
 
-// /usr/bin/php -q ~/deployment/scripts/php/deployment.php tests all_tests `date +'%Y%m%d%H%M%S'` /home/gaubry/deployment/logs/deployment.php.xxx.error.log
-// tail -fn 500 /home/gaubry/deployment/logs/deployment.php.xxx.error.log
+// /usr/bin/php -q ~/deployment/deployment.php tests all_tests `date +'%Y%m%d%H%M%S'` /tmp/deployment.php.xxx.error.log
+// tail -fn 500 /tmp/deployment.php.xxx.error.log
 // rm -rf /home/gaubry/deployment_backup/* && rm -rf /home/gaubry/test/dest/*
 // rm -rf /home/gaubry/deployment_backup/* && rm -rf /home/gaubry/deployment_test/*
 // PHPUnit : aller dans /tests, puis : phpunit
@@ -9,10 +9,7 @@
 // TODO implémenter rollback
 // TODO si fatal error, demander au supervisor de proposer un rollback ?
 // TODO description des tâches
-// TODO classe log !! notamment pour ne plus avoir d'affichage en unittest, et éventuellement un autre affiche si dans superviseur
 // TODO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="biblio10.xsd"
-// TODO PHPUnit : bootstrap
-// TODO mutualiser le boostrap PHPUnit avec appli
 // TODO les sous-target pourraient être préfixées par un underscore
 // TODO passer l'ID du superviseur sur un timestamp+random
 // TODO passer les types de paramètres de tâches en champ de bits
@@ -32,7 +29,7 @@
  */
 
 
-include_once(__DIR__ . '/deployment/conf/config.inc.php');
+include_once(__DIR__ . '/conf/config.inc.php');
 include_once(DEPLOYMENT_LIB_DIR . '/error.inc.php');
 include_once(DEPLOYMENT_LIB_DIR . '/bootstrap.inc.php');
 
@@ -51,9 +48,9 @@ if ($argc < 4) {
 	$sErrorLogFile = $argv[count($argv)-1];
 	$sExecutionID = $argv[count($argv)-2];
 	$sProjectName = $argv[0];
-	$sTargetName = $argv[1];
+	$sEnvName = $argv[1];
 }
 
 errorInit(0, $sErrorLogFile);
 
-new Deployment($sProjectName, $sTargetName, $sExecutionID);
+new Deployment($sProjectName, $sEnvName, $sExecutionID);

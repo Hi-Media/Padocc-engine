@@ -3,7 +3,12 @@
 class Task_Base_Project extends Task_Base_Call {
 
 	private $aProperties;
-	private $sTargetName;
+
+	/**
+	 * Nom de l'environnement (prod, QA, ...) cible.
+	 * @var string
+	 */
+	private $sEnvName;
 
 	/**
 	 * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
@@ -14,8 +19,8 @@ class Task_Base_Project extends Task_Base_Call {
 		return 'project';
 	}
 
-	public function __construct ($sProjectName, $sTargetName, $sExecutionID, Shell_Interface $oShell, Logger_Interface $oLogger) {
-		$this->sTargetName = $sTargetName;
+	public function __construct ($sProjectName, $sEnvName, $sExecutionID, Shell_Interface $oShell, Logger_Interface $oLogger) {
+		$this->sEnvName = $sEnvName;
 		$sBackupPath = DEPLOYMENT_BACKUP_DIR . '/' . $sExecutionID;
 		$oProject = Tasks::getProject($sProjectName);
 
@@ -34,7 +39,7 @@ class Task_Base_Project extends Task_Base_Call {
 
 	protected function fetchAttributes () {
 		parent::fetchAttributes();
-		$this->aAttributes['target'] = $this->sTargetName;
+		$this->aAttributes['target'] = $this->sEnvName;
 	}
 
 	private function initProperties ($sProjectName) {
