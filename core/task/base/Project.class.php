@@ -75,6 +75,10 @@ class Task_Base_Project extends Task_Base_Call {
 		}
 	}
 
+	public function execute () {
+		parent::execute();
+	}
+
 	public function backup () {}
 
 	public function getSXE () {
