@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- <project name="tests" propertyfile="/home/gaubry/deployment/scripts/php/deployment/resources/tests_property_file.ini"> -->
-<project name="tests" propertyshellfile="/home/gaubry/deployment/scripts/php/deployment/resources/tests_property_file.cfg">
+<!-- <project name="tests" propertyfile="/home/gaubry/deployment/resources/tests_property_file.ini"> -->
+<project name="tests" propertyshellfile="/home/gaubry/deployment/resources/tests_property_file.cfg">
 	<target name="tests_copy">
 		<copy src="/home/gaubry/deployment_test/src/test_copy/a.txt" destdir="/home/gaubry/deployment_test/dest/test_copy1" />
 		<copy src="/home/gaubry/deployment_test/src/test_copy/light" destdir="/home/gaubry/deployment_test/dest/test_copy2" />

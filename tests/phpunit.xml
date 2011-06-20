@@ -16,10 +16,11 @@
 
 	<filter>
 		<blacklist>
-			<directory suffix=".php">tests</directory>
+			<directory suffix=".php">../tests</directory>
 		</blacklist>
 		<whitelist>
-			<directory suffix=".php">core</directory>
+			<directory suffix=".php">../core</directory>
+			<directory suffix=".php">../lib</directory>
 		</whitelist>
 	</filter>
 
