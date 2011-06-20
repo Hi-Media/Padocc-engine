@@ -11,7 +11,7 @@
 >
 
 	<testsuite name="My Test Suite">
-		<file>tests/AllTests.class.php</file>
+		<file>AllTests.class.php</file>
 	</testsuite>
 
 	<filter>
