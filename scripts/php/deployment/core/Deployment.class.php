@@ -3,15 +3,16 @@
 class Deployment {
 
 	public function __construct ($sProjectName, $sTargetName, $sExecutionID) {
-		$oShell = new Shell();
-		echo 'Initialize tasks...';
-		$oProject = new Task_Base_Project($sProjectName, $sTargetName, $sExecutionID, $oShell);
-		echo 'OK' . "\n";
-		echo 'Check tasks...';
+		$oLogger = new Logger_Adapter(Logger_Interface::DEBUG);
+		$oShell = new Shell_Adapter($oLogger);
+		$oLogger->log('Initialize tasks...');
+		$oProject = new Task_Base_Project($sProjectName, $sTargetName, $sExecutionID, $oShell, $oLogger);
+		$oLogger->log('OK' . "\n");
+		$oLogger->log('Check tasks...');
 		$oProject->check();
-		echo 'OK' . "\n";
-		echo 'Execute tasks...';
+		$oLogger->log('OK' . "\n");
+		$oLogger->log('Execute tasks...');
 		$oProject->execute();
-		echo 'OK' . "\n";
+		$oLogger->log('OK' . "\n");
 	}
 }

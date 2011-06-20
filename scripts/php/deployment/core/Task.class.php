@@ -22,15 +22,15 @@ abstract class Task {
 
 	/**
 	 * Adaptater shell.
-	 * @var IShell
+	 * @var Shell_Interface
 	 */
 	protected $oShell;
 
 	/**
-	 * Adaptater log.
-	 * @var ILog
+	 * Adaptateur de log.
+	 * @var Logger_Interface
 	 */
-	protected $oLog;
+	protected $oLogger;
 
 	/**
 	 * Contenu XML de la tâche.
@@ -64,13 +64,13 @@ abstract class Task {
 	 */
 	protected $sBackupPath;
 
-	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, IShell $oShell, ILog $oLog) {
+	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, Shell_Interface $oShell, Logger_Interface $oLogger) {
 		$this->oTask = $oTask;
 		$this->oProject = $oProject;
 		$this->sName = sprintf('%03d', (++self::$iCounter)) . '_' . get_class($this);
 		$this->sBackupPath = $sBackupPath . '/' . $this->sName;
 		$this->oShell = $oShell;
-		$this->oLog = $oLog;
+		$this->oLogger = $oLogger;
 		$this->aAttributeProperties = array();
 		$this->fetchAttributes();
 	}
@@ -88,7 +88,7 @@ abstract class Task {
 	 * @param string $sPath chemin pouvant contenir des paramètres
 	 * @return array liste de tous les chemins générés en remplaçant les paramètres du chemin spécifié par leurs valeurs
 	 */
-	protected function _expandPaths ($sPath) {
+	protected function expandPaths ($sPath) {
 		if (preg_match_all('/\$\{([^}]*)\}/i', $sPath, $aMatches) > 0) {
 			$aPaths = array($sPath);
 			foreach ($aMatches[1] as $property) {
@@ -110,7 +110,7 @@ abstract class Task {
 	}
 
 	public function check () {
-		echo "Check '" . $this->sName . "' task...";
+		$this->oLogger->log("Check '" . $this->sName . "' task...");
 
 		$aAvailablesAttributes = array_keys($this->aAttributeProperties);
 		$aUnknownAttributes = array_diff(array_keys($this->aAttributes), $aAvailablesAttributes);
@@ -155,7 +155,7 @@ abstract class Task {
 			}
 		}
 
-		echo "OK.\n";
+		$this->oLogger->log("OK.\n");
 	}
 
 	public abstract function execute ();
