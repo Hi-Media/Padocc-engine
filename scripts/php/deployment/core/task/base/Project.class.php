@@ -14,12 +14,12 @@ class Task_Base_Project extends Task_Base_Call {
 		return 'project';
 	}
 
-	public function __construct ($sProjectName, $sTargetName, $sExecutionID, IShell $oShell, ILog $oLog) {
+	public function __construct ($sProjectName, $sTargetName, $sExecutionID, Shell_Interface $oShell, Logger_Interface $oLogger) {
 		$this->sTargetName = $sTargetName;
 		$sBackupPath = DEPLOYMENT_BACKUP_DIR . '/' . $sExecutionID;
 		$oProject = Tasks::getProject($sProjectName);
 
-		parent::__construct($oProject, $this, $sBackupPath, $oShell, $oLog);
+		parent::__construct($oProject, $this, $sBackupPath, $oShell, $oLogger);
 		$this->aAttributeProperties = array(
 			'name' => array('required'),
 			'propertyfile' => array(),
@@ -44,9 +44,9 @@ class Task_Base_Project extends Task_Base_Call {
 			if ( ! file_exists($this->aAttributes['propertyshellfile'])) {
 				throw new Exception("Property file '" . $this->aAttributes['propertyshellfile'] . "' not found!");
 			}
-			$sPropertyIniPath = DEPLOYMENT_PROJECTS_DIR . "/$sProjectName.ini";
-			$this->oShell->exec(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_INC_DIR . '/cfg2ini.inc.sh "' . $this->aAttributes['propertyshellfile'] . '" "' . $sPropertyIniPath . '"');
-			$this->_loadPropertyFile($sPropertyIniPath);
+			$sPropertyIniPath = DEPLOYMENT_RESOURCES_DIR . "/$sProjectName.ini";
+			$this->oShell->exec(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/cfg2ini.inc.sh "' . $this->aAttributes['propertyshellfile'] . '" "' . $sPropertyIniPath . '"');
+			$this->loadPropertyFile($sPropertyIniPath);
 		} else {
 			$this->aProperties = array();
 		}

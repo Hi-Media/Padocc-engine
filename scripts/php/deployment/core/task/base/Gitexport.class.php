@@ -11,8 +11,8 @@ class Task_Base_Gitexport extends Task {
 		return 'gitexport';
 	}
 
-	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, IShell $oShell, ILog $oLog) {
-		parent::__construct($oTask, $oProject, $sBackupPath, $oShell, $oLog);
+	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, Shell_Interface $oShell, Logger_Interface $oLogger) {
+		parent::__construct($oTask, $oProject, $sBackupPath, $oShell, $oLogger);
 		$this->aAttributeProperties = array(
 			'repository' => array('file', 'required'),
 			'ref' => array('required'),
@@ -30,14 +30,14 @@ class Task_Base_Gitexport extends Task {
 
 	public function execute () {
 		$result = $this->oShell->exec(
-			DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_INC_DIR . '/gitexport.inc.sh'
+			DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/gitexport.inc.sh'
 			. ' "' . $this->aAttributes['repository'] . '"'
 			. ' "' . $this->aAttributes['ref'] . '"'
 			. ' "' . $this->aAttributes['srcdir'] . '"'
 		);
 		var_dump(implode("\n", $result));
 
-		$result = $this->oShell->sync($this->aAttributes['srcdir'] . '/*', $this->_expandPaths($this->aAttributes['destdir']));
+		$result = $this->oShell->sync($this->aAttributes['srcdir'] . '/*', $this->expandPaths($this->aAttributes['destdir']));
 		var_dump(implode("\n", $result));
 	}
 

@@ -1,22 +1,12 @@
 <?php
 
 include_once(__DIR__ . '/../..' . '/deployment/conf/config.inc.php');
-set_include_path(
-	DEPLOYMENT_CORE_DIR . '/' . PATH_SEPARATOR
-	. DEPLOYMENT_INC_DIR . '/' . PATH_SEPARATOR
-	. get_include_path());
-spl_autoload_register(function($sClass) {
-	$sPath = str_replace('_', '/', $sClass) . '.class.php';
-	$iPos = strrpos($sPath, '/');
-	$sPath = strtolower(substr($sPath, 0, $iPos)) . substr($sPath, $iPos);
-	include_once($sPath);
-});
+include_once(DEPLOYMENT_LIB_DIR . '/bootstrap.inc.php');
 
 class AllTests {
 
 	public static function suite() {
 		$files = self::getFiles(DEPLOYMENT_TESTS_DIR, '*Test.class.php');
-		//var_dump($files);
 		$suite = new PHPUnit_Framework_TestSuite('Deployment');
 		foreach ($files as $file) {
 			include_once($file);

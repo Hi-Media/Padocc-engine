@@ -6,7 +6,7 @@ class Tasks {
 
 	private static $AVAILABLE_TASKS = array();
 
-	private static function _getAvailableTasks () {
+	private static function getAvailableTasks () {
 		if (count(self::$AVAILABLE_TASKS) === 0) {
 			$aAvailableTasks = array();
 			foreach (self::$TYPES as $sTaskType) {
@@ -27,8 +27,8 @@ class Tasks {
 		return self::$AVAILABLE_TASKS;
 	}
 
-	public static function getTaskInstances (SimpleXMLElement $oTarget, Task_Base_Project $oProject, $sBackupPath, IShell $oShell, ILog $oLog) {
-		$aAvailableTasks = self::_getAvailableTasks();
+	public static function getTaskInstances (SimpleXMLElement $oTarget, Task_Base_Project $oProject, $sBackupPath, Shell_Interface $oShell, Logger_Interface $oLogger) {
+		$aAvailableTasks = self::getAvailableTasks();
 
 		// Mise à plat des tâches car SimpleXML regroupe celles successives de même nom
 		// dans un tableau et les autres sont hors tableau :
@@ -50,7 +50,7 @@ class Tasks {
 			if ( ! isset($aAvailableTasks[$sTag])) {
 				throw new Exception("Unkown task tag: '$sTag'!");
 			} else {
-				$aTaskInstances[] = new $aAvailableTasks[$sTag]($oTask, $oProject, $sBackupPath, $oShell, $oLog);
+				$aTaskInstances[] = new $aAvailableTasks[$sTag]($oTask, $oProject, $sBackupPath, $oShell, $oLogger);
 			}
 		}
 
@@ -58,7 +58,7 @@ class Tasks {
 	}
 
 	public static function getProject ($sProjectName) {
-		$sProjectFilename = DEPLOYMENT_PROJECTS_DIR . '/' . $sProjectName . '.xml';
+		$sProjectFilename = DEPLOYMENT_RESOURCES_DIR . '/' . $sProjectName . '.xml';
 		if ( ! file_exists($sProjectFilename)) {
 			throw new Exception("Project definition not found: '$sProjectFilename'!");
 		}

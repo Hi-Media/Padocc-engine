@@ -1,6 +1,6 @@
 <?php
 
-interface IShell {
+interface Shell_Interface {
 
 	/**
 	 * Exécute la commande shell spécifiée et retourne la sortie découpée par ligne dans un tableau.

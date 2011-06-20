@@ -1,10 +1,18 @@
 <?php
 
-class Shell implements IShell {
+class Shell_Adapter implements Shell_Interface {
 
-	private $aFileStatus = array();
+	private $aFileStatus;
 
-	public function __construct () {
+	/**
+	 * Log adapter.
+	 * @var Logger_Interface
+	 */
+	private $oLogger;
+
+	public function __construct (Logger_Interface $oLogger) {
+		$this->oLogger = $oLogger;
+		$this->aFileStatus = array();
 	}
 
 	/**
@@ -16,9 +24,7 @@ class Shell implements IShell {
 	 * @return array Tableau indexé du flux de sortie découpé par ligne
 	 */
 	public function exec ($sCmd) {
-		if (DEPLOYMENT_DEBUG_MODE > 0) {
-			echo "[Debug][Shell] $sCmd\n";
-		}
+		$this->oLogger->log("[Debug][Shell] $sCmd\n", Logger_Interface::DEBUG);
 		$sFullCmd = '( ' . $sCmd . ' ) 2>&1';
 		$sErrorMsg = exec($sFullCmd, $aResult, $iReturnCode);
 		if ($iReturnCode !== 0) {
@@ -46,14 +52,14 @@ class Shell implements IShell {
 	 * @return int 0 si le chemin spécifié n'existe pas, 1 si c'est un fichier, 2 si c'est un répertoire.
 	 */
 	public function getFileStatus ($sPath) {
-		if (isset($this->$aFileStatus[$sPath])) {
-			$iStatus = $this->$aFileStatus[$sPath];
+		if (isset($this->aFileStatus[$sPath])) {
+			$iStatus = $this->aFileStatus[$sPath];
 		} else {
 			$sFormat = '[ -d %1$s ] && echo 2 || ( [ -f %1$s ] && echo 1 || echo 0 )';
 			$aResult = $this->execSSH($sFormat, $sPath);
 			$iStatus = (int)$aResult[0];
 			if ($iStatus !== 0) {
-				$this->$aFileStatus[$sPath] = $iStatus;
+				$this->aFileStatus[$sPath] = $iStatus;
 			}
 		}
 		return $iStatus;
@@ -187,7 +193,7 @@ rsync  --bwlimit=4000
 					. ' ssh ' . $this->escapePath($sSrcPath) . ' ' . $this->escapePath($aPaths[$j]);
 			}
 			$i = $j-1;
-			$sCmd = implode(" & \\\n", $aCmd) . " & \\\nwait";
+			$sCmd = implode(" & \\\n", $aCmd) . (count($aCmd) > 1 ? " & \\\nwait" : '');
 			$aResult = $this->exec($sCmd);
 			$aAllResults = array_merge($aAllResults, $aResult);
 		}

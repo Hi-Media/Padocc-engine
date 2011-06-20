@@ -11,15 +11,15 @@ class Task_Base_Backup extends Task {
 		return 'backup';
 	}
 
-	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, IShell $oShell, ILog $oLog) {
-		parent::__construct($oTask, $oProject, $sBackupPath, $oShell, $oLog);
+	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, Shell_Interface $oShell, Logger_Interface $oLogger) {
+		parent::__construct($oTask, $oProject, $sBackupPath, $oShell, $oLogger);
 		$this->aAttributeProperties = array(
 			'src' => array('srcpath', 'file', 'dir', 'filejoker', 'required'),
 			'destfile' => array('file', 'required')
 		);
 	}
 
-	protected function _check () {
+	public function check () {
 		parent::check();
 	}
 
