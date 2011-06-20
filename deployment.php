@@ -23,9 +23,9 @@
 /*
  * Features :
  *  - load sh config files
- *  - recursive rollback (coming soon)
  *  - XML project config file
- *  - handling all errors
+ *  - handling all errors and exception
+ *  - task très concises et intelligentes
  */
 
 
@@ -43,7 +43,7 @@ $argc--;
 array_shift($argv);
 
 if ($argc < 4) {
-	throw new Exception('Example: /usr/bin/php -q ~/deployment/scripts/php/deployment.php project1 dev 20110518121106 /home/gaubry/deployment/logs/deployment.php.20110518121106.error.log');
+	throw new Exception('Example: /usr/bin/php -q ~/deployment/deployment.php project1 dev 20110518121106 /tmp/deployment.php.20110518121106.error.log');
 } else {
 	$sErrorLogFile = $argv[count($argv)-1];
 	$sExecutionID = $argv[count($argv)-2];
