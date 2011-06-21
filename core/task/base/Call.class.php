@@ -18,8 +18,10 @@ class Task_Base_Call extends Task {
 		$this->aAttributeProperties = array(
 			'target' => array('required')
 		);
+		self::addCounterDivision();
 		$oTarget = Tasks::getTarget($this->oProject->getSXE(), $this->aAttributes['target']);
 		$this->aTasks = Tasks::getTaskInstances($oTarget, $this->oProject, $sBackupPath, $this->oShell, $this->oLogger); // et non $this->sBackupPath, pour les sous-tâches
+		self::removeCounterDivision();
 	}
 
 	public function check () {
