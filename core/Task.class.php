@@ -4,12 +4,25 @@ abstract class Task {
 
 	/**
 	 * Compteur d'instances pour s'y retrouver dans les backups des tâches.
-	 * Défini à -1 pour que la tâche projet soit en 0 et la 1re 'vraie' tâche en 1.
+	 *
 	 * @var int
 	 * @see $sName
 	 * @see $sBackupPath
 	 */
-	private static $iCounter = -1;
+	protected static $aCounter = array(0);
+
+	protected static function getNextCounterValue () {
+		self::$aCounter[count(static::$aCounter) - 1]++;
+		return implode('.', static::$aCounter);
+	}
+
+	protected static function addCounterDivision () {
+		self::$aCounter[] = 0;
+	}
+
+	protected static function removeCounterDivision () {
+		array_pop(self::$aCounter);
+	}
 
 	/**
 	 * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
@@ -67,7 +80,8 @@ abstract class Task {
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, Shell_Interface $oShell, Logger_Interface $oLogger) {
 		$this->oTask = $oTask;
 		$this->oProject = $oProject;
-		$this->sName = sprintf('%03d', (++self::$iCounter)) . '_' . get_class($this);
+		//$this->sName = sprintf('%03d', (++self::$iCounter)) . '_' . get_class($this);
+		$this->sName = self::getNextCounterValue() . '_' . get_class($this);
 		$this->sBackupPath = $sBackupPath . '/' . $this->sName;
 		$this->oShell = $oShell;
 		$this->oLogger = $oLogger;
@@ -110,7 +124,7 @@ abstract class Task {
 	}
 
 	public function check () {
-		$this->oLogger->log("Check '" . $this->sName . "' task...");
+		$this->oLogger->log("Check '" . $this->sName . "' task...\n");
 
 		$aAvailablesAttributes = array_keys($this->aAttributeProperties);
 		$aUnknownAttributes = array_diff(array_keys($this->aAttributes), $aAvailablesAttributes);
@@ -154,8 +168,6 @@ abstract class Task {
 				}
 			}
 		}
-
-		$this->oLogger->log("OK.\n");
 	}
 
 	public abstract function execute ();

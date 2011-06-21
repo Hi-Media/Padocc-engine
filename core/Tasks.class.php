@@ -6,6 +6,11 @@ class Tasks {
 
 	private static $AVAILABLE_TASKS = array();
 
+	/**
+	 * Retourne un tableau associatif décrivant les tâches disponibles.
+	 *
+	 * @return array tableau associatif des tâches disponibles : array('sTag' => 'sClassName', ...)
+	 */
 	private static function getAvailableTasks () {
 		if (count(self::$AVAILABLE_TASKS) === 0) {
 			$aAvailableTasks = array();
@@ -27,7 +32,21 @@ class Tasks {
 		return self::$AVAILABLE_TASKS;
 	}
 
+	/**
+	 * Retourne la liste des instances de tâches correspondant à chacune des tâches XML devant être exécutée
+	 * à l'intérieur du noeud XML spécifié.
+	 *
+	 * @param SimpleXMLElement $oTarget
+	 * @param Task_Base_Project $oProject
+	 * @param string $sBackupPath
+	 * @param Shell_Interface $oShell
+	 * @param Logger_Interface $oLogger
+	 * @return array liste d'instances de type Task
+	 * @throws Exception si tag XML inconnu.
+	 * @see Task
+	 */
 	public static function getTaskInstances (SimpleXMLElement $oTarget, Task_Base_Project $oProject, $sBackupPath, Shell_Interface $oShell, Logger_Interface $oLogger) {
+		$oLogger->log('Initialize tasks...' . "\n");
 		$aAvailableTasks = self::getAvailableTasks();
 
 		// Mise à plat des tâches car SimpleXML regroupe celles successives de même nom

@@ -5,6 +5,7 @@
 // rm -rf /home/gaubry/deployment_backup/* && rm -rf /home/gaubry/test/dest/*
 // rm -rf /home/gaubry/deployment_backup/* && rm -rf /home/gaubry/deployment_test/*
 // PHPUnit : aller dans /tests, puis : phpunit
+// ln -s /home/gaubry/deployment/deployment.php /home/gaubry/supervisor/scripts/php/deployment.php
 
 // TODO implémenter rollback
 // TODO si fatal error, demander au supervisor de proposer un rollback ?
@@ -43,7 +44,8 @@ $argc--;
 array_shift($argv);
 
 if ($argc < 4) {
-	throw new Exception('Example: /usr/bin/php -q ~/deployment/deployment.php project1 dev 20110518121106 /tmp/deployment.php.20110518121106.error.log');
+	file_put_contents('php://stderr', 'Missing parameters! Example: /usr/bin/php -q ~/deployment/deployment.php project1 dev 20110518121106 /tmp/deployment.php.20110518121106.error.log', E_USER_ERROR);
+	exit(1);
 } else {
 	$sErrorLogFile = $argv[count($argv)-1];
 	$sExecutionID = $argv[count($argv)-2];
