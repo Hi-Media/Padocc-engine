@@ -24,7 +24,7 @@ class Shell_Adapter implements Shell_Interface {
 	 * @return array Tableau indexé du flux de sortie découpé par ligne
 	 */
 	public function exec ($sCmd) {
-		$this->oLogger->log("[DEBUG][Shell] " . str_replace("\n", '\\\\n', trim($sCmd)) . "\n", Logger_Interface::DEBUG);
+		$this->oLogger->log("[DEBUG] shell# " . str_replace("\n", '\\\\n', trim($sCmd)) . "\n", Logger_Interface::DEBUG);
 		$sFullCmd = '( ' . $sCmd . ' ) 2>&1';
 		$sErrorMsg = exec($sFullCmd, $aResult, $iReturnCode);
 		if ($iReturnCode !== 0) {
