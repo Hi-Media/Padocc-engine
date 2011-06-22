@@ -20,6 +20,7 @@
 // TODO Que doit retourner Shell_Adapter->exec() : array ou string ?
 // TODO test multi rsync
 // TODO Le chemin menant au fichier de configuration INI ou CFG est en absolu pour l'instant. Le passer en relatif ?
+// TODO imposer des attributs desc et les remonter dans le nom des tâches ?
 
 /*
  * Features :
