@@ -39,12 +39,18 @@ if (function_exists('xdebug_disable')) {
 	xdebug_disable();
 }
 
-
 // On supprime le 1er paramètre correspondant au nom du script courant :
 $argc--;
 array_shift($argv);
 
-if ($argc < 4) {
+if($argc == 1 && $argv[key($argv)] === "--getProjectsEnvsList")
+{
+	errorInit(0, null);
+	$oDeployment = new Deployment();
+	$aProjectsEnvsList = $oDeployment->getProjectsEnvsList();
+	echo json_encode($aProjectsEnvsList);
+}
+elseif ($argc < 4) {
 	file_put_contents('php://stderr', 'Missing parameters! Example: /usr/bin/php -q ~/deployment/deployment.php project1 dev 20110518121106 /tmp/deployment.php.20110518121106.error.log', E_USER_ERROR);
 	exit(1);
 } else {
@@ -52,8 +58,8 @@ if ($argc < 4) {
 	$sExecutionID = $argv[count($argv)-2];
 	$sProjectName = $argv[0];
 	$sEnvName = $argv[1];
+	
+	errorInit(0, $sErrorLogFile);
+	$oDeployment = new Deployment();
+	$oDeployment->run($sProjectName, $sEnvName, $sExecutionID);
 }
-
-errorInit(0, $sErrorLogFile);
-
-new Deployment($sProjectName, $sEnvName, $sExecutionID);
