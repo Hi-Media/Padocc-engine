@@ -35,20 +35,20 @@
 		<backup src="/home/gaubry/deployment_test/src/test_backup/[EXT] Phing 2.4.5" destfile="gaubry@dv2:/home/gaubry/deployment_test/test_backup3.tar.gz" />
 	</target>
 
-	<target name="tests_gitexport">
+	<env name="tests_gitexport">
 		<!-- <gitexport repository="git@git.twenga.com:demo/demo.git" ref="feature-1234"
 			srcdir="/home/gaubry/deployment_test/src/test_gitexport1"
 			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1" /> -->
 		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="v4.11.0"
 			srcdir="/home/gaubry/deployment_test/src/test_gitexport1"
 			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1" />
-	</target>
+	</env>
 
-	<target name="all_tests">
+	<env name="all_tests">
 		<call target="tests_copy" />
 		<call target="tests_sync" />
 		<call target="tests_backup" />
-	</target>
+	</env>
 
 	<target name="todo">
 		<call script="" />

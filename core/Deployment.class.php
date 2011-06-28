@@ -9,8 +9,7 @@ class Deployment {
 
 	}
 
-	public function run($sProjectName, $sEnvName, $sExecutionID)
-	{
+	public function run ($sProjectName, $sEnvName, $sExecutionID) {
 		$oShell = new Shell_Adapter($this->oLogger);
 		$oProject = new Task_Base_Project($sProjectName, $sEnvName, $sExecutionID, $oShell, $this->oLogger);
 		$this->oLogger->log('Check tasks...');
@@ -19,8 +18,7 @@ class Deployment {
 		$oProject->execute();
 	}
 
-	public function getProjectsEnvsList()
-	{
+	public function getProjectsEnvsList () {
 		$aAvailableTargetsByProject = array();
 		$aAllProjectsName = Tasks::getAllProjectsName();
 		/*
