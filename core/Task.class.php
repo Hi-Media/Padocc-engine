@@ -80,8 +80,11 @@ abstract class Task {
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, Shell_Interface $oShell, Logger_Interface $oLogger) {
 		$this->oTask = $oTask;
 		$this->oProject = $oProject;
-		//$this->sName = sprintf('%03d', (++self::$iCounter)) . '_' . get_class($this);
-		$this->sName = self::getNextCounterValue() . '_' . get_class($this);
+
+		$sCounter = self::getNextCounterValue() . '_';
+		$sCounter = (strlen($sCounter) === 3 ? '' : substr($sCounter, 2));
+
+		$this->sName = $sCounter . get_class($this);
 		$this->sBackupPath = $sBackupPath . '/' . $this->sName;
 		$this->oShell = $oShell;
 		$this->oLogger = $oLogger;
@@ -124,7 +127,7 @@ abstract class Task {
 	}
 
 	public function check () {
-		$this->oLogger->log("Check '" . $this->sName . "' task...\n");
+		$this->oLogger->log("Check '" . $this->sName . "' task...");
 
 		$aAvailablesAttributes = array_keys($this->aAttributeProperties);
 		$aUnknownAttributes = array_diff(array_keys($this->aAttributes), $aAvailablesAttributes);

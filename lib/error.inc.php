@@ -102,7 +102,7 @@ function addExcludePathErrorHandler ($path) {
 function exceptionHandler ($e) {
 	if (ini_get('display_errors') == 0) {
 		if (defined('STDIN')) {
-			echo "ERROR! See '" . ini_get('error_log') . "' for details.\n";
+			//echo "ERROR! See '" . ini_get('error_log') . "' for details.\n";
 		} else {
 			echo '<div class="exception_handler_message">Une erreur d\'exécution est apparue.<br />'
 				. 'Nous sommes désolés pour la gêne occasionée.</div>';

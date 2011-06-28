@@ -2,7 +2,11 @@
 
 class Task_Base_Call extends Task {
 
-	protected $aTasks;
+	/**
+	 * Tâche appelée.
+	 * @var Task
+	 */
+	protected $oBoundTask;
 
 	/**
 	 * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
@@ -20,22 +24,19 @@ class Task_Base_Call extends Task {
 		);
 		self::addCounterDivision();
 		$oTarget = Tasks::getTarget($this->oProject->getSXE(), $this->aAttributes['target']);
-		$this->aTasks = Tasks::getTaskInstances($oTarget, $this->oProject, $sBackupPath, $this->oShell, $this->oLogger); // et non $this->sBackupPath, pour les sous-tâches
+		//$this->aTasks = Tasks::getTaskInstances($oTarget, $this->oProject, $sBackupPath, $this->oShell, $this->oLogger); // et non $this->sBackupPath, pour les sous-tâches
+		$this->oBoundTask = new Task_Base_Target($oTarget, $this->oProject, $sBackupPath, $this->oShell, $this->oLogger);
 		self::removeCounterDivision();
 	}
 
 	public function check () {
 		parent::check();
-		foreach ($this->aTasks as $oTask) {
-			$oTask->check();
-		}
+		$this->oBoundTask->check();
 	}
 
 	public function execute () {
-		foreach ($this->aTasks as $oTask) {
-			$oTask->backup();
-			$oTask->execute();
-		}
+		$this->oBoundTask->backup();
+		$this->oBoundTask->execute();
 	}
 
 	public function backup () {}

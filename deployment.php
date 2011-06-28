@@ -21,6 +21,8 @@
 // TODO test multi rsync
 // TODO Le chemin menant au fichier de configuration INI ou CFG est en absolu pour l'instant. Le passer en relatif ?
 // TODO imposer des attributs desc et les remonter dans le nom des tâches ?
+// TODO détester call cycliques !
+// TODO Registry pour Log, Shell, Numbering ?, Properties ?
 
 /*
  * Features :
@@ -58,7 +60,7 @@ elseif ($argc < 4) {
 	$sExecutionID = $argv[count($argv)-2];
 	$sProjectName = $argv[0];
 	$sEnvName = $argv[1];
-	
+
 	errorInit(0, $sErrorLogFile);
 	$oDeployment = new Deployment();
 	$oDeployment->run($sProjectName, $sEnvName, $sExecutionID);
