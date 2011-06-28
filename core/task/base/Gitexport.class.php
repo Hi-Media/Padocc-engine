@@ -35,10 +35,10 @@ class Task_Base_Gitexport extends Task {
 			. ' "' . $this->aAttributes['ref'] . '"'
 			. ' "' . $this->aAttributes['srcdir'] . '"'
 		);
-		var_dump(implode("\n", $result));
+		$this->oLogger->log(implode("\n", $result));
 
 		$result = $this->oShell->sync($this->aAttributes['srcdir'] . '/*', $this->expandPaths($this->aAttributes['destdir']));
-		var_dump(implode("\n", $result));
+		$this->oLogger->log(implode("\n", $result));
 	}
 
 	public function backup () {

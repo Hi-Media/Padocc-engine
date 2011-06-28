@@ -10,7 +10,7 @@ class Logger_Adapter implements Logger_Interface {
 
 	public function log ($sMessage, $iLevel=self::INFO) {
 		if ($iLevel >= $this->iMinErrorLevel) {
-			echo $sMessage;
+			echo str_replace("\n", '\\\n', trim($sMessage)) . "\n";
 		}
 	}
 }

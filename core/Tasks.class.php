@@ -11,7 +11,7 @@ class Tasks {
 	 *
 	 * @return array tableau associatif des tâches disponibles : array('sTag' => 'sClassName', ...)
 	 */
-	private static function getAvailableTasks () {
+	public static function getAvailableTasks () {
 		if (count(self::$AVAILABLE_TASKS) === 0) {
 			$aAvailableTasks = array();
 			foreach (self::$TYPES as $sTaskType) {
@@ -32,50 +32,6 @@ class Tasks {
 		return self::$AVAILABLE_TASKS;
 	}
 
-	/**
-	 * Retourne la liste des instances de tâches correspondant à chacune des tâches XML devant être exécutée
-	 * à l'intérieur du noeud XML spécifié.
-	 *
-	 * @param SimpleXMLElement $oTarget
-	 * @param Task_Base_Project $oProject
-	 * @param string $sBackupPath
-	 * @param Shell_Interface $oShell
-	 * @param Logger_Interface $oLogger
-	 * @return array liste d'instances de type Task
-	 * @throws Exception si tag XML inconnu.
-	 * @see Task
-	 */
-	public static function getTaskInstances (SimpleXMLElement $oTarget, Task_Base_Project $oProject, $sBackupPath, Shell_Interface $oShell, Logger_Interface $oLogger) {
-		$oLogger->log('Initialize tasks...' . "\n");
-		$aAvailableTasks = self::getAvailableTasks();
-
-		// Mise à plat des tâches car SimpleXML regroupe celles successives de même nom
-		// dans un tableau et les autres sont hors tableau :
-		$aTasks = array();
-		foreach ($oTarget->children() as $sTag => $mTasks) {
-			if (is_array($mTasks)) {
-				foreach ($mTasks as $oTask) {
-					$aTasks[] = array($sTag, $oTask);
-				}
-			} else {
-				$aTasks[] = array($sTag, $mTasks);
-			}
-		}
-
-		// Création des instances de tâches :
-		$aTaskInstances = array();
-		foreach ($aTasks as $aTask) {
-			list($sTag, $oTask) = $aTask;
-			if ( ! isset($aAvailableTasks[$sTag])) {
-				throw new Exception("Unkown task tag: '$sTag'!");
-			} else {
-				$aTaskInstances[] = new $aAvailableTasks[$sTag]($oTask, $oProject, $sBackupPath, $oShell, $oLogger);
-			}
-		}
-
-		return $aTaskInstances;
-	}
-
 	public static function getProject ($sProjectName) {
 		$sProjectFilename = DEPLOYMENT_RESOURCES_DIR . '/' . $sProjectName . '.xml';
 		if ( ! file_exists($sProjectFilename)) {
@@ -89,8 +45,8 @@ class Tasks {
 
 		return $oProject;
 	}
-	
-	public static function getAllProjectsName () 
+
+	public static function getAllProjectsName ()
 	{
 		$aProjectName = array();
 		if($handle = opendir(DEPLOYMENT_RESOURCES_DIR))
@@ -116,21 +72,20 @@ class Tasks {
 	public static function getTarget (SimpleXMLElement $oProject, $sEnvName) {
 		$aTargets = $oProject->xpath("target[@name='$sEnvName']");
 		if (count($aTargets) !== 1) {
-			throw new Exception("Environment '$sEnvName' not found or not unique in project!");
+			throw new Exception("Environment '$sEnvName' not found or not unique in this project!");
 		}
 		return $aTargets[0];
 	}
-	
+
 	public static function getAvailableTargetsList($sProjectName)
 	{
 		$oProject = self::getProject($sProjectName);
 		$aTargets = $oProject->xpath("//target");
-		$aTargetsList = array(); 
+		$aTargetsList = array();
 		foreach($aTargets as $aTarget)
 		{
 			$aTargetsList[] = (string)$aTarget['name'];
 		}
-		//var_dump($aTargets);
 		return $aTargetsList;
 	}
 
