@@ -46,17 +46,13 @@ class Tasks {
 		return $oProject;
 	}
 
-	public static function getAllProjectsName ()
-	{
+	public static function getAllProjectsName () {
 		$aProjectName = array();
-		if($handle = opendir(DEPLOYMENT_RESOURCES_DIR))
-		{
-		    while($file = readdir($handle))
-		    {
+		if ($handle = opendir(DEPLOYMENT_RESOURCES_DIR)) {
+		    while ($file = readdir($handle)) {
 		        clearstatcache();
 		        $sProjectFilename = DEPLOYMENT_RESOURCES_DIR.'/'.$file;
-		        if(substr($file, strlen($file)-3, 3) == "xml" && is_file($sProjectFilename))
-		        {
+		        if (substr($file, strlen($file)-3, 3) == "xml" && is_file($sProjectFilename)) {
 		        	$oProject = new SimpleXMLElement($sProjectFilename, NULL, true);
 					if (isset($oProject['name'])) {
 						$aProjectName[] = (string)$oProject['name'];
@@ -69,21 +65,11 @@ class Tasks {
 		return $aProjectName;
 	}
 
-	public static function getTarget (SimpleXMLElement $oProject, $sEnvName) {
-		$aTargets = $oProject->xpath("target[@name='$sEnvName']");
-		if (count($aTargets) !== 1) {
-			throw new Exception("Environment '$sEnvName' not found or not unique in this project!");
-		}
-		return $aTargets[0];
-	}
-
-	public static function getAvailableTargetsList($sProjectName)
-	{
+	public static function getAvailableTargetsList ($sProjectName) {
 		$oProject = self::getProject($sProjectName);
-		$aTargets = $oProject->xpath("//target");
+		$aTargets = $oProject->xpath("//env");
 		$aTargetsList = array();
-		foreach($aTargets as $aTarget)
-		{
+		foreach ($aTargets as $aTarget) {
 			$aTargetsList[] = (string)$aTarget['name'];
 		}
 		return $aTargetsList;

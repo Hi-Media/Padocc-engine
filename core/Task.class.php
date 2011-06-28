@@ -132,7 +132,9 @@ abstract class Task {
 		$aAvailablesAttributes = array_keys($this->aAttributeProperties);
 		$aUnknownAttributes = array_diff(array_keys($this->aAttributes), $aAvailablesAttributes);
 		if (count($aUnknownAttributes) > 0) {
-			throw new UnexpectedValueException("Available attributes: " . print_r($aAvailablesAttributes, true) . " => Unknown attribute(s): " . print_r($aUnknownAttributes, true));
+			throw new UnexpectedValueException(
+				"Available attributes: " . print_r($aAvailablesAttributes, true)
+				. " => Unknown attribute(s): " . print_r($aUnknownAttributes, true));
 		}
 
 		foreach ($this->aAttributeProperties as $sAttribute => $aProperties) {

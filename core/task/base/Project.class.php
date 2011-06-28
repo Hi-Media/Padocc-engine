@@ -29,7 +29,7 @@ class Task_Base_Project extends Task_Base_Call {
 			'name' => array('required'),
 			'propertyfile' => array(),
 			'propertyshellfile' => array(),
-			'target' => array('required')
+			'env' => array('required')
 		);
 
 		//echo 'Generate and load servers.ini...';
@@ -39,7 +39,16 @@ class Task_Base_Project extends Task_Base_Call {
 
 	protected function fetchAttributes () {
 		parent::fetchAttributes();
-		$this->aAttributes['target'] = $this->sEnvName;
+		$this->aAttributes['env'] = $this->sEnvName;
+	}
+
+	protected function getBoundTask ($sBackupPath) {
+		//$oTarget = Tasks::getTarget($this->oProject->getSXE(), $this->aAttributes['target']);
+		$aTargets = $this->oProject->getSXE()->xpath("env[@name='" . $this->aAttributes['env'] . "']");
+		if (count($aTargets) !== 1) {
+			throw new Exception("Environment '" . $this->aAttributes['env'] . "' not found or not unique in this project!");
+		}
+		return new Task_Base_Environment($aTargets[0], $this->oProject, $sBackupPath, $this->oShell, $this->oLogger);
 	}
 
 	private function initProperties ($sProjectName) {
