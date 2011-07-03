@@ -25,10 +25,8 @@ class Deployment {
 		if(empty($aAllProjectsName))
 			throw new RuntimeException('No project found', 1);
 		*/
-		if(!empty($aAllProjectsName))
-		{
-			foreach($aAllProjectsName as $sProjectName)
-			{
+		if(!empty($aAllProjectsName)) {
+			foreach($aAllProjectsName as $sProjectName) {
 				$aAvailableTargetsByProject[$sProjectName] = Tasks::getAvailableTargetsList($sProjectName);
 			}
 		}
