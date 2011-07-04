@@ -22,7 +22,7 @@
 // TODO Le chemin menant au fichier de configuration INI ou CFG est en absolu pour l'instant. Le passer en relatif ?
 // TODO imposer des attributs desc et les remonter dans le nom des tâches ?
 // TODO détester call cycliques !
-// TODO Registry pour Log, Shell, Numbering ?, Properties ?
+// TODO initProperties() présent dans Target.class.php et Call.class.php...
 
 /*
  * Features :
