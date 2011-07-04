@@ -34,6 +34,12 @@ abstract class Task {
 	}
 
 	/**
+	 * Collection de services.
+	 * @var ServiceContainer
+	 */
+	protected $oServiceContainer;
+
+	/**
 	 * Adaptater shell.
 	 * @var Shell_Interface
 	 */
@@ -77,7 +83,7 @@ abstract class Task {
 	 */
 	protected $sBackupPath;
 
-	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, Shell_Interface $oShell, Logger_Interface $oLogger) {
+	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		$this->oTask = $oTask;
 		$this->oProject = $oProject;
 
@@ -86,8 +92,9 @@ abstract class Task {
 
 		$this->sName = $sCounter . get_class($this);
 		$this->sBackupPath = $sBackupPath . '/' . $this->sName;
-		$this->oShell = $oShell;
-		$this->oLogger = $oLogger;
+		$this->oServiceContainer = $oServiceContainer;
+		$this->oShell = $this->oServiceContainer->getShellAdapter();
+		$this->oLogger = $this->oServiceContainer->getLogAdapter();
 		$this->aAttributeProperties = array();
 		$this->fetchAttributes();
 	}

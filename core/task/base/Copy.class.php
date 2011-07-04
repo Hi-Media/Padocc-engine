@@ -11,8 +11,8 @@ class Task_Base_Copy extends Task {
 		return 'copy';
 	}
 
-	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, Shell_Interface $oShell, Logger_Interface $oLogger) {
-		parent::__construct($oTask, $oProject, $sBackupPath, $oShell, $oLogger);
+	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
+		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
 			'src' => array('srcpath', 'file', 'dir', 'filejoker', 'required'),
 			'destdir' => array('dir', 'required')

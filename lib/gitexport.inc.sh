@@ -19,11 +19,11 @@ if [ "$current_repository" = "$repository" ]; then
 		git reset --hard 1>/dev/null || exit $?
 	fi
 	echo "Git fetch..."
-	git fetch --prune $reponame 1>/dev/null || exit $?
+	git fetch --quiet --prune $reponame 1>/dev/null || exit $?
 else
 	echo "Git clone..."
 	rm -rf "$srcdir" && mkdir -p "$srcdir" && cd "$srcdir" && \
-	git clone --origin "$reponame" "$repository" . 1>/dev/null || exit $?
+	git clone --quiet --origin "$reponame" "$repository" . 1>/dev/null || exit $?
 fi
 
 if git branch -r --no-color | grep -q "$reponame/$ref"; then

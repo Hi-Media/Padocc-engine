@@ -19,12 +19,12 @@ class Task_Base_Project extends Task_Base_Call {
 		return 'project';
 	}
 
-	public function __construct ($sProjectName, $sEnvName, $sExecutionID, Shell_Interface $oShell, Logger_Interface $oLogger) {
+	public function __construct ($sProjectName, $sEnvName, $sExecutionID, ServiceContainer $oServiceContainer) {
 		$this->sEnvName = $sEnvName;
 		$sBackupPath = DEPLOYMENT_BACKUP_DIR . '/' . $sExecutionID;
 		$oProject = Tasks::getProject($sProjectName);
 
-		parent::__construct($oProject, $this, $sBackupPath, $oShell, $oLogger);
+		parent::__construct($oProject, $this, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
 			'name' => array('required'),
 			'propertyfile' => array(),
@@ -48,7 +48,7 @@ class Task_Base_Project extends Task_Base_Call {
 		if (count($aTargets) !== 1) {
 			throw new Exception("Environment '" . $this->aAttributes['env'] . "' not found or not unique in this project!");
 		}
-		return new Task_Base_Environment($aTargets[0], $this->oProject, $sBackupPath, $this->oShell, $this->oLogger);
+		return new Task_Base_Environment($aTargets[0], $this->oProject, $sBackupPath, $this->oServiceContainer);
 	}
 
 	private function initProperties ($sProjectName) {

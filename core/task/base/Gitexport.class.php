@@ -11,8 +11,8 @@ class Task_Base_Gitexport extends Task {
 		return 'gitexport';
 	}
 
-	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, Shell_Interface $oShell, Logger_Interface $oLogger) {
-		parent::__construct($oTask, $oProject, $sBackupPath, $oShell, $oLogger);
+	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
+		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
 			'repository' => array('file', 'required'),
 			'ref' => array('required'),

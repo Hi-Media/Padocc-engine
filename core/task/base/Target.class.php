@@ -13,14 +13,14 @@ class Task_Base_Target extends Task {
 		return 'target';
 	}
 
-	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, Shell_Interface $oShell, Logger_Interface $oLogger) {
-		parent::__construct($oTask, $oProject, $sBackupPath, $oShell, $oLogger);
+	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
+		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
 			'name' => array('required'),
 			'mail' => array()
 		);
 		self::addCounterDivision();
-		$this->aTasks = $this->getTaskInstances($oTask, $this->oProject, $sBackupPath, $this->oShell, $this->oLogger); // et non $this->sBackupPath, pour les sous-tâches
+		$this->aTasks = $this->getTaskInstances($oTask, $this->oProject, $sBackupPath); // et non $this->sBackupPath, pour les sous-tâches
 		self::removeCounterDivision();
 	}
 
@@ -37,8 +37,8 @@ class Task_Base_Target extends Task {
 	 * @throws Exception si tag XML inconnu.
 	 * @see Task
 	 */
-	private function getTaskInstances (SimpleXMLElement $oTarget, Task_Base_Project $oProject, $sBackupPath, Shell_Interface $oShell, Logger_Interface $oLogger) {
-		$oLogger->log('Initialize tasks...');
+	private function getTaskInstances (SimpleXMLElement $oTarget, Task_Base_Project $oProject, $sBackupPath) {
+		$this->oLogger->log('Initialize tasks...');
 		$aAvailableTasks = Tasks::getAvailableTasks();
 
 		// Mise à plat des tâches car SimpleXML regroupe celles successives de même nom
@@ -61,7 +61,7 @@ class Task_Base_Target extends Task {
 			if ( ! isset($aAvailableTasks[$sTag])) {
 				throw new RuntimeException("Unkown task tag: '$sTag'!");
 			} else {
-				$aTaskInstances[] = new $aAvailableTasks[$sTag]($oTask, $oProject, $sBackupPath, $oShell, $oLogger);
+				$aTaskInstances[] = new $aAvailableTasks[$sTag]($oTask, $oProject, $sBackupPath, $this->oServiceContainer);
 			}
 		}
 
