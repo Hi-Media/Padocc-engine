@@ -9,6 +9,7 @@
 
 // TODO implémenter rollback
 // TODO si fatal error, demander au supervisor de proposer un rollback ?
+// TODO s'assurer que si jamais Deployment plante sans envoyer de mail, alors Supervisor le fera !
 // TODO description des tâches
 // TODO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="biblio10.xsd"
 // TODO les sous-target pourraient être préfixées par un underscore
@@ -45,14 +46,12 @@ if (function_exists('xdebug_disable')) {
 $argc--;
 array_shift($argv);
 
-if($argc == 1 && $argv[key($argv)] === "--getProjectsEnvsList")
-{
+if ($argc == 1 && $argv[key($argv)] === "--getProjectsEnvsList") {
 	errorInit(0, null);
 	$oDeployment = new Deployment();
 	$aProjectsEnvsList = $oDeployment->getProjectsEnvsList();
 	echo json_encode($aProjectsEnvsList);
-}
-elseif ($argc < 4) {
+} else if ($argc < 4) {
 	file_put_contents('php://stderr', 'Missing parameters! Example: /usr/bin/php -q ~/deployment/deployment.php project1 dev 20110518121106 /tmp/deployment.php.20110518121106.error.log', E_USER_ERROR);
 	exit(1);
 } else {

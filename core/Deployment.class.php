@@ -8,15 +8,14 @@ class Deployment {
 	public function __construct () {
 		$this->oLogger = new Logger_Adapter(DEPLOYMENT_DEBUG_MODE === 1 ? Logger_Interface::DEBUG : Logger_Interface::INFO);
 		$oShell = new Shell_Adapter($this->oLogger);
-		$oProperties = new Properties_Adapter($oShell);
-		$oNumbering = new Numbering_Adapter();
 
 		$this->oServiceContainer = new ServiceContainer();
 		$this->oServiceContainer
 			->setLogAdapter($this->oLogger)
-			->setPropertiesAdapter($oProperties)
 			->setShellAdapter($oShell)
-			->setNumberingAdapter($oNumbering);
+			->setPropertiesAdapter(new Properties_Adapter($oShell))
+			->setNumberingAdapter(new Numbering_Adapter())
+			->setMailAdapter(new Mail_Adapter());
 	}
 
 	public function run ($sProjectName, $sEnvName, $sExecutionID) {

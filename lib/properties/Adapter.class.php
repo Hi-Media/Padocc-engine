@@ -25,6 +25,10 @@ class Properties_Adapter implements Properties_Interface {
 		return $this->aProperties[$sPropertyName];
 	}
 
+	public function addProperty ($sPropertyName, $sValue) {
+		$this->aProperties[$sPropertyName] = (string)$sValue;
+	}
+
 	public function loadConfigIniFile ($sIniPath) {
 		if ( ! file_exists($sIniPath)) {
 			throw new Exception("Property file '$sIniPath' not found!");

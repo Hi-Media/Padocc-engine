@@ -38,12 +38,11 @@ class Task_Base_Call extends Task {
 	}
 
 	protected function getBoundTask ($sBackupPath) {
-		//$oTarget = Tasks::getTarget($this->oProject->getSXE(), $this->aAttributes['target']);
 		$aTargets = $this->oProject->getSXE()->xpath("target[@name='" . $this->aAttributes['target'] . "']");
 		if (count($aTargets) !== 1) {
 			throw new Exception("Target '" . $this->aAttributes['target'] . "' not found or not unique in this project!");
 		}
-		return new Task_Base_Target($aTargets[0], $this->oProject, $sBackupPath, $this->oShell, $this->oLogger);
+		return new Task_Base_Target($aTargets[0], $this->oProject, $sBackupPath, $this->oServiceContainer);
 	}
 
 	public function check () {
