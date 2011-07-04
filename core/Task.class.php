@@ -11,15 +11,6 @@ abstract class Task {
 	protected $oNumbering;
 
 	/**
-	 * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
-	 *
-	 * @return string nom du tag XML correspondant à cette tâche dans les config projet.
-	 */
-	public static function getTagName () {
-		throw new RuntimeException('Not implemented!');
-	}
-
-	/**
 	 * Collection de services.
 	 * @var ServiceContainer
 	 */
@@ -74,6 +65,15 @@ abstract class Task {
 	 * @var string
 	 */
 	protected $sBackupPath;
+
+	/**
+	 * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
+	 *
+	 * @return string nom du tag XML correspondant à cette tâche dans les config projet.
+	 */
+	public static function getTagName () {
+		throw new RuntimeException('Not implemented!');
+	}
 
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		$this->oTask = $oTask;

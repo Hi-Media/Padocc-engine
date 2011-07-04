@@ -15,7 +15,9 @@ class Task_Base_Environment extends Task_Base_Target {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
 			'name' => array('required'),
-			'mail' => array()
+			'mail' => array(),
+			'propertyinifile' => array('srcpath'),
+			'propertyshellfile' => array('srcpath'),
 		);
 	}
 }

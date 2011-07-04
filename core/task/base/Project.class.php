@@ -25,14 +25,10 @@ class Task_Base_Project extends Task_Base_Call {
 		parent::__construct($oProject, $this, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
 			'name' => array('required'),
-			'propertyfile' => array('srcpath'),
+			'propertyinifile' => array('srcpath'),
 			'propertyshellfile' => array('srcpath'),
 			'env' => array('required')
 		);
-
-		//echo 'Generate and load servers.ini...';
-		//echo 'OK' . "\n";
-		$this->initProperties();
 	}
 
 	protected function fetchAttributes () {
@@ -47,15 +43,6 @@ class Task_Base_Project extends Task_Base_Call {
 			throw new Exception("Environment '" . $this->aAttributes['env'] . "' not found or not unique in this project!");
 		}
 		return new Task_Base_Environment($aTargets[0], $this->oProject, $sBackupPath, $this->oServiceContainer);
-	}
-
-	private function initProperties () {
-		if ( ! empty($this->aAttributes['propertyfile'])) {
-			$this->oProperties->loadConfigIniFile($this->aAttributes['propertyfile']);
-		}
-		if ( ! empty($this->aAttributes['propertyshellfile'])) {
-			$this->oProperties->loadConfigShellFile($this->aAttributes['propertyshellfile']);
-		}
 	}
 
 	public function check () {

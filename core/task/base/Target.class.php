@@ -19,9 +19,19 @@ class Task_Base_Target extends Task {
 			'name' => array('required'),
 			'mail' => array()
 		);
+		$this->initProperties();
 		$this->oNumbering->addCounterDivision();
 		$this->aTasks = $this->getTaskInstances($oTask, $this->oProject, $sBackupPath); // et non $this->sBackupPath, pour les sous-tâches
 		$this->oNumbering->removeCounterDivision();
+	}
+
+	protected function initProperties () {
+		if ( ! empty($this->aAttributes['propertyshellfile'])) {
+			$this->oProperties->loadConfigShellFile($this->aAttributes['propertyshellfile']);
+		}
+		if ( ! empty($this->aAttributes['propertyinifile'])) {
+			$this->oProperties->loadConfigIniFile($this->aAttributes['propertyinifile']);
+		}
 	}
 
 	/**
