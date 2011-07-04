@@ -27,20 +27,14 @@ class Task_Base_Project extends Task_Base_Call {
 			'name' => array('required'),
 			'propertyinifile' => array('srcpath'),
 			'propertyshellfile' => array('srcpath'),
-			'env' => array('required')
 		);
-	}
-
-	protected function fetchAttributes () {
-		parent::fetchAttributes();
-		$this->aAttributes['env'] = $this->sEnvName;
 	}
 
 	protected function getBoundTask ($sBackupPath) {
 		//$oTarget = Tasks::getTarget($this->oProject->getSXE(), $this->aAttributes['target']);
-		$aTargets = $this->oProject->getSXE()->xpath("env[@name='" . $this->aAttributes['env'] . "']");
+		$aTargets = $this->oProject->getSXE()->xpath("env[@name='" . $this->sEnvName . "']");
 		if (count($aTargets) !== 1) {
-			throw new Exception("Environment '" . $this->aAttributes['env'] . "' not found or not unique in this project!");
+			throw new Exception("Environment '" . $this->sEnvName . "' not found or not unique in this project!");
 		}
 		return new Task_Base_Environment($aTargets[0], $this->oProject, $sBackupPath, $this->oServiceContainer);
 	}
