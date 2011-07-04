@@ -2,8 +2,6 @@
 
 class Task_Base_Project extends Task_Base_Call {
 
-	private $aProperties;
-
 	/**
 	 * Nom de l'environnement (prod, QA, ...) cible.
 	 * @var string
@@ -27,14 +25,14 @@ class Task_Base_Project extends Task_Base_Call {
 		parent::__construct($oProject, $this, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
 			'name' => array('required'),
-			'propertyfile' => array(),
-			'propertyshellfile' => array(),
+			'propertyfile' => array('srcpath'),
+			'propertyshellfile' => array('srcpath'),
 			'env' => array('required')
 		);
 
 		//echo 'Generate and load servers.ini...';
 		//echo 'OK' . "\n";
-		$this->initProperties($sProjectName);
+		$this->initProperties();
 	}
 
 	protected function fetchAttributes () {
@@ -51,37 +49,17 @@ class Task_Base_Project extends Task_Base_Call {
 		return new Task_Base_Environment($aTargets[0], $this->oProject, $sBackupPath, $this->oServiceContainer);
 	}
 
-	private function initProperties ($sProjectName) {
+	private function initProperties () {
 		if ( ! empty($this->aAttributes['propertyfile'])) {
-			$this->loadPropertyFile($this->aAttributes['propertyfile']);
-		} else if ( ! empty($this->aAttributes['propertyshellfile'])) {
-			if ( ! file_exists($this->aAttributes['propertyshellfile'])) {
-				throw new Exception("Property file '" . $this->aAttributes['propertyshellfile'] . "' not found!");
-			}
-			$sPropertyIniPath = DEPLOYMENT_RESOURCES_DIR . "/$sProjectName.ini";
-			$this->oShell->exec(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/cfg2ini.inc.sh "' . $this->aAttributes['propertyshellfile'] . '" "' . $sPropertyIniPath . '"');
-			$this->loadPropertyFile($sPropertyIniPath);
-		} else {
-			$this->aProperties = array();
+			$this->oProperties->loadConfigIniFile($this->aAttributes['propertyfile']);
 		}
-	}
-
-	private function loadPropertyFile ($sPropertyPath) {
-		if ( ! file_exists($sPropertyPath)) {
-			throw new Exception("Property file '$sPropertyPath' not found!");
-		}
-		$this->aProperties = parse_ini_file($sPropertyPath);
-		if ($this->aProperties === false) {
-			throw new Exception("Load property file '$sPropertyPath' failed!");
+		if ( ! empty($this->aAttributes['propertyshellfile'])) {
+			$this->oProperties->loadConfigShellFile($this->aAttributes['propertyshellfile']);
 		}
 	}
 
 	public function check () {
 		parent::check();
-
-		if ( ! empty($this->aAttributes['propertyfile']) && ! empty($this->aAttributes['propertyshellfile'])) {
-			throw new Exception("Attributes 'propertyfile' and 'propertyshellfile' are exclusive!");
-		}
 	}
 
 	public function execute () {
@@ -92,12 +70,5 @@ class Task_Base_Project extends Task_Base_Call {
 
 	public function getSXE () {
 		return $this->oTask;
-	}
-
-	public function getProperty ($sPropertyName) {
-		if ( ! isset($this->aProperties[$sPropertyName])) {
-			throw new DomainException("Unknown property '$sPropertyName'!");
-		}
-		return $this->aProperties[$sPropertyName];
 	}
 }

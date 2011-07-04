@@ -8,10 +8,12 @@ class Deployment {
 	public function __construct () {
 		$this->oLogger = new Logger_Adapter(DEPLOYMENT_DEBUG_MODE === 1 ? Logger_Interface::DEBUG : Logger_Interface::INFO);
 		$oShell = new Shell_Adapter($this->oLogger);
+		$oProperties = new Properties_Adapter($oShell);
 
 		$this->oServiceContainer = new ServiceContainer();
 		$this->oServiceContainer->setLogAdapter($this->oLogger);
 		$this->oServiceContainer->setShellAdapter($oShell);
+		$this->oServiceContainer->setPropertiesAdapter($oProperties);
 	}
 
 	public function run ($sProjectName, $sEnvName, $sExecutionID) {
