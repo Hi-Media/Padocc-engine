@@ -12,14 +12,17 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 	private $oServiceContainer;
 
 	private $oLogger;
+	private $oProperties;
 	private $oShell;
 
 	public function setUp () {
 		$this->oLogger = new Logger_Adapter(Logger_Interface::WARNING);
 		$this->oShell = new Shell_Adapter($this->oLogger);
+		$this->oProperties = new Properties_Adapter($this->oShell);
 
 		$this->oServiceContainer = new ServiceContainer();
 		$this->oServiceContainer->setLogAdapter($this->oLogger);
+		$this->oServiceContainer->setPropertiesAdapter($this->oProperties);
 		$this->oServiceContainer->setShellAdapter($this->oShell);
 	}
 
@@ -47,11 +50,14 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 	 * @covers Task::expandPaths
 	 */
 	public function testExpandPathsWithOneSimpleParameter () {
-		$oMockProject = $this->getMock('Task_Base_Project', array('getProperty'), array(), '', false);
-		$oMockProject->expects($this->at(0))->method('getProperty')
+		$oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+
+		$oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array(), '', false);
+		$oMockProperties->expects($this->at(0))->method('getProperty')
 			->with($this->equalTo('p'))
 			->will($this->returnValue('simple_value'));
-		$oMockProject->expects($this->exactly(1))->method('getProperty');
+		$oMockProperties->expects($this->exactly(1))->method('getProperty');
+		$this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
 		$oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, 'backup_path', $this->oServiceContainer));
 
@@ -67,11 +73,14 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 	 * @covers Task::expandPaths
 	 */
 	public function testExpandPathsWithOneComplexParameter () {
-		$oMockProject = $this->getMock('Task_Base_Project', array('getProperty'), array(), '', false);
-		$oMockProject->expects($this->at(0))->method('getProperty')
+		$oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+
+		$oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array(), '', false);
+		$oMockProperties->expects($this->at(0))->method('getProperty')
 			->with($this->equalTo('p'))
 			->will($this->returnValue('123 three values'));
-		$oMockProject->expects($this->exactly(1))->method('getProperty');
+		$oMockProperties->expects($this->exactly(1))->method('getProperty');
+		$this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
 		$oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, 'backup_path', $this->oServiceContainer));
 
@@ -87,14 +96,17 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 	 * @covers Task::expandPaths
 	 */
 	public function testExpandPathsWithTwoComplexParameter () {
-		$oMockProject = $this->getMock('Task_Base_Project', array('getProperty'), array(), '', false);
-		$oMockProject->expects($this->at(0))->method('getProperty')
+		$oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+
+		$oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array(), '', false);
+		$oMockProperties->expects($this->at(0))->method('getProperty')
 			->with($this->equalTo('p'))
 			->will($this->returnValue('123 three values'));
-		$oMockProject->expects($this->at(1))->method('getProperty')
+		$oMockProperties->expects($this->at(1))->method('getProperty')
 			->with($this->equalTo('q'))
 			->will($this->returnValue('0 1'));
-		$oMockProject->expects($this->exactly(2))->method('getProperty');
+		$oMockProperties->expects($this->exactly(2))->method('getProperty');
+		$this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
 		$oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, 'backup_path', $this->oServiceContainer));
 

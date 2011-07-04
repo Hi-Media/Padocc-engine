@@ -52,6 +52,12 @@ abstract class Task {
 	protected $oLogger;
 
 	/**
+	 * Adaptateur de propriétés.
+	 * @var Properties_Interface
+	 */
+	protected $oProperties;
+
+	/**
 	 * Contenu XML de la tâche.
 	 * @var SimpleXMLElement
 	 */
@@ -95,6 +101,7 @@ abstract class Task {
 		$this->oServiceContainer = $oServiceContainer;
 		$this->oShell = $this->oServiceContainer->getShellAdapter();
 		$this->oLogger = $this->oServiceContainer->getLogAdapter();
+		$this->oProperties = $this->oServiceContainer->getPropertiesAdapter();
 		$this->aAttributeProperties = array();
 		$this->fetchAttributes();
 	}
@@ -119,7 +126,7 @@ abstract class Task {
 				$aToProcessPaths = $aPaths;
 				$aPaths = array();
 
-					$raw_value = $this->oProject->getProperty($property);
+				$raw_value = $this->oProperties->getProperty($property);
 				$values = explode(' ', $raw_value);
 				foreach ($aToProcessPaths as $s) {
 					foreach ($values as $value) {
