@@ -17,7 +17,6 @@ class Task_Base_Target extends Task {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
 			'name' => array('required'),
-			'mail' => array()
 		);
 		$this->initProperties();
 		$this->oNumbering->addCounterDivision();
@@ -80,12 +79,21 @@ class Task_Base_Target extends Task {
 
 	public function check () {
 		parent::check();
+
+		if ( ! empty($this->aAttributes['mailto'])) {
+			$this->aAttributes['mailto'] = str_replace(array(';', ' '), array(',', ''), $this->aAttributes['mailto']);
+		}
+
 		foreach ($this->aTasks as $oTask) {
 			$oTask->check();
 		}
 	}
 
 	public function execute () {
+		if ( ! empty($this->aAttributes['mailto'])) {
+			$this->oLogger->log('[MAILTO] ' . $this->aAttributes['mailto']);
+		}
+
 		foreach ($this->aTasks as $oTask) {
 			$oTask->backup();
 			$oTask->execute();

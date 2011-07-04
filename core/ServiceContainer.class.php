@@ -26,10 +26,17 @@ class ServiceContainer {
 	 */
 	private $oNumbering;
 
+	/**
+	 * Adaptateur d'envoi mail.
+	 * @var Mail_Interface
+	 */
+	private $oMail;
+
 	public function __construct () {
 		$this->oLogger = NULL;
 		$this->oProperties = NULL;
 		$this->oShell = NULL;
+		$this->oMail = NULL;
 	}
 
 	public function setLogAdapter (Logger_Interface $oLogger) {
@@ -52,6 +59,11 @@ class ServiceContainer {
 		return $this;
 	}
 
+	public function setMailAdapter (Mail_Interface $oMail) {
+		$this->oMail = $oMail;
+		return $this;
+	}
+
 	public function getLogAdapter () {
 		return $this->oLogger;
 	}
@@ -66,5 +78,9 @@ class ServiceContainer {
 
 	public function getNumberingAdapter () {
 		return $this->oNumbering;
+	}
+
+	public function getMailAdapter () {
+		return $this->oMail;
 	}
 }

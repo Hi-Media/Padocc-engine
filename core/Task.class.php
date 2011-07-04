@@ -23,6 +23,12 @@ abstract class Task {
 	protected $oShell;
 
 	/**
+	 * Adaptater mail.
+	 * @var Mail_Interface
+	 */
+	protected $oMail;
+
+	/**
 	 * Adaptateur de log.
 	 * @var Logger_Interface
 	 */
@@ -84,6 +90,7 @@ abstract class Task {
 		$this->oLogger = $this->oServiceContainer->getLogAdapter();
 		$this->oProperties = $this->oServiceContainer->getPropertiesAdapter();
 		$this->oNumbering = $this->oServiceContainer->getNumberingAdapter();
+		$this->oMail = $this->oServiceContainer->getMailAdapter();
 
 		$sCounter = $this->oNumbering->getNextCounterValue() . '_';
 		$sCounter = (strlen($sCounter) === 3 ? '' : substr($sCounter, 2));
