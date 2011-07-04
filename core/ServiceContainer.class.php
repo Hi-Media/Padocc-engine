@@ -20,6 +20,12 @@ class ServiceContainer {
 	 */
 	private $oShell;
 
+	/**
+	 * Adaptateur de numérotation.
+	 * @var Numbering_Interface
+	 */
+	private $oNumbering;
+
 	public function __construct () {
 		$this->oLogger = NULL;
 		$this->oProperties = NULL;
@@ -41,6 +47,11 @@ class ServiceContainer {
 		return $this;
 	}
 
+	public function setNumberingAdapter (Numbering_Interface $oNumbering) {
+		$this->oNumbering = $oNumbering;
+		return $this;
+	}
+
 	public function getLogAdapter () {
 		return $this->oLogger;
 	}
@@ -51,5 +62,9 @@ class ServiceContainer {
 
 	public function getShellAdapter () {
 		return $this->oShell;
+	}
+
+	public function getNumberingAdapter () {
+		return $this->oNumbering;
 	}
 }

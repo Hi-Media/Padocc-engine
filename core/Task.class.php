@@ -4,25 +4,11 @@ abstract class Task {
 
 	/**
 	 * Compteur d'instances pour s'y retrouver dans les backups des tâches.
-	 *
-	 * @var int
+	 * @var Numbering_Interface
 	 * @see $sName
 	 * @see $sBackupPath
 	 */
-	protected static $aCounter = array(0);
-
-	protected static function getNextCounterValue () {
-		self::$aCounter[count(static::$aCounter) - 1]++;
-		return implode('.', static::$aCounter);
-	}
-
-	protected static function addCounterDivision () {
-		self::$aCounter[] = 0;
-	}
-
-	protected static function removeCounterDivision () {
-		array_pop(self::$aCounter);
-	}
+	protected $oNumbering;
 
 	/**
 	 * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
@@ -93,15 +79,17 @@ abstract class Task {
 		$this->oTask = $oTask;
 		$this->oProject = $oProject;
 
-		$sCounter = self::getNextCounterValue() . '_';
-		$sCounter = (strlen($sCounter) === 3 ? '' : substr($sCounter, 2));
-
-		$this->sName = $sCounter . get_class($this);
-		$this->sBackupPath = $sBackupPath . '/' . $this->sName;
 		$this->oServiceContainer = $oServiceContainer;
 		$this->oShell = $this->oServiceContainer->getShellAdapter();
 		$this->oLogger = $this->oServiceContainer->getLogAdapter();
 		$this->oProperties = $this->oServiceContainer->getPropertiesAdapter();
+		$this->oNumbering = $this->oServiceContainer->getNumberingAdapter();
+
+		$sCounter = $this->oNumbering->getNextCounterValue() . '_';
+		$sCounter = (strlen($sCounter) === 3 ? '' : substr($sCounter, 2));
+		$this->sName = $sCounter . get_class($this);
+		$this->sBackupPath = $sBackupPath . '/' . $this->sName;
+
 		$this->aAttributeProperties = array();
 		$this->fetchAttributes();
 	}

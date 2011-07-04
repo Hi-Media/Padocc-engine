@@ -9,11 +9,14 @@ class Deployment {
 		$this->oLogger = new Logger_Adapter(DEPLOYMENT_DEBUG_MODE === 1 ? Logger_Interface::DEBUG : Logger_Interface::INFO);
 		$oShell = new Shell_Adapter($this->oLogger);
 		$oProperties = new Properties_Adapter($oShell);
+		$oNumbering = new Numbering_Adapter();
 
 		$this->oServiceContainer = new ServiceContainer();
-		$this->oServiceContainer->setLogAdapter($this->oLogger);
-		$this->oServiceContainer->setShellAdapter($oShell);
-		$this->oServiceContainer->setPropertiesAdapter($oProperties);
+		$this->oServiceContainer
+			->setLogAdapter($this->oLogger)
+			->setPropertiesAdapter($oProperties)
+			->setShellAdapter($oShell)
+			->setNumberingAdapter($oNumbering);
 	}
 
 	public function run ($sProjectName, $sEnvName, $sExecutionID) {

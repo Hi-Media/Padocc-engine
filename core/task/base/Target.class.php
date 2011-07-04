@@ -19,9 +19,9 @@ class Task_Base_Target extends Task {
 			'name' => array('required'),
 			'mail' => array()
 		);
-		self::addCounterDivision();
+		$this->oNumbering->addCounterDivision();
 		$this->aTasks = $this->getTaskInstances($oTask, $this->oProject, $sBackupPath); // et non $this->sBackupPath, pour les sous-tâches
-		self::removeCounterDivision();
+		$this->oNumbering->removeCounterDivision();
 	}
 
 	/**

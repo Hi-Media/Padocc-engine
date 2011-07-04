@@ -11,24 +11,22 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 	 */
 	private $oServiceContainer;
 
-	private $oLogger;
-	private $oProperties;
-	private $oShell;
-
 	public function setUp () {
-		$this->oLogger = new Logger_Adapter(Logger_Interface::WARNING);
-		$this->oShell = new Shell_Adapter($this->oLogger);
-		$this->oProperties = new Properties_Adapter($this->oShell);
+		$oLogger = new Logger_Adapter(Logger_Interface::WARNING);
+		$oShell = new Shell_Adapter($oLogger);
+		$oProperties = new Properties_Adapter($oShell);
+		$oNumbering = new Numbering_Adapter();
 
 		$this->oServiceContainer = new ServiceContainer();
-		$this->oServiceContainer->setLogAdapter($this->oLogger);
-		$this->oServiceContainer->setPropertiesAdapter($this->oProperties);
-		$this->oServiceContainer->setShellAdapter($this->oShell);
+		$this->oServiceContainer
+			->setLogAdapter($oLogger)
+			->setPropertiesAdapter($oProperties)
+			->setShellAdapter($oShell)
+			->setNumberingAdapter($oNumbering);
 	}
 
 	public function tearDown() {
-		$this->oLogger = NULL;
-		$this->oShell = NULL;
+		$this->oServiceContainer = NULL;
 	}
 
 	/**
@@ -363,7 +361,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 	 * @covers Task::check
 	 */
 	public function testCheckParameterThrowExceptionWithSrcpathAttribute () {
-		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oServiceContainer->getLogAdapter()));
 		$oMockShell->expects($this->exactly(1))->method('exec');
 		$oMockShell->expects($this->at(0))->method('exec')->will($this->returnValue(array('0')));
 		$this->oServiceContainer->setShellAdapter($oMockShell);

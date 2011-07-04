@@ -22,11 +22,11 @@ class Task_Base_Call extends Task {
 		$this->aAttributeProperties = array(
 			'target' => array('required')
 		);
-		self::addCounterDivision();
+		$this->oNumbering->addCounterDivision();
 		$this->oBoundTask = $this->getBoundTask($sBackupPath);
 		//$oTarget = Tasks::getTarget($this->oProject->getSXE(), $this->aAttributes['target']);
 		//$this->oBoundTask = new Task_Base_Target($oTarget, $this->oProject, $sBackupPath, $this->oShell, $this->oLogger);
-		self::removeCounterDivision();
+		$this->oNumbering->removeCounterDivision();
 	}
 
 	protected function getBoundTask ($sBackupPath) {
