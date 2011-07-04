@@ -81,7 +81,8 @@ class Task_Base_Target extends Task {
 		parent::check();
 
 		if ( ! empty($this->aAttributes['mailto'])) {
-			$this->aAttributes['mailto'] = str_replace(array(';', ' '), array(',', ''), $this->aAttributes['mailto']);
+			$this->aAttributes['mailto'] = str_replace(array(';', ','), array(' ', ' '), trim($this->aAttributes['mailto']));
+			$this->aAttributes['mailto'] = preg_replace('/\s{2,}/', ' ', $this->aAttributes['mailto']);
 		}
 
 		foreach ($this->aTasks as $oTask) {

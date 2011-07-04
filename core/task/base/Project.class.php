@@ -48,7 +48,7 @@ class Task_Base_Project extends Task_Base_Call {
 		//$this->sendEndMail();
 	}
 
-	private function sendStartMail () {
+	/*private function sendStartMail () {
 		$sProjectName = $this->oProperties->getProperty('project_name');
 		$sEnvName = $this->oProperties->getProperty('environment_name');
 		$sNow = date('Y-m-d H:i:s');
@@ -94,7 +94,7 @@ class Task_Base_Project extends Task_Base_Call {
 		if ($result === FALSE) {
 			throw new Exception('Email not sent!');
 		}
-	}
+	}*/
 
 	public function backup () {}
 
