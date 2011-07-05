@@ -32,7 +32,7 @@
 // TODO connecteur CVS ne gère que le trunk
 // TODO remonter heartbeat dans AAI
 // TODO add cron supervisor errors
-// TODO langues : https://admin.twenga.com/translation_tool/build_language_files2.php
+// TODO langues : https://admin.twenga.com/translation_tool/build_language_files2.php?project=rts
 
 /*
  * Features :
