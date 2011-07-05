@@ -49,7 +49,7 @@
 			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1" /> -->
 		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="v4.11.0"
 			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1" />
-		<cvsexcport repository=":extssh:@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
+		<cvsexport repository=":extssh:@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
 			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_cvsexport1" />
 	</env>
 
