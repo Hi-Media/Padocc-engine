@@ -28,6 +28,9 @@
 // TODO AAI MAILTO
 // TODO limiter le nb de lignes d'historique dans AAI::dashboard
 // TODO archivage des logs
+// TODO connecteur CVS ne gère que le trunk
+// TODO remonter heartbeat dans AAI
+// TODO add cron supervisor errors
 
 /*
  * Features :
