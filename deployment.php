@@ -26,6 +26,8 @@
 // TODO initProperties() présent dans Target.class.php et Call.class.php...
 // TODO surveiller SUPERVISOR_ERROR_LOG_FILE
 // TODO AAI MAILTO
+// TODO limiter le nb de lignes d'historique dans AAI::dashboard
+// TODO archivage des logs
 
 /*
  * Features :
