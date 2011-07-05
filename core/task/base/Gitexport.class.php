@@ -16,16 +16,19 @@ class Task_Base_Gitexport extends Task {
 		$this->aAttributeProperties = array(
 			'repository' => array('file', 'required'),
 			'ref' => array('required'),
-			'srcdir' => array('dir', 'required'),
+			'srcdir' => array('dir'),
 			'destdir' => array('dir', 'required', 'allow_parameters')
 		);
 	}
 
 	public function check () {
 		parent::check();
-		/*if ( ! empty($this->aAttributes['branch']) XOR ! empty($this->aAttributes['tag'])) {
-			throw new Exception("Attributes 'branch' and 'tag' are exclusive and one of them must be filled!");
-		}*/
+		if (empty($this->aAttributes['srcdir'])) {
+			$this->aAttributes['srcdir'] =
+				DEPLOYMENT_REPOSITORIES_DIR . '/git/'
+				. $this->oProperties->getProperty('project_name') . '_'
+				. $this->oProperties->getProperty('environment_name');
+		}
 	}
 
 	public function execute () {
