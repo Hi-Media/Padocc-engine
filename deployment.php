@@ -6,6 +6,7 @@
 // rm -rf /home/gaubry/deployment_backup/* && rm -rf /home/gaubry/deployment_test/*
 // PHPUnit : aller dans /tests, puis : phpunit
 // ln -s /home/gaubry/deployment/deployment.php /home/gaubry/supervisor/scripts/php/deployment.php
+// CRON * * * * * date +\%s > /home/gaubry/cron_heartbeat.txt
 
 // TODO implémenter rollback
 // TODO si fatal error, demander au supervisor de proposer un rollback ?
@@ -31,6 +32,7 @@
 // TODO connecteur CVS ne gère que le trunk
 // TODO remonter heartbeat dans AAI
 // TODO add cron supervisor errors
+// TODO langues : https://admin.twenga.com/translation_tool/build_language_files2.php
 
 /*
  * Features :
