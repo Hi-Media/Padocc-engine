@@ -42,8 +42,10 @@ class Task_Base_Cvsexport extends Task {
 		$this->oLogger->log(implode("\n", $result));
 
 		$sCVSPath = $this->aAttributes['srcdir'] . '/' . $this->aAttributes['module'];
-		$result = $this->oShell->sync($sCVSPath . '/*', $this->expandPaths($this->aAttributes['destdir']));
-		$this->oLogger->log(implode("\n", $result));
+		$results = $this->oShell->sync($sCVSPath . '/*', $this->expandPaths($this->aAttributes['destdir']));
+		foreach ($results as $result) {
+			$this->oLogger->log($result);
+		}
 	}
 
 	public function backup () {
