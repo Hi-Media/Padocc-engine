@@ -8,6 +8,9 @@
 // ln -s /home/gaubry/deployment/deployment.php /home/gaubry/supervisor/scripts/php/deployment.php
 // CRON * * * * * date +\%s > /home/gaubry/cron_heartbeat.txt
 
+// BOC : deploy/wudEPR3c
+// Sur deploy-02 : mysql -u supervisor -ps53eBREw supervisor -h localhost
+
 // alias mprodaai='mysql -u aai -pa19AI03 aai -h maai-01.twenga.com --prompt="maai-01.twenga.com:aai>"'
 // alias mdevaai='mysql -u twengadevb2c -ptopprodu devaai1 -h supermicro04 --prompt="supermicro04:devaai1>"'
 
