@@ -9,9 +9,6 @@ define('DEPLOYMENT_TASKS_DIR', DEPLOYMENT_CORE_DIR . '/task');
 define('DEPLOYMENT_RESOURCES_DIR', DEPLOYMENT_ROOT_DIR . '/resources');
 define('DEPLOYMENT_REPOSITORIES_DIR', '$HOME/deployment_repositories');
 define('DEPLOYMENT_BACKUP_DIR', '$HOME/deployment_backup');
-
-define('DEPLOYMENT_SHELL_INCLUDE', '. ' . DEPLOYMENT_CONF_DIR . '/config.inc.sh');
-
 define('DEPLOYMENT_DEBUG_MODE', 1);
 define('DEPLOYMENT_BASH_PATH', '/bin/bash');
 define('DEPLOYMENT_RSYNC_MAX_NB_PROCESSES', 3);
