@@ -19,6 +19,11 @@ class Deployment {
 	}
 
 	public function run ($sProjectName, $sEnvName, $sExecutionID) {
+		$oProperties = $this->oServiceContainer->getPropertiesAdapter();
+		$oProperties->addProperty('project_name', $sProjectName);
+		$oProperties->addProperty('environment_name', $sEnvName);
+		$oProperties->addProperty('execution_id', $sExecutionID);
+
 		$oProject = new Task_Base_Project($sProjectName, $sEnvName, $sExecutionID, $this->oServiceContainer);
 		$this->oLogger->log('Check tasks...');
 		$oProject->check();

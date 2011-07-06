@@ -8,6 +8,9 @@
 // ln -s /home/gaubry/deployment/deployment.php /home/gaubry/supervisor/scripts/php/deployment.php
 // CRON * * * * * date +\%s > /home/gaubry/cron_heartbeat.txt
 
+// alias mprodaai='mysql -u aai -pa19AI03 aai -h maai-01.twenga.com --prompt="maai-01.twenga.com:aai>"'
+// alias mdevaai='mysql -u twengadevb2c -ptopprodu devaai1 -h supermicro04 --prompt="supermicro04:devaai1>"'
+
 // TODO implémenter rollback
 // TODO si fatal error, demander au supervisor de proposer un rollback ?
 // TODO s'assurer que si jamais Deployment plante sans envoyer de mail, alors Supervisor le fera !
@@ -33,6 +36,10 @@
 // TODO remonter heartbeat dans AAI
 // TODO add cron supervisor errors
 // TODO langues : https://admin.twenga.com/translation_tool/build_language_files2.php?project=rts
+// TODO lib cURL : see curl_setopt_array
+// TODO AAI bien gérer qd second ajout (projet, env) refusé.
+// TODO migrer Gitexport et Cvsexport dans task/extended ET avec CamelCase
+// TODO multi rsync n'effectue pas les mkdir en parallèle
 
 /*
  * Features :

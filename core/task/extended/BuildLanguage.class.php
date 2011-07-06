@@ -24,27 +24,57 @@ class Task_Extended_BuildLanguage extends Task {
 	}
 
 	public function execute () {
+		$sLanguagesPath = tempnam('/tmp', $this->oProperties->getProperty('execution_id') . '_languages_');
+		$fh = fopen($sLanguagesPath, 'w');
 		$aCurlParameters = array(
 			'url' => 'https://admin.twenga.com/translation_tool/build_language_files2.php?project=rts',
 			'login' => 'gaubry',
-			'password' => 'xxx',
+			'password' => 'jR7nN0',
 			'user_agent' => Curl::$USER_AGENTS['FireFox3'],
 			'referer' => 'http://aai.twenga.com',
-			//'header' => array('Expect:'),
-			//'file' => $fh,
-			//'return_header' => 0,
+			'file' => $fh,
+			'timeout' => 120,
+			'return_header' => 0,
 		);
+
 		$result = Curl::disguiseCurl($aCurlParameters);
-		var_dump($result);
+		fclose($fh);
+
 		if ( ! empty($result['curl_error'])) {
-			throw new RuntimeException($result['curl_error']);
+			// Selon les configuration serveur, il se peut que le retour de cURL soit mal interprété.
+			// Du coup on vérifie si c'est vrai en testant l'archive :
+			if (preg_match('/^transfer closed with \d+ bytes remaining to read$/i', $result['curl_error']) === 1) {
+				$this->oShell->exec('tar -tf "' . $sLanguagesPath . '"');
+			} else {
+				@unlink($sLanguagesPath);
+				throw new RuntimeException($result['curl_error']);;
+			}
+
 		} else if ($result['http_code'] < 200 || $result['http_code'] >= 300) {
+			@unlink($sLanguagesPath);
 			throw new RuntimeException(
 				'Return HTTP code: ' . $result['http_code']
 				. '. Last URL: ' . $result['last_url']
 				. '. Body: ' . $result['body']
 			);
 		}
+		//$sLanguagesPath = '/home/gaubry/languages.tar.gz';
+
+		// Diffusion de l'archive :
+		$aDestDirs = $this->expandPaths($this->aAttributes['destdir']);
+		foreach ($aDestDirs as $sDestDir) {
+			$result = $this->oShell->copy($sLanguagesPath, $sDestDir);
+			$this->oLogger->log(implode("\n", $result));
+		}
+
+		// Décompression des archives :
+		$sPatternCmd = 'cd %1$s && tar -xf %1$s/"' . basename($sLanguagesPath) . '" && rm -f %1$s/"' . basename($sLanguagesPath) . '"';
+		foreach ($aDestDirs as $sDestDir) {
+			$result = $this->oShell->execSSH($sPatternCmd, $sDestDir);
+			$this->oLogger->log(implode("\n", $result));
+		}
+
+		@unlink($sLanguagesPath);
 	}
 
 	public function backup () {
