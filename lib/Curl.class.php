@@ -56,21 +56,12 @@ class Curl {
 		curl_setopt($curl, CURLOPT_ENCODING, 'gzip,deflate');
 		curl_setopt($curl, CURLOPT_AUTOREFERER, true);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($curl, CURLOPT_VERBOSE, 1);
+//		curl_setopt($curl, CURLOPT_VERBOSE, 1);
 		curl_setopt($curl, CURLOPT_TIMEOUT, $options['timeout']);
 		curl_setopt($curl, CURLOPT_HEADER, $options['return_header']);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
-
-        curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_ANY); // TODO XXX
-//		curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-//		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-//		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
-
-//		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
-//		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
-//		curl_setopt($curl, CURLOPT_CAINFO, '/etc/ssl/certs/');
-
+        curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
         curl_setopt($curl, CURLOPT_FRESH_CONNECT, 1); // don't use a cached version of the url
 
         if ($options['file'] !== NULL) {

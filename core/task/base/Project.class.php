@@ -24,9 +24,6 @@ class Task_Base_Project extends Task_Base_Call {
 			'propertyinifile' => array('srcpath'),
 			'propertyshellfile' => array('srcpath'),
 		);
-
-		$this->oProperties->addProperty('project_name', $sProjectName);
-		$this->oProperties->addProperty('environment_name', $sEnvName);
 	}
 
 	protected function getBoundTask ($sBackupPath) {

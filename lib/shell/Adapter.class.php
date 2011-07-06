@@ -29,7 +29,7 @@ class Shell_Adapter implements Shell_Interface {
 		$sErrorMsg = exec($sFullCmd, $aResult, $iReturnCode);
 		if ($iReturnCode !== 0) {
 			//throw new Exception($sErrorMsg);
-			throw new Exception(implode("\n", $aResult), $iReturnCode);
+			throw new RuntimeException(implode("\n", $aResult), $iReturnCode);
 		}
 		return $aResult;
 	}
@@ -39,7 +39,7 @@ class Shell_Adapter implements Shell_Interface {
 		$sCmd = sprintf($sPatternCmd, $this->escapePath($aMatches[2]));
 		//$sCmd = vsprintf($sPatternCmd, array_map(array(self, 'escapePath'), $mParams));
 		if ($bIsRemote) {
-			$sCmd = 'ssh -T ' . $aMatches[1] . " <<EOF\n$sCmd\nEOF\n";
+			$sCmd = 'ssh -T ' . $aMatches[1] . " /bin/bash <<EOF\n$sCmd\nEOF\n";
 		}
 		return $this->exec($sCmd);
 	}

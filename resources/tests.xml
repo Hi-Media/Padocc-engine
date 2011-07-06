@@ -41,7 +41,6 @@
 			propertyinifile="/home/gaubry/deployment/resources/tests_env_property_file.ini"
 			mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com"
 	>
-		<buildlanguage project="rts" destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/buildlanguage" />
 		<!-- <gitexport repository="git@git.twenga.com:demo/demo.git" ref="feature-1234"
 			srcdir="/home/gaubry/deployment_test/src/test_gitexport1"
 			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1" /> -->
@@ -52,6 +51,14 @@
 			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1" />
 		<cvsexport repository=":extssh:@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
 			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_cvsexport1" />
+	</env>
+
+	<env
+			name="tests_languages"
+			propertyinifile="/home/gaubry/deployment/resources/tests_env_property_file.ini"
+			mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com"
+	>
+		<buildlanguage project="rts" destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/buildlanguage" />
 	</env>
 
 	<env name="all_tests">
