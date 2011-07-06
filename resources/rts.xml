@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
-		name="tests"
+		name="rts"
 		propertyshellfile="/home/aai/deployment/resources/tests_property_file.cfg"
 		propertyinifile="/home/aai/deployment/resources/rts.ini"
 >

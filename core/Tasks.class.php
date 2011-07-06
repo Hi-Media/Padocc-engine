@@ -37,12 +37,7 @@ class Tasks {
 		if ( ! file_exists($sProjectFilename)) {
 			throw new Exception("Project definition not found: '$sProjectFilename'!");
 		}
-
 		$oProject = new SimpleXMLElement($sProjectFilename, NULL, true);
-		if ((string)$oProject['name'] !== $sProjectName) {
-			throw new Exception("Project's attribute name ('" . $oProject['name'] . "') must be eqal to project filename ('$sProjectName').");
-		}
-
 		return $oProject;
 	}
 
