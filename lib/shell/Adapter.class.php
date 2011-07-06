@@ -194,10 +194,53 @@ rsync  --bwlimit=4000
 			}
 			$i = $j-1;
 			$sCmd = implode(" & \\\n", $aCmd) . (count($aCmd) > 1 ? " & \\\nwait" : '');
-			$aResult = $this->exec($sCmd);
+			$aRawResult = $this->exec($sCmd);
+			$aResult = $this->resumeSyncResult($aRawResult);
 			$aAllResults = array_merge($aAllResults, $aResult);
 		}
 
 		return $aAllResults;
+	}
+
+	private function resumeSyncResult (array $aRawResult) {
+		$aKeys = array(
+			'number of files',
+			'number of files transferred',
+			'total file size',
+			'total transferred file size',
+			'total bytes sent',
+			'total bytes received',
+		);
+		$aEmptyStats = array_fill_keys($aKeys, '?');
+
+		$aAllStats = array();
+		$aStats = NULL;
+		foreach ($aRawResult as $sLine) {
+			if (preg_match('/^([^:]+):\s(\d+)\b/i', $sLine, $aMatches) === 1) {
+				$sKey = strtolower($aMatches[1]);
+				if ($sKey === 'number of files') {
+					if ($aStats !== NULL) {
+						$aAllStats[] = $aStats;
+					}
+					$aStats = $aEmptyStats;
+				}
+				if (isset($aStats[$sKey])) {
+					$aStats[$sKey] = (int)$aMatches[2];
+				}
+			}
+		}
+		if ($aStats !== NULL) {
+			$aAllStats[] = $aStats;
+		}
+
+		$aResult = array();
+		foreach ($aAllStats as $aStats) {
+			$sResult =
+				'  - Number of transferred files: ' . $aStats['number of files transferred'] . '/' . $aStats['number of files'] . "\n"
+				. 'Total transferred file size: ' . $aStats['total transferred file size'] . '/' . $aStats['total file size'] . "\n"
+				. 'Total bytes sent/received: ' . $aStats['total bytes sent'] . '/' . $aStats['total bytes received'] . "\n";
+			$aResult[] = $sResult;
+		}
+		return $aResult;
 	}
 }
