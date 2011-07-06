@@ -32,18 +32,13 @@ class Deployment {
 	}
 
 	public function getProjectsEnvsList () {
-		$aAvailableTargetsByProject = array();
 		$aAllProjectsName = Tasks::getAllProjectsName();
-		/*
-		if(empty($aAllProjectsName))
-			throw new RuntimeException('No project found', 1);
-		*/
-		if(!empty($aAllProjectsName)) {
-			foreach($aAllProjectsName as $sProjectName) {
+		$aAvailableTargetsByProject = array();
+		if ( ! empty($aAllProjectsName)) {
+			foreach ($aAllProjectsName as $sProjectName) {
 				$aAvailableTargetsByProject[$sProjectName] = Tasks::getAvailableTargetsList($sProjectName);
 			}
 		}
-
 		return $aAvailableTargetsByProject;
 	}
 
