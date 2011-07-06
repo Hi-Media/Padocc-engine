@@ -10,9 +10,12 @@ if [ -z "$repository" ] || [ -z "$module" ] || [ -z "$srcdir" ]; then
 fi
 
 if [ -d "$srcdir/$module" ]; then
+	echo "Clear dir..."
 	cd "$srcdir" && rm -rf * || exit $?
 elif [ ! -d "$srcdir" ]; then
+	echo "Create dir..."
 	mkdir -p "$srcdir" || exit $?
 fi
 
+echo "Export..."
 cd "$srcdir" && cvs -q -d"$repository" export -DNOW "$module" | wc -l

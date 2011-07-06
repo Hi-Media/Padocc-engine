@@ -28,7 +28,8 @@ class Task_Base_Cvsexport extends Task {
 			$this->aAttributes['srcdir'] =
 				DEPLOYMENT_REPOSITORIES_DIR . '/cvs/'
 				. $this->oProperties->getProperty('project_name') . '_'
-				. $this->oProperties->getProperty('environment_name');
+				. $this->oProperties->getProperty('environment_name') . '_'
+				. $this->sCounter;
 		}
 	}
 

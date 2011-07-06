@@ -9,7 +9,7 @@
 			destdir="${SERVER_AAI}:/home/aai/deployment_test/rts/twengaweb/rts" />
 		<gitexport repository="git@git.twenga.com:fwt/fwt.git" ref="rts"
 			destdir="${SERVER_AAI}:/home/aai/deployment_test/rts/twengaweb/rts/fwt" />
-		<cvsexport repository=":extssh:@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
+		<cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
 			destdir="${SERVER_AAI}:/home/aai/deployment_test/rts/twengaweb/common" />
 	</env>
 </project>

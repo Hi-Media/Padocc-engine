@@ -51,6 +51,7 @@ abstract class Task {
 	 */
 	protected $oProject;
 
+	protected $sCounter;
 	protected $sName;
 
 	/**
@@ -92,9 +93,9 @@ abstract class Task {
 		$this->oNumbering = $this->oServiceContainer->getNumberingAdapter();
 		$this->oMail = $this->oServiceContainer->getMailAdapter();
 
-		$sCounter = $this->oNumbering->getNextCounterValue() . '_';
-		$sCounter = (strlen($sCounter) === 3 ? '' : substr($sCounter, 2));
-		$this->sName = $sCounter . get_class($this);
+		$sCounter = $this->oNumbering->getNextCounterValue();
+		$this->sCounter = (strlen($sCounter) === 2 ? '' : substr($sCounter, 2));
+		$this->sName = $this->sCounter . '_' . get_class($this);
 		$this->sBackupPath = $sBackupPath . '/' . $this->sName;
 
 		$this->aAttributeProperties = array();
