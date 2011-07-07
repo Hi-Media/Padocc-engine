@@ -42,9 +42,10 @@
 			mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com"
 	>
 		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="v4.11.0"
-			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1" />
+			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1"
+			exclude="site_hr_upload config*" />
 		<mkdir destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1/cache/smarty/cache" mode="777" />
-		<mkdir destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1/cache/smarty/templacte_c" />
+		<mkdir destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1/cache/smarty/templates_c" />
 		<cvsexport repository=":extssh:@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
 			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_cvsexport1" />
 	</env>
