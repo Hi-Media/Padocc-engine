@@ -26,7 +26,11 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(array(false, array('/path/to/my file', '', '/path/to/my file')), $this->oShell->isRemotePath('/path/to/my file'));
 	}
 
-	public function testIsRemotePathWithRemotePath () {
+	public function testIsRemotePathWithRemotePathWithoutLogin () {
+		$this->assertEquals(array(true, array('dv2:/path/to/my file', 'dv2', '/path/to/my file')), $this->oShell->isRemotePath('dv2:/path/to/my file'));
+	}
+
+	public function testIsRemotePathWithRemotePathWithLogin () {
 		$this->assertEquals(array(true, array('gaubry@dv2:/path/to/my file', 'gaubry@dv2', '/path/to/my file')), $this->oShell->isRemotePath('gaubry@dv2:/path/to/my file'));
 	}
 
@@ -120,7 +124,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$oMockShell->expects($this->at(0))->method('exec')
-			->with($this->equalTo('ssh -T gaubry@dv2 <<EOF' . "\n" . 'ls "/path/to/my file"' . "\n" . 'EOF' . "\n"))
+			->with($this->equalTo('ssh -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'ls "/path/to/my file"' . "\n" . 'EOF' . "\n"))
 			->will($this->returnValue($aExpectedResult));
 		$oMockShell->expects($this->exactly(1))->method('exec');
 
@@ -156,7 +160,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$oMockShell->expects($this->at(0))->method('exec')
-			->with($this->equalTo('ssh -T gaubry@dv2 <<EOF' . "\n" . 'mkdir -p "/path/to/my file"' . "\n" . 'EOF' . "\n"))
+			->with($this->equalTo('ssh -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'mkdir -p "/path/to/my file"' . "\n" . 'EOF' . "\n"))
 			->will($this->returnValue($aExpectedResult));
 		$oMockShell->expects($this->exactly(1))->method('exec');
 
@@ -198,7 +202,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$oMockShell->expects($this->at(0))->method('exec')
-			->with($this->equalTo('ssh -T gaubry@dv2 <<EOF' . "\n" . 'rm -rf "/path/to/my file"' . "\n" . 'EOF' . "\n"))
+			->with($this->equalTo('ssh -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'rm -rf "/path/to/my file"' . "\n" . 'EOF' . "\n"))
 			->will($this->returnValue($aExpectedResult));
 		$oMockShell->expects($this->exactly(1))->method('exec');
 
@@ -262,7 +266,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$aExpectedResult = array('blabla');
 
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
-		$oMockShell->expects($this->at(0))->method('exec')->with($this->equalTo('ssh -T gaubry@dv2 <<EOF' . "\n" . 'mkdir -p "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"));
+		$oMockShell->expects($this->at(0))->method('exec')->with($this->equalTo('ssh -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'mkdir -p "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"));
 		$oMockShell->expects($this->at(1))->method('exec')
 			->with($this->equalTo('scp -rpq "/srcpath/to/my file" "gaubry@dv2:/destpath/to/my dir"'))
 			->will($this->returnValue($aExpectedResult));
@@ -276,7 +280,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$aExpectedResult = array('blabla');
 
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
-		$oMockShell->expects($this->at(0))->method('exec')->with($this->equalTo('ssh -T gaubry@dv2 <<EOF' . "\n" . 'mkdir -p "/destpath/to"' . "\n" . 'EOF' . "\n"));
+		$oMockShell->expects($this->at(0))->method('exec')->with($this->equalTo('ssh -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'mkdir -p "/destpath/to"' . "\n" . 'EOF' . "\n"));
 		$oMockShell->expects($this->at(1))->method('exec')
 			->with($this->equalTo('scp -rpq "/srcpath/to/my file" "gaubry@dv2:/destpath/to/my file"'))
 			->will($this->returnValue($aExpectedResult));
@@ -364,7 +368,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 			->with($this->equalTo('mkdir -p "/destpath/to/my dir"'))
 			->will($this->returnValue(array()));
 		$oMockShell->expects($this->at(1))->method('exec')
-			->with($this->equalTo('rsync -az --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats -e ssh "/srcpath/to/my file" "/destpath/to/my dir"'))
+			->with($this->equalTo('rsync -az --delete --cvs-exclude --exclude=.cvsignore --stats -e ssh "/srcpath/to/my file" "/destpath/to/my dir"'))
 			->will($this->returnValue($aExpectedResult));
 		$oMockShell->expects($this->exactly(2))->method('exec');
 

@@ -14,6 +14,16 @@
 // alias mprodaai='mysql -u aai -pa19AI03 aai -h maai-01.twenga.com --prompt="maai-01.twenga.com:aai>"'
 // alias mdevaai='mysql -u twengadevb2c -ptopprodu devaai1 -h supermicro04 --prompt="supermicro04:devaai1>"'
 
+// cp /home/prod/backup_extranet.twenga.com/inc/config.php /home/httpd/extranet.twenga.com/inc
+// cp /home/prod/backup_extranet.twenga.com/fwt/config.php /home/httpd/extranet.twenga.com/fwt
+
+/*
+chmod +r supervisor -R
+chmod +r deployment -R
+chmod 777 supervisor/logs -R
+chmod 777 deployment/resources -R
+*/
+
 // TODO implémenter rollback
 // TODO si fatal error, demander au supervisor de proposer un rollback ?
 // TODO s'assurer que si jamais Deployment plante sans envoyer de mail, alors Supervisor le fera !
@@ -33,7 +43,6 @@
 // TODO initProperties() présent dans Target.class.php et Call.class.php...
 // TODO surveiller SUPERVISOR_ERROR_LOG_FILE
 // TODO AAI MAILTO
-// TODO limiter le nb de lignes d'historique dans AAI::dashboard
 // TODO archivage des logs
 // TODO connecteur CVS ne gère que le trunk
 // TODO remonter heartbeat dans AAI
