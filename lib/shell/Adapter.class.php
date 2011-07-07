@@ -161,8 +161,11 @@ cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubr
 		}
 	}
 
-	public function mkdir ($sPath) {
-		return $this->execSSH('mkdir -p %s', $sPath);
+	public function mkdir ($sPath, $sMode='') {
+		if ($sMode !== '') {
+			$sMode = "-m $sMode ";
+		}
+		return $this->execSSH("mkdir $sMode-p %s", $sPath);
 	}
 
 	/*

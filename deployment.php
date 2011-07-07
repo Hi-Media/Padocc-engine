@@ -43,6 +43,9 @@
 // TODO AAI bien gérer qd second ajout (projet, env) refusé.
 // TODO migrer Gitexport et Cvsexport dans task/extended ET avec CamelCase
 // TODO multi rsync n'effectue pas les mkdir en parallèle
+// TODO pas de gestion robuste des erreurs qd appel direct (par AAI) de deployment.php. ex: php /home/aai/deployment/deployment.php --getProjectsEnvsList
+// TODO valeur par défaut pour les attributs ?
+// TODO tout comme on log les "Check '1.1_Task_Base_Gitexport' task...", on pourrait logger les run()...
 
 /*
  * Features :
