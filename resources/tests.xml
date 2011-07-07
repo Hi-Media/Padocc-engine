@@ -2,7 +2,7 @@
 <!-- <project name="tests" propertyinifile="/home/gaubry/deployment/resources/tests_property_file.ini"> -->
 <project
 		name="tests"
-		propertyshellfile="/home/gaubry/deployment/resources/tests_property_file.cfg"
+		propertyshellfile="/home/gaubry/deployment/resources/master_synchro.cfg"
 		propertyinifile="/home/gaubry/deployment/resources/tests_property_file.ini"
 >
 	<target name="tests_copy">
@@ -41,12 +41,6 @@
 			propertyinifile="/home/gaubry/deployment/resources/tests_env_property_file.ini"
 			mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com"
 	>
-		<!-- <gitexport repository="git@git.twenga.com:demo/demo.git" ref="feature-1234"
-			srcdir="/home/gaubry/deployment_test/src/test_gitexport1"
-			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1" /> -->
-		<!-- <gitexport repository="git@git.twenga.com:rts/rts.git" ref="v4.11.0"
-			srcdir="/home/gaubry/deployment_test/src/test_gitexport1"
-			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1" /> -->
 		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="v4.11.0"
 			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1" />
 		<mkdir destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1/cache/smarty/cache" mode="777" />

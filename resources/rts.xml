@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
 		name="rts"
-		propertyshellfile="/home/aai/deployment/resources/tests_property_file.cfg"
+		propertyshellfile="/home/aai/deployment/resources/master_synchro.cfg"
 		propertyinifile="/home/aai/deployment/resources/rts.ini"
 >
 	<env name="dev" mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com">
-		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="v4.11.0"
+		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="v4.15.0"
 			destdir="${SERVER_AAI}:/home/aai/deployment_test/rts/twengaweb/rts" />
 		<gitexport repository="git@git.twenga.com:fwt/fwt.git" ref="rts"
 			destdir="${SERVER_AAI}:/home/aai/deployment_test/rts/twengaweb/rts/fwt" />
@@ -14,5 +14,17 @@
 		<cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
 			destdir="${SERVER_AAI}:/home/aai/deployment_test/rts/twengaweb/common" />
 		<buildlanguage project="rts" destdir="${SERVER_AAI}:/home/aai/deployment_test/rts/buildlanguage" />
+	</env>
+
+	<env name="qa" mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com">
+		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="v4.15.0"
+			destdir="${SERVER_EXTRANET_QA}:/home/httpd/extranet.twenga.com" />
+		<gitexport repository="git@git.twenga.com:fwt/fwt.git" ref="rts"
+			destdir="${SERVER_EXTRANET_QA}:/home/httpd/extranet.twenga.com/fwt" />
+		<mkdir destdir="${SERVER_EXTRANET_QA}:/home/httpd/extranet.twenga.com/cache/smarty/cache" mode="777" />
+		<mkdir destdir="${SERVER_EXTRANET_QA}:/home/httpd/extranet.twenga.com/cache/smarty/templacte_c" mode="777" />
+		<cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
+			destdir="${SERVER_EXTRANET_QA}:/home/httpd/twenga-common" />
+		<buildlanguage project="rts" destdir="${SERVER_EXTRANET_QA}:/home/httpd/extranet.twenga.com/languages" />
 	</env>
 </project>
