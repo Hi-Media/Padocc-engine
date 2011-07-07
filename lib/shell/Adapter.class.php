@@ -179,7 +179,7 @@ t="$(tempfile)"; ls sss 2>>$t & ls dfhdfh 2>>$t & wait; [ ! -s "$t" ] && echo ">
 
 rsync  --bwlimit=4000
 	 */
-	public function sync ($sSrcPath, $mDestPath) {
+	public function sync ($sSrcPath, $mDestPath, array $aExcludedPaths=array()) {
 		$aPaths = (is_array($mDestPath) ? $mDestPath : array($mDestPath));
 
 		$aAllResults = array();
@@ -189,10 +189,16 @@ rsync  --bwlimit=4000
 		}
 
 		for ($i=0; $i<count($aPaths); $i++) {
+			if (count($aExcludedPaths) === 0) {
+				$sAdditionalExclude = '';
+			} else {
+				$sAdditionalExclude = '--exclude="' . implode('" --exclude="', $aExcludedPaths) . '" ';
+			}
+
 			$aCmd = array();
 			for ($j=$i; $j<count($aPaths) && $j<$i+DEPLOYMENT_RSYNC_MAX_NB_PROCESSES; $j++) {
 				$aCmd[] =
-					'rsync -az --delete --cvs-exclude --exclude=.cvsignore --stats -e'
+					'rsync -az --delete --cvs-exclude --exclude=.cvsignore ' . $sAdditionalExclude . '--stats -e'
 					. ' ssh ' . $this->escapePath($sSrcPath) . ' ' . $this->escapePath($aPaths[$j]);
 			}
 			$i = $j-1;

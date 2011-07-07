@@ -17,7 +17,8 @@ class Task_Base_Gitexport extends Task {
 			'repository' => array('file', 'required'),
 			'ref' => array('required'),
 			'srcdir' => array('dir'),
-			'destdir' => array('dir', 'required', 'allow_parameters')
+			'destdir' => array('dir', 'required', 'allow_parameters'),
+			'exclude' => array('filejoker'),
 		);
 	}
 
@@ -41,7 +42,8 @@ class Task_Base_Gitexport extends Task {
 		);
 		$this->oLogger->log(implode("\n", $result));
 
-		$results = $this->oShell->sync($this->aAttributes['srcdir'] . '/*', $this->expandPaths($this->aAttributes['destdir']));
+		$aExcludedPaths = (empty($this->aAttributes['exclude']) ? array() : explode(' ', $this->aAttributes['exclude']));
+		$results = $this->oShell->sync($this->aAttributes['srcdir'] . '/*', $this->expandPaths($this->aAttributes['destdir']), $aExcludedPaths);
 		foreach ($results as $result) {
 			$this->oLogger->log($result);
 		}
