@@ -18,11 +18,9 @@
 
 	<env name="qa" mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com">
 		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="release-4.15.0"
-			destdir="${SERVER_EXTRANET_QA}:/home/httpd/extranet.twenga.com"
-			exclude="config*" />
+			destdir="${SERVER_EXTRANET_QA}:/home/httpd/extranet.twenga.com" exclude="config.*" />
 		<gitexport repository="git@git.twenga.com:fwt/fwt.git" ref="rts"
-			destdir="${SERVER_EXTRANET_QA}:/home/httpd/extranet.twenga.com/fwt"
-			exclude="config*" />
+			destdir="${SERVER_EXTRANET_QA}:/home/httpd/extranet.twenga.com/fwt" exclude="config.*" />
 		<mkdir destdir="${SERVER_EXTRANET_QA}:/home/httpd/extranet.twenga.com/cache/smarty/cache" mode="777" />
 		<mkdir destdir="${SERVER_EXTRANET_QA}:/home/httpd/extranet.twenga.com/cache/smarty/templates_c" mode="777" />
 		<cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
@@ -32,11 +30,9 @@
 
 	<env name="pre-prod" mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com">
 		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="release-4.15.0"
-			destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/extranet.twenga.com"
-			exclude="config*" />
+			destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/extranet.twenga.com" exclude="config.*" />
 		<gitexport repository="git@git.twenga.com:fwt/fwt.git" ref="rts"
-			destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/extranet.twenga.com/fwt"
-			exclude="config*" />
+			destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/extranet.twenga.com/fwt" exclude="config.*" />
 		<mkdir destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/extranet.twenga.com/cache/smarty/cache" mode="777" />
 		<mkdir destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/extranet.twenga.com/cache/smarty/templates_c" mode="777" />
 		<cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
