@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	name="wtpn"
+	propertyshellfile="/home/aai/deployment/resources/master_synchro.cfg"
+>
+	<env name="prod" mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com">
+		<gitexport repository="git@git.twenga.com:distribution/wtpn.git" ref="master"
+			destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/wtpn"
+			exclude="config.*" />
+		<cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
+			destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/twenga-common" />
+	</env>
+</project>
