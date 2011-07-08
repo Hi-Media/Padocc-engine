@@ -57,6 +57,14 @@ chmod 777 deployment/resources -R
 // TODO tout comme on log les "Check '1.1_Task_Base_Gitexport' task...", on pourrait logger les run()...
 
 /*
+~/.muttrc
+my_hdr From: AA Supervisor <devaa@twenga.com>
+my_hdr Reply-To: Dev AA <devaa@twenga.com>
+
+echo "message" | mutt -e "set content_type=text/html" -s "subject" -- geoffroy.aubry@twenga.com
+ */
+
+/*
  * Features :
  *  - load sh config files
  *  - XML project config file
