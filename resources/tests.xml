@@ -48,6 +48,7 @@
 		<mkdir destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1/cache/smarty/templates_c" />
 		<cvsexport repository=":extssh:@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
 			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_cvsexport1" />
+		<link server="${SERVER_AAI}" src="/home/aai/deployment_test/dest/test_link/link" target="/home/aai/deployment_test/dest/test_gitexport1" />
 	</env>
 
 	<env

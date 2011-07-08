@@ -108,6 +108,18 @@ class Shell_Adapter implements Shell_Interface {
 	}
 
 	/**
+	 * Crée un lien symbolique de chemin $sLinkPath vers la cible $sTargetPath.
+	 *
+	 * @param string $sLinkPath nom du lien
+	 * @param string $sTargetPath cible sur laquelle faire pointer le lien
+	 * @see Shell_Interface::createLink()
+	 */
+	public function createLink ($sLinkPath, $sTargetPath) {
+		list($bIsSrcRemote, $aSrcMatches) = $this->isRemotePath($sTargetPath);
+		return $this->execSSH('mkdir -p "$(dirname %1$s)" && ln -sf "' . $aSrcMatches[2] . '" %1$s', $sLinkPath);
+	}
+
+	/**
 	 * Entoure le chemin de guillemets doubles en tenant compte des jokers '*' et '?' qui ne les supportent pas.
 	 * Par exemple : '/a/b/img*jpg', donnera : '"/a/b/img"*"jpg"'.
 	 * Pour rappel, '*' vaut pour 0 à n caractères, '?' vaut pour exactement 1 caractère (et non 0 à 1).

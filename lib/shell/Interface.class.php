@@ -37,6 +37,8 @@ interface Shell_Interface {
 	// TODO a priori, $sSrcPath est un $sSrcFilePath
 	public function copy ($sSrcPath, $sDestPath, $bIsDestFile=false);
 
+	public function createLink ($sLinkPath, $sTargetPath);
+
 	/**
 	 * Entoure le chemin de guillemets doubles en tenant compte des jokers '*' et '?' qui ne les supportent pas.
 	 * Par exemple : '/a/b/img*jpg', donnera : '"/a/b/img"*"jpg"'.
