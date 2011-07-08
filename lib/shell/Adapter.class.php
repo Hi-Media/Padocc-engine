@@ -4,6 +4,8 @@ class Shell_Adapter implements Shell_Interface {
 
 	private $aFileStatus;
 
+	private static $aDefaultRsyncExclude = array('.bzr/', '.git/', '.svn/', 'cvslog.*', 'CVS', 'CVS.adm');
+
 	/**
 	 * Log adapter.
 	 * @var Logger_Interface
@@ -188,6 +190,7 @@ rsync  --bwlimit=4000
 			$aAllResults = array_merge($aAllResults, $aResult);
 		}
 
+		$aExcludedPaths = array_merge(self::$aDefaultRsyncExclude, $aExcludedPaths);
 		for ($i=0; $i<count($aPaths); $i++) {
 			if (count($aExcludedPaths) === 0) {
 				$sAdditionalExclude = '';
