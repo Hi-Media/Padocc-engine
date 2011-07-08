@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
-	name="wtpn"
+	name="ptpn"
 	propertyshellfile="/home/aai/deployment/resources/master_synchro.cfg"
 >
 	<env name="prod" mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com">
-		<gitexport repository="git@git.twenga.com:distribution/wtpn.git" ref="master"
-			destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/wtpn"
+		<gitexport repository="git@git.twenga.com:distribution/ptpn.git" ref="master"
+			destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/ptpn"
 			exclude="config.*" />
 		<!-- <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
 			destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/twenga-common" /> -->
+		<mkdir destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/ptpn/cache/smarty" mode="777" />
+		<buildlanguage project="ptpn" destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/ptpn/i18n" />
 	</env>
 </project>
