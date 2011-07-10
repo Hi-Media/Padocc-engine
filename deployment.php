@@ -4,7 +4,10 @@
 // tail -fn 500 /tmp/deployment.php.xxx.error.log
 // rm -rf /home/gaubry/deployment_backup/* && rm -rf /home/gaubry/test/dest/*
 // rm -rf /home/gaubry/deployment_backup/* && rm -rf /home/gaubry/deployment_test/*
+
 // PHPUnit : aller dans /tests, puis : phpunit
+// http://gaubry.dev.twenga.com/deployment/report/index.html
+
 // ln -s /home/gaubry/deployment/deployment.php /home/gaubry/supervisor/scripts/php/deployment.php
 // CRON * * * * * date +\%s > /home/gaubry/cron_heartbeat.txt
 
