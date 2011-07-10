@@ -155,6 +155,19 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($aExpectedResult, $aResult);
 	}
 
+	public function testMkdirWithLocalPathAndMode () {
+		$aExpectedResult = array('blabla');
+
+		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+		$oMockShell->expects($this->at(0))->method('exec')
+			->with($this->equalTo('mkdir -m 777 -p "/path/to/my file"'))
+			->will($this->returnValue($aExpectedResult));
+		$oMockShell->expects($this->exactly(1))->method('exec');
+
+		$aResult = $oMockShell->mkdir('/path/to/my file', '777');
+		$this->assertEquals($aExpectedResult, $aResult);
+	}
+
 	public function testMkdirWithRemotePath () {
 		$aExpectedResult = array('blabla');
 
@@ -165,6 +178,19 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$oMockShell->expects($this->exactly(1))->method('exec');
 
 		$aResult = $oMockShell->mkdir('gaubry@dv2:/path/to/my file');
+		$this->assertEquals($aExpectedResult, $aResult);
+	}
+
+	public function testMkdirWithRemotePathAndMode () {
+		$aExpectedResult = array('blabla');
+
+		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+		$oMockShell->expects($this->at(0))->method('exec')
+			->with($this->equalTo('ssh -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'mkdir -m 777 -p "/path/to/my file"' . "\n" . 'EOF' . "\n"))
+			->will($this->returnValue($aExpectedResult));
+		$oMockShell->expects($this->exactly(1))->method('exec');
+
+		$aResult = $oMockShell->mkdir('gaubry@dv2:/path/to/my file', '777');
 		$this->assertEquals($aExpectedResult, $aResult);
 	}
 
