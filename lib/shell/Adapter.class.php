@@ -232,8 +232,6 @@ rsync  --bwlimit=4000
 			'number of files transferred',
 			'total file size',
 			'total transferred file size',
-			//'total bytes sent',
-			//'total bytes received',
 		);
 		$aEmptyStats = array_fill_keys($aKeys, '?');
 
@@ -259,11 +257,9 @@ rsync  --bwlimit=4000
 
 		$aResult = array();
 		foreach ($aAllStats as $aStats) {
-			$sResult =
+			$aResult[] =
 				'  - Number of transferred files: ' . $aStats['number of files transferred'] . '/' . $aStats['number of files'] . "\n"
 				. 'Total transferred file size: ' . $aStats['total transferred file size'] . '/' . $aStats['total file size'] . "\n";
-				//. 'Total bytes sent/received: ' . $aStats['total bytes sent'] . '/' . $aStats['total bytes received'] . "\n";
-			$aResult[] = $sResult;
 		}
 		return $aResult;
 	}
