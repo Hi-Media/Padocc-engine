@@ -405,7 +405,7 @@ Total bytes received: 64
 sent 39542 bytes  received 64 bytes  26404.00 bytes/sec
 total size is 64093953  speedup is 1618.29');
 
-		$oMockShell = $this->getMock('Shell_Adapter', array('exec', 'resumeSyncResult'), array($this->oLogger));
+		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$oMockShell->expects($this->at(0))->method('exec')
 			->with($this->equalTo('mkdir -p "/destpath/to/my dir"'))
 			->will($this->returnValue(array()));
@@ -415,6 +415,6 @@ total size is 64093953  speedup is 1618.29');
 		$oMockShell->expects($this->exactly(2))->method('exec');
 
 		$aResult = $oMockShell->sync('/srcpath/to/my file', '/destpath/to/my dir');
-		$this->assertEquals($aExpectedResult, $aResult);
+		$this->assertEquals(preg_replace('/\s/', '', $aExpectedResult[0]), preg_replace('/\s/', '', $aResult[0]));
 	}
 }
