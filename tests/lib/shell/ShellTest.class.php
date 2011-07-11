@@ -418,6 +418,76 @@ total size is 64093953  speedup is 1618.29');
 		$this->assertEquals(preg_replace('/\s/', '', $aExpectedResult[0]), preg_replace('/\s/', '', $aResult[0]));
 	}
 
+	public function testSyncLocalFileToLocalDirWithAdditionalExclude () {
+		$aExpectedResult = array('  - Number of transferred files: 2/1774
+Total transferred file size: 178/64093953
+');
+		$aRawRsyncResult = explode("\n", 'Number of files: 1774
+Number of files transferred: 2
+Total file size: 64093953 bytes
+Total transferred file size: 178 bytes
+Literal data: 178 bytes
+Matched data: 0 bytes
+File list size: 39177
+File list generation time: 0.013 seconds
+File list transfer time: 0.000 seconds
+Total bytes sent: 39542
+Total bytes received: 64
+
+sent 39542 bytes  received 64 bytes  26404.00 bytes/sec
+total size is 64093953  speedup is 1618.29');
+
+		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+		$oMockShell->expects($this->at(0))->method('exec')
+			->with($this->equalTo('mkdir -p "/destpath/to/my dir"'))
+			->will($this->returnValue(array()));
+		$oMockShell->expects($this->at(1))->method('exec')
+			->with($this->equalTo('rsync -az --delete --exclude=.cvsignore --exclude=".bzr/" --exclude=".git/" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --exclude="toto" --exclude="titi" --stats -e ssh "/srcpath/to/my file" "/destpath/to/my dir"'))
+			->will($this->returnValue($aRawRsyncResult));
+		$oMockShell->expects($this->exactly(2))->method('exec');
+
+		$aResult = $oMockShell->sync('/srcpath/to/my file', '/destpath/to/my dir', array('toto', 'titi'));
+		$this->assertEquals(preg_replace('/\s/', '', $aExpectedResult[0]), preg_replace('/\s/', '', $aResult[0]));
+	}
+
+	public function testSyncLocalFileToRemotesDir () {
+		$aExpectedResult = array('  - Number of transferred files: 2/1774
+Total transferred file size: 178/64093953
+');
+		$aRawRsyncResult = explode("\n", 'Number of files: 1774
+Number of files transferred: 2
+Total file size: 64093953 bytes
+Total transferred file size: 178 bytes
+Literal data: 178 bytes
+Matched data: 0 bytes
+File list size: 39177
+File list generation time: 0.013 seconds
+File list transfer time: 0.000 seconds
+Total bytes sent: 39542
+Total bytes received: 64
+
+sent 39542 bytes  received 64 bytes  26404.00 bytes/sec
+total size is 64093953  speedup is 1618.29');
+		$sCmd = 'rsync -az --delete --exclude=.cvsignore --exclude=".bzr/" --exclude=".git/" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/srcpath/to/my file" "server1:/destpath/to/my dir" & \\'
+			. "\n" . 'rsync -az --delete --exclude=.cvsignore --exclude=".bzr/" --exclude=".git/" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/srcpath/to/my file" "login@server2:/destpath/to/my dir" & \\'
+			. "\n" . 'wait';
+
+		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+		$oMockShell->expects($this->at(0))->method('exec')
+			->with($this->equalTo('ssh -T server1 /bin/bash <<EOF' . "\n" . 'mkdir -p "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
+			->will($this->returnValue(array()));
+		$oMockShell->expects($this->at(1))->method('exec')
+			->with($this->equalTo('ssh -T login@server2 /bin/bash <<EOF' . "\n" . 'mkdir -p "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
+			->will($this->returnValue(array()));
+		$oMockShell->expects($this->at(2))->method('exec')
+			->with($this->equalTo($sCmd))
+			->will($this->returnValue($aRawRsyncResult));
+		$oMockShell->expects($this->exactly(3))->method('exec');
+
+		$aResult = $oMockShell->sync('/srcpath/to/my file', array('server1:/destpath/to/my dir', 'login@server2:/destpath/to/my dir'));
+		$this->assertEquals(preg_replace('/\s/', '', $aExpectedResult[0]), preg_replace('/\s/', '', $aResult[0]));
+	}
+
 
 
 	public function testCreateLinkThrowExceptionWhenExecFailed () {
