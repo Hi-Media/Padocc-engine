@@ -417,4 +417,40 @@ total size is 64093953  speedup is 1618.29');
 		$aResult = $oMockShell->sync('/srcpath/to/my file', '/destpath/to/my dir');
 		$this->assertEquals(preg_replace('/\s/', '', $aExpectedResult[0]), preg_replace('/\s/', '', $aResult[0]));
 	}
+
+
+
+	public function testCreateLinkThrowExceptionWhenExecFailed () {
+		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+		$oMockShell->expects($this->exactly(1))->method('exec');
+		$oMockShell->expects($this->at(0))->method('exec')->will($this->throwException(new RuntimeException()));
+		$this->setExpectedException('RuntimeException');
+		$oMockShell->createLink('foo', 'bar');
+	}
+
+	public function testCreateLinkWithLocalPath () {
+		$aExpectedResult = array('blabla');
+
+		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+		$oMockShell->expects($this->at(0))->method('exec')
+			->with($this->equalTo('mkdir -p "$(dirname "/path/to/my file")" && ln -sf "/path/to/my target" "/path/to/my file"'))
+			->will($this->returnValue($aExpectedResult));
+		$oMockShell->expects($this->exactly(1))->method('exec');
+
+		$aResult = $oMockShell->createLink('/path/to/my file', '/path/to/my target');
+		$this->assertEquals($aExpectedResult, $aResult);
+	}
+
+	public function testCreateLinkWithRemotePath () {
+		$aExpectedResult = array('blabla');
+
+		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+		$oMockShell->expects($this->at(0))->method('exec')
+			->with($this->equalTo('ssh -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'mkdir -p "$(dirname "/path/to/my file")" && ln -sf "/path/to/my target" "/path/to/my file"' . "\n" . 'EOF' . "\n"))
+			->will($this->returnValue($aExpectedResult));
+		$oMockShell->expects($this->exactly(1))->method('exec');
+
+		$aResult = $oMockShell->createLink('gaubry@dv2:/path/to/my file', 'gaubry@dv2:/path/to/my target');
+		$this->assertEquals($aExpectedResult, $aResult);
+	}
 }
