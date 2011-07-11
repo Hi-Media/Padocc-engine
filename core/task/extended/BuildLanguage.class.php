@@ -61,7 +61,7 @@ class Task_Extended_BuildLanguage extends Task {
 		//$sLanguagesPath = '/home/gaubry/languages.tar.gz';
 
 		// Diffusion de l'archive :
-		$aDestDirs = $this->expandPaths($this->aAttributes['destdir']);
+		$aDestDirs = $this->_expandPaths($this->aAttributes['destdir']);
 		foreach ($aDestDirs as $sDestDir) {
 			$result = $this->oShell->copy($sLanguagesPath, $sDestDir);
 			$this->oLogger->log(implode("\n", $result));

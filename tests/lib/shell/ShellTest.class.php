@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @covers Shell_Adapter
- */
 class ShellTest extends PHPUnit_Framework_TestCase {
 
 	private $oLogger;
@@ -18,22 +15,37 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$this->oShell = NULL;
 	}
 
+	/**
+	 * @covers Shell_Adapter::isRemotePath
+	 */
 	public function testIsRemotePathWithEmptyPath () {
 		$this->assertEquals(array(false, array('', '', '')), $this->oShell->isRemotePath(''));
 	}
 
+	/**
+	 * @covers Shell_Adapter::isRemotePath
+	 */
 	public function testIsRemotePathWithLocalPath () {
 		$this->assertEquals(array(false, array('/path/to/my file', '', '/path/to/my file')), $this->oShell->isRemotePath('/path/to/my file'));
 	}
 
+	/**
+	 * @covers Shell_Adapter::isRemotePath
+	 */
 	public function testIsRemotePathWithRemotePathWithoutLogin () {
 		$this->assertEquals(array(true, array('dv2:/path/to/my file', 'dv2', '/path/to/my file')), $this->oShell->isRemotePath('dv2:/path/to/my file'));
 	}
 
+	/**
+	 * @covers Shell_Adapter::isRemotePath
+	 */
 	public function testIsRemotePathWithRemotePathWithLogin () {
 		$this->assertEquals(array(true, array('gaubry@dv2:/path/to/my file', 'gaubry@dv2', '/path/to/my file')), $this->oShell->isRemotePath('gaubry@dv2:/path/to/my file'));
 	}
 
+	/**
+	 * @covers Shell_Adapter::isRemotePath
+	 */
 	public function testIsRemotePathThrowExceptionWithParameter () {
 		$this->setExpectedException('RuntimeException');
 		$this->oShell->isRemotePath('${sdg}');
@@ -41,43 +53,70 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 
 
 
+	/**
+	 * @covers Shell_Adapter::escapePath
+	 */
 	public function testEscapePathWithEmptyPath () {
 		$this->assertEquals('', $this->oShell->escapePath(''));
 	}
 
+	/**
+	 * @covers Shell_Adapter::escapePath
+	 */
 	public function testEscapePathWithSimplePath () {
 		$this->assertEquals('"/path/to/my file"', $this->oShell->escapePath('/path/to/my file'));
 	}
 
+	/**
+	 * @covers Shell_Adapter::escapePath
+	 */
 	public function testEscapePathWithJokersPath () {
 		$this->assertEquals('"/a/b"?"/img"*"jpg"', $this->oShell->escapePath('/a/b?/img*jpg'));
 	}
 
+	/**
+	 * @covers Shell_Adapter::escapePath
+	 */
 	public function testEscapePathWithConsecutiveJokersPath () {
 		$this->assertEquals('"/a/b/img"?*"jpg"', $this->oShell->escapePath('/a/b/img?*jpg'));
 	}
 
+	/**
+	 * @covers Shell_Adapter::escapePath
+	 */
 	public function testEscapePathWithBoundJokersPath () {
 		$this->assertEquals('?"/a/b/img"*', $this->oShell->escapePath('?/a/b/img*'));
 	}
 
 
 
+	/**
+	 * @covers Shell_Adapter::exec
+	 */
 	public function testExecThrowExceptionOnShellError () {
 		$this->setExpectedException('Exception', "abc\ndef", 101);
 		$aResult = $this->oShell->exec('echo abc; echo def; exit 101');
 	}
 
+	/**
+	 * @covers Shell_Adapter::exec
+	 */
 	public function testExecOneLineResult () {
 		$aResult = $this->oShell->exec('echo abc');
 		$this->assertEquals(array('abc'), $aResult);
 	}
 
+	/**
+	 * @covers Shell_Adapter::exec
+	 */
 	public function testExecMultiLineResult () {
 		$aResult = $this->oShell->exec('echo abc; echo def');
 		$this->assertEquals(array('abc', 'def'), $aResult);
 	}
 
+	/**
+	 * @covers Shell_Adapter::exec
+	 */
 	public function testExecErrorMultiLineResult () {
 		$aResult = $this->oShell->exec('(echo abc; echo def) >&2');
 		$this->assertEquals(array('abc', 'def'), $aResult);
@@ -85,6 +124,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 
 
 
+	/**
+	 * @covers Shell_Adapter::execSSH
+	 */
 	public function testExecSshThrowExceptionWhenExecFailed () {
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$oMockShell->expects($this->exactly(1))->method('exec');
@@ -93,6 +135,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$oMockShell->execSSH('foo', 'bar');
 	}
 
+	/**
+	 * @covers Shell_Adapter::execSSH
+	 */
 	public function testExecSshWithLocalPath () {
 		$aExpectedResult = array('blabla');
 
@@ -106,6 +151,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($aExpectedResult, $aResult);
 	}
 
+	/**
+	 * @covers Shell_Adapter::execSSH
+	 */
 	public function testExecSshWithMultipleLocalPath () {
 		$aExpectedResult = array('blabla');
 
@@ -119,6 +167,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($aExpectedResult, $aResult);
 	}
 
+	/**
+	 * @covers Shell_Adapter::execSSH
+	 */
 	public function testExecSshWithRemotePath () {
 		$aExpectedResult = array('blabla');
 
@@ -134,6 +185,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 
 
 
+	/**
+	 * @covers Shell_Adapter::mkdir
+	 */
 	public function testMkdirThrowExceptionWhenExecFailed () {
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$oMockShell->expects($this->exactly(1))->method('exec');
@@ -142,6 +196,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$oMockShell->mkdir('foo');
 	}
 
+	/**
+	 * @covers Shell_Adapter::mkdir
+	 */
 	public function testMkdirWithLocalPath () {
 		$aExpectedResult = array('blabla');
 
@@ -155,6 +212,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($aExpectedResult, $aResult);
 	}
 
+	/**
+	 * @covers Shell_Adapter::mkdir
+	 */
 	public function testMkdirWithLocalPathAndMode () {
 		$aExpectedResult = array('blabla');
 
@@ -168,6 +228,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($aExpectedResult, $aResult);
 	}
 
+	/**
+	 * @covers Shell_Adapter::mkdir
+	 */
 	public function testMkdirWithRemotePath () {
 		$aExpectedResult = array('blabla');
 
@@ -181,6 +244,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($aExpectedResult, $aResult);
 	}
 
+	/**
+	 * @covers Shell_Adapter::mkdir
+	 */
 	public function testMkdirWithRemotePathAndMode () {
 		$aExpectedResult = array('blabla');
 
@@ -196,6 +262,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 
 
 
+	/**
+	 * @covers Shell_Adapter::remove
+	 */
 	public function testRemoveThrowExceptionWhenExecFailed () {
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$oMockShell->expects($this->exactly(1))->method('exec');
@@ -204,12 +273,18 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$oMockShell->remove('foo/bar');
 	}
 
+	/**
+	 * @covers Shell_Adapter::remove
+	 */
 	public function testRemoveThrowExceptionWhenTooShortPath () {
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$this->setExpectedException('BadMethodCallException');
 		$oMockShell->remove('foo');
 	}
 
+	/**
+	 * @covers Shell_Adapter::remove
+	 */
 	public function testRemoveWithLocalPath () {
 		$aExpectedResult = array('blabla');
 
@@ -223,6 +298,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($aExpectedResult, $aResult);
 	}
 
+	/**
+	 * @covers Shell_Adapter::remove
+	 */
 	public function testRemoveWithRemotePath () {
 		$aExpectedResult = array('blabla');
 
@@ -238,6 +316,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 
 
 
+	/**
+	 * @covers Shell_Adapter::copy
+	 */
 	public function testCopyThrowExceptionWhenExecFailed () {
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$oMockShell->expects($this->exactly(1))->method('exec');
@@ -246,6 +327,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$oMockShell->copy('foo', 'bar', false);
 	}
 
+	/**
+	 * @covers Shell_Adapter::copy
+	 */
 	public function testCopyLocalFileToLocalDir () {
 		$aExpectedResult = array('blabla');
 
@@ -260,6 +344,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($aExpectedResult, $aResult);
 	}
 
+	/**
+	 * @covers Shell_Adapter::copy
+	 */
 	public function testCopyLocalFilesToLocalDir () {
 		$aExpectedResult = array('blabla');
 
@@ -274,6 +361,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($aExpectedResult, $aResult);
 	}
 
+	/**
+	 * @covers Shell_Adapter::copy
+	 */
 	public function testCopyLocalFileToLocalFile () {
 		$aExpectedResult = array('blabla');
 
@@ -288,6 +378,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($aExpectedResult, $aResult);
 	}
 
+	/**
+	 * @covers Shell_Adapter::copy
+	 */
 	public function testCopyLocalFileToRemoteDir () {
 		$aExpectedResult = array('blabla');
 
@@ -302,6 +395,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($aExpectedResult, $aResult);
 	}
 
+	/**
+	 * @covers Shell_Adapter::copy
+	 */
 	public function testCopyLocalFileToRemoteFile () {
 		$aExpectedResult = array('blabla');
 
@@ -318,6 +414,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 
 
 
+	/**
+	 * @covers Shell_Adapter::getFileStatus
+	 */
 	public function testGetFileStatusThrowExceptionWhenExecFailed () {
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$oMockShell->expects($this->exactly(1))->method('exec');
@@ -326,6 +425,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$oMockShell->getFileStatus('foo');
 	}
 
+	/**
+	 * @covers Shell_Adapter::getFileStatus
+	 */
 	public function testGetFileStatusWithFile () {
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$oMockShell->expects($this->at(0))->method('exec')
@@ -342,6 +444,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * @depends testGetFileStatusWithFile
+	 * @covers Shell_Adapter::getFileStatus
 	 */
 	public function testGetFileStatusWithFileOnCache (Shell_Adapter $oMockShell) {
 		$this->assertAttributeEquals(array('/path/to/my file' => 1), 'aFileStatus', $oMockShell);
@@ -350,6 +453,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(1, $aResult);
 	}
 
+	/**
+	 * @covers Shell_Adapter::getFileStatus
+	 */
 	public function testGetFileStatusWithDir () {
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$oMockShell->expects($this->at(0))->method('exec')
@@ -363,6 +469,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$this->assertAttributeEquals(array('/path/to/dir' => 2), 'aFileStatus', $oMockShell);
 	}
 
+	/**
+	 * @covers Shell_Adapter::getFileStatus
+	 */
 	public function testGetFileStatusWithUnknown () {
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$oMockShell->expects($this->at(0))->method('exec')
@@ -378,6 +487,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 
 
 
+	/**
+	 * @covers Shell_Adapter::sync
+	 */
 	public function testSyncThrowExceptionWhenExecFailed () {
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$oMockShell->expects($this->exactly(1))->method('exec');
@@ -386,6 +498,9 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$oMockShell->sync('foo', 'bar');
 	}
 
+	/**
+	 * @covers Shell_Adapter::sync
+	 */
 	public function testSyncLocalFileToLocalDir () {
 		$aExpectedResult = array('  - Number of transferred files: 2/1774
 Total transferred file size: 178/64093953
@@ -418,6 +533,9 @@ total size is 64093953  speedup is 1618.29');
 		$this->assertEquals(preg_replace('/\s/', '', $aExpectedResult[0]), preg_replace('/\s/', '', $aResult[0]));
 	}
 
+	/**
+	 * @covers Shell_Adapter::sync
+	 */
 	public function testSyncLocalFileToLocalDirWithAdditionalExclude () {
 		$aExpectedResult = array('  - Number of transferred files: 2/1774
 Total transferred file size: 178/64093953
@@ -450,6 +568,9 @@ total size is 64093953  speedup is 1618.29');
 		$this->assertEquals(preg_replace('/\s/', '', $aExpectedResult[0]), preg_replace('/\s/', '', $aResult[0]));
 	}
 
+	/**
+	 * @covers Shell_Adapter::sync
+	 */
 	public function testSyncLocalFileToRemotesDir () {
 		$aExpectedResult = array('  - Number of transferred files: 2/1774
 Total transferred file size: 178/64093953
@@ -490,6 +611,9 @@ total size is 64093953  speedup is 1618.29');
 
 
 
+	/**
+	 * @covers Shell_Adapter::createLink
+	 */
 	public function testCreateLinkThrowExceptionWhenExecFailed () {
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$oMockShell->expects($this->exactly(1))->method('exec');
@@ -498,6 +622,9 @@ total size is 64093953  speedup is 1618.29');
 		$oMockShell->createLink('foo', 'bar');
 	}
 
+	/**
+	 * @covers Shell_Adapter::createLink
+	 */
 	public function testCreateLinkWithLocalPath () {
 		$aExpectedResult = array('blabla');
 
@@ -511,6 +638,9 @@ total size is 64093953  speedup is 1618.29');
 		$this->assertEquals($aExpectedResult, $aResult);
 	}
 
+	/**
+	 * @covers Shell_Adapter::createLink
+	 */
 	public function testCreateLinkWithRemotePath () {
 		$aExpectedResult = array('blabla');
 
