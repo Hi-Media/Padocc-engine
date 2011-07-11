@@ -115,7 +115,7 @@ abstract class Task {
 	 * @param string $sPath chemin pouvant contenir des paramètres
 	 * @return array liste de tous les chemins générés en remplaçant les paramètres du chemin spécifié par leurs valeurs
 	 */
-	protected function expandPaths ($sPath) {
+	protected function _expandPaths ($sPath) {
 		if (preg_match_all('/\$\{([^}]*)\}/i', $sPath, $aMatches) > 0) {
 			$aPaths = array($sPath);
 			foreach ($aMatches[1] as $property) {
@@ -148,10 +148,8 @@ abstract class Task {
 		}
 
 		foreach ($this->aAttributeProperties as $sAttribute => $aProperties) {
-			if (empty($this->aAttributes[$sAttribute])) {
-				if (in_array('required', $aProperties)) {
-					throw new UnexpectedValueException("'$sAttribute' attribute is required!");
-				}
+			if (empty($this->aAttributes[$sAttribute]) && in_array('required', $aProperties)) {
+				throw new UnexpectedValueException("'$sAttribute' attribute is required!");
 			} else {
 				if (in_array('dir', $aProperties) || in_array('file', $aProperties)) {
 					$this->aAttributes[$sAttribute] = str_replace('\\', '/', $this->aAttributes[$sAttribute]);

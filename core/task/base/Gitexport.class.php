@@ -43,7 +43,7 @@ class Task_Base_Gitexport extends Task {
 		$this->oLogger->log(implode("\n", $result));
 
 		$aExcludedPaths = (empty($this->aAttributes['exclude']) ? array() : explode(' ', $this->aAttributes['exclude']));
-		$results = $this->oShell->sync($this->aAttributes['srcdir'] . '/*', $this->expandPaths($this->aAttributes['destdir']), $aExcludedPaths);
+		$results = $this->oShell->sync($this->aAttributes['srcdir'] . '/*', $this->_expandPaths($this->aAttributes['destdir']), $aExcludedPaths);
 		foreach ($results as $result) {
 			$this->oLogger->log($result);
 		}

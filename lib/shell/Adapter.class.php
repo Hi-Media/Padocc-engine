@@ -204,11 +204,7 @@ rsync  --bwlimit=4000
 
 		$aExcludedPaths = array_merge(self::$aDefaultRsyncExclude, $aExcludedPaths);
 		for ($i=0; $i<count($aPaths); $i++) {
-			if (count($aExcludedPaths) === 0) {
-				$sAdditionalExclude = '';
-			} else {
-				$sAdditionalExclude = '--exclude="' . implode('" --exclude="', $aExcludedPaths) . '" ';
-			}
+			$sAdditionalExclude = (count($aExcludedPaths) === 0 ? '' : '--exclude="' . implode('" --exclude="', $aExcludedPaths) . '" ');
 
 			$aCmd = array();
 			for ($j=$i; $j<count($aPaths) && $j<$i+DEPLOYMENT_RSYNC_MAX_NB_PROCESSES; $j++) {
@@ -219,14 +215,14 @@ rsync  --bwlimit=4000
 			$i = $j-1;
 			$sCmd = implode(" & \\\n", $aCmd) . (count($aCmd) > 1 ? " & \\\nwait" : '');
 			$aRawResult = $this->exec($sCmd);
-			$aResult = $this->resumeSyncResult($aRawResult);
+			$aResult = $this->_resumeSyncResult($aRawResult);
 			$aAllResults = array_merge($aAllResults, $aResult);
 		}
 
 		return $aAllResults;
 	}
 
-	private function resumeSyncResult (array $aRawResult) {
+	private function _resumeSyncResult (array $aRawResult) {
 		$aKeys = array(
 			'number of files',
 			'number of files transferred',

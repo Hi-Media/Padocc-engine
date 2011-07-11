@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @covers Task
- */
 class TaskTest extends PHPUnit_Framework_TestCase {
 
 	/**
@@ -30,14 +27,14 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @covers Task::expandPaths
+	 * @covers Task::_expandPaths
 	 */
 	public function testExpandPathsWithSimpleString () {
 		$oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
 		$oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
 
 		$class = new ReflectionClass($oMockTask);
-		$method = $class->getMethod('expandPaths');
+		$method = $class->getMethod('_expandPaths');
 		$method->setAccessible(true);
 
 		$aResult = $method->invokeArgs($oMockTask, array('test'));
@@ -45,7 +42,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @covers Task::expandPaths
+	 * @covers Task::_expandPaths
 	 */
 	public function testExpandPathsWithOneSimpleParameter () {
 		$oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
@@ -60,7 +57,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 		$oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, 'backup_path', $this->oServiceContainer));
 
 		$class = new ReflectionClass($oMockTask);
-		$method = $class->getMethod('expandPaths');
+		$method = $class->getMethod('_expandPaths');
 		$method->setAccessible(true);
 
 		$aResult = $method->invokeArgs($oMockTask, array('foo${p}bar'));
@@ -68,7 +65,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @covers Task::expandPaths
+	 * @covers Task::_expandPaths
 	 */
 	public function testExpandPathsWithOneComplexParameter () {
 		$oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
@@ -83,7 +80,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 		$oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, 'backup_path', $this->oServiceContainer));
 
 		$class = new ReflectionClass($oMockTask);
-		$method = $class->getMethod('expandPaths');
+		$method = $class->getMethod('_expandPaths');
 		$method->setAccessible(true);
 
 		$aResult = $method->invokeArgs($oMockTask, array('foo${p}bar'));
@@ -91,7 +88,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @covers Task::expandPaths
+	 * @covers Task::_expandPaths
 	 */
 	public function testExpandPathsWithTwoComplexParameter () {
 		$oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
@@ -109,7 +106,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 		$oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, 'backup_path', $this->oServiceContainer));
 
 		$class = new ReflectionClass($oMockTask);
-		$method = $class->getMethod('expandPaths');
+		$method = $class->getMethod('_expandPaths');
 		$method->setAccessible(true);
 
 		$aResult = $method->invokeArgs($oMockTask, array('${p}foo${q}'));

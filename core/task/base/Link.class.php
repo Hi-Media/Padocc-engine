@@ -38,7 +38,7 @@ class Task_Base_Link extends Task {
 
 	public function execute () {
 		if ( ! empty($this->aAttributes['server'])) {
-			$aTargetPaths = $this->expandPaths($this->aAttributes['server'] . ':' . $this->aAttributes['target']);
+			$aTargetPaths = $this->_expandPaths($this->aAttributes['server'] . ':' . $this->aAttributes['target']);
 			foreach ($aTargetPaths as $sTargetPath) {
 				list(, $aDestMatches) = $this->oShell->isRemotePath($sTargetPath);
 				$sSrc = $aDestMatches[1] . ':' . $this->aAttributes['src'];

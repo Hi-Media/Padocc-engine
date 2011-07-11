@@ -26,7 +26,7 @@ class Task_Base_MkDir extends Task {
 	public function execute () {
 		$sMode = (empty($this->aAttributes['mode']) ? '' : $this->aAttributes['mode']);
 
-		$aDestDirs = $this->expandPaths($this->aAttributes['destdir']);
+		$aDestDirs = $this->_expandPaths($this->aAttributes['destdir']);
 		foreach ($aDestDirs as $sDestDir) {
 			$this->oShell->mkdir($sDestDir, $sMode);
 		}
