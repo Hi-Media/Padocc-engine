@@ -41,7 +41,8 @@
 			propertyinifile="/home/gaubry/deployment/resources/tests_env_property_file.ini"
 			mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com"
 	>
-		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="v4.11.0"
+		<externalproperty name="rts_ref" description="Branch or tag to deploy" />
+		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="${rts_ref}"
 			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1"
 			exclude="site_hr_upload config*" />
 		<mkdir destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1/cache/smarty/cache" mode="777" />
@@ -56,7 +57,10 @@
 			propertyinifile="/home/gaubry/deployment/resources/tests_env_property_file.ini"
 			mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com"
 	>
+		<externalproperty name="t1" description="Branch" />
+		<externalproperty name="t2" description="or tag" />
 		<buildlanguage project="rts" destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/buildlanguage" />
+		<externalproperty name="t3" description="or tag" />
 	</env>
 
 	<env name="all_tests">
