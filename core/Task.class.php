@@ -150,7 +150,7 @@ abstract class Task {
 		foreach ($this->aAttributeProperties as $sAttribute => $aProperties) {
 			if (empty($this->aAttributes[$sAttribute]) && in_array('required', $aProperties)) {
 				throw new UnexpectedValueException("'$sAttribute' attribute is required!");
-			} else {
+			} else if ( ! empty($this->aAttributes[$sAttribute])) {
 				if (in_array('dir', $aProperties) || in_array('file', $aProperties)) {
 					$this->aAttributes[$sAttribute] = str_replace('\\', '/', $this->aAttributes[$sAttribute]);
 				}
