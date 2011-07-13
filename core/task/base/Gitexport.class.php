@@ -15,7 +15,7 @@ class Task_Base_Gitexport extends Task {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
 			'repository' => array('file', 'required'),
-			'ref' => array('required'),
+			'ref' => array('required', 'allow_parameters'),
 			'srcdir' => array('dir'),
 			'destdir' => array('dir', 'required', 'allow_parameters'),
 			'exclude' => array('filejoker'),
@@ -34,10 +34,13 @@ class Task_Base_Gitexport extends Task {
 	}
 
 	public function execute () {
+		$aRef = $this->_expandPaths($this->aAttributes['ref']);
+		$sRef = $aRef[0];
+
 		$result = $this->oShell->exec(
 			DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/gitexport.inc.sh'
 			. ' "' . $this->aAttributes['repository'] . '"'
-			. ' "' . $this->aAttributes['ref'] . '"'
+			. ' "' . $sRef . '"'
 			. ' "' . $this->aAttributes['srcdir'] . '"'
 		);
 		$this->oLogger->log(implode("\n", $result));
