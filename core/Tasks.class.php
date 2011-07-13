@@ -60,13 +60,29 @@ class Tasks {
 		return $aProjectName;
 	}
 
+	// {"rts":["dev","qa","pre-prod"],"tests":["tests_gitexport","tests_languages","all_tests"],"wtpn":["prod"],"ptpn":["prod"]}
+	// {"rts":{"dev":[],"qa":[],"pre-prod":[]},"tests":{"tests_gitexport":{"rts_ref":"Branch or tag to deploy"},"tests_languages":{"t1":"Branch","t2":"or tag","t3":"or tag"},"all_tests":[]},"wtpn":{"prod":[]},"ptpn":{"prod":[]}}
 	public static function getAvailableTargetsList ($sProjectName) {
 		$oProject = self::getProject($sProjectName);
 		$aTargets = $oProject->xpath("//env");
 		$aTargetsList = array();
-		foreach ($aTargets as $aTarget) {
-			$aTargetsList[] = (string)$aTarget['name'];
+		foreach ($aTargets as $oTarget) {
+			$sEnvName = (string)$oTarget['name'];
+			//$aTargetsList[] = $sEnvName;
+
+			$aExternalProperties = $oProject->xpath("//env[@name='$sEnvName']/externalproperty");
+			$aExternalPropertiesList = array();
+			foreach ($aExternalProperties as $oExternalProperty) {
+				$sName = (string)$oExternalProperty['name'];
+				$sDesc = (string)$oExternalProperty['description'];
+				$aExternalPropertiesList[$sName] = $sDesc;
+			}
+			//var_dump($aExternalPropertiesList);
+			$aTargetsList[$sEnvName] = $aExternalPropertiesList;
+
 		}
+
+
 		return $aTargetsList;
 	}
 
