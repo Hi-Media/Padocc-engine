@@ -60,6 +60,7 @@ chmod 777 deployment/resources -R
 // TODO tout comme on log les "Check '1.1_Task_Base_Gitexport' task...", on pourrait logger les run()...
 // TODO connecteur YUI : http://git.twenga.com/distribution/wtpn/blobs/master/scripts/js_minifier.php
 // TODO Task::_expandPath() => ajouter un paramètre pour signifier qu'il ne doit pas y avoir plus d'une valeur générée ?
+// TODO afficher les external properties sur les écrans dashboard et queue
 
 /*
 ~/.muttrc
