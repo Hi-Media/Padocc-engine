@@ -58,6 +58,8 @@ chmod 777 deployment/resources -R
 // TODO pas de gestion robuste des erreurs qd appel direct (par AAI) de deployment.php. ex: php /home/aai/deployment/deployment.php --getProjectsEnvsList
 // TODO valeur par défaut pour les attributs ?
 // TODO tout comme on log les "Check '1.1_Task_Base_Gitexport' task...", on pourrait logger les run()...
+// TODO connecteur YUI : http://git.twenga.com/distribution/wtpn/blobs/master/scripts/js_minifier.php
+// TODO Task::_expandPath() => ajouter un paramètre pour signifier qu'il ne doit pas y avoir plus d'une valeur générée ?
 
 /*
 ~/.muttrc
@@ -97,12 +99,12 @@ if ($argc == 1 && $argv[key($argv)] === "--getProjectsEnvsList") {
 	file_put_contents('php://stderr', 'Missing parameters! Example: /usr/bin/php -q ~/deployment/deployment.php project1 dev 20110518121106 /tmp/deployment.php.20110518121106.error.log', E_USER_ERROR);
 	exit(1);
 } else {
-	$sErrorLogFile = $argv[count($argv)-1];
-	$sExecutionID = $argv[count($argv)-2];
-	$sProjectName = $argv[0];
-	$sEnvName = $argv[1];
+	$sErrorLogFile = array_pop($argv);
+	$sExecutionID = array_pop($argv);
+	$sProjectName = array_shift($argv);
+	$sEnvName = array_shift($argv);
 
 	errorInit(0, $sErrorLogFile);
 	$oDeployment = new Deployment();
-	$oDeployment->run($sProjectName, $sEnvName, $sExecutionID);
+	$oDeployment->run($sProjectName, $sEnvName, $sExecutionID, $argv);
 }

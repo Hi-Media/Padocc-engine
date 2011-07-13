@@ -18,11 +18,17 @@ class Deployment {
 			->setMailAdapter(new Mail_Adapter());
 	}
 
-	public function run ($sProjectName, $sEnvName, $sExecutionID) {
+	public function run ($sProjectName, $sEnvName, $sExecutionID, array $aExternalProperties=array()) {
 		$oProperties = $this->oServiceContainer->getPropertiesAdapter();
 		$oProperties->addProperty('project_name', $sProjectName);
 		$oProperties->addProperty('environment_name', $sEnvName);
 		$oProperties->addProperty('execution_id', $sExecutionID);
+
+		// Gestion des propriétés externes :
+		foreach ($aExternalProperties as $i => $sValue) {
+			$sKey = Task_Base_ExternalProperty::sExternalPropertyPrefix . ($i+1);
+			$oProperties->addProperty($sKey, str_replace('&#0160;', ' ', $sValue));
+		}
 
 		$oProject = new Task_Base_Project($sProjectName, $sEnvName, $sExecutionID, $this->oServiceContainer);
 		$this->oLogger->log('Check tasks...');
