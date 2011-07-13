@@ -16,8 +16,8 @@
 		<buildlanguage project="rts" destdir="${SERVER_AAI}:/home/aai/deployment_test/rts/buildlanguage" />
 	</env>
 
-	<env name="qa" mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com">
-		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="release-4.15.0"
+	<env name="qa" mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com, qateam@twenga.com">
+		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="release-4.16.0"
 			destdir="${SERVER_EXTRANET_QA}:/home/httpd/extranet.twenga.com" exclude="config.*" />
 		<gitexport repository="git@git.twenga.com:fwt/fwt.git" ref="rts"
 			destdir="${SERVER_EXTRANET_QA}:/home/httpd/extranet.twenga.com/fwt" exclude="config.*" />
@@ -28,8 +28,8 @@
 		<buildlanguage project="rts" destdir="${SERVER_EXTRANET_QA}:/home/httpd/extranet.twenga.com/languages" />
 	</env>
 
-	<env name="pre-prod" mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com">
-		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="release-4.15.0"
+	<env name="pre-prod" mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com, qateam@twenga.com">
+		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="release-4.16.0"
 			destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/extranet.twenga.com" exclude="config.*" />
 		<gitexport repository="git@git.twenga.com:fwt/fwt.git" ref="rts"
 			destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/extranet.twenga.com/fwt" exclude="config.*" />
