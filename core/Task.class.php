@@ -30,7 +30,7 @@ abstract class Task {
 
 	/**
 	 * Adaptateur de log.
-	 * @var Logger_Interface
+	 * @var Logger_IndentedInterface
 	 */
 	protected $oLogger;
 
@@ -187,7 +187,8 @@ abstract class Task {
 	 * @see self::$aAttributeProperties
 	 */
 	public function check () {
-		$this->oLogger->log("Check '" . $this->sName . "' task...");
+		$this->oLogger->log("Check '" . $this->sName . "' task");
+		$this->oLogger->indent();
 
 		$aAvailablesAttributes = array_keys($this->aAttributeProperties);
 		$aUnknownAttributes = array_diff(array_keys($this->aAttributes), $aAvailablesAttributes);
@@ -231,10 +232,11 @@ abstract class Task {
 				}
 			}
 		}
+		$this->oLogger->unindent();
 	}
 
 	public function execute () {
-		$this->oLogger->log("Execute '" . $this->sName . "' task...");
+		$this->oLogger->log("Execute '" . $this->sName . "' task");
 	}
 
 	public abstract function backup ();

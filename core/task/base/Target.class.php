@@ -110,10 +110,12 @@ class Task_Base_Target extends Task {
 
 	public function execute () {
 		parent::execute();
+		$this->oLogger->indent();
 
 		if ( ! empty($this->aAttributes['mailto'])) {
 			$this->oLogger->log('[MAILTO] ' . $this->aAttributes['mailto']);
 		}
+		$this->oLogger->unindent();
 
 		foreach ($this->aTasks as $oTask) {
 			$oTask->backup();

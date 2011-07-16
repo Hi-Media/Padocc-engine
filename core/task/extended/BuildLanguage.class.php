@@ -45,6 +45,7 @@ class Task_Extended_BuildLanguage extends Task {
 
 	public function execute () {
 		parent::execute();
+		$this->oLogger->indent();
 		$sLanguagesPath = tempnam('/tmp', $this->oProperties->getProperty('execution_id') . '_languages_');
 		$fh = fopen($sLanguagesPath, 'w');
 		$aCurlParameters = array(
@@ -96,6 +97,7 @@ class Task_Extended_BuildLanguage extends Task {
 		}
 
 		@unlink($sLanguagesPath);
+		$this->oLogger->unindent();
 	}
 
 	public function backup () {

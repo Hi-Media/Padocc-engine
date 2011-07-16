@@ -55,6 +55,8 @@ class Task_Extended_GitExport extends Task {
 
 	public function execute () {
 		parent::execute();
+		$this->oLogger->indent();
+
 		$aRef = $this->_expandPaths($this->aAttributes['ref']);
 		$sRef = $aRef[0];
 
@@ -71,6 +73,8 @@ class Task_Extended_GitExport extends Task {
 		foreach ($results as $result) {
 			$this->oLogger->log($result);
 		}
+
+		$this->oLogger->unindent();
 	}
 
 	public function backup () {

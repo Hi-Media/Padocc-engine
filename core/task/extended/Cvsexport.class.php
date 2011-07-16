@@ -55,6 +55,7 @@ class Task_Extended_CvsExport extends Task {
 
 	public function execute () {
 		parent::execute();
+		$this->oLogger->indent();
 		$result = $this->oShell->exec(
 			DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/cvsexport.inc.sh'
 			. ' "' . $this->aAttributes['repository'] . '"'
@@ -68,6 +69,7 @@ class Task_Extended_CvsExport extends Task {
 		foreach ($results as $result) {
 			$this->oLogger->log($result);
 		}
+		$this->oLogger->unindent();
 	}
 
 	public function backup () {

@@ -6,7 +6,8 @@ class Deployment {
 	private $oServiceContainer;
 
 	public function __construct () {
-		$this->oLogger = new Logger_Adapter(DEPLOYMENT_DEBUG_MODE === 1 ? Logger_Interface::DEBUG : Logger_Interface::INFO);
+		$oBaseLogger = new Logger_Adapter(DEPLOYMENT_DEBUG_MODE === 1 ? Logger_Interface::DEBUG : Logger_Interface::INFO);
+		$this->oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
 		$oShell = new Shell_Adapter($this->oLogger);
 
 		$this->oServiceContainer = new ServiceContainer();
@@ -31,10 +32,14 @@ class Deployment {
 		}
 
 		$oProject = new Task_Base_Project($sProjectName, $sEnvName, $sExecutionID, $this->oServiceContainer);
-		$this->oLogger->log('Check tasks...');
+		$this->oLogger->log('Check tasks:');
+		$this->oLogger->indent();
 		$oProject->check();
-		$this->oLogger->log('Execute tasks...');
+		$this->oLogger->unindent();
+		$this->oLogger->log('Execute tasks:');
+		$this->oLogger->indent();
 		$oProject->execute();
+		$this->oLogger->unindent();
 	}
 
 	public function getProjectsEnvsList () {

@@ -4,7 +4,7 @@ class ServiceContainer {
 
 	/**
 	 * Logger.
-	 * @var Logger_Interface
+	 * @var Logger_IndentedInterface
 	 */
 	private $oLogger;
 
@@ -39,7 +39,7 @@ class ServiceContainer {
 		$this->oMail = NULL;
 	}
 
-	public function setLogAdapter (Logger_Interface $oLogger) {
+	public function setLogAdapter (Logger_IndentedInterface $oLogger) {
 		$this->oLogger = $oLogger;
 		return $this;
 	}

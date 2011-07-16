@@ -53,7 +53,9 @@ class Task_Base_Copy extends Task {
 
 	public function execute () {
 		parent::execute();
+		$this->oLogger->indent();
 		$this->oShell->copy($this->aAttributes['src'], $this->aAttributes['destdir']);
+		$this->oLogger->unindent();
 	}
 
 	public function backup () {
