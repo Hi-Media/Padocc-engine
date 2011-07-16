@@ -95,7 +95,7 @@ abstract class Task {
 
 		$sCounter = $this->oNumbering->getNextCounterValue();
 		$this->sCounter = (strlen($sCounter) === 2 ? '' : substr($sCounter, 2));
-		$this->sName = $this->sCounter . '_' . get_class($this);
+		$this->sName = (strlen($this->sCounter) === 0 ? '' : $this->sCounter . '_') . get_class($this);
 		$this->sBackupPath = $sBackupPath . '/' . $this->sName;
 
 		$this->aAttributeProperties = array();
@@ -183,7 +183,9 @@ abstract class Task {
 		}
 	}
 
-	public abstract function execute ();
+	public function execute () {
+		$this->oLogger->log("Execute '" . $this->sName . "' task...");
+	}
 
 	public abstract function backup ();
 }

@@ -34,6 +34,7 @@ class Task_Base_Gitexport extends Task {
 	}
 
 	public function execute () {
+		parent::execute();
 		$aRef = $this->_expandPaths($this->aAttributes['ref']);
 		$sRef = $aRef[0];
 

@@ -29,14 +29,10 @@ chmod 777 deployment/resources -R
 
 // TODO implémenter rollback
 // TODO si fatal error, demander au supervisor de proposer un rollback ?
-// TODO s'assurer que si jamais Deployment plante sans envoyer de mail, alors Supervisor le fera !
 // TODO description des tâches
 // TODO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="biblio10.xsd"
-// TODO les sous-target pourraient être préfixées par un underscore
-// TODO passer l'ID du superviseur sur un timestamp+random
 // TODO passer les types de paramètres de tâches en champ de bits
 // TODO mieux différencier les différents types d'exception
-// TODO mettre en forme le retour des appels rsync ?
 // TODO Clarification de l'affichage : début et fin de tâche, de target
 // TODO Que doit retourner Shell_Adapter->exec() : array ou string ?
 // TODO test multi rsync
@@ -44,12 +40,10 @@ chmod 777 deployment/resources -R
 // TODO imposer des attributs desc et les remonter dans le nom des tâches ?
 // TODO détester call cycliques !
 // TODO initProperties() présent dans Target.class.php et Call.class.php...
-// TODO surveiller SUPERVISOR_ERROR_LOG_FILE
 // TODO AAI MAILTO
 // TODO archivage des logs
 // TODO connecteur CVS ne gère que le trunk
 // TODO remonter heartbeat dans AAI
-// TODO add cron supervisor errors
 // TODO langues : https://admin.twenga.com/translation_tool/build_language_files2.php?project=rts
 // TODO lib cURL : see curl_setopt_array
 // TODO AAI bien gérer qd second ajout (projet, env) refusé.
@@ -57,10 +51,8 @@ chmod 777 deployment/resources -R
 // TODO multi rsync n'effectue pas les mkdir en parallèle
 // TODO pas de gestion robuste des erreurs qd appel direct (par AAI) de deployment.php. ex: php /home/aai/deployment/deployment.php --getProjectsEnvsList
 // TODO valeur par défaut pour les attributs ?
-// TODO tout comme on log les "Check '1.1_Task_Base_Gitexport' task...", on pourrait logger les run()...
 // TODO connecteur YUI : http://git.twenga.com/distribution/wtpn/blobs/master/scripts/js_minifier.php
 // TODO Task::_expandPath() => ajouter un paramètre pour signifier qu'il ne doit pas y avoir plus d'une valeur générée ?
-// TODO afficher les external properties sur les écrans dashboard et queue
 
 /*
 ~/.muttrc

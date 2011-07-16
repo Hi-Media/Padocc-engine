@@ -51,6 +51,7 @@ class Task_Base_Call extends Task {
 	}
 
 	public function execute () {
+		parent::execute();
 		$this->oBoundTask->backup();
 		$this->oBoundTask->execute();
 	}

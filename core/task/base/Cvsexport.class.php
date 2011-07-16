@@ -34,6 +34,7 @@ class Task_Base_Cvsexport extends Task {
 	}
 
 	public function execute () {
+		parent::execute();
 		$result = $this->oShell->exec(
 			DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/cvsexport.inc.sh'
 			. ' "' . $this->aAttributes['repository'] . '"'

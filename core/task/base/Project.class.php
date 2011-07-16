@@ -40,9 +40,7 @@ class Task_Base_Project extends Task_Base_Call {
 	}
 
 	public function execute () {
-		//$this->sendStartMail();
 		parent::execute();
-		//$this->sendEndMail();
 	}
 
 	/*private function sendStartMail () {
