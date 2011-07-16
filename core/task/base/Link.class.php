@@ -58,6 +58,7 @@ class Task_Base_Link extends Task {
 
 	public function execute () {
 		parent::execute();
+		$this->oLogger->indent();
 		if ( ! empty($this->aAttributes['server'])) {
 			$aTargetPaths = $this->_expandPaths($this->aAttributes['server'] . ':' . $this->aAttributes['target']);
 			foreach ($aTargetPaths as $sTargetPath) {
@@ -68,6 +69,7 @@ class Task_Base_Link extends Task {
 		} else {
 			$this->oShell->createLink($this->aAttributes['src'], $this->aAttributes['target']);
 		}
+		$this->oLogger->unindent();
 	}
 
 	public function backup () {

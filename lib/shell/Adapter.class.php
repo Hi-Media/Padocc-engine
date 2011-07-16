@@ -254,7 +254,7 @@ rsync  --bwlimit=4000
 		$aResult = array();
 		foreach ($aAllStats as $aStats) {
 			$aResult[] =
-				'  - Number of transferred files: ' . $aStats['number of files transferred'] . '/' . $aStats['number of files'] . "\n"
+				'Number of transferred files: ' . $aStats['number of files transferred'] . '/' . $aStats['number of files'] . "\n"
 				. 'Total transferred file size: ' . $aStats['total transferred file size'] . '/' . $aStats['total file size'] . "\n";
 		}
 		return $aResult;

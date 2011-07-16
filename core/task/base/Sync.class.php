@@ -51,7 +51,9 @@ class Task_Base_Sync extends Task {
 
 	public function execute () {
 		parent::execute();
+		$this->oLogger->indent();
 		$this->oShell->sync($this->aAttributes['src'], $this->aAttributes['destdir']);
+		$this->oLogger->unindent();
 	}
 
 	public function backup () {

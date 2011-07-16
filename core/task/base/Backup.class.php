@@ -45,7 +45,9 @@ class Task_Base_Backup extends Task {
 
 	public function execute () {
 		parent::execute();
+		$this->oLogger->indent();
 		$this->oShell->backup($this->aAttributes['src'], $this->aAttributes['destfile']);
+		$this->oLogger->unindent();
 	}
 
 	public function backup () {

@@ -53,12 +53,14 @@ class Task_Base_ExternalProperty extends Task {
 
 	public function execute () {
 		parent::execute();
+		$this->oLogger->indent();
 		try {
 			$sValue = $this->oProperties->getProperty(self::sExternalPropertyPrefix . $this->iNumber);
 		} catch (DomainException $e) {
 			throw new DomainException('Property "' . $this->aAttributes['name'] . '" undefined!');
 		}
 		$this->oProperties->addProperty($this->aAttributes['name'], $sValue);
+		$this->oLogger->unindent();
 	}
 
 	public function backup () {}
