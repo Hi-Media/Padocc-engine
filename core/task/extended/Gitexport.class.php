@@ -1,6 +1,6 @@
 <?php
 
-class Task_Base_Cvsexport extends Task {
+class Task_Extended_GitExport extends Task {
 
 	/**
 	 * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
@@ -8,17 +8,17 @@ class Task_Base_Cvsexport extends Task {
 	 * @return string nom du tag XML correspondant à cette tâche dans les config projet.
 	 */
 	public static function getTagName () {
-		return 'cvsexport';
+		return 'gitexport';
 	}
 
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
 			'repository' => array('file', 'required'),
-			//'ref' => array('required'),
-			'module' => array('dir', 'required'),
+			'ref' => array('required', 'allow_parameters'),
 			'srcdir' => array('dir'),
-			'destdir' => array('dir', 'required', 'allow_parameters')
+			'destdir' => array('dir', 'required', 'allow_parameters'),
+			'exclude' => array('filejoker'),
 		);
 	}
 
@@ -26,7 +26,7 @@ class Task_Base_Cvsexport extends Task {
 		parent::check();
 		if (empty($this->aAttributes['srcdir'])) {
 			$this->aAttributes['srcdir'] =
-				DEPLOYMENT_REPOSITORIES_DIR . '/cvs/'
+				DEPLOYMENT_REPOSITORIES_DIR . '/git/'
 				. $this->oProperties->getProperty('project_name') . '_'
 				. $this->oProperties->getProperty('environment_name') . '_'
 				. $this->sCounter;
@@ -35,16 +35,19 @@ class Task_Base_Cvsexport extends Task {
 
 	public function execute () {
 		parent::execute();
+		$aRef = $this->_expandPaths($this->aAttributes['ref']);
+		$sRef = $aRef[0];
+
 		$result = $this->oShell->exec(
-			DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/cvsexport.inc.sh'
+			DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/gitexport.inc.sh'
 			. ' "' . $this->aAttributes['repository'] . '"'
-			. ' "' . $this->aAttributes['module'] . '"'
+			. ' "' . $sRef . '"'
 			. ' "' . $this->aAttributes['srcdir'] . '"'
 		);
 		$this->oLogger->log(implode("\n", $result));
 
-		$sCVSPath = $this->aAttributes['srcdir'] . '/' . $this->aAttributes['module'];
-		$results = $this->oShell->sync($sCVSPath . '/*', $this->_expandPaths($this->aAttributes['destdir']));
+		$aExcludedPaths = (empty($this->aAttributes['exclude']) ? array() : explode(' ', $this->aAttributes['exclude']));
+		$results = $this->oShell->sync($this->aAttributes['srcdir'] . '/*', $this->_expandPaths($this->aAttributes['destdir']), $aExcludedPaths);
 		foreach ($results as $result) {
 			$this->oLogger->log($result);
 		}
