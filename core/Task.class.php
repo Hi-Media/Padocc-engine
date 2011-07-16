@@ -116,7 +116,7 @@ abstract class Task {
 	 *
 	 * @param SimpleXMLElement $oTask Contenu XML de la tâche.
 	 * @param Task_Base_Project $oProject Super tâche projet.
-	 * @param sttring $sBackupPath répertoire hôte pour le backup de la tâche.
+	 * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
 	 * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
 	 */
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
