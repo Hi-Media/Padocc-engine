@@ -32,6 +32,7 @@ class Task_Base_ExternalProperty extends Task {
 	}
 
 	public function execute () {
+		parent::execute();
 		try {
 			$sValue = $this->oProperties->getProperty(self::sExternalPropertyPrefix . $this->iNumber);
 		} catch (DomainException $e) {

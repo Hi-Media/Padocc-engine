@@ -30,6 +30,7 @@ class Task_Base_Sync extends Task {
 	}
 
 	public function execute () {
+		parent::execute();
 		$this->oShell->sync($this->aAttributes['src'], $this->aAttributes['destdir']);
 	}
 

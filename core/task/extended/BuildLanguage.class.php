@@ -24,6 +24,7 @@ class Task_Extended_BuildLanguage extends Task {
 	}
 
 	public function execute () {
+		parent::execute();
 		$sLanguagesPath = tempnam('/tmp', $this->oProperties->getProperty('execution_id') . '_languages_');
 		$fh = fopen($sLanguagesPath, 'w');
 		$aCurlParameters = array(

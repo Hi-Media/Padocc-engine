@@ -32,6 +32,7 @@ class Task_Base_Copy extends Task {
 	}
 
 	public function execute () {
+		parent::execute();
 		$this->oShell->copy($this->aAttributes['src'], $this->aAttributes['destdir']);
 	}
 

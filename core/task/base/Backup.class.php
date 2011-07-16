@@ -24,6 +24,7 @@ class Task_Base_Backup extends Task {
 	}
 
 	public function execute () {
+		parent::execute();
 		$this->oShell->backup($this->aAttributes['src'], $this->aAttributes['destfile']);
 	}
 

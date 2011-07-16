@@ -37,6 +37,7 @@ class Task_Base_Link extends Task {
 	}
 
 	public function execute () {
+		parent::execute();
 		if ( ! empty($this->aAttributes['server'])) {
 			$aTargetPaths = $this->_expandPaths($this->aAttributes['server'] . ':' . $this->aAttributes['target']);
 			foreach ($aTargetPaths as $sTargetPath) {

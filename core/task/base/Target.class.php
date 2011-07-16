@@ -91,6 +91,8 @@ class Task_Base_Target extends Task {
 	}
 
 	public function execute () {
+		parent::execute();
+
 		if ( ! empty($this->aAttributes['mailto'])) {
 			$this->oLogger->log('[MAILTO] ' . $this->aAttributes['mailto']);
 		}
