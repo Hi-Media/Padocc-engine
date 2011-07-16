@@ -16,9 +16,9 @@ class Task_Base_Project extends Task_Base_Call {
 	/**
 	 * Constructeur.
 	 *
-	 * @param SimpleXMLElement $oTask Contenu XML de la tâche.
-	 * @param Task_Base_Project $oProject Super tâche projet.
-	 * @param sttring $sBackupPath répertoire hôte pour le backup de la tâche.
+	 * @param string $sProjectName Nom du projet.
+	 * @param string $sEnvName Environnement sélectionné.
+	 * @param string $sExecutionID Identifiant d'exécution.
 	 * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
 	 */
 	public function __construct ($sProjectName, $sEnvName, $sExecutionID, ServiceContainer $oServiceContainer) {
