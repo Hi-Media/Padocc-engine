@@ -11,6 +11,14 @@ class Task_Extended_BuildLanguage extends Task {
 		return 'buildlanguage';
 	}
 
+	/**
+	 * Constructeur.
+	 *
+	 * @param SimpleXMLElement $oTask Contenu XML de la tâche.
+	 * @param Task_Base_Project $oProject Super tâche projet.
+	 * @param sttring $sBackupPath répertoire hôte pour le backup de la tâche.
+	 * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
+	 */
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
@@ -19,6 +27,18 @@ class Task_Extended_BuildLanguage extends Task {
 		);
 	}
 
+	/**
+	 * Vérifie au moyen de tests basiques que la tâche peut être exécutée.
+	 * Lance une exception si tel n'est pas le cas.
+	 *
+	 * Comme toute les tâches sont vérifiées avant que la première ne soit exécutée,
+	 * doit permettre de remonter au plus tôt tout dysfonctionnement.
+	 * Appelé avant la méthode execute().
+	 *
+	 * @throws UnexpectedValueException
+	 * @throws DomainException
+	 * @throws RuntimeException
+	 */
 	public function check () {
 		parent::check();
 	}

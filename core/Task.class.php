@@ -51,7 +51,17 @@ abstract class Task {
 	 */
 	protected $oProject;
 
+	/**
+	 * Chaîne numérotant la tâche.
+	 * @var string
+	 * @see Numbering_Interface::getNextCounterValue()
+	 */
 	protected $sCounter;
+
+	/**
+	 * Nom complet de la tâche, utilisé notamment dans le suivi d'exécution.
+	 * @var string
+	 */
 	protected $sName;
 
 	/**
@@ -61,6 +71,25 @@ abstract class Task {
 	 */
 	protected $aAttributes;
 
+	/**
+	 * Liste des propriétés des attributs déclarés de la tâche.
+	 *
+	 * Structure : array(
+	 *    'attribute' => array(['allow_parameters', 'dir', 'dirjoker', 'file', 'filejoker', 'required', 'srcpath']),
+	 *    ...
+	 * )
+	 * où :
+	 *   - 'allow_parameters' : autorise l'utilisation des '${parameter}' dans l'attribut
+	 *   - 'dir' : l'attribut désigne un répertoire
+	 *   - 'dirjoker' : autorise l'utilisation des jokers shell ? et * pour les répertoires
+	 *   - 'file' : l'attribut désigne un fichier
+	 *   - 'filejoker' : autorise l'utilisation des jokers shell ? et * pour les fichiers
+	 *   - 'required' : attribut obligatoire
+	 *   - 'srcpath' : l'attribut est un fichier ou répertoire source et doit donc exister
+	 *
+	 * @var array
+	 * @see check()
+	 */
 	protected $aAttributeProperties;
 
 	/**
@@ -82,6 +111,14 @@ abstract class Task {
 		throw new RuntimeException('Not implemented!');
 	}
 
+	/**
+	 * Constructeur.
+	 *
+	 * @param SimpleXMLElement $oTask Contenu XML de la tâche.
+	 * @param Task_Base_Project $oProject Super tâche projet.
+	 * @param sttring $sBackupPath répertoire hôte pour le backup de la tâche.
+	 * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
+	 */
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		$this->oTask = $oTask;
 		$this->oProject = $oProject;
@@ -136,6 +173,19 @@ abstract class Task {
 		return $aPaths;
 	}
 
+	/**
+	 * Vérifie au moyen de tests basiques que la tâche peut être exécutée.
+	 * Lance une exception si tel n'est pas le cas.
+	 *
+	 * Comme toute les tâches sont vérifiées avant que la première ne soit exécutée,
+	 * doit permettre de remonter au plus tôt tout dysfonctionnement.
+	 * Appelé avant la méthode execute().
+	 *
+	 * @throws UnexpectedValueException
+	 * @throws DomainException
+	 * @throws RuntimeException
+	 * @see self::$aAttributeProperties
+	 */
 	public function check () {
 		$this->oLogger->log("Check '" . $this->sName . "' task...");
 
