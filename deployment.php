@@ -47,7 +47,6 @@ chmod 777 deployment/resources -R
 // TODO langues : https://admin.twenga.com/translation_tool/build_language_files2.php?project=rts
 // TODO lib cURL : see curl_setopt_array
 // TODO AAI bien gérer qd second ajout (projet, env) refusé.
-// TODO migrer Gitexport et Cvsexport dans task/extended ET avec CamelCase
 // TODO multi rsync n'effectue pas les mkdir en parallèle
 // TODO pas de gestion robuste des erreurs qd appel direct (par AAI) de deployment.php. ex: php /home/aai/deployment/deployment.php --getProjectsEnvsList
 // TODO valeur par défaut pour les attributs ?
@@ -72,7 +71,7 @@ echo "message" | mutt -e "set content_type=text/html" -s "subject" -- geoffroy.a
 
 
 include_once(__DIR__ . '/conf/config.inc.php');
-include_once(DEPLOYMENT_LIB_DIR . '/error.inc.php');
+include_once(DEPLOYMENT_LIB_DIR . '/ErrorHandler.class.php');
 include_once(DEPLOYMENT_LIB_DIR . '/bootstrap.inc.php');
 
 if (function_exists('xdebug_disable')) {
@@ -83,8 +82,8 @@ if (function_exists('xdebug_disable')) {
 $argc--;
 array_shift($argv);
 
-if ($argc == 1 && $argv[key($argv)] === "--getProjectsEnvsList") {
-	errorInit(0, null);
+if ($argc == 1 && $argv[0] === "--getProjectsEnvsList") {
+	new ErrorHandler(false);
 	$oDeployment = new Deployment();
 	$aProjectsEnvsList = $oDeployment->getProjectsEnvsList();
 	echo json_encode($aProjectsEnvsList);
@@ -97,7 +96,7 @@ if ($argc == 1 && $argv[key($argv)] === "--getProjectsEnvsList") {
 	$sProjectName = array_shift($argv);
 	$sEnvName = array_shift($argv);
 
-	errorInit(0, $sErrorLogFile);
+	new ErrorHandler(false, $sErrorLogFile);
 	$oDeployment = new Deployment();
 	$oDeployment->run($sProjectName, $sEnvName, $sExecutionID, $argv);
 }
