@@ -5,7 +5,8 @@
 		propertyinifile="/home/aai/deployment/resources/rts.ini"
 >
 	<env name="dev" mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com">
-		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="v4.15.0"
+		<externalproperty name="ref" description="Branch or tag to deploy" />
+		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="${ref}"
 			destdir="${SERVER_AAI}:/home/aai/deployment_test/rts/twengaweb/rts" />
 		<gitexport repository="git@git.twenga.com:fwt/fwt.git" ref="rts"
 			destdir="${SERVER_AAI}:/home/aai/deployment_test/rts/twengaweb/rts/fwt" />
@@ -16,8 +17,9 @@
 		<buildlanguage project="rts" destdir="${SERVER_AAI}:/home/aai/deployment_test/rts/buildlanguage" />
 	</env>
 
-	<env name="qa" mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com, qateam@twenga.com">
-		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="release-4.16.0"
+	<env name="qa" mailto="devaa@twenga.com, qateam@twenga.com">
+		<externalproperty name="ref" description="Branch or tag to deploy" />
+		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="${ref}"
 			destdir="${SERVER_EXTRANET_QA}:/home/httpd/extranet.twenga.com" exclude="config.*" />
 		<gitexport repository="git@git.twenga.com:fwt/fwt.git" ref="rts"
 			destdir="${SERVER_EXTRANET_QA}:/home/httpd/extranet.twenga.com/fwt" exclude="config.*" />
@@ -28,15 +30,16 @@
 		<buildlanguage project="rts" destdir="${SERVER_EXTRANET_QA}:/home/httpd/extranet.twenga.com/languages" />
 	</env>
 
-	<env name="pre-prod" mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com, qateam@twenga.com">
-		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="release-4.16.0"
-			destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/extranet.twenga.com" exclude="config.*" />
+	<env name="prod" mailto="devaa@twenga.com, qateam@twenga.com">
+		<externalproperty name="ref" description="Branch or tag to deploy" />
+		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="${ref}"
+			destdir="www47:/home/httpd/extranet.twenga.com" exclude="config.*" />
 		<gitexport repository="git@git.twenga.com:fwt/fwt.git" ref="rts"
-			destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/extranet.twenga.com/fwt" exclude="config.*" />
-		<mkdir destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/extranet.twenga.com/cache/smarty/cache" mode="777" />
-		<mkdir destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/extranet.twenga.com/cache/smarty/templates_c" mode="777" />
+			destdir="www47:/home/httpd/extranet.twenga.com/fwt" exclude="config.*" />
+		<mkdir destdir="www47:/home/httpd/extranet.twenga.com/cache/smarty/cache" mode="777" />
+		<mkdir destdir="www47:/home/httpd/extranet.twenga.com/cache/smarty/templates_c" mode="777" />
 		<cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
-			destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/twenga-common" />
-		<buildlanguage project="rts" destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/extranet.twenga.com/languages" />
+			destdir="www47:/home/httpd/twenga-common" />
+		<buildlanguage project="rts" destdir="www47:/home/httpd/extranet.twenga.com/languages" />
 	</env>
 </project>
