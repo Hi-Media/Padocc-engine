@@ -56,6 +56,9 @@ class Task_Extended_CvsExport extends Task {
 	public function execute () {
 		parent::execute();
 		$this->oLogger->indent();
+
+		$this->oLogger->log('Export from CVS repository');
+		$this->oLogger->indent();
 		$result = $this->oShell->exec(
 			DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/cvsexport.inc.sh'
 			. ' "' . $this->aAttributes['repository'] . '"'
@@ -63,12 +66,17 @@ class Task_Extended_CvsExport extends Task {
 			. ' "' . $this->aAttributes['srcdir'] . '"'
 		);
 		$this->oLogger->log(implode("\n", $result));
+		$this->oLogger->unindent();
 
+		$this->oLogger->log("Synchronize with '" . $this->aAttributes['destdir'] . "'");
+		$this->oLogger->indent();
 		$sCVSPath = $this->aAttributes['srcdir'] . '/' . $this->aAttributes['module'];
 		$results = $this->oShell->sync($sCVSPath . '/*', $this->_expandPaths($this->aAttributes['destdir']));
 		foreach ($results as $result) {
 			$this->oLogger->log($result);
 		}
+		$this->oLogger->unindent();
+
 		$this->oLogger->unindent();
 	}
 
