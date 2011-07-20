@@ -60,6 +60,8 @@ class Task_Extended_GitExport extends Task {
 		$aRef = $this->_expandPaths($this->aAttributes['ref']);
 		$sRef = $aRef[0];
 
+		$this->oLogger->log('Export from Git repository');
+		$this->oLogger->indent();
 		$result = $this->oShell->exec(
 			DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/gitexport.inc.sh'
 			. ' "' . $this->aAttributes['repository'] . '"'
@@ -67,12 +69,16 @@ class Task_Extended_GitExport extends Task {
 			. ' "' . $this->aAttributes['srcdir'] . '"'
 		);
 		$this->oLogger->log(implode("\n", $result));
+		$this->oLogger->unindent();
 
+		$this->oLogger->log("Synchronize with '" . $this->aAttributes['destdir'] . "'");
+		$this->oLogger->indent();
 		$aExcludedPaths = (empty($this->aAttributes['exclude']) ? array() : explode(' ', $this->aAttributes['exclude']));
 		$results = $this->oShell->sync($this->aAttributes['srcdir'] . '/*', $this->_expandPaths($this->aAttributes['destdir']), $aExcludedPaths);
 		foreach ($results as $result) {
 			$this->oLogger->log($result);
 		}
+		$this->oLogger->unindent();
 
 		$this->oLogger->unindent();
 	}

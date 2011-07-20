@@ -53,7 +53,7 @@ class Task_Base_Target extends Task {
 	 * @see Task
 	 */
 	private function getTaskInstances (SimpleXMLElement $oTarget, Task_Base_Project $oProject, $sBackupPath) {
-		$this->oLogger->log('Initialize tasks...');
+		$this->oLogger->log('Initialize tasks');
 		$aAvailableTasks = Tasks::getAvailableTasks();
 
 		// Mise à plat des tâches car SimpleXML regroupe celles successives de même nom
