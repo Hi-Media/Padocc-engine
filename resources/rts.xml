@@ -33,13 +33,13 @@
 	<env name="prod" mailto="devaa@twenga.com, qateam@twenga.com">
 		<externalproperty name="ref" description="Branch or tag to deploy" />
 		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="${ref}"
-			destdir="www47:/home/httpd/extranet.twenga.com" exclude="config.*" />
+			destdir="${SERVER_EXTRANET}:/home/httpd/extranet.twenga.com" exclude="config.*" />
 		<gitexport repository="git@git.twenga.com:fwt/fwt.git" ref="rts"
-			destdir="www47:/home/httpd/extranet.twenga.com/fwt" exclude="config.*" />
-		<mkdir destdir="www47:/home/httpd/extranet.twenga.com/cache/smarty/cache" mode="777" />
-		<mkdir destdir="www47:/home/httpd/extranet.twenga.com/cache/smarty/templates_c" mode="777" />
+			destdir="${SERVER_EXTRANET}:/home/httpd/extranet.twenga.com/fwt" exclude="config.*" />
+		<mkdir destdir="${SERVER_EXTRANET}:/home/httpd/extranet.twenga.com/cache/smarty/cache" mode="777" />
+		<mkdir destdir="${SERVER_EXTRANET}:/home/httpd/extranet.twenga.com/cache/smarty/templates_c" mode="777" />
 		<cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
-			destdir="www47:/home/httpd/twenga-common" />
-		<buildlanguage project="rts" destdir="www47:/home/httpd/extranet.twenga.com/languages" />
+			destdir="${SERVER_EXTRANET}:/home/httpd/twenga-common" />
+		<buildlanguage project="rts" destdir="${SERVER_EXTRANET}:/home/httpd/extranet.twenga.com/languages" />
 	</env>
 </project>
