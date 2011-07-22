@@ -3,13 +3,23 @@
 	name="ptpn"
 	propertyshellfile="/home/aai/deployment/resources/master_synchro.cfg"
 >
-	<env name="prod" mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com">
+	<env name="qa" mailto="devaa@twenga.com, romain.derocle@twenga.com">
 		<gitexport repository="git@git.twenga.com:distribution/ptpn.git" ref="master"
-			destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/ptpn"
-			exclude="config.*" />
-		<!-- <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
-			destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/twenga-common" /> -->
-		<mkdir destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/ptpn/cache/smarty" mode="777" />
-		<buildlanguage project="ptpn" destdir="${SERVER_EXTRANET_PRE_PROD}:/home/httpd/ptpn/i18n" />
+			destdir="www10:/home/httpd/ptpn"
+			exclude="config.* config_application.php db.ini" />
+		<cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
+			destdir="www10:/home/httpd/twenga-common" />
+		<mkdir destdir="www10:/home/httpd/ptpn/cache/smarty" mode="777" />
+		<buildlanguage project="ptpn" destdir="www10:/home/httpd/ptpn/i18n" />
+	</env>
+
+	<env name="prod" mailto="devaa@twenga.com, romain.derocle@twenga.com">
+		<gitexport repository="git@git.twenga.com:distribution/ptpn.git" ref="master"
+			destdir="www46:/home/httpd/ptpn"
+			exclude="config.* config_application.php db.ini" />
+		<cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
+			destdir="www46:/home/httpd/twenga-common" />
+		<mkdir destdir="www46:/home/httpd/ptpn/cache/smarty" mode="777" />
+		<buildlanguage project="ptpn" destdir="www46:/home/httpd/ptpn/i18n" />
 	</env>
 </project>
