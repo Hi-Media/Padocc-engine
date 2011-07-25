@@ -60,7 +60,7 @@ class Task_Extended_GitExport extends Task {
 		$aRef = $this->_expandPaths($this->aAttributes['ref']);
 		$sRef = $aRef[0];
 
-		$this->oLogger->log('Export from Git repository');
+		$this->oLogger->log("Export '$sRef' reference from '" . $this->aAttributes['repository'] . "' git repository");
 		$this->oLogger->indent();
 		$result = $this->oShell->exec(
 			DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/gitexport.inc.sh'

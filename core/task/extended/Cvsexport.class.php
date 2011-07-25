@@ -57,7 +57,7 @@ class Task_Extended_CvsExport extends Task {
 		parent::execute();
 		$this->oLogger->indent();
 
-		$this->oLogger->log('Export from CVS repository');
+		$this->oLogger->log("Export from '" . $this->aAttributes['repository'] . "' CVS repository");
 		$this->oLogger->indent();
 		$result = $this->oShell->exec(
 			DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/cvsexport.inc.sh'
