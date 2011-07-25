@@ -85,15 +85,21 @@ class Task_Extended_BuildLanguage extends Task {
 		// Diffusion de l'archive :
 		$aDestDirs = $this->_expandPaths($this->aAttributes['destdir']);
 		foreach ($aDestDirs as $sDestDir) {
-			$result = $this->oShell->copy($sLanguagesPath, $sDestDir);
-			$this->oLogger->log(implode("\n", $result));
+			$aResult = $this->oShell->copy($sLanguagesPath, $sDestDir);
+			$sResult = implode("\n", $aResult);
+			if (trim($sResult) != '') {
+				$this->oLogger->log($sResult);
+			}
 		}
 
 		// Décompression des archives :
 		$sPatternCmd = 'cd %1$s && tar -xf %1$s/"' . basename($sLanguagesPath) . '" && rm -f %1$s/"' . basename($sLanguagesPath) . '"';
 		foreach ($aDestDirs as $sDestDir) {
-			$result = $this->oShell->execSSH($sPatternCmd, $sDestDir);
-			$this->oLogger->log(implode("\n", $result));
+			$aResult = $this->oShell->execSSH($sPatternCmd, $sDestDir);
+			$sResult = implode("\n", $aResult);
+			if (trim($sResult) != '') {
+				$this->oLogger->log($sResult);
+			}
 		}
 
 		@unlink($sLanguagesPath);
