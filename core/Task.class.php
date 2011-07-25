@@ -111,6 +111,16 @@ abstract class Task {
 		throw new RuntimeException('Not implemented!');
 	}
 
+	public static function getInstance (array $aAttributes, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
+		$sAttributes = '';
+		foreach ($aAttributes as $sName => $sValue) {
+			$sAttributes .= ' ' . $sName . '="' . $sValue . '"';
+		}
+		$sXML = '<' . static::getTagName() . $sAttributes . ' />';
+		$oXML = new SimpleXMLElement($sXML);
+		return new static($oXML, $oProject, $sBackupPath, $oServiceContainer);
+	}
+
 	/**
 	 * Constructeur.
 	 *

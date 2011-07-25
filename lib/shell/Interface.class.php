@@ -52,5 +52,5 @@ interface Shell_Interface {
 	public function remove ($sPath);
 	public function backup ($sSrcPath, $sBackupPath);
 	public function mkdir ($sPath);
-	public function sync ($sSrcPath, $mDestPath);
+	public function sync ($sSrcPath, $mDestPath, array $aExcludedPaths=array());
 }
