@@ -72,6 +72,10 @@ class Task_Base_Call extends Task {
 
 	public function execute () {
 		parent::execute();
+
+		$this->oLogger->indent();
+		$this->oLogger->unindent();
+
 		$this->oBoundTask->backup();
 		$this->oBoundTask->execute();
 	}

@@ -46,6 +46,8 @@ class Task_Extended_BuildLanguage extends Task {
 	public function execute () {
 		parent::execute();
 		$this->oLogger->indent();
+
+		$this->oLogger->log('Generate language archive');
 		$sLanguagesPath = tempnam('/tmp', $this->oProperties->getProperty('execution_id') . '_languages_');
 		$fh = fopen($sLanguagesPath, 'w');
 		$aCurlParameters = array(
@@ -58,7 +60,6 @@ class Task_Extended_BuildLanguage extends Task {
 			'timeout' => 120,
 			'return_header' => 0,
 		);
-
 		$result = Curl::disguiseCurl($aCurlParameters);
 		fclose($fh);
 
@@ -66,6 +67,7 @@ class Task_Extended_BuildLanguage extends Task {
 			// Selon les configuration serveur, il se peut que le retour de cURL soit mal interprété.
 			// Du coup on vérifie si c'est vrai en testant l'archive :
 			if (preg_match('/^transfer closed with \d+ bytes remaining to read$/i', $result['curl_error']) === 1) {
+				$this->oLogger->log('Test language archive');
 				$this->oShell->exec('tar -tf "' . $sLanguagesPath . '"');
 			} else {
 				@unlink($sLanguagesPath);
@@ -83,6 +85,7 @@ class Task_Extended_BuildLanguage extends Task {
 		//$sLanguagesPath = '/home/gaubry/languages.tar.gz';
 
 		// Diffusion de l'archive :
+		$this->oLogger->log('Send language archive to servers');
 		$aDestDirs = $this->_expandPaths($this->aAttributes['destdir']);
 		foreach ($aDestDirs as $sDestDir) {
 			$aResult = $this->oShell->copy($sLanguagesPath, $sDestDir);
@@ -93,6 +96,7 @@ class Task_Extended_BuildLanguage extends Task {
 		}
 
 		// Décompression des archives :
+		$this->oLogger->log('Extract language files from archive on servers');
 		$sPatternCmd = 'cd %1$s && tar -xf %1$s/"' . basename($sLanguagesPath) . '" && rm -f %1$s/"' . basename($sLanguagesPath) . '"';
 		foreach ($aDestDirs as $sDestDir) {
 			$aResult = $this->oShell->execSSH($sPatternCmd, $sDestDir);
