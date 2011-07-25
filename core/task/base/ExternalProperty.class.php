@@ -55,9 +55,10 @@ class Task_Base_ExternalProperty extends Task {
 		parent::execute();
 		$this->oLogger->indent();
 		try {
+			$this->oLogger->log("Set external property '" . $this->aAttributes['name'] . "' (description: '" . $this->aAttributes['description'] . "')");
 			$sValue = $this->oProperties->getProperty(self::sExternalPropertyPrefix . $this->iNumber);
 		} catch (DomainException $e) {
-			throw new DomainException('Property "' . $this->aAttributes['name'] . '" undefined!');
+			throw new DomainException("Property '" . $this->aAttributes['name'] . "' undefined!");
 		}
 		$this->oProperties->addProperty($this->aAttributes['name'], $sValue);
 		$this->oLogger->unindent();

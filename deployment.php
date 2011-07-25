@@ -52,6 +52,8 @@ chmod 777 deployment/resources -R
 // TODO valeur par défaut pour les attributs ?
 // TODO connecteur YUI : http://git.twenga.com/distribution/wtpn/blobs/master/scripts/js_minifier.php
 // TODO Task::_expandPath() => ajouter un paramètre pour signifier qu'il ne doit pas y avoir plus d'une valeur générée ?
+// TODO tableau dashboard du nb de déploiement par semaine/projet/env et succès
+// TODO tableau new deployment de l'état des env pour le projet en cours, ou tous les projets
 
 /*
 ~/.muttrc

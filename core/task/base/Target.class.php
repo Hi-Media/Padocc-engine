@@ -110,8 +110,9 @@ class Task_Base_Target extends Task {
 
 	public function execute () {
 		parent::execute();
-		$this->oLogger->indent();
 
+		$this->oLogger->indent();
+		$this->oLogger->log("Load '" . $this->aAttributes['name'] . "' " . self::getTagName());
 		if ( ! empty($this->aAttributes['mailto'])) {
 			$this->oLogger->log('[MAILTO] ' . $this->aAttributes['mailto']);
 		}
