@@ -23,7 +23,8 @@ class Task_Base_Sync extends Task {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
 			'src' => array('srcpath', 'file', 'dir', 'filejoker', 'required'),
-			'destdir' => array('dir', 'required')
+			'destdir' => array('dir', 'required', 'allow_parameters'),
+			'exclude' => array('filejoker'),
 		);
 	}
 
@@ -52,7 +53,12 @@ class Task_Base_Sync extends Task {
 	public function execute () {
 		parent::execute();
 		$this->oLogger->indent();
-		$this->oShell->sync($this->aAttributes['src'], $this->aAttributes['destdir']);
+		$this->oLogger->log("Synchronize '" . $this->aAttributes['src'] . "' with '" . $this->aAttributes['destdir'] . "'");
+		$aExcludedPaths = (empty($this->aAttributes['exclude']) ? array() : explode(' ', $this->aAttributes['exclude']));
+		$results = $this->oShell->sync($this->aAttributes['src'], $this->_expandPaths($this->aAttributes['destdir']), $aExcludedPaths);
+		foreach ($results as $result) {
+			$this->oLogger->log($result);
+		}
 		$this->oLogger->unindent();
 	}
 

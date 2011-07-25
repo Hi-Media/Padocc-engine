@@ -11,6 +11,8 @@ class Task_Extended_GitExport extends Task {
 		return 'gitexport';
 	}
 
+	private $oSyncTask;
+
 	/**
 	 * Constructeur.
 	 *
@@ -28,6 +30,22 @@ class Task_Extended_GitExport extends Task {
 			'destdir' => array('dir', 'required', 'allow_parameters'),
 			'exclude' => array('filejoker'),
 		);
+
+		if (empty($this->aAttributes['srcdir'])) {
+			$this->aAttributes['srcdir'] =
+				DEPLOYMENT_REPOSITORIES_DIR . '/git/'
+				. $this->oProperties->getProperty('project_name') . '_'
+				. $this->oProperties->getProperty('environment_name') . '_'
+				. $this->sCounter;
+		}
+
+		$this->oNumbering->addCounterDivision();
+		$this->oSyncTask = Task_Base_Sync::getInstance(array(
+			'src' => $this->aAttributes['srcdir'] . '/*',
+			'destdir' => $this->aAttributes['destdir'],
+			'exclude' => $this->aAttributes['exclude']
+		), $oProject, $sBackupPath, $oServiceContainer);
+		$this->oNumbering->removeCounterDivision();
 	}
 
 	/**
@@ -44,13 +62,9 @@ class Task_Extended_GitExport extends Task {
 	 */
 	public function check () {
 		parent::check();
-		if (empty($this->aAttributes['srcdir'])) {
-			$this->aAttributes['srcdir'] =
-				DEPLOYMENT_REPOSITORIES_DIR . '/git/'
-				. $this->oProperties->getProperty('project_name') . '_'
-				. $this->oProperties->getProperty('environment_name') . '_'
-				. $this->sCounter;
-		}
+		$this->oLogger->indent();
+		$this->oSyncTask->check();
+		$this->oLogger->unindent();
 	}
 
 	public function execute () {
@@ -71,14 +85,13 @@ class Task_Extended_GitExport extends Task {
 		$this->oLogger->log(implode("\n", $result));
 		$this->oLogger->unindent();
 
-		$this->oLogger->log("Synchronize with '" . $this->aAttributes['destdir'] . "'");
-		$this->oLogger->indent();
-		$aExcludedPaths = (empty($this->aAttributes['exclude']) ? array() : explode(' ', $this->aAttributes['exclude']));
+		//$this->oLogger->log("Synchronize with '" . $this->aAttributes['destdir'] . "'");
+		$this->oSyncTask->execute();
+		/*$aExcludedPaths = (empty($this->aAttributes['exclude']) ? array() : explode(' ', $this->aAttributes['exclude']));
 		$results = $this->oShell->sync($this->aAttributes['srcdir'] . '/*', $this->_expandPaths($this->aAttributes['destdir']), $aExcludedPaths);
 		foreach ($results as $result) {
 			$this->oLogger->log($result);
-		}
-		$this->oLogger->unindent();
+		}*/
 
 		$this->oLogger->unindent();
 	}
