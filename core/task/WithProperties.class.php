@@ -1,21 +1,6 @@
 <?php
 
-class Task_Base_Call extends Task_WithProperties {
-
-	/**
-	 * Tâche appelée.
-	 * @var Task
-	 */
-	protected $oBoundTask;
-
-	/**
-	 * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
-	 *
-	 * @return string nom du tag XML correspondant à cette tâche dans les config projet.
-	 */
-	public static function getTagName () {
-		return 'call';
-	}
+abstract class Task_WithProperties extends Task {
 
 	/**
 	 * Constructeur.
@@ -27,21 +12,21 @@ class Task_Base_Call extends Task_WithProperties {
 	 */
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-		$this->aAttributeProperties = array_merge($this->aAttributeProperties, array(
-			'target' => array('required')
-		));
-
-		$this->oNumbering->addCounterDivision();
-		$this->oBoundTask = $this->getBoundTask($sBackupPath);
-		$this->oNumbering->removeCounterDivision();
+		$this->aAttributeProperties = array(
+			'propertyinifile' => array('srcpath'),
+			'propertyshellfile' => array('srcpath')
+		);
 	}
 
-	protected function getBoundTask ($sBackupPath) {
-		$aTargets = $this->oProject->getSXE()->xpath("target[@name='" . $this->aAttributes['target'] . "']");
-		if (count($aTargets) !== 1) {
-			throw new Exception("Target '" . $this->aAttributes['target'] . "' not found or not unique in this project!");
+	protected function loadProperties () {
+		if ( ! empty($this->aAttributes['propertyshellfile'])) {
+			$this->oLogger->log('Load shell properties: ' . $this->aAttributes['propertyshellfile']);
+			$this->oProperties->loadConfigShellFile($this->aAttributes['propertyshellfile']);
 		}
-		return new Task_Base_Target($aTargets[0], $this->oProject, $sBackupPath, $this->oServiceContainer);
+		if ( ! empty($this->aAttributes['propertyinifile'])) {
+			$this->oLogger->log('Load ini properties: ' . $this->aAttributes['propertyinifile']);
+			$this->oProperties->loadConfigIniFile($this->aAttributes['propertyinifile']);
+		}
 	}
 
 	/**
@@ -58,13 +43,14 @@ class Task_Base_Call extends Task_WithProperties {
 	 */
 	public function check () {
 		parent::check();
-		$this->oBoundTask->check();
 	}
 
 	public function execute () {
 		parent::execute();
-		$this->oBoundTask->backup();
-		$this->oBoundTask->execute();
+
+		$this->oLogger->indent();
+		$this->loadProperties();
+		$this->oLogger->unindent();
 	}
 
 	public function backup () {}

@@ -27,11 +27,10 @@ class Task_Base_Project extends Task_Base_Call {
 		$this->sEnvName = $sEnvName;
 
 		parent::__construct($oProject, $this, $sBackupPath, $oServiceContainer);
-		$this->aAttributeProperties = array(
+		$this->aAttributeProperties = array_merge($this->aAttributeProperties, array(
 			'name' => array('required'),
-			'propertyinifile' => array('srcpath'),
-			'propertyshellfile' => array('srcpath'),
-		);
+		));
+		unset($this->aAttributeProperties['target']);
 	}
 
 	protected function getBoundTask ($sBackupPath) {

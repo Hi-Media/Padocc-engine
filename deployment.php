@@ -1,6 +1,6 @@
 <?php
 
-// /usr/bin/php -q ~/deployment/deployment.php tests all_tests `date +'%Y%m%d%H%M%S'` /tmp/deployment.php.xxx.error.log
+// /usr/bin/php -q ~/deployment/deployment.php tests tests_gitexport v4.12.0 `date +'%Y%m%d%H%M%S'` /tmp/deployment.php.xxx.error.log
 // tail -fn 500 /tmp/deployment.php.xxx.error.log
 // rm -rf /home/gaubry/deployment_backup/* && rm -rf /home/gaubry/test/dest/*
 // rm -rf /home/gaubry/deployment_backup/* && rm -rf /home/gaubry/deployment_test/*
