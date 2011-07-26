@@ -15,8 +15,7 @@ class Deployment {
 			->setLogAdapter($this->oLogger)
 			->setShellAdapter($oShell)
 			->setPropertiesAdapter(new Properties_Adapter($oShell))
-			->setNumberingAdapter(new Numbering_Adapter())
-			->setMailAdapter(new Mail_Adapter());
+			->setNumberingAdapter(new Numbering_Adapter());
 	}
 
 	public function run ($sProjectName, $sEnvName, $sExecutionID, array $aExternalProperties=array()) {
