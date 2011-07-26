@@ -40,7 +40,6 @@ chmod 777 deployment/resources -R
 // TODO imposer des attributs desc et les remonter dans le nom des tâches ?
 // TODO détester call cycliques !
 // TODO initProperties() présent dans Target.class.php et Call.class.php...
-// TODO AAI MAILTO
 // TODO archivage des logs
 // TODO connecteur CVS ne gère que le trunk
 // TODO remonter heartbeat dans AAI

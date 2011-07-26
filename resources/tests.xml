@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- <project name="tests" propertyinifile="/home/gaubry/deployment/resources/tests_property_file.ini"> -->
+		<!-- propertyshellfile="${TWENGA_SERVERS}" -->
 <project
 		name="tests"
+
 		propertyshellfile="/home/gaubry/deployment/resources/master_synchro.cfg"
 		propertyinifile="/home/gaubry/deployment/resources/tests_property_file.ini"
 >
