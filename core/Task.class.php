@@ -111,12 +111,23 @@ abstract class Task {
 		throw new RuntimeException('Not implemented!');
 	}
 
-	public static function getInstance (array $aAttributes, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
+	/**
+	 * Surcharge du constructeur, dont le premier paramètre est passé d'une instance de SimpleXMLElement à
+	 * un tableau associatif attribut => valeur.
+	 *
+	 * @param array $aAttributes Tableau associatif listant des attributs et leur valeur.
+	 * @param Task_Base_Project $oProject Super tâche projet.
+	 * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
+	 * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
+	 * @return Task
+	 */
+	public static function getNewInstance (array $aAttributes, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		$sAttributes = '';
 		foreach ($aAttributes as $sName => $sValue) {
 			$sAttributes .= ' ' . $sName . '="' . $sValue . '"';
 		}
 		$sXML = '<' . static::getTagName() . $sAttributes . ' />';
+
 		$oXML = new SimpleXMLElement($sXML);
 		return new static($oXML, $oProject, $sBackupPath, $oServiceContainer);
 	}
