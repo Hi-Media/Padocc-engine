@@ -30,17 +30,19 @@ class Task_Base_Call extends Task {
 		$this->aAttributeProperties = array(
 			'target' => array('required')
 		);
-		$this->initProperties();
+
 		$this->oNumbering->addCounterDivision();
 		$this->oBoundTask = $this->getBoundTask($sBackupPath);
 		$this->oNumbering->removeCounterDivision();
 	}
 
-	protected function initProperties () {
+	protected function loadProperties () {
 		if ( ! empty($this->aAttributes['propertyshellfile'])) {
+			$this->oLogger->log('Load shell properties: ' . $this->aAttributes['propertyshellfile']);
 			$this->oProperties->loadConfigShellFile($this->aAttributes['propertyshellfile']);
 		}
 		if ( ! empty($this->aAttributes['propertyinifile'])) {
+			$this->oLogger->log('Load ini properties: ' . $this->aAttributes['propertyinifile']);
 			$this->oProperties->loadConfigIniFile($this->aAttributes['propertyinifile']);
 		}
 	}
@@ -74,6 +76,7 @@ class Task_Base_Call extends Task {
 		parent::execute();
 
 		$this->oLogger->indent();
+		$this->loadProperties();
 		$this->oLogger->unindent();
 
 		$this->oBoundTask->backup();
