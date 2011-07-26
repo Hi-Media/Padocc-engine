@@ -26,17 +26,19 @@ class Task_Base_Target extends Task {
 		$this->aAttributeProperties = array(
 			'name' => array('required'),
 		);
-		$this->initProperties();
+
 		$this->oNumbering->addCounterDivision();
 		$this->aTasks = $this->getTaskInstances($oTask, $this->oProject, $sBackupPath); // et non $this->sBackupPath, pour les sous-tâches
 		$this->oNumbering->removeCounterDivision();
 	}
 
-	protected function initProperties () {
+	protected function loadProperties () {
 		if ( ! empty($this->aAttributes['propertyshellfile'])) {
+			$this->oLogger->log('Load shell properties: ' . $this->aAttributes['propertyshellfile']);
 			$this->oProperties->loadConfigShellFile($this->aAttributes['propertyshellfile']);
 		}
 		if ( ! empty($this->aAttributes['propertyinifile'])) {
+			$this->oLogger->log('Load ini properties: ' . $this->aAttributes['propertyinifile']);
 			$this->oProperties->loadConfigIniFile($this->aAttributes['propertyinifile']);
 		}
 	}
@@ -112,6 +114,7 @@ class Task_Base_Target extends Task {
 		parent::execute();
 
 		$this->oLogger->indent();
+		$this->loadProperties();
 		$this->oLogger->log("Load '" . $this->aAttributes['name'] . "' " . self::getTagName());
 		if ( ! empty($this->aAttributes['mailto'])) {
 			$this->oLogger->log('[MAILTO] ' . $this->aAttributes['mailto']);
