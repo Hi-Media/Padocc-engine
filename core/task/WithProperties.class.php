@@ -3,6 +3,12 @@
 abstract class Task_WithProperties extends Task {
 
 	/**
+	 * Tâche de chargement des listes de serveurs Twenga sous-jacente.
+	 * @var Task_Extended_TwengaServers
+	 */
+	private $oTwengaServersTask;
+
+	/**
 	 * Constructeur.
 	 *
 	 * @param SimpleXMLElement $oTask Contenu XML de la tâche.
@@ -14,11 +20,25 @@ abstract class Task_WithProperties extends Task {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
 			'propertyinifile' => array('srcpath'),
-			'propertyshellfile' => array('srcpath')
+			'propertyshellfile' => array('srcpath'),
+			'loadtwengaservers' => array()
 		);
+
+		// Création de la tâche de chargement des listes de serveurs Twenga sous-jacente :
+		if ( ! empty($this->aAttributes['loadtwengaservers']) && $this->aAttributes['loadtwengaservers'] == 'true') {
+			$this->oNumbering->addCounterDivision();
+			$this->oTwengaServersTask = Task_Extended_TwengaServers::getNewInstance(array(), $oProject, $sBackupPath, $oServiceContainer);
+			$this->oNumbering->removeCounterDivision();
+		} else {
+			$this->oTwengaServersTask = NULL;
+		}
 	}
 
 	protected function loadProperties () {
+		if ( ! empty($this->aAttributes['loadtwengaservers']) && $this->aAttributes['loadtwengaservers'] == 'true') {
+			$this->oLogger->log('Load Twenga servers');
+			$this->oTwengaServersTask->execute();
+		}
 		if ( ! empty($this->aAttributes['propertyshellfile'])) {
 			$this->oLogger->log('Load shell properties: ' . $this->aAttributes['propertyshellfile']);
 			$this->oProperties->loadConfigShellFile($this->aAttributes['propertyshellfile']);
@@ -43,6 +63,11 @@ abstract class Task_WithProperties extends Task {
 	 */
 	public function check () {
 		parent::check();
+		if ($this->oTwengaServersTask !== NULL) {
+			$this->oLogger->indent();
+			$this->oTwengaServersTask->check();
+			$this->oLogger->unindent();
+		}
 	}
 
 	public function execute () {

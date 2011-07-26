@@ -1,6 +1,6 @@
 <?php
 
-class Task_Extended_CvsExport extends Task {
+class Task_Extended_TwengaServers extends Task {
 
 	/**
 	 * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
@@ -8,14 +8,14 @@ class Task_Extended_CvsExport extends Task {
 	 * @return string nom du tag XML correspondant à cette tâche dans les config projet.
 	 */
 	public static function getTagName () {
-		return 'cvsexport';
+		return 'twengaserverexport';
 	}
 
 	/**
-	 * Tâche de synchronisation sous-jacente.
-	 * @var Task_Base_Sync
+	 * Tâche d'export Git sous-jacente.
+	 * @var Task_Extended_GitExport
 	 */
-	private $oSyncTask;
+	private $oGitExportTask;
 
 	/**
 	 * Constructeur.
@@ -27,28 +27,15 @@ class Task_Extended_CvsExport extends Task {
 	 */
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-		$this->aAttributeProperties = array(
-			'repository' => array('file', 'required'),
-			//'ref' => array('required'),
-			'module' => array('dir', 'required'),
-			'srcdir' => array('dir'),
-			'destdir' => array('dir', 'required', 'allow_parameters')
-		);
-
-		if (empty($this->aAttributes['srcdir'])) {
-			$this->aAttributes['srcdir'] =
-				DEPLOYMENT_REPOSITORIES_DIR . '/cvs/'
-				. $this->oProperties->getProperty('project_name') . '_'
-				. $this->oProperties->getProperty('environment_name') . '_'
-				. $this->sCounter;
-		}
+		$this->aAttributeProperties = array();
 
 		// Création de la tâche de synchronisation sous-jacente :
 		$this->oNumbering->addCounterDivision();
-		$sSrcDir = preg_replace('#/$#', '', $this->aAttributes['srcdir']) . '/' . $this->aAttributes['module'] . '/*';
-		$this->oSyncTask = Task_Base_Sync::getNewInstance(array(
-			'src' => $sSrcDir,
-			'destdir' => $this->aAttributes['destdir']
+		$this->oGitExportTask = Task_Extended_GitExport::getNewInstance(array(
+			'repository' => 'git@git.twenga.com:aa/server_config.git',
+			'ref' => 'master',
+			'destdir' => '/tmp/toto',
+			'exclude' => ''
 		), $oProject, $sBackupPath, $oServiceContainer);
 		$this->oNumbering->removeCounterDivision();
 	}
@@ -68,26 +55,14 @@ class Task_Extended_CvsExport extends Task {
 	public function check () {
 		parent::check();
 		$this->oLogger->indent();
-		$this->oSyncTask->check();
+		$this->oGitExportTask->check();
 		$this->oLogger->unindent();
 	}
 
 	public function execute () {
 		parent::execute();
 		$this->oLogger->indent();
-
-		$this->oLogger->log("Export from '" . $this->aAttributes['repository'] . "' CVS repository");
-		$this->oLogger->indent();
-		$result = $this->oShell->exec(
-			DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/cvsexport.inc.sh'
-			. ' "' . $this->aAttributes['repository'] . '"'
-			. ' "' . $this->aAttributes['module'] . '"'
-			. ' "' . $this->aAttributes['srcdir'] . '"'
-		);
-		$this->oLogger->log(implode("\n", $result));
-		$this->oLogger->unindent();
-
-		$this->oSyncTask->execute();
+		$this->oGitExportTask->execute();
 		$this->oLogger->unindent();
 	}
 
