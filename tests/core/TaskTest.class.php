@@ -9,7 +9,9 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 	private $oServiceContainer;
 
 	public function setUp () {
-		$oLogger = new Logger_Adapter(Logger_Interface::WARNING);
+		$oBaseLogger = new Logger_Adapter(Logger_Interface::WARNING);
+		$oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
+
 		$oShell = new Shell_Adapter($oLogger);
 		$oProperties = new Properties_Adapter($oShell);
 		$oNumbering = new Numbering_Adapter();
