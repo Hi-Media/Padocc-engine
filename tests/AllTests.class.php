@@ -1,6 +1,6 @@
 <?php
 
-include_once(__DIR__ . '/../..' . '/deployment/conf/config.inc.php');
+include_once(__DIR__ . '/..' . '/conf/config.inc.php');
 include_once(DEPLOYMENT_LIB_DIR . '/bootstrap.inc.php');
 
 class AllTests {
