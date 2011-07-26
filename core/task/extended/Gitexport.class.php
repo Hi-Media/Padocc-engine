@@ -11,6 +11,10 @@ class Task_Extended_GitExport extends Task {
 		return 'gitexport';
 	}
 
+	/**
+	 * Tâche de synchronisation sous-jacente.
+	 * @var Task_Base_Sync
+	 */
 	private $oSyncTask;
 
 	/**
@@ -39,9 +43,11 @@ class Task_Extended_GitExport extends Task {
 				. $this->sCounter;
 		}
 
+		// Création de la tâche de synchronisation sous-jacente :
 		$this->oNumbering->addCounterDivision();
-		$this->oSyncTask = Task_Base_Sync::getInstance(array(
-			'src' => $this->aAttributes['srcdir'] . '/*',
+		$sSrcDir = preg_replace('#/$#', '', $this->aAttributes['srcdir']) . '/*';
+		$this->oSyncTask = Task_Base_Sync::getNewInstance(array(
+			'src' => $sSrcDir,
 			'destdir' => $this->aAttributes['destdir'],
 			'exclude' => $this->aAttributes['exclude']
 		), $oProject, $sBackupPath, $oServiceContainer);
@@ -85,14 +91,7 @@ class Task_Extended_GitExport extends Task {
 		$this->oLogger->log(implode("\n", $result));
 		$this->oLogger->unindent();
 
-		//$this->oLogger->log("Synchronize with '" . $this->aAttributes['destdir'] . "'");
 		$this->oSyncTask->execute();
-		/*$aExcludedPaths = (empty($this->aAttributes['exclude']) ? array() : explode(' ', $this->aAttributes['exclude']));
-		$results = $this->oShell->sync($this->aAttributes['srcdir'] . '/*', $this->_expandPaths($this->aAttributes['destdir']), $aExcludedPaths);
-		foreach ($results as $result) {
-			$this->oLogger->log($result);
-		}*/
-
 		$this->oLogger->unindent();
 	}
 

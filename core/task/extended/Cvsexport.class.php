@@ -12,6 +12,12 @@ class Task_Extended_CvsExport extends Task {
 	}
 
 	/**
+	 * Tâche de synchronisation sous-jacente.
+	 * @var Task_Base_Sync
+	 */
+	private $oSyncTask;
+
+	/**
 	 * Constructeur.
 	 *
 	 * @param SimpleXMLElement $oTask Contenu XML de la tâche.
@@ -28,6 +34,23 @@ class Task_Extended_CvsExport extends Task {
 			'srcdir' => array('dir'),
 			'destdir' => array('dir', 'required', 'allow_parameters')
 		);
+
+		if (empty($this->aAttributes['srcdir'])) {
+			$this->aAttributes['srcdir'] =
+				DEPLOYMENT_REPOSITORIES_DIR . '/cvs/'
+				. $this->oProperties->getProperty('project_name') . '_'
+				. $this->oProperties->getProperty('environment_name') . '_'
+				. $this->sCounter;
+		}
+
+		// Création de la tâche de synchronisation sous-jacente :
+		$this->oNumbering->addCounterDivision();
+		$sSrcDir = preg_replace('#/$#', '', $this->aAttributes['srcdir']) . '/' . $this->aAttributes['module'] . '/*';
+		$this->oSyncTask = Task_Base_Sync::getNewInstance(array(
+			'src' => $sSrcDir,
+			'destdir' => $this->aAttributes['destdir']
+		), $oProject, $sBackupPath, $oServiceContainer);
+		$this->oNumbering->removeCounterDivision();
 	}
 
 	/**
@@ -44,13 +67,9 @@ class Task_Extended_CvsExport extends Task {
 	 */
 	public function check () {
 		parent::check();
-		if (empty($this->aAttributes['srcdir'])) {
-			$this->aAttributes['srcdir'] =
-				DEPLOYMENT_REPOSITORIES_DIR . '/cvs/'
-				. $this->oProperties->getProperty('project_name') . '_'
-				. $this->oProperties->getProperty('environment_name') . '_'
-				. $this->sCounter;
-		}
+		$this->oLogger->indent();
+		$this->oSyncTask->check();
+		$this->oLogger->unindent();
 	}
 
 	public function execute () {
@@ -68,15 +87,7 @@ class Task_Extended_CvsExport extends Task {
 		$this->oLogger->log(implode("\n", $result));
 		$this->oLogger->unindent();
 
-		$this->oLogger->log("Synchronize with '" . $this->aAttributes['destdir'] . "'");
-		$this->oLogger->indent();
-		$sCVSPath = $this->aAttributes['srcdir'] . '/' . $this->aAttributes['module'];
-		$results = $this->oShell->sync($sCVSPath . '/*', $this->_expandPaths($this->aAttributes['destdir']));
-		foreach ($results as $result) {
-			$this->oLogger->log($result);
-		}
-		$this->oLogger->unindent();
-
+		$this->oSyncTask->execute();
 		$this->oLogger->unindent();
 	}
 
