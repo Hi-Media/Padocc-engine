@@ -145,7 +145,8 @@ abstract class Task {
 		$this->oNumbering = $this->oServiceContainer->getNumberingAdapter();
 
 		$sCounter = $this->oNumbering->getNextCounterValue();
-		$this->sCounter = (strlen($sCounter) === 2 ? '' : substr($sCounter, 2));
+		//$this->sCounter = (strlen($sCounter) === 2 ? '' : substr($sCounter, 2));
+		$this->sCounter = $sCounter;
 		$this->sName = (strlen($this->sCounter) === 0 ? '' : $this->sCounter . '_') . get_class($this);
 		$this->sBackupPath = $sBackupPath . '/' . $this->sName;
 

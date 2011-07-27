@@ -5,7 +5,6 @@
 <project
 		name="tests"
 		loadtwengaservers="true"
-		propertyshellfile="/home/gaubry/deployment/resources/master_synchro.cfg"
 		propertyinifile="/home/gaubry/deployment/resources/tests_property_file.ini"
 >
 	<target name="tests_copy">
