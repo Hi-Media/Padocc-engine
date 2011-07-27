@@ -17,6 +17,8 @@ class Task_Extended_TwengaServers extends Task {
 	 */
 	private $oGitExportTask;
 
+	private $sTmpDir;
+
 	/**
 	 * Constructeur.
 	 *
@@ -28,13 +30,14 @@ class Task_Extended_TwengaServers extends Task {
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array();
+		$this->sTmpDir = '/tmp/' . $this->oProperties->getProperty('execution_id') . '_' . self::getTagName();
 
 		// Création de la tâche de synchronisation sous-jacente :
 		$this->oNumbering->addCounterDivision();
 		$this->oGitExportTask = Task_Extended_GitExport::getNewInstance(array(
 			'repository' => 'git@git.twenga.com:aa/server_config.git',
 			'ref' => 'master',
-			'destdir' => '/tmp/toto',
+			'destdir' => $this->sTmpDir,
 			'exclude' => ''
 		), $oProject, $sBackupPath, $oServiceContainer);
 		$this->oNumbering->removeCounterDivision();
@@ -63,6 +66,10 @@ class Task_Extended_TwengaServers extends Task {
 		parent::execute();
 		$this->oLogger->indent();
 		$this->oGitExportTask->execute();
+		$sPathToLoad = $this->sTmpDir . '/master_synchro.cfg';
+		$this->oLogger->log('Load shell properties: ' . $sPathToLoad);
+		$this->oProperties->loadConfigShellFile($sPathToLoad);
+		$this->oShell->remove($this->sTmpDir);
 		$this->oLogger->unindent();
 	}
 

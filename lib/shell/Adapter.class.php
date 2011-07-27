@@ -135,6 +135,7 @@ class Shell_Adapter implements Shell_Interface {
 
 	public function remove ($sPath) {
 		$sPath = trim($sPath);
+		// Garde-fou :
 		if (empty($sPath) || strlen($sPath) < 4) {
 			throw new BadMethodCallException("Illegal path: '$sPath'");
 		}

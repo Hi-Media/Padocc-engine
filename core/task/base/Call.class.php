@@ -31,9 +31,9 @@ class Task_Base_Call extends Task_WithProperties {
 			'target' => array('required')
 		));
 
-		$this->oNumbering->addCounterDivision();
+		//$this->oNumbering->addCounterDivision();
 		$this->oBoundTask = $this->getBoundTask($sBackupPath);
-		$this->oNumbering->removeCounterDivision();
+		//$this->oNumbering->removeCounterDivision();
 	}
 
 	protected function getBoundTask ($sBackupPath) {
