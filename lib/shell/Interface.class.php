@@ -7,11 +7,20 @@ interface Shell_Interface {
 	 * En cas d'erreur shell, lance une exception avec le message d'erreur.
 	 *
 	 * @param string $sCmd
-	 * @throws Exception en cas d'erreur shell
+	 * @throws RuntimeException en cas d'erreur shell
 	 * @return array Tableau indexé du flux de sortie découpé par ligne
 	 */
 	public function exec ($sCmd);
 
+	/**
+	 * Exécute la commande spécifiée en l'encapsulant au besoin dans une connexion SSH.
+	 *
+	 * @param string $sPatternCmd commande au format printf
+	 * @param string $sParam paramètre du pattern $sPatternCmd, permettant en plus de décider si l'on
+	 * doit encapsuler la commande dans un SSH (si serveur distant) ou non.
+	 * @return array Tableau indexé du flux de sortie découpé par ligne
+	 * @see isRemotePath()
+	 */
 	public function execSSH ($sPatternCmd, $sParam);
 
 	/**
@@ -49,7 +58,15 @@ interface Shell_Interface {
 	 */
 	public function escapePath ($sPath);
 
+	/**
+	 * Supprime le chemin spécifié, répertoire ou fichier, distant ou local.
+	 * Exemple : 'aai@aai-01:/path/to/delete'
+	 *
+	 * @param string $sPath chemin à spécifier
+	 * @return array Tableau indexé du flux de sortie découpé par ligne
+	 */
 	public function remove ($sPath);
+
 	public function backup ($sSrcPath, $sBackupPath);
 	public function mkdir ($sPath);
 	public function sync ($sSrcPath, $mDestPath, array $aExcludedPaths=array());

@@ -61,9 +61,8 @@ class Task_Extended_CVSExport extends Task {
 	 * doit permettre de remonter au plus tôt tout dysfonctionnement.
 	 * Appelé avant la méthode execute().
 	 *
-	 * @throws UnexpectedValueException
-	 * @throws DomainException
-	 * @throws RuntimeException
+	 * @throws UnexpectedValueException en cas d'attribut ou fichier manquant
+	 * @throws DomainException en cas de valeur non permise
 	 */
 	public function check () {
 		parent::check();

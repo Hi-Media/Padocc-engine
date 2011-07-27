@@ -33,11 +33,18 @@ class Task_Base_Project extends Task_Base_Call {
 		unset($this->aAttributeProperties['target']);
 	}
 
+	/**
+	 * Retourne une instance de la tâche environnement appelée.
+	 *
+	 * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
+	 * @return Task_Base_Environment instance de la tâche environnement appelée.
+	 * @throws UnexpectedValueException si cible non trouvée ou non unique.
+	 */
 	protected function getBoundTask ($sBackupPath) {
 		$sEnvName = $this->sEnvName;
 		$aTargets = $this->oProject->getSXE()->xpath("env[@name='$sEnvName']");
 		if (count($aTargets) !== 1) {
-			throw new Exception("Environment '$sEnvName' not found or not unique in this project!");
+			throw new UnexpectedValueException("Environment '$sEnvName' not found or not unique in this project!");
 		}
 		return new Task_Base_Environment($aTargets[0], $this->oProject, $sBackupPath, $this->oServiceContainer);
 	}
@@ -50,9 +57,8 @@ class Task_Base_Project extends Task_Base_Call {
 	 * doit permettre de remonter au plus tôt tout dysfonctionnement.
 	 * Appelé avant la méthode execute().
 	 *
-	 * @throws UnexpectedValueException
-	 * @throws DomainException
-	 * @throws RuntimeException
+	 * @throws UnexpectedValueException en cas d'attribut ou fichier manquant
+	 * @throws DomainException en cas de valeur non permise
 	 */
 	public function check () {
 		parent::check();
