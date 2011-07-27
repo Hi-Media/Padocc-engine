@@ -31,18 +31,14 @@ chmod 777 deployment/resources -R
 // TODO si fatal error, demander au supervisor de proposer un rollback ?
 // TODO description des tâches
 // TODO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="biblio10.xsd"
-// TODO passer les types de paramètres de tâches en champ de bits
-// TODO Clarification de l'affichage : début et fin de tâche, de target
 // TODO Que doit retourner Shell_Adapter->exec() : array ou string ?
 // TODO test multi rsync
 // TODO Le chemin menant au fichier de configuration INI ou CFG est en absolu pour l'instant. Le passer en relatif ?
 // TODO imposer des attributs desc et les remonter dans le nom des tâches ?
 // TODO détester call cycliques !
-// TODO initProperties() présent dans Target.class.php et Call.class.php...
 // TODO archivage des logs
 // TODO connecteur CVS ne gère que le trunk
 // TODO remonter heartbeat dans AAI
-// TODO langues : https://admin.twenga.com/translation_tool/build_language_files2.php?project=rts
 // TODO lib cURL : see curl_setopt_array
 // TODO AAI bien gérer qd second ajout (projet, env) refusé.
 // TODO multi rsync n'effectue pas les mkdir en parallèle

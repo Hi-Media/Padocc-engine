@@ -22,9 +22,9 @@ class Task_Base_Sync extends Task {
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
-			'src' => array('srcpath', 'file', 'dir', 'filejoker', 'required'),
-			'destdir' => array('dir', 'required', 'allow_parameters'),
-			'exclude' => array('filejoker'),
+			'src' => array(Task::ATTRIBUTE_SRC_PATH, Task::ATTRIBUTE_FILE, Task::ATTRIBUTE_DIR, Task::ATTRIBUTE_FILEJOKER, Task::ATTRIBUTE_REQUIRED),
+			'destdir' => array(Task::ATTRIBUTE_DIR, Task::ATTRIBUTE_REQUIRED, Task::ATTRIBUTE_ALLOW_PARAMETER),
+			'exclude' => array(Task::ATTRIBUTE_FILEJOKER),
 		);
 	}
 

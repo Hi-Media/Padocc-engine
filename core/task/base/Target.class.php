@@ -24,7 +24,7 @@ class Task_Base_Target extends Task_WithProperties {
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array_merge($this->aAttributeProperties, array(
-			'name' => array('required'),
+			'name' => array(Task::ATTRIBUTE_REQUIRED),
 		));
 
 		$this->oNumbering->addCounterDivision();

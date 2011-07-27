@@ -22,9 +22,9 @@ class Task_Base_Link extends Task {
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
-			'src' => array('required', 'file', 'dir'),
-			'target' => array('file', 'dir', 'required'),
-			'server' => array('allow_parameters'),
+			'src' => array(Task::ATTRIBUTE_REQUIRED, Task::ATTRIBUTE_FILE, Task::ATTRIBUTE_DIR),
+			'target' => array(Task::ATTRIBUTE_FILE, Task::ATTRIBUTE_DIR, Task::ATTRIBUTE_REQUIRED),
+			'server' => array(Task::ATTRIBUTE_ALLOW_PARAMETER),
 		);
 	}
 

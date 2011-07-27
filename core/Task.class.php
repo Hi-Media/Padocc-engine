@@ -3,6 +3,48 @@
 abstract class Task {
 
 	/**
+	 * Propriété d'attribut : autorise l'utilisation des '${parameter}'.
+	 * @var int
+	 */
+	const ATTRIBUTE_ALLOW_PARAMETER = 1;
+
+	/**
+	 * Propriété d'attribut : l'attribut désigne un répertoire.
+	 * @var int
+	 */
+	const ATTRIBUTE_DIR = 2;
+
+	/**
+	 * Propriété d'attribut : autorise l'utilisation des jokers shell ? et * pour les répertoires.
+	 * @var int
+	 */
+	const ATTRIBUTE_DIRJOKER = 4;
+
+	/**
+	 * Propriété d'attribut : l'attribut désigne un fichier.
+	 * @var int
+	 */
+	const ATTRIBUTE_FILE = 8;
+
+	/**
+	 * Propriété d'attribut : autorise l'utilisation des jokers shell ? et * pour les fichiers.
+	 * @var int
+	 */
+	const ATTRIBUTE_FILEJOKER = 16;
+
+	/**
+	 * Propriété d'attribut : l'attribut est obligatoire.
+	 * @var int
+	 */
+	const ATTRIBUTE_REQUIRED = 32;
+
+	/**
+	 * Propriété d'attribut : l'attribut est un fichier ou un répertoire source et doit donc exister.
+	 * @var int
+	 */
+	const ATTRIBUTE_SRC_PATH = 64;
+
+	/**
 	 * Compteur d'instances pour s'y retrouver dans les backups des tâches.
 	 * @var Numbering_Interface
 	 * @see $sName
@@ -69,17 +111,11 @@ abstract class Task {
 	 * Liste des propriétés des attributs déclarés de la tâche.
 	 *
 	 * Structure : array(
-	 *    'attribute' => array(['allow_parameters', 'dir', 'dirjoker', 'file', 'filejoker', 'required', 'srcpath']),
-	 *    ...
+	 *    'attribute' => array(
+	 *       [self::ATTRIBUTE_ALLOW_PARAMETER, self::ATTRIBUTE_DIR, self::ATTRIBUTE_DIRJOKER,
+	 *       self::ATTRIBUTE_FILE, self::ATTRIBUTE_FILEJOKER, self::ATTRIBUTE_REQUIRED, self::ATTRIBUTE_SRC_PATH]
+	 *    ), ...
 	 * )
-	 * où :
-	 *   - 'allow_parameters' : autorise l'utilisation des '${parameter}' dans l'attribut
-	 *   - 'dir' : l'attribut désigne un répertoire
-	 *   - 'dirjoker' : autorise l'utilisation des jokers shell ? et * pour les répertoires
-	 *   - 'file' : l'attribut désigne un fichier
-	 *   - 'filejoker' : autorise l'utilisation des jokers shell ? et * pour les fichiers
-	 *   - 'required' : attribut obligatoire
-	 *   - 'srcpath' : l'attribut est un fichier ou répertoire source et doit donc exister
 	 *
 	 * @var array
 	 * @see check()
@@ -213,32 +249,32 @@ abstract class Task {
 		}
 
 		foreach ($this->aAttributeProperties as $sAttribute => $aProperties) {
-			if (empty($this->aAttributes[$sAttribute]) && in_array('required', $aProperties)) {
+			if (empty($this->aAttributes[$sAttribute]) && in_array(self::ATTRIBUTE_REQUIRED, $aProperties)) {
 				throw new UnexpectedValueException("'$sAttribute' attribute is required!");
 			} else if ( ! empty($this->aAttributes[$sAttribute])) {
-				if (in_array('dir', $aProperties) || in_array('file', $aProperties)) {
+				if (in_array(self::ATTRIBUTE_DIR, $aProperties) || in_array(self::ATTRIBUTE_FILE, $aProperties)) {
 					$this->aAttributes[$sAttribute] = str_replace('\\', '/', $this->aAttributes[$sAttribute]);
 				}
 
-				if (preg_match('#[*?].*/#', $this->aAttributes[$sAttribute]) !== 0 && ! in_array('dirjoker', $aProperties)) {
+				if (preg_match('#[*?].*/#', $this->aAttributes[$sAttribute]) !== 0 && ! in_array(self::ATTRIBUTE_DIRJOKER, $aProperties)) {
 					throw new DomainException("'*' and '?' jokers are not authorized for directory in '$sAttribute' attribute!");
 				}
 
-				if (preg_match('#[*?](.*[^/])?$#', $this->aAttributes[$sAttribute]) !== 0 && ! in_array('filejoker', $aProperties)) {
+				if (preg_match('#[*?](.*[^/])?$#', $this->aAttributes[$sAttribute]) !== 0 && ! in_array(self::ATTRIBUTE_FILEJOKER, $aProperties)) {
 					throw new DomainException("'*' and '?' jokers are not authorized for filename in '$sAttribute' attribute!");
 				}
 
-				if (preg_match('#\$\{[^}]*\}#', $this->aAttributes[$sAttribute]) !== 0 && ! in_array('allow_parameters', $aProperties)) {
+				if (preg_match('#\$\{[^}]*\}#', $this->aAttributes[$sAttribute]) !== 0 && ! in_array(self::ATTRIBUTE_ALLOW_PARAMETER, $aProperties)) {
 					throw new DomainException("Parameters are not allowed in '$sAttribute' attribute!");
 				}
 
 				// Suppression de l'éventuel slash terminal :
-				if (in_array('dir', $aProperties)) {
+				if (in_array(self::ATTRIBUTE_DIR, $aProperties)) {
 					$this->aAttributes[$sAttribute] = preg_replace('#/$#', '', $this->aAttributes[$sAttribute]);
 				}
 
 				if (
-						in_array('srcpath', $aProperties)
+						in_array(self::ATTRIBUTE_SRC_PATH, $aProperties)
 						&& preg_match('#\*|\?#', $this->aAttributes[$sAttribute]) === 0
 						&& $this->oShell->getFileStatus($this->aAttributes[$sAttribute]) === 0
 				) {

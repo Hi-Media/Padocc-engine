@@ -28,7 +28,7 @@ class Task_Base_Project extends Task_Base_Call {
 
 		parent::__construct($oProject, $this, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array_merge($this->aAttributeProperties, array(
-			'name' => array('required'),
+			'name' => array(Task::ATTRIBUTE_REQUIRED),
 		));
 		unset($this->aAttributeProperties['target']);
 	}

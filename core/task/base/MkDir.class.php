@@ -22,7 +22,7 @@ class Task_Base_MkDir extends Task {
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
-			'destdir' => array('dir', 'required', 'allow_parameters'),
+			'destdir' => array(Task::ATTRIBUTE_DIR, Task::ATTRIBUTE_REQUIRED, Task::ATTRIBUTE_ALLOW_PARAMETER),
 			'mode' => array(),
 		);
 	}

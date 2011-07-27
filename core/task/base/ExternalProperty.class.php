@@ -29,8 +29,8 @@ class Task_Base_ExternalProperty extends Task {
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
-			'name' => array('required'),
-			'description' => array('required'),
+			'name' => array(Task::ATTRIBUTE_REQUIRED),
+			'description' => array(Task::ATTRIBUTE_REQUIRED),
 		);
 		$this->iNumber = ++self::$iCounter;
 	}
