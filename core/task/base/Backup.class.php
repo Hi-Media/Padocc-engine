@@ -22,8 +22,8 @@ class Task_Base_Backup extends Task {
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
-			'src' => array('srcpath', 'file', 'dir', 'filejoker', 'required'),
-			'destfile' => array('file', 'required')
+			'src' => array(Task::ATTRIBUTE_SRC_PATH, Task::ATTRIBUTE_FILE, Task::ATTRIBUTE_DIR, Task::ATTRIBUTE_FILEJOKER, Task::ATTRIBUTE_REQUIRED),
+			'destfile' => array(Task::ATTRIBUTE_FILE, Task::ATTRIBUTE_REQUIRED)
 		);
 	}
 

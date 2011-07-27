@@ -47,7 +47,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 	 * @covers Shell_Adapter::isRemotePath
 	 */
 	public function testIsRemotePathThrowExceptionWithParameter () {
-		$this->setExpectedException('RuntimeException');
+		$this->setExpectedException('DomainException');
 		$this->oShell->isRemotePath('${sdg}');
 	}
 
@@ -278,7 +278,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testRemoveThrowExceptionWhenTooShortPath () {
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
-		$this->setExpectedException('BadMethodCallException');
+		$this->setExpectedException('DomainException');
 		$oMockShell->remove('foo');
 	}
 

@@ -19,8 +19,8 @@ abstract class Task_WithProperties extends Task {
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
-			'propertyinifile' => array('srcpath'),
-			'propertyshellfile' => array('srcpath'),
+			'propertyinifile' => array(Task::ATTRIBUTE_SRC_PATH),
+			'propertyshellfile' => array(Task::ATTRIBUTE_SRC_PATH),
 			'loadtwengaservers' => array()
 		);
 
