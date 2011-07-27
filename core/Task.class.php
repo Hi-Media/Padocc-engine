@@ -196,9 +196,8 @@ abstract class Task {
 	 * doit permettre de remonter au plus tôt tout dysfonctionnement.
 	 * Appelé avant la méthode execute().
 	 *
-	 * @throws UnexpectedValueException
-	 * @throws DomainException
-	 * @throws RuntimeException
+	 * @throws UnexpectedValueException en cas d'attribut ou fichier manquant
+	 * @throws DomainException en cas de valeur non permise
 	 * @see self::$aAttributeProperties
 	 */
 	public function check () {
@@ -208,7 +207,7 @@ abstract class Task {
 		$aAvailablesAttributes = array_keys($this->aAttributeProperties);
 		$aUnknownAttributes = array_diff(array_keys($this->aAttributes), $aAvailablesAttributes);
 		if (count($aUnknownAttributes) > 0) {
-			throw new UnexpectedValueException(
+			throw new DomainException(
 				"Available attributes: " . print_r($aAvailablesAttributes, true)
 				. " => Unknown attribute(s): " . print_r($aUnknownAttributes, true));
 		}
@@ -243,7 +242,7 @@ abstract class Task {
 						&& preg_match('#\*|\?#', $this->aAttributes[$sAttribute]) === 0
 						&& $this->oShell->getFileStatus($this->aAttributes[$sAttribute]) === 0
 				) {
-					throw new RuntimeException("File or directory '" . $this->aAttributes[$sAttribute] . "' not found!");
+					throw new UnexpectedValueException("File or directory '" . $this->aAttributes[$sAttribute] . "' not found!");
 				}
 			}
 		}

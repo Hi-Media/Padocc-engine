@@ -32,7 +32,6 @@ chmod 777 deployment/resources -R
 // TODO description des tâches
 // TODO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="biblio10.xsd"
 // TODO passer les types de paramètres de tâches en champ de bits
-// TODO mieux différencier les différents types d'exception
 // TODO Clarification de l'affichage : début et fin de tâche, de target
 // TODO Que doit retourner Shell_Adapter->exec() : array ou string ?
 // TODO test multi rsync

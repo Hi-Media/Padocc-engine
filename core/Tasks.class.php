@@ -10,6 +10,7 @@ class Tasks {
 	 * Retourne un tableau associatif décrivant les tâches disponibles.
 	 *
 	 * @return array tableau associatif des tâches disponibles : array('sTag' => 'sClassName', ...)
+	 * @throws LogicException si collision de nom de tag XML
 	 */
 	public static function getAvailableTasks () {
 		if (count(self::$AVAILABLE_TASKS) === 0) {
@@ -21,7 +22,7 @@ class Tasks {
 					$sFullClassName = 'Task_' . ucfirst($sTaskType) . '_' . $sClassName;
 					$sTag = $sFullClassName::getTagName();
 					if (isset($aAvailableTasks[$sTag])) {
-						throw new Exception("Already defined task tag '$sTag' in '$aAvailableTasks[$sTag]'!");
+						throw new LogicException("Already defined task tag '$sTag' in '$aAvailableTasks[$sTag]'!");
 					} else if ($sTag != 'project') {
 						$aAvailableTasks[$sTag] = $sFullClassName;
 					}
@@ -32,13 +33,19 @@ class Tasks {
 		return self::$AVAILABLE_TASKS;
 	}
 
+	/**
+	 * Retourne une instance SimpleXML du projet spécifié.
+	 *
+	 * @param string $sProjectName nom du projet à charger
+	 * @throws UnexpectedValueException si fichier XML du projet non trouvé
+	 * @return SimpleXMLElement isntance du projet spécifié
+	 */
 	public static function getProject ($sProjectName) {
 		$sProjectFilename = DEPLOYMENT_RESOURCES_DIR . '/' . $sProjectName . '.xml';
 		if ( ! file_exists($sProjectFilename)) {
-			throw new Exception("Project definition not found: '$sProjectFilename'!");
+			throw new UnexpectedValueException("Project definition not found: '$sProjectFilename'!");
 		}
-		$oProject = new SimpleXMLElement($sProjectFilename, NULL, true);
-		return $oProject;
+		return new SimpleXMLElement($sProjectFilename, NULL, true);
 	}
 
 	public static function getAllProjectsName () {

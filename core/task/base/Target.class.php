@@ -65,7 +65,7 @@ class Task_Base_Target extends Task_WithProperties {
 		foreach ($aTasks as $aTask) {
 			list($sTag, $oTask) = $aTask;
 			if ( ! isset($aAvailableTasks[$sTag])) {
-				throw new RuntimeException("Unkown task tag: '$sTag'!");
+				throw new UnexpectedValueException("Unkown task tag: '$sTag'!");
 			} else {
 				$aTaskInstances[] = new $aAvailableTasks[$sTag]($oTask, $oProject, $sBackupPath, $this->oServiceContainer);
 			}
@@ -82,9 +82,8 @@ class Task_Base_Target extends Task_WithProperties {
 	 * doit permettre de remonter au plus tôt tout dysfonctionnement.
 	 * Appelé avant la méthode execute().
 	 *
-	 * @throws UnexpectedValueException
-	 * @throws DomainException
-	 * @throws RuntimeException
+	 * @throws UnexpectedValueException en cas d'attribut ou fichier manquant
+	 * @throws DomainException en cas de valeur non permise
 	 */
 	public function check () {
 		parent::check();

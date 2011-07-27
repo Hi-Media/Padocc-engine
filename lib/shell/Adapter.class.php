@@ -22,20 +22,28 @@ class Shell_Adapter implements Shell_Interface {
 	 * En cas d'erreur shell, lance une exception avec le message d'erreur.
 	 *
 	 * @param string $sCmd
-	 * @throws Exception en cas d'erreur shell
+	 * @throws RuntimeException en cas d'erreur shell
 	 * @return array Tableau indexé du flux de sortie découpé par ligne
 	 */
 	public function exec ($sCmd) {
 		$this->oLogger->log('[DEBUG] shell# ' . trim($sCmd), Logger_Interface::DEBUG);
 		$sFullCmd = '( ' . $sCmd . ' ) 2>&1';
-		$sErrorMsg = exec($sFullCmd, $aResult, $iReturnCode);
+		exec($sFullCmd, $aResult, $iReturnCode);
 		if ($iReturnCode !== 0) {
-			//throw new Exception($sErrorMsg);
 			throw new RuntimeException(implode("\n", $aResult), $iReturnCode);
 		}
 		return $aResult;
 	}
 
+	/**
+	 * Exécute la commande spécifiée en l'encapsulant au besoin dans une connexion SSH.
+	 *
+	 * @param string $sPatternCmd commande au format printf
+	 * @param string $sParam paramètre du pattern $sPatternCmd, permettant en plus de décider si l'on
+	 * doit encapsuler la commande dans un SSH (si serveur distant) ou non.
+	 * @return array Tableau indexé du flux de sortie découpé par ligne
+	 * @see isRemotePath()
+	 */
 	public function execSSH ($sPatternCmd, $sParam) {
 		list($bIsRemote, $aMatches) = $this->isRemotePath($sParam);
 		$sCmd = sprintf($sPatternCmd, $this->escapePath($aMatches[2]));
@@ -73,10 +81,11 @@ class Shell_Adapter implements Shell_Interface {
 	 *
 	 * @param string $sPath
 	 * @return array
+	 * @throws DomainException si syntaxe invalide
 	 */
 	public function isRemotePath ($sPath) {
 		if (preg_match('/\$\{[^}]*\}/i', $sPath) === 1) {
-			throw new RuntimeException("Invalid syntax: '$sPath'.");
+			throw new DomainException("Invalid syntax: '$sPath'.");
 		}
 
 		$result = preg_match('/^((?:[a-z0-9_.-]+@)?[a-z0-9_.-]+):(.+)$/i', $sPath, $aMatches);
@@ -133,11 +142,19 @@ class Shell_Adapter implements Shell_Interface {
 		return $sEscapedPath;
 	}
 
+	/**
+	 * Supprime le chemin spécifié, répertoire ou fichier, distant ou local.
+	 * Exemple : 'aai@aai-01:/path/to/delete'
+	 *
+	 * @param string $sPath chemin à spécifier
+	 * @return array Tableau indexé du flux de sortie découpé par ligne
+	 * @throws DomainException si chemin invalide
+	 */
 	public function remove ($sPath) {
 		$sPath = trim($sPath);
 		// Garde-fou :
 		if (empty($sPath) || strlen($sPath) < 4) {
-			throw new BadMethodCallException("Illegal path: '$sPath'");
+			throw new DomainException("Illegal path: '$sPath'");
 		}
 		return $this->execSSH('rm -rf %s', $sPath);
 	}
