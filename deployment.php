@@ -50,19 +50,13 @@ chmod 777 deployment/resources -R
 // TODO tableau new deployment de l'état des env pour le projet en cours, ou tous les projets
 
 /*
-~/.muttrc
-my_hdr From: AA Supervisor <devaa@twenga.com>
-my_hdr Reply-To: Dev AA <devaa@twenga.com>
-
-echo "message" | mutt -e "set content_type=text/html" -s "subject" -- geoffroy.aubry@twenga.com
- */
-
-/*
  * Features :
- *  - load sh config files
+ *  - load sh config files : master_synchro.cfg
  *  - XML project config file
- *  - handling all errors and exception
- *  - task très concises et intelligentes
+ *     - de l'ordre de la minute pour ajouter un nouveau projet
+ *     - accès direct à ce en quoi consiste un déploiement pour un projet et un environnement donné
+ *  - handling all errors (fatal) and exceptions
+ *  - task très concises et intelligentes => XML très petit
  */
 
 
