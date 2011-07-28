@@ -5,6 +5,7 @@
 <project
 		name="tests"
 		loadtwengaservers="true"
+		withsymlink="/home/aai/deployment_test/dest2"
 		propertyinifile="/home/gaubry/deployment/resources/tests_property_file.ini"
 >
 	<target name="tests_copy">
