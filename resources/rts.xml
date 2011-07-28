@@ -17,7 +17,7 @@
 		<buildlanguage project="rts" destdir="${SERVER_AAI}:/home/aai/deployment_test/rts/buildlanguage" />
 	</env>
 
-	<env name="qa" mailto="devaa@twenga.com, qateam@twenga.com">
+	<env name="qa" mailto="devaa@twenga.com, qateam@twenga.com, devrts@twenga.com">
 		<externalproperty name="ref" description="Branch or tag to deploy" />
 		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="${ref}"
 			destdir="${SERVER_EXTRANET_QA}:/home/httpd/extranet.twenga.com" exclude="config.*" />
@@ -30,7 +30,7 @@
 		<buildlanguage project="rts" destdir="${SERVER_EXTRANET_QA}:/home/httpd/extranet.twenga.com/languages" />
 	</env>
 
-	<env name="prod" mailto="devaa@twenga.com, qateam@twenga.com">
+	<env name="prod" mailto="devaa@twenga.com, qateam@twenga.com, devrts@twenga.com">
 		<externalproperty name="ref" description="Branch or tag to deploy" />
 		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="${ref}"
 			destdir="${SERVER_EXTRANET}:/home/httpd/extranet.twenga.com" exclude="config.*" />
