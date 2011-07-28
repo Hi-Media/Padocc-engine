@@ -22,8 +22,8 @@ class Task_Extended_BuildLanguage extends Task {
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
-			'project' => array(Task::ATTRIBUTE_REQUIRED),
-			'destdir' => array(Task::ATTRIBUTE_DIR, Task::ATTRIBUTE_REQUIRED, Task::ATTRIBUTE_ALLOW_PARAMETER)
+			'project' => Task::ATTRIBUTE_REQUIRED,
+			'destdir' => Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_REQUIRED | Task::ATTRIBUTE_ALLOW_PARAMETER
 		);
 	}
 

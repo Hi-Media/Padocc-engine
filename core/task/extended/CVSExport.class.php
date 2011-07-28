@@ -28,10 +28,10 @@ class Task_Extended_CVSExport extends Task {
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
-			'repository' => array(Task::ATTRIBUTE_FILE, Task::ATTRIBUTE_REQUIRED),
-			'module' => array(Task::ATTRIBUTE_DIR, Task::ATTRIBUTE_REQUIRED),
-			'srcdir' => array(Task::ATTRIBUTE_DIR),
-			'destdir' => array(Task::ATTRIBUTE_DIR, Task::ATTRIBUTE_REQUIRED, Task::ATTRIBUTE_ALLOW_PARAMETER)
+			'repository' => Task::ATTRIBUTE_FILE | Task::ATTRIBUTE_REQUIRED,
+			'module' => Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_REQUIRED,
+			'srcdir' => Task::ATTRIBUTE_DIR,
+			'destdir' => Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_REQUIRED | Task::ATTRIBUTE_ALLOW_PARAMETER
 		);
 
 		if (empty($this->aAttributes['srcdir'])) {

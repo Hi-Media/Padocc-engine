@@ -22,8 +22,8 @@ class Task_Base_Environment extends Task_Base_Target {
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array_merge($this->aAttributeProperties, array(
-			'name' => array(Task::ATTRIBUTE_REQUIRED),
-			'mailto' => array()
+			'name' => Task::ATTRIBUTE_REQUIRED,
+			'mailto' => 0
 		));
 	}
 }

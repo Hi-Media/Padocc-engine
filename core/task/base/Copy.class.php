@@ -22,8 +22,8 @@ class Task_Base_Copy extends Task {
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
-			'src' => array(Task::ATTRIBUTE_SRC_PATH, Task::ATTRIBUTE_FILE, Task::ATTRIBUTE_DIR, Task::ATTRIBUTE_FILEJOKER, Task::ATTRIBUTE_REQUIRED),
-			'destdir' => array(Task::ATTRIBUTE_DIR, Task::ATTRIBUTE_REQUIRED)
+			'src' => Task::ATTRIBUTE_SRC_PATH | Task::ATTRIBUTE_FILE | Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_FILEJOKER | Task::ATTRIBUTE_REQUIRED,
+			'destdir' => Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_REQUIRED
 		);
 	}
 

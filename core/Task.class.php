@@ -110,12 +110,10 @@ abstract class Task {
 	/**
 	 * Liste des propriétés des attributs déclarés de la tâche.
 	 *
-	 * Structure : array(
-	 *    'attribute' => array(
-	 *       [self::ATTRIBUTE_ALLOW_PARAMETER, self::ATTRIBUTE_DIR, self::ATTRIBUTE_DIRJOKER,
-	 *       self::ATTRIBUTE_FILE, self::ATTRIBUTE_FILEJOKER, self::ATTRIBUTE_REQUIRED, self::ATTRIBUTE_SRC_PATH]
-	 *    ), ...
-	 * )
+	 * Structure : array('attribute' => iValue, ...)
+	 * Où iValue vaut 0 ou une combinaison des bits suivants (au sens |):
+	 *    self::ATTRIBUTE_ALLOW_PARAMETER, self::ATTRIBUTE_DIR, self::ATTRIBUTE_DIRJOKER,
+	 *    self::ATTRIBUTE_FILE, self::ATTRIBUTE_FILEJOKER, self::ATTRIBUTE_REQUIRED, self::ATTRIBUTE_SRC_PATH
 	 *
 	 * @var array
 	 * @see check()
@@ -248,33 +246,33 @@ abstract class Task {
 				. " => Unknown attribute(s): " . print_r($aUnknownAttributes, true));
 		}
 
-		foreach ($this->aAttributeProperties as $sAttribute => $aProperties) {
-			if (empty($this->aAttributes[$sAttribute]) && in_array(self::ATTRIBUTE_REQUIRED, $aProperties)) {
+		foreach ($this->aAttributeProperties as $sAttribute => $iProperties) {
+			if (empty($this->aAttributes[$sAttribute]) && ($iProperties & self::ATTRIBUTE_REQUIRED) > 0) {
 				throw new UnexpectedValueException("'$sAttribute' attribute is required!");
 			} else if ( ! empty($this->aAttributes[$sAttribute])) {
-				if (in_array(self::ATTRIBUTE_DIR, $aProperties) || in_array(self::ATTRIBUTE_FILE, $aProperties)) {
+				if (($iProperties & self::ATTRIBUTE_DIR) > 0 || ($iProperties & self::ATTRIBUTE_FILE) > 0) {
 					$this->aAttributes[$sAttribute] = str_replace('\\', '/', $this->aAttributes[$sAttribute]);
 				}
 
-				if (preg_match('#[*?].*/#', $this->aAttributes[$sAttribute]) !== 0 && ! in_array(self::ATTRIBUTE_DIRJOKER, $aProperties)) {
+				if (preg_match('#[*?].*/#', $this->aAttributes[$sAttribute]) !== 0 && ($iProperties & self::ATTRIBUTE_DIRJOKER) == 0) {
 					throw new DomainException("'*' and '?' jokers are not authorized for directory in '$sAttribute' attribute!");
 				}
 
-				if (preg_match('#[*?](.*[^/])?$#', $this->aAttributes[$sAttribute]) !== 0 && ! in_array(self::ATTRIBUTE_FILEJOKER, $aProperties)) {
+				if (preg_match('#[*?](.*[^/])?$#', $this->aAttributes[$sAttribute]) !== 0 && ($iProperties & self::ATTRIBUTE_FILEJOKER) == 0) {
 					throw new DomainException("'*' and '?' jokers are not authorized for filename in '$sAttribute' attribute!");
 				}
 
-				if (preg_match('#\$\{[^}]*\}#', $this->aAttributes[$sAttribute]) !== 0 && ! in_array(self::ATTRIBUTE_ALLOW_PARAMETER, $aProperties)) {
-					throw new DomainException("Parameters are not allowed in '$sAttribute' attribute!");
+				if (preg_match('#\$\{[^}]*\}#', $this->aAttributes[$sAttribute]) !== 0 && ($iProperties & self::ATTRIBUTE_ALLOW_PARAMETER) == 0) {
+					throw new DomainException("Parameters are not allowed in '$sAttribute' attribute! Value: '" . $this->aAttributes[$sAttribute] . "'");
 				}
 
 				// Suppression de l'éventuel slash terminal :
-				if (in_array(self::ATTRIBUTE_DIR, $aProperties)) {
+				if (($iProperties & self::ATTRIBUTE_DIR) > 0) {
 					$this->aAttributes[$sAttribute] = preg_replace('#/$#', '', $this->aAttributes[$sAttribute]);
 				}
 
 				if (
-						in_array(self::ATTRIBUTE_SRC_PATH, $aProperties)
+						($iProperties & self::ATTRIBUTE_SRC_PATH) > 0
 						&& preg_match('#\*|\?#', $this->aAttributes[$sAttribute]) === 0
 						&& $this->oShell->getFileStatus($this->aAttributes[$sAttribute]) === 0
 				) {

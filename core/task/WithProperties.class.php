@@ -19,9 +19,9 @@ abstract class Task_WithProperties extends Task {
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
-			'propertyinifile' => array(Task::ATTRIBUTE_SRC_PATH),
-			'propertyshellfile' => array(Task::ATTRIBUTE_SRC_PATH),
-			'loadtwengaservers' => array()
+			'propertyinifile' => Task::ATTRIBUTE_SRC_PATH,
+			'propertyshellfile' => Task::ATTRIBUTE_SRC_PATH,
+			'loadtwengaservers' => 0
 		);
 
 		// Création de la tâche de chargement des listes de serveurs Twenga sous-jacente :
