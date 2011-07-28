@@ -28,11 +28,11 @@ class Task_Extended_GitExport extends Task {
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array(
-			'repository' => array(Task::ATTRIBUTE_FILE, Task::ATTRIBUTE_REQUIRED),
-			'ref' => array(Task::ATTRIBUTE_REQUIRED, Task::ATTRIBUTE_ALLOW_PARAMETER),
-			'srcdir' => array(Task::ATTRIBUTE_DIR),
-			'destdir' => array(Task::ATTRIBUTE_DIR, Task::ATTRIBUTE_REQUIRED, Task::ATTRIBUTE_ALLOW_PARAMETER),
-			'exclude' => array(Task::ATTRIBUTE_FILEJOKER),
+			'repository' => Task::ATTRIBUTE_FILE | Task::ATTRIBUTE_REQUIRED,
+			'ref' => Task::ATTRIBUTE_REQUIRED | Task::ATTRIBUTE_ALLOW_PARAMETER,
+			'srcdir' => Task::ATTRIBUTE_DIR,
+			'destdir' => Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_REQUIRED | Task::ATTRIBUTE_ALLOW_PARAMETER,
+			'exclude' => Task::ATTRIBUTE_FILEJOKER
 		);
 
 		if (empty($this->aAttributes['srcdir'])) {

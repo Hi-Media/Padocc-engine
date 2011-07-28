@@ -170,7 +170,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 
 		$oProperty = $o->getProperty('aAttributeProperties');
 		$oProperty->setAccessible(true);
-		$oProperty->setValue($oMockTask, array('srcdir' => array(Task::ATTRIBUTE_REQUIRED)));
+		$oProperty->setValue($oMockTask, array('srcdir' => Task::ATTRIBUTE_REQUIRED));
 
 		$oProperty = $o->getProperty('aAttributes');
 		$oProperty->setAccessible(true);
@@ -190,7 +190,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 
 		$oProperty = $o->getProperty('aAttributeProperties');
 		$oProperty->setAccessible(true);
-		$oProperty->setValue($oMockTask, array('srcdir' => array(Task::ATTRIBUTE_REQUIRED)));
+		$oProperty->setValue($oMockTask, array('srcdir' => Task::ATTRIBUTE_REQUIRED));
 
 		$oProperty = $o->getProperty('aAttributes');
 		$oProperty->setAccessible(true);
@@ -209,7 +209,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 
 		$oProperty = $o->getProperty('aAttributeProperties');
 		$oProperty->setAccessible(true);
-		$oProperty->setValue($oMockTask, array('srcfile' => array(Task::ATTRIBUTE_FILE)));
+		$oProperty->setValue($oMockTask, array('srcfile' => Task::ATTRIBUTE_FILE));
 
 		$oProperty = $o->getProperty('aAttributes');
 		$oProperty->setAccessible(true);
@@ -229,7 +229,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 
 		$oProperty = $o->getProperty('aAttributeProperties');
 		$oProperty->setAccessible(true);
-		$oProperty->setValue($oMockTask, array('srcdir' => array(Task::ATTRIBUTE_DIR)));
+		$oProperty->setValue($oMockTask, array('srcdir' => Task::ATTRIBUTE_DIR));
 
 		$oProperty = $o->getProperty('aAttributes');
 		$oProperty->setAccessible(true);
@@ -269,7 +269,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 
 		$oProperty = $o->getProperty('aAttributeProperties');
 		$oProperty->setAccessible(true);
-		$oProperty->setValue($oMockTask, array('srcdir' => array(Task::ATTRIBUTE_DIRJOKER)));
+		$oProperty->setValue($oMockTask, array('srcdir' => Task::ATTRIBUTE_DIRJOKER));
 
 		$oProperty = $o->getProperty('aAttributes');
 		$oProperty->setAccessible(true);
@@ -308,7 +308,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 
 		$oProperty = $o->getProperty('aAttributeProperties');
 		$oProperty->setAccessible(true);
-		$oProperty->setValue($oMockTask, array('srcfile' => array(Task::ATTRIBUTE_FILEJOKER)));
+		$oProperty->setValue($oMockTask, array('srcfile' => Task::ATTRIBUTE_FILEJOKER));
 
 		$oProperty = $o->getProperty('aAttributes');
 		$oProperty->setAccessible(true);
@@ -347,7 +347,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 
 		$oProperty = $o->getProperty('aAttributeProperties');
 		$oProperty->setAccessible(true);
-		$oProperty->setValue($oMockTask, array('src' => array(Task::ATTRIBUTE_ALLOW_PARAMETER)));
+		$oProperty->setValue($oMockTask, array('src' => Task::ATTRIBUTE_ALLOW_PARAMETER));
 
 		$oProperty = $o->getProperty('aAttributes');
 		$oProperty->setAccessible(true);
@@ -371,7 +371,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 
 		$oProperty = $o->getProperty('aAttributeProperties');
 		$oProperty->setAccessible(true);
-		$oProperty->setValue($oMockTask, array('src' => array(Task::ATTRIBUTE_SRC_PATH)));
+		$oProperty->setValue($oMockTask, array('src' => Task::ATTRIBUTE_SRC_PATH));
 
 		$oProperty = $o->getProperty('aAttributes');
 		$oProperty->setAccessible(true);

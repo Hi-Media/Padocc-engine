@@ -28,7 +28,7 @@ class Task_Base_Call extends Task_WithProperties {
 	public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
 		parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array_merge($this->aAttributeProperties, array(
-			'target' => array(Task::ATTRIBUTE_REQUIRED)
+			'target' => Task::ATTRIBUTE_REQUIRED
 		));
 		$this->oBoundTask = $this->getBoundTask($sBackupPath);
 	}
