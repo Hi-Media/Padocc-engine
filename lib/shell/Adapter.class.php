@@ -56,7 +56,8 @@ class Shell_Adapter implements Shell_Interface {
 
 	/**
 	 * Retourne 0 si le chemin spécifié n'existe pas, 1 si c'est un fichier 'classique', 2 si c'est un répertoire.
-	 * Passe par ssh au besoin.
+	 * Si le statut est différent de 0, l'appel est mis en cache.
+	 * Passe par SSH au besoin.
 	 *
 	 * @param string $sPath chemin à tester
 	 * @return int 0 si le chemin spécifié n'existe pas, 1 si c'est un fichier, 2 si c'est un répertoire.
@@ -65,6 +66,8 @@ class Shell_Adapter implements Shell_Interface {
 		if (isset($this->aFileStatus[$sPath])) {
 			$iStatus = $this->aFileStatus[$sPath];
 		} else {
+			// path="link_logs"; [ -h "$path" ] && echo -n 1; [ -d "$path" ] && echo 2 || ([ -f "$path" ] && echo 1 || echo 0)
+			// [ -h %1$s ] && echo -n 1; [ -d %1$s ] && echo 2 || ([ -f %1$s ] && echo 1 || echo 0)
 			$sFormat = '[ -d %1$s ] && echo 2 || ( [ -f %1$s ] && echo 1 || echo 0 )';
 			$aResult = $this->execSSH($sFormat, $sPath);
 			$iStatus = (int)$aResult[0];

@@ -285,6 +285,7 @@ abstract class Task {
 
 	public function execute () {
 		$this->oLogger->log("Execute '" . $this->sName . "' task");
+		// ICI tester les attributs destdir ?? notamment si withsymlink !
 	}
 
 	public abstract function backup ();
