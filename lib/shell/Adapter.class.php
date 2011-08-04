@@ -205,9 +205,9 @@ cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubr
 
 	/*
 time ( \
-	rsync -az --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats -e ssh "/home/gaubry/deployment_test/src/test_gitexport1/"* "aai@aai-01:/home/aai/deployment_test/dest/test_gitexport1" & \
-	rsync -az --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats -e ssh "/home/gaubry/deployment_test/src/test_gitexport1/"* "aai@aai-02:/home/aai/deployment_test/dest/test_gitexport1" & \
-	rsync -az --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats -e ssh "/home/gaubry/deployment_test/src/test_gitexport1/"* "gaubry@dv2:/home/gaubry/deployment_test/dest/test_gitexport1" & \
+	rsync -axvz --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats -e ssh "/home/gaubry/deployment_test/src/test_gitexport1/"* "aai@aai-01:/home/aai/deployment_test/dest/test_gitexport1" & \
+	rsync -axvz --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats -e ssh "/home/gaubry/deployment_test/src/test_gitexport1/"* "aai@aai-02:/home/aai/deployment_test/dest/test_gitexport1" & \
+	rsync -axvz --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats -e ssh "/home/gaubry/deployment_test/src/test_gitexport1/"* "gaubry@dv2:/home/gaubry/deployment_test/dest/test_gitexport1" & \
 	wait)
 
 t="$(tempfile)"; ls sss 2>>$t & ls dfhdfh 2>>$t & wait; [ ! -s "$t" ] && echo ">>OK" || (cat $t; rm -f $t; exit 2)
@@ -230,7 +230,7 @@ rsync  --bwlimit=4000
 			$aCmd = array();
 			for ($j=$i; $j<count($aPaths) && $j<$i+DEPLOYMENT_RSYNC_MAX_NB_PROCESSES; $j++) {
 				$aCmd[] =
-					'rsync -az --delete --exclude=.cvsignore ' . $sAdditionalExclude . '--stats -e'
+					'rsync -axvz --delete --exclude=.cvsignore ' . $sAdditionalExclude . '--stats -e'
 					. ' ssh ' . $this->escapePath($sSrcPath) . ' ' . $this->escapePath($aPaths[$j]);
 			}
 			$i = $j-1;
