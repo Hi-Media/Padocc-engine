@@ -4,9 +4,9 @@ class Task_Base_Call extends Task_WithProperties {
 
 	/**
 	 * Tâche appelée.
-	 * @var Task
+	 * @var Task_Base_Target
 	 */
-	protected $oBoundTask;
+	private $oBoundTask;
 
 	/**
 	 * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
@@ -30,22 +30,13 @@ class Task_Base_Call extends Task_WithProperties {
 		$this->aAttributeProperties = array_merge($this->aAttributeProperties, array(
 			'target' => Task::ATTRIBUTE_REQUIRED
 		));
-		$this->oBoundTask = $this->getBoundTask($sBackupPath);
-	}
 
-	/**
-	 * Retourne une instance de la tâche target appelée.
-	 *
-	 * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
-	 * @return Task_Base_Target instance de la tâche target appelée.
-	 * @throws UnexpectedValueException si cible non trouvée ou non unique.
-	 */
-	protected function getBoundTask ($sBackupPath) {
+		// Crée une instance de la tâche target appelée :
 		$aTargets = $this->oProject->getSXE()->xpath("target[@name='" . $this->aAttributes['target'] . "']");
 		if (count($aTargets) !== 1) {
 			throw new UnexpectedValueException("Target '" . $this->aAttributes['target'] . "' not found or not unique in this project!");
 		}
-		return new Task_Base_Target($aTargets[0], $this->oProject, $sBackupPath, $this->oServiceContainer);
+		$this->oBoundTask = new Task_Base_Target($aTargets[0], $this->oProject, $sBackupPath, $this->oServiceContainer);
 	}
 
 	/**
