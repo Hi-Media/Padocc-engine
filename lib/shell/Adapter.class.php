@@ -128,7 +128,7 @@ class Shell_Adapter implements Shell_Interface {
 	 */
 	public function createLink ($sLinkPath, $sTargetPath) {
 		list($bIsSrcRemote, $aSrcMatches) = $this->isRemotePath($sTargetPath);
-		return $this->execSSH('mkdir -p "$(dirname %1$s)" && ln -sf "' . $aSrcMatches[2] . '" %1$s', $sLinkPath);
+		return $this->execSSH('mkdir -p "$(dirname %1$s)" && ln -snf "' . $aSrcMatches[2] . '" %1$s', $sLinkPath);
 	}
 
 	/**

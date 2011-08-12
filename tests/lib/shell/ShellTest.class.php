@@ -630,7 +630,7 @@ total size is 64093953  speedup is 1618.29');
 
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$oMockShell->expects($this->at(0))->method('exec')
-			->with($this->equalTo('mkdir -p "$(dirname "/path/to/my file")" && ln -sf "/path/to/my target" "/path/to/my file"'))
+			->with($this->equalTo('mkdir -p "$(dirname "/path/to/my file")" && ln -snf "/path/to/my target" "/path/to/my file"'))
 			->will($this->returnValue($aExpectedResult));
 		$oMockShell->expects($this->exactly(1))->method('exec');
 
@@ -646,7 +646,7 @@ total size is 64093953  speedup is 1618.29');
 
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$oMockShell->expects($this->at(0))->method('exec')
-			->with($this->equalTo('ssh -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'mkdir -p "$(dirname "/path/to/my file")" && ln -sf "/path/to/my target" "/path/to/my file"' . "\n" . 'EOF' . "\n"))
+			->with($this->equalTo('ssh -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'mkdir -p "$(dirname "/path/to/my file")" && ln -snf "/path/to/my target" "/path/to/my file"' . "\n" . 'EOF' . "\n"))
 			->will($this->returnValue($aExpectedResult));
 		$oMockShell->expects($this->exactly(1))->method('exec');
 
