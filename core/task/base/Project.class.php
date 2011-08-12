@@ -1,6 +1,12 @@
 <?php
 
-class Task_Base_Project extends Task_Base_Call {
+class Task_Base_Project extends Task_WithProperties {
+
+	/**
+	 * Tâche appelée.
+	 * @var Task_Base_Environment
+	 */
+	private $oBoundTask;
 
 	/**
 	 * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
@@ -10,8 +16,6 @@ class Task_Base_Project extends Task_Base_Call {
 	public static function getTagName () {
 		return 'project';
 	}
-
-	private $sEnvName;
 
 	/**
 	 * Constructeur.
@@ -28,25 +32,16 @@ class Task_Base_Project extends Task_Base_Call {
 
 		parent::__construct($oProject, $this, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array_merge($this->aAttributeProperties, array(
-			'name' => Task::ATTRIBUTE_REQUIRED
+			'name' => Task::ATTRIBUTE_REQUIRED,
+			'withsymlink' => 0
 		));
-		unset($this->aAttributeProperties['target']);
-	}
 
-	/**
-	 * Retourne une instance de la tâche environnement appelée.
-	 *
-	 * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
-	 * @return Task_Base_Environment instance de la tâche environnement appelée.
-	 * @throws UnexpectedValueException si cible non trouvée ou non unique.
-	 */
-	protected function getBoundTask ($sBackupPath) {
-		$sEnvName = $this->sEnvName;
+		// Crée une instance de la tâche environnement appelée :
 		$aTargets = $this->oProject->getSXE()->xpath("env[@name='$sEnvName']");
 		if (count($aTargets) !== 1) {
 			throw new UnexpectedValueException("Environment '$sEnvName' not found or not unique in this project!");
 		}
-		return new Task_Base_Environment($aTargets[0], $this->oProject, $sBackupPath, $this->oServiceContainer);
+		$this->oBoundTask = new Task_Base_Environment($aTargets[0], $this->oProject, $sBackupPath, $this->oServiceContainer);
 	}
 
 	/**
@@ -62,10 +57,13 @@ class Task_Base_Project extends Task_Base_Call {
 	 */
 	public function check () {
 		parent::check();
+		$this->oBoundTask->check();
 	}
 
 	public function execute () {
 		parent::execute();
+		$this->oBoundTask->backup();
+		$this->oBoundTask->execute();
 	}
 
 	public function backup () {}
