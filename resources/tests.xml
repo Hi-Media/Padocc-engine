@@ -5,7 +5,6 @@
 <project
 		name="tests"
 		loadtwengaservers="true"
-		withsymlink="/home/aai/deployment_test/dest2"
 		propertyinifile="/home/gaubry/deployment/resources/tests_property_file.ini"
 >
 	<target name="tests_copy">
@@ -53,6 +52,23 @@
 		<cvsexport repository=":extssh:@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
 			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_cvsexport1" />
 		<link server="${SERVER_AAI}" src="/home/aai/deployment_test/dest/test_link/link" target="/home/aai/deployment_test/dest/test_gitexport1" />
+	</env>
+
+	<env
+			name="tests_symlinks"
+			propertyinifile="/home/gaubry/deployment/resources/tests_env_property_file.ini"
+			mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com"
+			withsymlink="/home/aai/deployment_test/dest_test_symlink"
+	>
+		<externalproperty name="rts_ref" description="Branch or tag to deploy" />
+		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="${rts_ref}"
+			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest_test_symlink/test_gitexport1"
+			exclude="site_hr_upload config*" />
+		<mkdir destdir="${SERVER_AAI}:/home/aai/deployment_test/dest_test_symlink/test_gitexport1/cache/smarty/cache" mode="777" />
+		<mkdir destdir="${SERVER_AAI}:/home/aai/deployment_test/dest_test_symlink/test_gitexport1/cache/smarty/templates_c" />
+		<cvsexport repository=":extssh:@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
+			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest_test_symlink/test_cvsexport1" />
+		<link server="${SERVER_AAI}" src="/home/aai/deployment_test/dest_test_symlink/test_link/link" target="/home/aai/deployment_test/dest_test_symlink/test_gitexport1" />
 	</env>
 
 	<env

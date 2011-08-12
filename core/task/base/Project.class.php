@@ -32,8 +32,7 @@ class Task_Base_Project extends Task_WithProperties {
 
 		parent::__construct($oProject, $this, $sBackupPath, $oServiceContainer);
 		$this->aAttributeProperties = array_merge($this->aAttributeProperties, array(
-			'name' => Task::ATTRIBUTE_REQUIRED,
-			'withsymlink' => 0
+			'name' => Task::ATTRIBUTE_REQUIRED
 		));
 
 		// Crée une instance de la tâche environnement appelée :
@@ -44,20 +43,9 @@ class Task_Base_Project extends Task_WithProperties {
 		$this->oBoundTask = new Task_Base_Environment($aTargets[0], $this->oProject, $sBackupPath, $this->oServiceContainer);
 	}
 
-	/**
-	 * Vérifie au moyen de tests basiques que la tâche peut être exécutée.
-	 * Lance une exception si tel n'est pas le cas.
-	 *
-	 * Comme toute les tâches sont vérifiées avant que la première ne soit exécutée,
-	 * doit permettre de remonter au plus tôt tout dysfonctionnement.
-	 * Appelé avant la méthode execute().
-	 *
-	 * @throws UnexpectedValueException en cas d'attribut ou fichier manquant
-	 * @throws DomainException en cas de valeur non permise
-	 */
-	public function check () {
-		parent::check();
-		$this->oBoundTask->check();
+	public function setUp () {
+		parent::setUp();
+		$this->oBoundTask->setUp();
 	}
 
 	public function execute () {
