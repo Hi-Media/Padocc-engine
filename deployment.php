@@ -48,6 +48,8 @@ chmod 777 deployment/resources -R
 // TODO Task::_expandPath() => ajouter un paramètre pour signifier qu'il ne doit pas y avoir plus d'une valeur générée ?
 // TODO tableau dashboard du nb de déploiement par semaine/projet/env et succès
 // TODO tableau new deployment de l'état des env pour le projet en cours, ou tous les projets
+// TODO surveiller l'espace disque restant à cause des dépôts cumulés
+// TODO renommer addProperty(() en setProperty()
 
 /*
  * Features :

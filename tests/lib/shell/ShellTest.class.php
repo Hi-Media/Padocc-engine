@@ -336,7 +336,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$oMockShell->expects($this->at(0))->method('exec')->with($this->equalTo('mkdir -p "/destpath/to/my dir"'));
 		$oMockShell->expects($this->at(1))->method('exec')
-			->with($this->equalTo('cp -ar "/srcpath/to/my file" "/destpath/to/my dir"'))
+			->with($this->equalTo('cp -a "/srcpath/to/my file" "/destpath/to/my dir"'))
 			->will($this->returnValue($aExpectedResult));
 		$oMockShell->expects($this->exactly(2))->method('exec');
 
@@ -353,7 +353,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$oMockShell->expects($this->at(0))->method('exec')->with($this->equalTo('mkdir -p "/destpath/to/my dir"'));
 		$oMockShell->expects($this->at(1))->method('exec')
-			->with($this->equalTo('cp -ar "/srcpath/to/"* "/destpath/to/my dir"'))
+			->with($this->equalTo('cp -a "/srcpath/to/"* "/destpath/to/my dir"'))
 			->will($this->returnValue($aExpectedResult));
 		$oMockShell->expects($this->exactly(2))->method('exec');
 
@@ -370,7 +370,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$oMockShell->expects($this->at(0))->method('exec')->with($this->equalTo('mkdir -p "/destpath/to"'));
 		$oMockShell->expects($this->at(1))->method('exec')
-			->with($this->equalTo('cp -ar "/srcpath/to/my file" "/destpath/to/my file"'))
+			->with($this->equalTo('cp -a "/srcpath/to/my file" "/destpath/to/my file"'))
 			->will($this->returnValue($aExpectedResult));
 		$oMockShell->expects($this->exactly(2))->method('exec');
 

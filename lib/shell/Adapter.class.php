@@ -114,7 +114,7 @@ class Shell_Adapter implements Shell_Interface {
 			$sCmd = 'scp -rpq ' . $this->escapePath($sSrcPath) . ' ' . $this->escapePath($sDestPath);
 			return $this->exec($sCmd);
 		} else {
-			$sCmd = 'cp -ar %s ' . $this->escapePath($aDestMatches[2]);
+			$sCmd = 'cp -a %s ' . $this->escapePath($aDestMatches[2]);
 			return $this->execSSH($sCmd, $sSrcPath);
 		}
 	}
