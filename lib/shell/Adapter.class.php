@@ -114,7 +114,7 @@ class Shell_Adapter implements Shell_Interface {
 			$sCmd = 'scp -rpq ' . $this->escapePath($sSrcPath) . ' ' . $this->escapePath($sDestPath);
 			return $this->exec($sCmd);
 		} else {
-			$sCmd = 'cp -ar %s ' . $this->escapePath($aDestMatches[2]);
+			$sCmd = 'cp -a %s ' . $this->escapePath($aDestMatches[2]);
 			return $this->execSSH($sCmd, $sSrcPath);
 		}
 	}
@@ -128,7 +128,7 @@ class Shell_Adapter implements Shell_Interface {
 	 */
 	public function createLink ($sLinkPath, $sTargetPath) {
 		list($bIsSrcRemote, $aSrcMatches) = $this->isRemotePath($sTargetPath);
-		return $this->execSSH('mkdir -p "$(dirname %1$s)" && ln -sf "' . $aSrcMatches[2] . '" %1$s', $sLinkPath);
+		return $this->execSSH('mkdir -p "$(dirname %1$s)" && ln -snf "' . $aSrcMatches[2] . '" %1$s', $sLinkPath);
 	}
 
 	/**
@@ -205,9 +205,9 @@ cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubr
 
 	/*
 time ( \
-	rsync -axvz --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats -e ssh "/home/gaubry/deployment_test/src/test_gitexport1/"* "aai@aai-01:/home/aai/deployment_test/dest/test_gitexport1" & \
-	rsync -axvz --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats -e ssh "/home/gaubry/deployment_test/src/test_gitexport1/"* "aai@aai-02:/home/aai/deployment_test/dest/test_gitexport1" & \
-	rsync -axvz --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats -e ssh "/home/gaubry/deployment_test/src/test_gitexport1/"* "gaubry@dv2:/home/gaubry/deployment_test/dest/test_gitexport1" & \
+	rsync -axz --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats -e ssh "/home/gaubry/deployment_test/src/test_gitexport1/"* "aai@aai-01:/home/aai/deployment_test/dest/test_gitexport1" & \
+	rsync -axz --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats -e ssh "/home/gaubry/deployment_test/src/test_gitexport1/"* "aai@aai-02:/home/aai/deployment_test/dest/test_gitexport1" & \
+	rsync -axz --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats -e ssh "/home/gaubry/deployment_test/src/test_gitexport1/"* "gaubry@dv2:/home/gaubry/deployment_test/dest/test_gitexport1" & \
 	wait)
 
 t="$(tempfile)"; ls sss 2>>$t & ls dfhdfh 2>>$t & wait; [ ! -s "$t" ] && echo ">>OK" || (cat $t; rm -f $t; exit 2)
@@ -230,7 +230,7 @@ rsync  --bwlimit=4000
 			$aCmd = array();
 			for ($j=$i; $j<count($aPaths) && $j<$i+DEPLOYMENT_RSYNC_MAX_NB_PROCESSES; $j++) {
 				$aCmd[] =
-					'rsync -axvz --delete --exclude=.cvsignore ' . $sAdditionalExclude . '--stats -e'
+					'rsync -axz --delete --exclude=.cvsignore ' . $sAdditionalExclude . '--stats -e'
 					. ' ssh ' . $this->escapePath($sSrcPath) . ' ' . $this->escapePath($aPaths[$j]);
 			}
 			$i = $j-1;

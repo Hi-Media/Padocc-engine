@@ -219,7 +219,57 @@ abstract class Task {
 		} else {
 			$aPaths = array($sPath);
 		}
+
+		return $this->_reroutePaths($aPaths);
+	}
+
+	private static $aPreparedEnv = array();
+	protected function _reroutePaths ($aPaths) {
+		$sBaseSymLink = $this->oProperties->getProperty('symlink');
+		if ( ! empty($sBaseSymLink)) {
+			$sReleaseSymLink = $sBaseSymLink . '_releases/' . $this->oProperties->getProperty('execution_id');
+			for ($i=0, $iMax=count($aPaths); $i<$iMax; $i++) {
+				if (strpos($aPaths[$i], $sBaseSymLink) !== false) {
+
+					$aResult = $this->oShell->isRemotePath($aPaths[$i]);
+					if ( ! isset(self::$aPreparedEnv[$aResult[1][1]])) {
+						$sSrcDir = $aResult[1][1] . ':' . $sBaseSymLink;
+						$sDestDir = $aResult[1][1] . ':' . $sReleaseSymLink . '_xxx';
+						$this->oLogger->log("IS_REMOTE: $sSrcDir => $sDestDir");
+						$this->oShell->copy($sSrcDir, $sDestDir);
+						//$this->oLogger->log("IS_REMOTE: " . print_r($aResult, true));
+						self::$aPreparedEnv[$aResult[1][1]] = true;
+						//$this->oLogger->log("PREPARED: " . print_r(self::$aPreparedEnv, true));
+					}
+
+					$sNewPath = str_replace($sBaseSymLink, $sReleaseSymLink, $aPaths[$i]);
+					$this->oLogger->log("SYMLINK >>> " . $aPaths[$i] . " ==> " . $sNewPath);
+					$aPaths[$i] = $sNewPath;
+				}
+			}
+		}
 		return $aPaths;
+	}
+
+	protected function _reroutePath ($sPath) {
+		$aReroutedPaths = $this->_reroutePaths(array($sPath));
+		return $aReroutedPaths[0];
+	}
+
+	private static $aRegisteredPaths = array();
+
+	protected function registerPaths () {
+		//$this->oLogger->log("registerPaths");
+		foreach ($this->aAttributeProperties as $sAttribute => $iProperties) {
+			if (($iProperties & self::ATTRIBUTE_DIR) > 0 || ($iProperties & self::ATTRIBUTE_FILE) > 0) {
+				self::$aRegisteredPaths[$this->aAttributes[$sAttribute]] = true;
+			}
+		}
+	}
+
+	public function setUp () {
+		$this->check();
+		$this->registerPaths();
 	}
 
 	/**
