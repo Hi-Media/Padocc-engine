@@ -62,7 +62,7 @@ class Task_Base_Link extends Task {
 			$aTargetPaths = $this->_expandPaths($this->aAttributes['server'] . ':' . $this->aAttributes['target']);
 			foreach ($aTargetPaths as $sTargetPath) {
 				list(, $aDestMatches) = $this->oShell->isRemotePath($sTargetPath);
-				$sSrc = $aDestMatches[1] . ':' . $this->aAttributes['src'];
+				$sSrc = $this->_reroutePath($aDestMatches[1] . ':' . $this->aAttributes['src']);
 				$this->oShell->createLink($sSrc, $sTargetPath);
 			}
 		} else {

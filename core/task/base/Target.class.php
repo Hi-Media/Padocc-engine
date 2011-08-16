@@ -92,10 +92,13 @@ class Task_Base_Target extends Task_WithProperties {
 			$this->aAttributes['mailto'] = str_replace(array(';', ','), array(' ', ' '), trim($this->aAttributes['mailto']));
 			$this->aAttributes['mailto'] = preg_replace('/\s{2,}/', ' ', $this->aAttributes['mailto']);
 		}
+	}
 
+	public function setUp () {
+		parent::setUp();
 		$this->oLogger->indent();
 		foreach ($this->aTasks as $oTask) {
-			$oTask->check();
+			$oTask->setUp();
 		}
 		$this->oLogger->unindent();
 	}

@@ -23,6 +23,7 @@ class Deployment {
 		$oProperties->addProperty('project_name', $sProjectName);
 		$oProperties->addProperty('environment_name', $sEnvName);
 		$oProperties->addProperty('execution_id', $sExecutionID);
+		$oProperties->addProperty('symlink', '');
 
 		// Gestion des propriétés externes :
 		foreach ($aExternalProperties as $i => $sValue) {
@@ -33,7 +34,7 @@ class Deployment {
 		$oProject = new Task_Base_Project($sProjectName, $sEnvName, $sExecutionID, $this->oServiceContainer);
 		$this->oLogger->log('Check tasks:');
 		$this->oLogger->indent();
-		$oProject->check();
+		$oProject->setUp();
 		$this->oLogger->unindent();
 		$this->oLogger->log('Execute tasks:');
 		$this->oLogger->indent();
