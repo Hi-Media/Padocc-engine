@@ -54,7 +54,7 @@ class Task_Base_Sync extends Task {
 		$this->oLogger->indent();
 		$this->oLogger->log("Synchronize '" . $this->aAttributes['src'] . "' with '" . $this->aAttributes['destdir'] . "'");
 		$aExcludedPaths = (empty($this->aAttributes['exclude']) ? array() : explode(' ', $this->aAttributes['exclude']));
-		$results = $this->oShell->sync($this->aAttributes['src'], $this->_expandPaths($this->aAttributes['destdir']), $aExcludedPaths);
+		$results = $this->oShell->sync($this->aAttributes['src'], $this->_processPath($this->aAttributes['destdir']), $aExcludedPaths);
 		foreach ($results as $result) {
 			$this->oLogger->log($result);
 		}

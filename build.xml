@@ -3,7 +3,7 @@
 
 <project name="AA_Deployment" default="build" basedir=".">
  <property name="source" value="."/>
-  
+
  <target name="clean" description="Clean up and create artifact directories">
   <delete dir="${basedir}/build/api"/>
   <delete dir="${basedir}/build/code-browser"/>
@@ -16,7 +16,7 @@
   <mkdir dir="${basedir}/build/coverage"/>
   <mkdir dir="${basedir}/build/logs"/>
   <mkdir dir="${basedir}/build/pdepend"/>
-    
+
  </target>
 
  <target name="phpunit" description="Run unit tests using PHPUnit and generates junit.xml and clover.xml">
@@ -58,7 +58,7 @@
 
  <target name="phpcpd" description="Generate pmd-cpd.xml using PHPCPD">
   <exec executable="phpcpd">
-   <arg line="--log-pmd ${basedir}/build/logs/pmd-cpd.xml 
+   <arg line="--log-pmd ${basedir}/build/logs/pmd-cpd.xml
    				  --exclude OLD
                   --exclude conf
                   --exclude resources
@@ -78,7 +78,7 @@
   <exec executable="phpcs" output="/dev/null">
    <arg line="--report=checkstyle
               --report-file=${basedir}/build/logs/checkstyle.xml
-              --standard=PEAR
+              --standard=ZEND
               --ignore=OLD,conf,resources,tests,build
               ${source}" />
   </exec>
@@ -86,7 +86,7 @@
 
  <target name="docblox" description="Generate API documentation using Docblox">
   <exec executable="docblox">
-   <arg line="run -d . -t ${basedir}/build/api" />
+   <arg line="run -d . -t ${basedir}/build/api --title 'Twenga Deploy'" />
   </exec>
  </target>
 
