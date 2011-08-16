@@ -65,7 +65,7 @@ class Task_Extended_GitExport extends Task {
 		parent::execute();
 		$this->oLogger->indent();
 
-		$aRef = $this->_expandPaths($this->aAttributes['ref']);
+		$aRef = $this->_processPath($this->aAttributes['ref']);
 		$sRef = $aRef[0];
 
 		$this->oLogger->log("Export '$sRef' reference from '" . $this->aAttributes['repository'] . "' git repository");

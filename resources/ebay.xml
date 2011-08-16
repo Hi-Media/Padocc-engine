@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	name="ebay"
+	propertyshellfile="/home/aai/deployment/resources/master_synchro.cfg"
+>
+	<env name="prod" mailto="devaa@twenga.com, francois.pasini@twenga.com, herve.gouchet@twenga.com, laurent.macret@twenga.com">
+		<gitexport repository="git@git.twenga.com:feeds/ebay.git" ref="master"
+			destdir="${SERVER_EBAY_ALL}:/home/prod/twenga/tools/ebay"
+			exclude="xml/* log/*" />
+	</env>
+</project>

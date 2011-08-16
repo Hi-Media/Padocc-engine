@@ -11,11 +11,8 @@ class Task_Base_Environment extends Task_Base_Target {
 		return 'env';
 	}
 
-	/**
-	 * Tâche de switch de symlink sous-jacente.
-	 * @var Task_Base_Link
-	 */
-	//private $oLinkTask;
+	private $oCopyTask;
+	private $oLinkTask;
 
 	/**
 	 * Constructeur.
@@ -34,15 +31,29 @@ class Task_Base_Environment extends Task_Base_Target {
 		));
 
 		// Création de switch de symlink sous-jacente :
-		/*if ( ! empty($this->aAttributes['withsymlink'])) {
+		if ( ! empty($this->aAttributes['withsymlink'])) {
 			$this->oNumbering->addCounterDivision();
-			$sSrcDir = preg_replace('#/$#', '', $this->aAttributes['srcdir']) . '/*';
+			/*$sSrcDir = preg_replace('#/$#', '', $this->aAttributes['srcdir']) . '/*';
 			$this->oCopyTask = Task_Base_Copy::getNewInstance(array(
 				'src' => $sSrcDir,
 				'destdir' => $this->aAttributes['destdir']
+			), $oProject, $sBackupPath, $oServiceContainer);*/
+			/*$this->oCopyTask = Task_Base_Copy::getNewInstance(array(
+				'src' => '${xxx}',
+				'destdir' => '${yyy}'
 			), $oProject, $sBackupPath, $oServiceContainer);
+			array_unshift($this->aTasks, $this->oCopyTask);*/
+
+			$sBaseSymLink = $this->aAttributes['withsymlink'];
+			$sReleaseSymLink = $sBaseSymLink . '_releases/' . $this->oProperties->getProperty('execution_id');
+			$this->oLinkTask = Task_Base_Link::getNewInstance(array(
+				'src' => $sBaseSymLink,
+				'target' => $sReleaseSymLink,
+				'server' => '${SERVERS_CONCERNED_WITH_SYMLINKS}'
+			), $oProject, $sBackupPath, $oServiceContainer);
+			array_push($this->aTasks, $this->oLinkTask);
 			$this->oNumbering->removeCounterDivision();
-		}*/
+		}
 	}
 
 	/**
@@ -61,5 +72,37 @@ class Task_Base_Environment extends Task_Base_Target {
 		if ( ! empty($this->aAttributes['withsymlink'])) {
 			$this->oProperties->addProperty('symlink', $this->aAttributes['withsymlink']);
 		}
+	}
+
+	private $_aPathsToHandle;
+
+	private function analyzeRegisteredPaths () {
+		$this->_aPathsToHandle = array();
+		$aPaths = array_keys(self::$aRegisteredPaths);
+		$this->oLogger->log(print_r($aPaths, true));
+
+		$sBaseSymLink = $this->oProperties->getProperty('symlink');
+		foreach ($aPaths as $sPath) {
+			$aExpandedPaths = $this->_expandPath($sPath);
+			foreach ($aExpandedPaths as $sExpandedPath) {
+				list($bIsRemote, $aMatches) = $this->oShell->isRemotePath($sExpandedPath);
+				if ($bIsRemote && strpos($aMatches[2], $sBaseSymLink) !== false) {
+					$this->_aPathsToHandle[$aMatches[1]][] = $aMatches[2];
+				}
+			}
+		}
+
+		$this->oLogger->log(print_r($this->_aPathsToHandle, true));
+		$this->oProperties->addProperty('SERVERS_CONCERNED_WITH_SYMLINKS', array_keys($this->_aPathsToHandle));
+	}
+
+	protected function _addMailTo () {
+		$this->analyzeRegisteredPaths();
+		parent::_addMailTo();
+	}
+
+	public function execute () {
+		parent::execute();
+
 	}
 }

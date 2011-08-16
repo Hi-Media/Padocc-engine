@@ -103,16 +103,18 @@ class Task_Base_Target extends Task_WithProperties {
 		$this->oLogger->unindent();
 	}
 
-	public function execute () {
-		parent::execute();
-
+	protected function _addMailTo () {
 		$this->oLogger->indent();
 		$this->oLogger->log("Load '" . $this->aAttributes['name'] . "' " . self::getTagName());
 		if ( ! empty($this->aAttributes['mailto'])) {
 			$this->oLogger->log('[MAILTO] ' . $this->aAttributes['mailto']);
 		}
 		$this->oLogger->unindent();
+	}
 
+	public function execute () {
+		parent::execute();
+		$this->_addMailTo();
 		foreach ($this->aTasks as $oTask) {
 			$oTask->backup();
 			$oTask->execute();

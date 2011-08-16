@@ -34,7 +34,7 @@ abstract class Task_WithProperties extends Task {
 		}
 	}
 
-	protected function loadProperties () {
+	protected function _loadProperties () {
 		if ( ! empty($this->aAttributes['loadtwengaservers']) && $this->aAttributes['loadtwengaservers'] == 'true') {
 			//$this->oLogger->log('Load Twenga servers');
 			$this->oTwengaServersTask->execute();
@@ -62,7 +62,7 @@ abstract class Task_WithProperties extends Task {
 		parent::execute();
 
 		$this->oLogger->indent();
-		$this->loadProperties();
+		$this->_loadProperties();
 		$this->oLogger->unindent();
 	}
 

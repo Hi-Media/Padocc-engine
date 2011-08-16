@@ -4,7 +4,7 @@ class Shell_Adapter implements Shell_Interface {
 
 	private $aFileStatus;
 
-	private static $aDefaultRsyncExclude = array('.bzr/', '.git/', '.svn/', 'cvslog.*', 'CVS', 'CVS.adm');
+	private static $aDefaultRsyncExclude = array('.bzr/', '.git/', '.gitignore', '.svn/', 'cvslog.*', 'CVS', 'CVS.adm');
 
 	/**
 	 * Log adapter.
