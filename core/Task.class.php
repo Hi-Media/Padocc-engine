@@ -45,6 +45,12 @@ abstract class Task {
 	const ATTRIBUTE_SRC_PATH = 64;
 
 	/**
+	 * Propriété d'attribut : l'attribut est un booléen sous forme de chaîne de caractères, valant soit 'true' soit 'false'.
+	 * @var int
+	 */
+	const ATTRIBUTE_BOOLEAN = 128;
+
+	/**
 	 * Compteur d'instances pour s'y retrouver dans les backups des tâches.
 	 * @var Numbering_Interface
 	 * @see $sName
@@ -206,7 +212,7 @@ abstract class Task {
 		if (count($aProcessedPaths) !== 1) {
 			throw new RuntimeException("String '$sPath' should return a single path after process: " . print_r($aProcessedPaths, true));
 		}
-		return $aProcessedPaths[0];
+		return reset($aProcessedPaths);
 	}
 
 	/**
@@ -240,25 +246,13 @@ abstract class Task {
 
 	//private static $aPreparedEnv = array();
 	protected function _reroutePaths ($aPaths) {
-		$sBaseSymLink = $this->oProperties->getProperty('symlink');
-		if ( ! empty($sBaseSymLink)) {
+		if ($this->oProperties->getProperty('withsymlinks') === 'true') {
+			$sBaseSymLink = $this->oProperties->getProperty('basedir');
 			$sReleaseSymLink = $sBaseSymLink . '_releases/' . $this->oProperties->getProperty('execution_id');
 			for ($i=0, $iMax=count($aPaths); $i<$iMax; $i++) {
-				if (strpos($aPaths[$i], $sBaseSymLink) !== false) {
-
+				if (preg_match('#' . preg_quote($sBaseSymLink, '#') . '\b#', $aPaths[$i]) === 1) {
 					$aResult = $this->oShell->isRemotePath($aPaths[$i]);
-					/*if ( ! isset(self::$aPreparedEnv[$aResult[1][1]])) {
-						$sSrcDir = $aResult[1][1] . ':' . $sBaseSymLink;
-						$sDestDir = $aResult[1][1] . ':' . $sReleaseSymLink . '_xxx';
-						$this->oLogger->log("IS_REMOTE: $sSrcDir => $sDestDir");
-						$this->oShell->copy($sSrcDir, $sDestDir);
-						//$this->oLogger->log("IS_REMOTE: " . print_r($aResult, true));
-						self::$aPreparedEnv[$aResult[1][1]] = true;
-						//$this->oLogger->log("PREPARED: " . print_r(self::$aPreparedEnv, true));
-					}*/
-
 					$sNewPath = str_replace($sBaseSymLink, $sReleaseSymLink, $aPaths[$i]);
-					//$this->oLogger->log("SYMLINK >>> " . $aPaths[$i] . " ==> " . $sNewPath);
 					$aPaths[$i] = $sNewPath;
 				}
 			}
@@ -314,6 +308,10 @@ abstract class Task {
 					$this->aAttributes[$sAttribute] = str_replace('\\', '/', $this->aAttributes[$sAttribute]);
 				}
 
+				if (($iProperties & self::ATTRIBUTE_BOOLEAN) > 0 && ! in_array($this->aAttributes[$sAttribute], array('true', 'false'))) {
+					throw new DomainException("Value of '$sAttribute' attribute is restricted to 'true' or 'false'. Value: '" . $this->aAttributes[$sAttribute] . "'!");
+				}
+
 				if (preg_match('#[*?].*/#', $this->aAttributes[$sAttribute]) !== 0 && ($iProperties & self::ATTRIBUTE_DIRJOKER) == 0) {
 					throw new DomainException("'*' and '?' jokers are not authorized for directory in '$sAttribute' attribute!");
 				}
@@ -345,7 +343,6 @@ abstract class Task {
 
 	public function execute () {
 		$this->oLogger->log("Execute '" . $this->sName . "' task");
-		// ICI tester les attributs destdir ?? notamment si withsymlink !
 	}
 
 	public abstract function backup ();

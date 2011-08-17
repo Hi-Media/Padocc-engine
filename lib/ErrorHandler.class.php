@@ -120,11 +120,11 @@ class ErrorHandler {
 		} else {
 			$msg = "[from error handler] " . self::$errorTypes[$errno] . " -- $errstr, in file: '$errfile', line $errline";
 			$e = new ErrorException($msg, self::$iDefaultErrorCode, $errno, $errfile, $errline);
-			if ( ! $this->display_errors && $errno != E_ERROR) {
-				$this->error_log($e);
-			} else {
+			//if ( ! $this->display_errors && $errno != E_ERROR) {
+			//	$this->error_log($e);
+			//} else {
 				throw $e;
-			}
+			//}
 		}
 		return true;
 	}

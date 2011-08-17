@@ -58,6 +58,18 @@ class Task_Base_Link extends Task {
 	public function execute () {
 		parent::execute();
 		$this->oLogger->indent();
+
+		// La source doit être un lien ou ne pas exister :
+		$sPath = $this->aAttributes['src'];
+		if ( ! empty($this->aAttributes['server'])) {
+			$sPath = $this->aAttributes['server'] . ':' . $sPath;
+		}
+		foreach ($this->_expandPath($sPath) as $sExpandedPath) {
+			if ( ! in_array($this->oShell->getFileStatus($sExpandedPath), array(0, 12))) {
+				throw new Exception("Src attribute must be a directoy symlink or not exist: '" . $sExpandedPath . "'");
+			}
+		}
+
 		if ( ! empty($this->aAttributes['server'])) {
 			$aTargetPaths = $this->_processPath($this->aAttributes['server'] . ':' . $this->aAttributes['target']);
 			foreach ($aTargetPaths as $sTargetPath) {
