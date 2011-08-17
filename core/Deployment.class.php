@@ -20,15 +20,14 @@ class Deployment {
 
 	public function run ($sProjectName, $sEnvName, $sExecutionID, array $aExternalProperties=array()) {
 		$oProperties = $this->oServiceContainer->getPropertiesAdapter();
-		$oProperties->addProperty('project_name', $sProjectName);
-		$oProperties->addProperty('environment_name', $sEnvName);
-		$oProperties->addProperty('execution_id', $sExecutionID);
-		$oProperties->addProperty('symlink', '');
+		$oProperties->setProperty('project_name', $sProjectName);
+		$oProperties->setProperty('environment_name', $sEnvName);
+		$oProperties->setProperty('execution_id', $sExecutionID);
 
 		// Gestion des propriétés externes :
 		foreach ($aExternalProperties as $i => $sValue) {
 			$sKey = Task_Base_ExternalProperty::sExternalPropertyPrefix . ($i+1);
-			$oProperties->addProperty($sKey, str_replace('&#0160;', ' ', $sValue));
+			$oProperties->setProperty($sKey, str_replace('&#0160;', ' ', $sValue));
 		}
 
 		$oProject = new Task_Base_Project($sProjectName, $sEnvName, $sExecutionID, $this->oServiceContainer);
