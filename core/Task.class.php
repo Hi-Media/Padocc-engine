@@ -1,6 +1,7 @@
 <?php
 
-abstract class Task {
+abstract class Task
+{
 
     /**
      * Propriété d'attribut : autorise l'utilisation des '${parameter}'.
@@ -141,7 +142,8 @@ abstract class Task {
      *
      * @return string nom du tag XML correspondant à cette tâche dans les config projet.
      */
-    public static function getTagName () {
+    public static function getTagName ()
+    {
         throw new RuntimeException('Not implemented!');
     }
 
@@ -155,7 +157,8 @@ abstract class Task {
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
      * @return Task
      */
-    public static function getNewInstance (array $aAttributes, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
+    public static function getNewInstance (array $aAttributes, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer)
+    {
         $sAttributes = '';
         foreach ($aAttributes as $sName => $sValue) {
             $sAttributes .= ' ' . $sName . '="' . $sValue . '"';
@@ -174,7 +177,8 @@ abstract class Task {
      * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
+    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer)
+    {
         $this->oTask = $oTask;
         $this->oProject = $oProject;
 
@@ -194,20 +198,23 @@ abstract class Task {
         $this->_fetchAttributes();
     }
 
-    protected function _fetchAttributes () {
+    protected function _fetchAttributes ()
+    {
         $this->aAttributes = array();
         foreach ($this->oTask->attributes() as $key => $val) {
             $this->aAttributes[$key] = (string)$val;
         }
     }
 
-    protected function _processPath ($sPath) {
+    protected function _processPath ($sPath)
+    {
         $aExpandedPaths = $this->_expandPath($sPath);
         $aReroutedPaths = $this->_reroutePaths($aExpandedPaths);
         return $aReroutedPaths;
     }
 
-    protected function _processSimplePath ($sPath) {
+    protected function _processSimplePath ($sPath)
+    {
         $aProcessedPaths = $this->_processPath($sPath);
         if (count($aProcessedPaths) !== 1) {
             throw new RuntimeException("String '$sPath' should return a single path after process: " . print_r($aProcessedPaths, true));
@@ -221,7 +228,8 @@ abstract class Task {
      * @param string $sPath chemin pouvant contenir des paramètres
      * @return array liste de tous les chemins générés en remplaçant les paramètres du chemin spécifié par leurs valeurs
      */
-    protected function _expandPath ($sPath) {
+    protected function _expandPath ($sPath)
+    {
         if (preg_match_all('/\$\{([^}]*)\}/i', $sPath, $aMatches) > 0) {
             $aPaths = array($sPath);
             foreach ($aMatches[1] as $property) {
@@ -245,7 +253,8 @@ abstract class Task {
     }
 
     //private static $aPreparedEnv = array();
-    protected function _reroutePaths ($aPaths) {
+    protected function _reroutePaths ($aPaths)
+    {
         if ($this->oProperties->getProperty('with_symlinks') === 'true') {
             $sBaseSymLink = $this->oProperties->getProperty('base_dir');
             $sReleaseSymLink = $sBaseSymLink . '_releases/' . $this->oProperties->getProperty('execution_id');
@@ -262,7 +271,8 @@ abstract class Task {
 
     protected static $aRegisteredPaths = array();
 
-    protected function _registerPaths () {
+    protected function _registerPaths ()
+    {
         //$this->oLogger->log("registerPaths");
         foreach ($this->aAttributeProperties as $sAttribute => $iProperties) {
             if (($iProperties & self::ATTRIBUTE_DIR) > 0 || ($iProperties & self::ATTRIBUTE_FILE) > 0) {
@@ -271,7 +281,8 @@ abstract class Task {
         }
     }
 
-    public function setUp () {
+    public function setUp ()
+    {
         $this->check();
         $this->_registerPaths();
     }
@@ -288,7 +299,8 @@ abstract class Task {
      * @throws DomainException en cas de valeur non permise
      * @see self::$aAttributeProperties
      */
-    public function check () {
+    public function check ()
+    {
         $this->oLogger->log("Check '" . $this->sName . "' task");
         $this->oLogger->indent();
 
@@ -341,7 +353,8 @@ abstract class Task {
         $this->oLogger->unindent();
     }
 
-    public function execute () {
+    public function execute ()
+    {
         $this->oLogger->log("Execute '" . $this->sName . "' task");
     }
 

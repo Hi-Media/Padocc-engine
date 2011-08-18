@@ -1,6 +1,7 @@
 <?php
 
-class Curl {
+class Curl
+{
 
     public static $USER_AGENTS = array(
         'FireFox3' => 'Mozilla/5.0 (Windows; U; Windows NT 6.0; fr; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)',
@@ -14,7 +15,8 @@ class Curl {
 
     // disguises the curl using fake headers and a fake user agent.
     // postfields = array ou urlencodedstring => attention au @
-    public static function disguiseCurl (array $options=array()) {
+    public static function disguiseCurl (array $options=array())
+    {
         $aDefaultOptions = array(
             'url' => '',
             'timeout' => 10,

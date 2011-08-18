@@ -1,6 +1,7 @@
 <?php
 
-interface Numbering_Interface {
+interface Numbering_Interface
+{
 
     public function getNextCounterValue ();
 

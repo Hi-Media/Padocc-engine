@@ -1,8 +1,10 @@
 <?php
 
-class Task_Base_ExternalProperty extends Task {
+class Task_Base_ExternalProperty extends Task
+{
 
-    const sExternalPropertyPrefix = 'external_property_';
+    const EXTERNAL_PROPERTY_PREFIX = 'external_property_';
+
     private static $iCounter = 0;
 
     private $iNumber;
@@ -14,7 +16,8 @@ class Task_Base_ExternalProperty extends Task {
      *
      * @return string nom du tag XML correspondant à cette tâche dans les config projet.
      */
-    public static function getTagName () {
+    public static function getTagName ()
+    {
         return 'externalproperty';
     }
 
@@ -26,7 +29,8 @@ class Task_Base_ExternalProperty extends Task {
      * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
+    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer)
+    {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->aAttributeProperties = array(
             'name' => Task::ATTRIBUTE_REQUIRED,
@@ -46,16 +50,18 @@ class Task_Base_ExternalProperty extends Task {
      * @throws UnexpectedValueException en cas d'attribut ou fichier manquant
      * @throws DomainException en cas de valeur non permise
      */
-    public function check () {
+    public function check ()
+    {
         parent::check();
     }
 
-    public function execute () {
+    public function execute ()
+    {
         parent::execute();
         $this->oLogger->indent();
         $this->oLogger->log("Set external property '" . $this->aAttributes['name'] . "' (description: '" . $this->aAttributes['description'] . "')");
         try {
-            $sValue = $this->oProperties->getProperty(self::sExternalPropertyPrefix . $this->iNumber);
+            $sValue = $this->oProperties->getProperty(self::EXTERNAL_PROPERTY_PREFIX . $this->iNumber);
         } catch (UnexpectedValueException $e) {
             throw new UnexpectedValueException("Property '" . $this->aAttributes['name'] . "' undefined!");
         }
@@ -63,5 +69,7 @@ class Task_Base_ExternalProperty extends Task {
         $this->oLogger->unindent();
     }
 
-    public function backup () {}
+    public function backup ()
+    {
+    }
 }

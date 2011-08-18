@@ -1,13 +1,15 @@
 <?php
 
-class Task_Base_Sync extends Task {
+class Task_Base_Sync extends Task
+{
 
     /**
      * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
      *
      * @return string nom du tag XML correspondant à cette tâche dans les config projet.
      */
-    public static function getTagName () {
+    public static function getTagName ()
+    {
         return 'sync';
     }
 
@@ -19,7 +21,8 @@ class Task_Base_Sync extends Task {
      * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
+    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer)
+    {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->aAttributeProperties = array(
             'src' => Task::ATTRIBUTE_SRC_PATH | Task::ATTRIBUTE_FILE | Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_FILEJOKER | Task::ATTRIBUTE_REQUIRED,
@@ -39,7 +42,8 @@ class Task_Base_Sync extends Task {
      * @throws UnexpectedValueException en cas d'attribut ou fichier manquant
      * @throws DomainException en cas de valeur non permise
      */
-    public function check () {
+    public function check ()
+    {
         parent::check();
         if (preg_match('#\*|\?#', $this->aAttributes['src']) === 0) {
             if ($this->oShell->getFileStatus($this->aAttributes['src']) === 2) {
@@ -49,7 +53,8 @@ class Task_Base_Sync extends Task {
         }
     }
 
-    public function execute () {
+    public function execute ()
+    {
         parent::execute();
         $this->oLogger->indent();
         $this->oLogger->log("Synchronize '" . $this->aAttributes['src'] . "' with '" . $this->aAttributes['destdir'] . "'");
@@ -61,7 +66,8 @@ class Task_Base_Sync extends Task {
         $this->oLogger->unindent();
     }
 
-    public function backup () {
+    public function backup ()
+    {
         if ($this->oShell->getFileStatus($this->aAttributes['destdir']) !== 0) {
             list($bIsRemote, $aMatches) = $this->oShell->isRemotePath($this->aAttributes['destdir']);
             $sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '') . $this->sBackupPath . '/'

@@ -1,13 +1,15 @@
 <?php
 
-class Task_Base_MkDir extends Task {
+class Task_Base_MkDir extends Task
+{
 
     /**
      * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
      *
      * @return string nom du tag XML correspondant à cette tâche dans les config projet.
      */
-    public static function getTagName () {
+    public static function getTagName ()
+    {
         return 'mkdir';
     }
 
@@ -19,7 +21,8 @@ class Task_Base_MkDir extends Task {
      * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
+    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer)
+    {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->aAttributeProperties = array(
             'destdir' => Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_REQUIRED | Task::ATTRIBUTE_ALLOW_PARAMETER,
@@ -38,11 +41,13 @@ class Task_Base_MkDir extends Task {
      * @throws UnexpectedValueException en cas d'attribut ou fichier manquant
      * @throws DomainException en cas de valeur non permise
      */
-    public function check () {
+    public function check ()
+    {
         parent::check();
     }
 
-    public function execute () {
+    public function execute ()
+    {
         parent::execute();
         $this->oLogger->indent();
         $sMode = (empty($this->aAttributes['mode']) ? '' : $this->aAttributes['mode']);
@@ -54,6 +59,7 @@ class Task_Base_MkDir extends Task {
         $this->oLogger->unindent();
     }
 
-    public function backup () {
+    public function backup ()
+    {
     }
 }

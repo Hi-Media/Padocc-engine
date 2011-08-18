@@ -1,6 +1,7 @@
 <?php
 
-class Task_Base_Target extends Task_WithProperties {
+class Task_Base_Target extends Task_WithProperties
+{
 
     protected $aTasks;
 
@@ -9,7 +10,8 @@ class Task_Base_Target extends Task_WithProperties {
      *
      * @return string nom du tag XML correspondant à cette tâche dans les config projet.
      */
-    public static function getTagName () {
+    public static function getTagName ()
+    {
         return 'target';
     }
 
@@ -21,7 +23,8 @@ class Task_Base_Target extends Task_WithProperties {
      * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
+    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer)
+    {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->aAttributeProperties = array_merge($this->aAttributeProperties, array(
             'name' => Task::ATTRIBUTE_REQUIRED,
@@ -43,7 +46,8 @@ class Task_Base_Target extends Task_WithProperties {
      * @throws Exception si tag XML inconnu.
      * @see Task
      */
-    private function getTaskInstances (SimpleXMLElement $oTarget, Task_Base_Project $oProject, $sBackupPath) {
+    private function getTaskInstances (SimpleXMLElement $oTarget, Task_Base_Project $oProject, $sBackupPath)
+    {
         $this->oLogger->log('Initialize tasks');
         $aAvailableTasks = Tasks::getAvailableTasks();
 
@@ -85,7 +89,8 @@ class Task_Base_Target extends Task_WithProperties {
      * @throws UnexpectedValueException en cas d'attribut ou fichier manquant
      * @throws DomainException en cas de valeur non permise
      */
-    public function check () {
+    public function check ()
+    {
         parent::check();
 
         if ( ! empty($this->aAttributes['mailto'])) {
@@ -94,7 +99,8 @@ class Task_Base_Target extends Task_WithProperties {
         }
     }
 
-    public function setUp () {
+    public function setUp ()
+    {
         parent::setUp();
         $this->oLogger->indent();
         foreach ($this->aTasks as $oTask) {
@@ -103,13 +109,15 @@ class Task_Base_Target extends Task_WithProperties {
         $this->oLogger->unindent();
     }
 
-    protected function _addMailTo () {
+    protected function _addMailTo ()
+    {
         if ( ! empty($this->aAttributes['mailto'])) {
             $this->oLogger->log('[MAILTO] ' . $this->aAttributes['mailto']);
         }
     }
 
-    public function execute () {
+    public function execute ()
+    {
         parent::execute();
         $this->oLogger->indent();
         $this->_addMailTo();
@@ -120,5 +128,7 @@ class Task_Base_Target extends Task_WithProperties {
         $this->oLogger->unindent();
     }
 
-    public function backup () {}
+    public function backup ()
+    {
+    }
 }

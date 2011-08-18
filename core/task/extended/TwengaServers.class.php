@@ -1,13 +1,15 @@
 <?php
 
-class Task_Extended_TwengaServers extends Task {
+class Task_Extended_TwengaServers extends Task
+{
 
     /**
      * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
      *
      * @return string nom du tag XML correspondant à cette tâche dans les config projet.
      */
-    public static function getTagName () {
+    public static function getTagName ()
+    {
         return 'twengaserverexport';
     }
 
@@ -27,7 +29,8 @@ class Task_Extended_TwengaServers extends Task {
      * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
+    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer)
+    {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->aAttributeProperties = array();
         $this->sTmpDir = '/tmp/' . $this->oProperties->getProperty('execution_id') . '_' . self::getTagName();
@@ -43,14 +46,16 @@ class Task_Extended_TwengaServers extends Task {
         $this->oNumbering->removeCounterDivision();
     }
 
-    public function setUp () {
+    public function setUp ()
+    {
         parent::setUp();
         $this->oLogger->indent();
         $this->oGitExportTask->setUp();
         $this->oLogger->unindent();
     }
 
-    public function execute () {
+    public function execute ()
+    {
         parent::execute();
         $this->oLogger->indent();
         $this->oGitExportTask->execute();
@@ -61,7 +66,8 @@ class Task_Extended_TwengaServers extends Task {
         $this->oLogger->unindent();
     }
 
-    public function backup () {
+    public function backup ()
+    {
         /*if ($this->oShell->getFileStatus($this->aAttributes['destdir']) !== 0) {
             list($bIsRemote, $aMatches) = $this->oShell->isRemotePath($this->aAttributes['destdir']);
             $sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '') . $this->sBackupPath . '/'

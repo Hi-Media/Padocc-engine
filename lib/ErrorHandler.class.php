@@ -19,7 +19,8 @@
  *
  * @author Geoffroy AUBRY
  */
-class ErrorHandler {
+class ErrorHandler
+{
     public static $errorTypes = array(
         E_ERROR => 'ERROR',
         E_WARNING => 'WARNING',
@@ -51,7 +52,8 @@ class ErrorHandler {
      */
     private $excluded_paths;
 
-    public function __construct ($display_errors=true, $error_log_path='', $error_reporting=-1) {
+    public function __construct ($display_errors=true, $error_log_path='', $error_reporting=-1)
+    {
         $this->display_errors = $display_errors;
         $this->error_log_path = $error_log_path;
         $this->error_reporting = $error_reporting;
@@ -86,7 +88,8 @@ class ErrorHandler {
      *
      * @param string $path
      */
-    public function addExcludedPath ($path) {
+    public function addExcludedPath ($path)
+    {
         if (substr($path, -1) !== '/') {
             $path .= '/';
         }
@@ -106,7 +109,8 @@ class ErrorHandler {
      * @return boolean true, then the normal error handler does not continues.
      * @see addExcludedPath()
      */
-    public function errorHandler ($errno, $errstr, $errfile, $errline) {
+    public function errorHandler ($errno, $errstr, $errfile, $errline)
+    {
         // Si l'erreur provient d'un répertoire exclu de ce handler, alors l'ignorer.
         foreach ($this->excluded_paths as $excluded_path) {
             if (stripos($errfile, $excluded_path) === 0) {
@@ -119,11 +123,11 @@ class ErrorHandler {
                 ;//$debug->log("ERROR SUPRESSED WITH AN @ -- $errstr, $errfile, $errline");
         } else {
             $msg = "[from error handler] " . self::$errorTypes[$errno] . " -- $errstr, in file: '$errfile', line $errline";
-            $e = new ErrorException($msg, self::$iDefaultErrorCode, $errno, $errfile, $errline);
+            $oException = new ErrorException($msg, self::$iDefaultErrorCode, $errno, $errfile, $errline);
             //if ( ! $this->display_errors && $errno != E_ERROR) {
             //	$this->error_log($e);
             //} else {
-                throw $e;
+                throw $oException;
             //}
         }
         return true;
@@ -131,21 +135,23 @@ class ErrorHandler {
 
     /**
      *
-     * @param Exception $e
+     * @param Exception $oException
      */
-    public function exceptionHandler (Exception $e) {
+    public function exceptionHandler (Exception $oException)
+    {
         if ( ! $this->display_errors && ini_get('error_log') !== '' && ! $this->bIsRunningFromCLI) {
             echo '<div class="exception_handler_message">Une erreur d\'exécution est apparue.<br />'
                 . 'Nous sommes désolés pour la gêne occasionée.</div>';
         }
-        $this->error_log($e);
+        $this->error_log($oException);
     }
 
     /**
      *
      * @param mixed $error
      */
-    public function error_log ($error) {
+    public function error_log ($error)
+    {
         if ($this->display_errors) {
             if ($this->bIsRunningFromCLI) {
                 file_put_contents('php://stderr', $error . "\n", E_USER_ERROR);

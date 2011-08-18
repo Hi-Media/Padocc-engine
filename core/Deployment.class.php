@@ -1,11 +1,13 @@
 <?php
 
-class Deployment {
+class Deployment
+{
 
     private $oLogger;
     private $oServiceContainer;
 
-    public function __construct () {
+    public function __construct ()
+    {
         $oBaseLogger = new Logger_Adapter(DEPLOYMENT_DEBUG_MODE === 1 ? Logger_Interface::DEBUG : Logger_Interface::INFO);
         $this->oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
         $oShell = new Shell_Adapter($this->oLogger);
@@ -18,7 +20,8 @@ class Deployment {
             ->setNumberingAdapter(new Numbering_Adapter());
     }
 
-    public function run ($sProjectName, $sEnvName, $sExecutionID, array $aExternalProperties=array()) {
+    public function run ($sProjectName, $sEnvName, $sExecutionID, array $aExternalProperties=array())
+    {
         $oProperties = $this->oServiceContainer->getPropertiesAdapter();
         $oProperties->setProperty('project_name', $sProjectName);
         $oProperties->setProperty('environment_name', $sEnvName);
@@ -41,7 +44,8 @@ class Deployment {
         $this->oLogger->unindent();
     }
 
-    public function getProjectsEnvsList () {
+    public function getProjectsEnvsList ()
+    {
         $aAllProjectsName = Tasks::getAllProjectsName();
         $aAvailableTargetsByProject = array();
         if ( ! empty($aAllProjectsName)) {
@@ -52,10 +56,4 @@ class Deployment {
         ksort($aAvailableTargetsByProject);
         return $aAvailableTargetsByProject;
     }
-
-    public function getProjectConfig($sProjectName)
-    {
-
-    }
 }
-
