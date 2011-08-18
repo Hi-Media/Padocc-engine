@@ -26,10 +26,10 @@ class Properties_Adapter implements Properties_Interface {
 	 * @throws UnexpectedValueException si propriété inconnue
 	 */
 	public function getProperty ($sPropertyName) {
-		if ( ! isset($this->aProperties[$sPropertyName])) {
+		if ( ! isset($this->aProperties[strtolower($sPropertyName)])) {
 			throw new UnexpectedValueException("Unknown property '$sPropertyName'!");
 		}
-		return $this->aProperties[$sPropertyName];
+		return $this->aProperties[strtolower($sPropertyName)];
 	}
 
 	/**
@@ -39,8 +39,8 @@ class Properties_Adapter implements Properties_Interface {
 	 * @param string $sValue
 	 * @return Properties_Interface cette instance
 	 */
-	public function addProperty ($sPropertyName, $sValue) {
-		$this->aProperties[$sPropertyName] = (string)$sValue;
+	public function setProperty ($sPropertyName, $sValue) {
+		$this->aProperties[strtolower($sPropertyName)] = (string)$sValue;
 	}
 
 	/**
@@ -56,9 +56,15 @@ class Properties_Adapter implements Properties_Interface {
 			throw new UnexpectedValueException("Property file '$sIniPath' not found!");
 		}
 
-		$aProperties = parse_ini_file($sIniPath);
-		if ($aProperties === false) {
+		$aRawProperties = parse_ini_file($sIniPath);
+		if ($aRawProperties === false) {
 			throw new RuntimeException("Load property file '$sIniPath' failed!");
+		}
+
+		// Normalisation :
+		$aProperties = array();
+		foreach ($aRawProperties as $sProperty => $sValue) {
+			$aProperties[strtolower($sProperty)] = $sValue;
 		}
 
 		$this->aProperties = array_merge($this->aProperties, $aProperties);

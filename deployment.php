@@ -49,7 +49,9 @@ chmod 777 deployment/resources -R
 // TODO tableau dashboard du nb de déploiement par semaine/projet/env et succès
 // TODO tableau new deployment de l'état des env pour le projet en cours, ou tous les projets
 // TODO surveiller l'espace disque restant à cause des dépôts cumulés
-// TODO renommer addProperty(() en setProperty()
+// TODO tester getFileStatus() avec host distant
+// TODO Task::ATTRIBUTE_PATH ?= Task::ATTRIBUTE_FILE | Task::ATTRIBUTE_DIR
+// TODO phpdoc properties insensible à la casse
 
 /*
  * Features :

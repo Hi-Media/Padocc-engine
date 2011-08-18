@@ -4,7 +4,7 @@ class Shell_Adapter implements Shell_Interface {
 
 	private $aFileStatus;
 
-	private static $aDefaultRsyncExclude = array('.bzr/', '.git/', '.svn/', 'cvslog.*', 'CVS', 'CVS.adm');
+	private static $aDefaultRsyncExclude = array('.bzr/', '.git/', '.gitignore', '.svn/', 'cvslog.*', 'CVS', 'CVS.adm');
 
 	/**
 	 * Log adapter.
@@ -59,6 +59,10 @@ class Shell_Adapter implements Shell_Interface {
 	 * Si le statut est différent de 0, l'appel est mis en cache.
 	 * Passe par SSH au besoin.
 	 *
+	 * TODO NOTER que marche aussi sur distant.
+	 * TODO retourne codes lien sym
+	 * TODO see remove()
+	 *
 	 * @param string $sPath chemin à tester
 	 * @return int 0 si le chemin spécifié n'existe pas, 1 si c'est un fichier, 2 si c'est un répertoire.
 	 */
@@ -68,7 +72,8 @@ class Shell_Adapter implements Shell_Interface {
 		} else {
 			// path="link_logs"; [ -h "$path" ] && echo -n 1; [ -d "$path" ] && echo 2 || ([ -f "$path" ] && echo 1 || echo 0)
 			// [ -h %1$s ] && echo -n 1; [ -d %1$s ] && echo 2 || ([ -f %1$s ] && echo 1 || echo 0)
-			$sFormat = '[ -d %1$s ] && echo 2 || ( [ -f %1$s ] && echo 1 || echo 0 )';
+			//$sFormat = '[ -d %1$s ] && echo 2 || ( [ -f %1$s ] && echo 1 || echo 0 )';
+			$sFormat = '[ -h %1$s ] && echo -n 1; [ -d %1$s ] && echo 2 || ([ -f %1$s ] && echo 1 || echo 0)';
 			$aResult = $this->execSSH($sFormat, $sPath);
 			$iStatus = (int)$aResult[0];
 			if ($iStatus !== 0) {
@@ -155,10 +160,15 @@ class Shell_Adapter implements Shell_Interface {
 	 */
 	public function remove ($sPath) {
 		$sPath = trim($sPath);
+
 		// Garde-fou :
 		if (empty($sPath) || strlen($sPath) < 4) {
 			throw new DomainException("Illegal path: '$sPath'");
 		}
+
+		// Supprimer du cache de getFileStatus() :
+		unset($this->aFileStatus[$sPath]);
+
 		return $this->execSSH('rm -rf %s', $sPath);
 	}
 

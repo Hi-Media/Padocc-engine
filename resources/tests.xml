@@ -2,9 +2,9 @@
 <!-- <project name="tests" propertyinifile="/home/gaubry/deployment/resources/tests_property_file.ini"> -->
 		<!-- propertyshellfile="/home/gaubry/deployment/resources/master_synchro.cfg" -->
 		<!-- propertyshellfile="${TWENGA_SERVERS}" -->
+		<!-- loadtwengaservers="true" -->
 <project
 		name="tests"
-		loadtwengaservers="true"
 		propertyinifile="/home/gaubry/deployment/resources/tests_property_file.ini"
 >
 	<target name="tests_copy">
@@ -42,6 +42,7 @@
 			name="tests_gitexport"
 			propertyinifile="/home/gaubry/deployment/resources/tests_env_property_file.ini"
 			mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com"
+			loadtwengaservers="true"
 	>
 		<externalproperty name="rts_ref" description="Branch or tag to deploy" />
 		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="${rts_ref}"
@@ -54,11 +55,14 @@
 		<link server="${SERVER_AAI}" src="/home/aai/deployment_test/dest/test_link/link" target="/home/aai/deployment_test/dest/test_gitexport1" />
 	</env>
 
+	<!-- withsymlinks="/home/aai/deployment_test/dest_test_symlink" -->
 	<env
 			name="tests_symlinks"
 			propertyinifile="/home/gaubry/deployment/resources/tests_env_property_file.ini"
 			mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com"
-			withsymlink="/home/aai/deployment_test/dest_test_symlink"
+			withsymlinks="dd"
+			loadtwengaservers="true"
+			basedir="/home/aai/deployment_test/dest_test_symlink"
 	>
 		<externalproperty name="rts_ref" description="Branch or tag to deploy" />
 		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="${rts_ref}"
