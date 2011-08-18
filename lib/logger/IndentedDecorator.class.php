@@ -37,10 +37,12 @@ class Logger_IndentedDecorator implements Logger_IndentedInterface
     public function indent ()
     {
         $this->iIndentationLevel++;
+        return $this;
     }
 
     public function unindent ()
     {
         $this->iIndentationLevel = max(0, $this->iIndentationLevel-1);
+        return $this;
     }
 }
