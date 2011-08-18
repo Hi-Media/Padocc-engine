@@ -500,6 +500,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @covers Shell_Adapter::sync
+     * @covers Shell_Adapter::_resumeSyncResult
      */
     public function testSyncLocalFileToLocalDir () {
         $aExpectedResult = array('Number of transferred files ( / total): 2 / 1774
@@ -535,6 +536,7 @@ total size is 64093953  speedup is 1618.29');
 
     /**
      * @covers Shell_Adapter::sync
+     * @covers Shell_Adapter::_resumeSyncResult
      */
     public function testSyncLocalFileToLocalDirWithAdditionalExclude () {
         $aExpectedResult = array('Number of transferred files ( / total): 2 / 1774
@@ -570,6 +572,7 @@ total size is 64093953  speedup is 1618.29');
 
     /**
      * @covers Shell_Adapter::sync
+     * @covers Shell_Adapter::_resumeSyncResult
      */
     public function testSyncLocalFileToRemotesDir () {
         $aExpectedResult = array('Number of transferred files ( / total): 2 / 1774

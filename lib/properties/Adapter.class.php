@@ -45,6 +45,7 @@ class Properties_Adapter implements Properties_Interface
     public function setProperty ($sPropertyName, $sValue)
     {
         $this->aProperties[strtolower($sPropertyName)] = (string)$sValue;
+        return $this;
     }
 
     /**
@@ -61,9 +62,9 @@ class Properties_Adapter implements Properties_Interface
             throw new UnexpectedValueException("Property file '$sIniPath' not found!");
         }
 
-        $aRawProperties = parse_ini_file($sIniPath);
+        $aRawProperties = @parse_ini_file($sIniPath);
         if ($aRawProperties === false) {
-            throw new RuntimeException("Load property file '$sIniPath' failed!");
+            throw new RuntimeException("Load property file '$sIniPath' failed: " . print_r(error_get_last(), true));
         }
 
         // Normalisation :
