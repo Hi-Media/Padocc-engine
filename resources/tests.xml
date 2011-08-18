@@ -60,7 +60,7 @@
 			name="tests_symlinks"
 			propertyinifile="/home/gaubry/deployment/resources/tests_env_property_file.ini"
 			mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com"
-			withsymlinks="dd"
+			withsymlinks="true"
 			loadtwengaservers="true"
 			basedir="/home/aai/deployment_test/dest_test_symlink"
 	>
@@ -79,6 +79,9 @@
 			name="tests_languages"
 			propertyinifile="/home/gaubry/deployment/resources/tests_env_property_file.ini"
 			mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com"
+			withsymlinks="true"
+			basedir="/home/aai/deployment_test/dest/buildlanguage"
+			loadtwengaservers="true"
 	>
 		<externalproperty name="t1" description="Branch" />
 		<externalproperty name="t2" description="or tag" />

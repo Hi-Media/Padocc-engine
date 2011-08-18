@@ -431,7 +431,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 	public function testGetFileStatusWithFile () {
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$oMockShell->expects($this->at(0))->method('exec')
-			->with($this->equalTo('[ -d "/path/to/my file" ] && echo 2 || ( [ -f "/path/to/my file" ] && echo 1 || echo 0 )'))
+			->with($this->equalTo('[ -h "/path/to/my file" ] && echo -n 1; [ -d "/path/to/my file" ] && echo 2 || ([ -f "/path/to/my file" ] && echo 1 || echo 0)'))
 			->will($this->returnValue(array('1')));
 		$oMockShell->expects($this->exactly(1))->method('exec');
 
@@ -459,7 +459,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 	public function testGetFileStatusWithDir () {
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$oMockShell->expects($this->at(0))->method('exec')
-			->with($this->equalTo('[ -d "/path/to/dir" ] && echo 2 || ( [ -f "/path/to/dir" ] && echo 1 || echo 0 )'))
+			->with($this->equalTo('[ -h "/path/to/dir" ] && echo -n 1; [ -d "/path/to/dir" ] && echo 2 || ([ -f "/path/to/dir" ] && echo 1 || echo 0)'))
 			->will($this->returnValue(array('2')));
 		$oMockShell->expects($this->exactly(1))->method('exec');
 
@@ -475,7 +475,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 	public function testGetFileStatusWithUnknown () {
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
 		$oMockShell->expects($this->at(0))->method('exec')
-			->with($this->equalTo('[ -d "/path/to/unknwon" ] && echo 2 || ( [ -f "/path/to/unknwon" ] && echo 1 || echo 0 )'))
+			->with($this->equalTo('[ -h "/path/to/unknwon" ] && echo -n 1; [ -d "/path/to/unknwon" ] && echo 2 || ([ -f "/path/to/unknwon" ] && echo 1 || echo 0)'))
 			->will($this->returnValue(array('0')));
 		$oMockShell->expects($this->exactly(1))->method('exec');
 
@@ -525,7 +525,7 @@ total size is 64093953  speedup is 1618.29');
 			->with($this->equalTo('mkdir -p "/destpath/to/my dir"'))
 			->will($this->returnValue(array()));
 		$oMockShell->expects($this->at(1))->method('exec')
-			->with($this->equalTo('rsync -axz --delete --exclude=.cvsignore --exclude=".bzr/" --exclude=".git/" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/srcpath/to/my file" "/destpath/to/my dir"'))
+			->with($this->equalTo('rsync -axz --delete --exclude=.cvsignore --exclude=".bzr/" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/srcpath/to/my file" "/destpath/to/my dir"'))
 			->will($this->returnValue($aRawRsyncResult));
 		$oMockShell->expects($this->exactly(2))->method('exec');
 
@@ -560,7 +560,7 @@ total size is 64093953  speedup is 1618.29');
 			->with($this->equalTo('mkdir -p "/destpath/to/my dir"'))
 			->will($this->returnValue(array()));
 		$oMockShell->expects($this->at(1))->method('exec')
-			->with($this->equalTo('rsync -axz --delete --exclude=.cvsignore --exclude=".bzr/" --exclude=".git/" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --exclude="toto" --exclude="titi" --stats -e ssh "/srcpath/to/my file" "/destpath/to/my dir"'))
+			->with($this->equalTo('rsync -axz --delete --exclude=.cvsignore --exclude=".bzr/" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --exclude="toto" --exclude="titi" --stats -e ssh "/srcpath/to/my file" "/destpath/to/my dir"'))
 			->will($this->returnValue($aRawRsyncResult));
 		$oMockShell->expects($this->exactly(2))->method('exec');
 
@@ -589,8 +589,8 @@ Total bytes received: 64
 
 sent 39542 bytes  received 64 bytes  26404.00 bytes/sec
 total size is 64093953  speedup is 1618.29');
-		$sCmd = 'rsync -axz --delete --exclude=.cvsignore --exclude=".bzr/" --exclude=".git/" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/srcpath/to/my file" "server1:/destpath/to/my dir" & \\'
-			. "\n" . 'rsync -axz --delete --exclude=.cvsignore --exclude=".bzr/" --exclude=".git/" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/srcpath/to/my file" "login@server2:/destpath/to/my dir" & \\'
+		$sCmd = 'rsync -axz --delete --exclude=.cvsignore --exclude=".bzr/" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/srcpath/to/my file" "server1:/destpath/to/my dir" & \\'
+			. "\n" . 'rsync -axz --delete --exclude=.cvsignore --exclude=".bzr/" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/srcpath/to/my file" "login@server2:/destpath/to/my dir" & \\'
 			. "\n" . 'wait';
 
 		$oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));

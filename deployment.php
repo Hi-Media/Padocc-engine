@@ -52,6 +52,8 @@ chmod 777 deployment/resources -R
 // TODO tester getFileStatus() avec host distant
 // TODO Task::ATTRIBUTE_PATH ?= Task::ATTRIBUTE_FILE | Task::ATTRIBUTE_DIR
 // TODO phpdoc properties insensible à la casse
+// TODO ne garder que les N dernières releases qd symlinks
+// TODO ACL simples AAI ? => user project env, par ex gaubry * *...
 
 /*
  * Features :

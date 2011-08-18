@@ -246,8 +246,8 @@ abstract class Task {
 
 	//private static $aPreparedEnv = array();
 	protected function _reroutePaths ($aPaths) {
-		if ($this->oProperties->getProperty('withsymlinks') === 'true') {
-			$sBaseSymLink = $this->oProperties->getProperty('basedir');
+		if ($this->oProperties->getProperty('with_symlinks') === 'true') {
+			$sBaseSymLink = $this->oProperties->getProperty('base_dir');
 			$sReleaseSymLink = $sBaseSymLink . '_releases/' . $this->oProperties->getProperty('execution_id');
 			for ($i=0, $iMax=count($aPaths); $i<$iMax; $i++) {
 				if (preg_match('#' . preg_quote($sBaseSymLink, '#') . '\b#', $aPaths[$i]) === 1) {
