@@ -10,14 +10,14 @@ if [ -z "$repository" ] || [ -z "$module" ] || [ -z "$srcdir" ]; then
 fi
 
 if [ -d "$srcdir/$module" ]; then
-	echo "Clear dir"
+	echo "CVS: reset local repository"
 	cd "$srcdir" && rm -rf * || exit $?
 elif [ ! -d "$srcdir" ]; then
-	echo "Create dir"
+	echo "CVS: create directory"
 	mkdir -p "$srcdir" || exit $?
 fi
 
-echo "Export"
+echo "CVS: export '$repository'"
 cd "$srcdir"
 nb_files="$(cvs -q -d"$repository" export -DNOW "$module" | wc -l)"
-echo "$nb_files files exported"
+echo "CVS: $nb_files files exported"

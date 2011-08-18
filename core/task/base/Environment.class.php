@@ -31,19 +31,21 @@ class Task_Base_Environment extends Task_Base_Target {
 			'basedir' => Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_REQUIRED
 		));
 
-		$this->oProperties->setProperty('basedir', $this->aAttributes['basedir']);
+		// Positionnement des 2 propriétés basedir et withsymlinks :
+		$sBaseDir = (empty($this->aAttributes['basedir']) ? '[check() will failed]' : $this->aAttributes['basedir']);
+		$this->oProperties->setProperty('base_dir', $sBaseDir);
 		$sWithSymlinks = (empty($this->aAttributes['withsymlinks']) ? 'false' : $this->aAttributes['withsymlinks']);
-		$this->oProperties->setProperty('withsymlinks', $sWithSymlinks);
+		$this->oProperties->setProperty('with_symlinks', $sWithSymlinks);
 
 		// Création de switch de symlink sous-jacente :
-		if ($this->oProperties->getProperty('withsymlinks') === 'true') {
+		if ($this->oProperties->getProperty('with_symlinks') === 'true') {
 			$this->oNumbering->addCounterDivision();
-			$sBaseSymLink = $this->oProperties->getProperty('basedir');
+			$sBaseSymLink = $this->oProperties->getProperty('base_dir');
 			$sReleaseSymLink = $sBaseSymLink . '_releases/' . $this->oProperties->getProperty('execution_id');
 			$this->oLinkTask = Task_Base_Link::getNewInstance(array(
 				'src' => $sBaseSymLink,
 				'target' => $sReleaseSymLink,
-				'server' => '${SERVERS_CONCERNED_WITH_SYMLINKS}'
+				'server' => '${SERVERS_CONCERNED_WITH_BASE_DIR}'
 			), $oProject, $sBackupPath, $oServiceContainer);
 			$this->oNumbering->removeCounterDivision();
 		}
@@ -71,7 +73,7 @@ class Task_Base_Environment extends Task_Base_Target {
 		$aPaths = array_keys(self::$aRegisteredPaths);
 		//$this->oLogger->log(print_r($aPaths, true));
 
-		$sBaseSymLink = $this->oProperties->getProperty('basedir');
+		$sBaseSymLink = $this->oProperties->getProperty('base_dir');
 		foreach ($aPaths as $sPath) {
 			$aExpandedPaths = $this->_expandPath($sPath);
 			foreach ($aExpandedPaths as $sExpandedPath) {
@@ -85,14 +87,15 @@ class Task_Base_Environment extends Task_Base_Target {
 		//$this->oLogger->log(print_r($this->_aPathsToHandle, true));
 		$aServersConcernedWithSymlinks = array_keys($this->_aPathsToHandle);
 		sort($aServersConcernedWithSymlinks);
-		$this->oLogger->log("Servers concerned with symlinks: '" . implode("', '", $aServersConcernedWithSymlinks) . "'.");
-		$this->oProperties->setProperty('SERVERS_CONCERNED_WITH_SYMLINKS', implode(' ', $aServersConcernedWithSymlinks));
+		$this->oLogger->log("Servers concerned with base directory: '" . implode("', '", $aServersConcernedWithSymlinks) . "'.");
+		$this->oProperties->setProperty('servers_concerned_with_base_dir', implode(' ', $aServersConcernedWithSymlinks));
 	}
 
 	private function makeTransitionToSymlinks () {
-		$this->oProperties->setProperty('symlink', '');
-		$sBaseSymLink = $this->oProperties->getProperty('basedir');
-		$sPath = '${SERVERS_CONCERNED_WITH_SYMLINKS}' . ':' . $sBaseSymLink;
+		$this->oProperties->setProperty('with_symlinks', 'false');
+
+		$sBaseSymLink = $this->oProperties->getProperty('base_dir');
+		$sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
 		foreach ($this->_expandPath($sPath) as $sExpandedPath) {
 			if ($this->oShell->getFileStatus($sExpandedPath) === 2) {
 				list(, $aMatches) = $this->oShell->isRemotePath($sExpandedPath);
@@ -104,14 +107,31 @@ class Task_Base_Environment extends Task_Base_Target {
 				$this->oShell->createLink($sExpandedPath, $sOriginRelease);
 			}
 		}
-		$this->oProperties->setProperty('symlink', $this->aAttributes['withsymlink']);
+
+		$this->oProperties->setProperty('with_symlinks', 'true');
+	}
+
+	private function makeTransitionFromSymlinks () {
+		$sBaseSymLink = $this->oProperties->getProperty('base_dir');
+		$sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
+		foreach ($this->_expandPath($sPath) as $sExpandedPath) {
+			if ($this->oShell->getFileStatus($sExpandedPath) === 12) {
+				list(, $aMatches) = $this->oShell->isRemotePath($sExpandedPath);
+				$sDir = $sExpandedPath . '/*';
+				$sTmpDest = $sExpandedPath . '_tmp';
+				$this->oLogger->log("Remove symlink on '$sExpandedPath' base directory and initialize it with last release's content.");
+				$this->oShell->copy($sDir, $sTmpDest);
+				$this->oShell->remove($sExpandedPath);
+				$this->oShell->execSSH("mv %s '" . $aMatches[2] . "'", $sTmpDest);
+			}
+		}
 	}
 
 	private function initNewRelease () {
-		$this->oProperties->setProperty('symlink', '');
+		$this->oProperties->setProperty('with_symlinks', 'false');
 
-		$sBaseSymLink = $this->oProperties->getProperty('basedir');
-		$sPath = '${SERVERS_CONCERNED_WITH_SYMLINKS}' . ':' . $sBaseSymLink;
+		$sBaseSymLink = $this->oProperties->getProperty('base_dir');
+		$sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
 		$sReleaseSymLink = $sBaseSymLink . '_releases/' . $this->oProperties->getProperty('execution_id');
 		foreach ($this->_expandPath($sPath) as $sExpandedPath) {
 			list(, $aMatches) = $this->oShell->isRemotePath($sExpandedPath);
@@ -125,17 +145,17 @@ class Task_Base_Environment extends Task_Base_Target {
 			}
 		}
 
-		$this->oProperties->setProperty('symlink', $this->aAttributes['withsymlink']);
+		$this->oProperties->setProperty('with_symlinks', 'true');
 	}
 
 	public function setUp () {
-		if ( ! empty($this->aAttributes['withsymlink'])) {
+		if ($this->oProperties->getProperty('with_symlinks') === 'true') {
 			array_push($this->aTasks, $this->oLinkTask);
 		}
 
 		parent::setUp();
 
-		if ( ! empty($this->aAttributes['withsymlink'])) {
+		if ($this->oProperties->getProperty('with_symlinks') === 'true') {
 			array_pop($this->aTasks);
 		}
 	}
@@ -143,7 +163,7 @@ class Task_Base_Environment extends Task_Base_Target {
 	protected function _addMailTo () {
 		$this->oLogger->indent();
 		$this->analyzeRegisteredPaths();
-		if ( ! empty($this->aAttributes['withsymlink'])) {
+		if ($this->oProperties->getProperty('with_symlinks') === 'true') {
 			$this->makeTransitionToSymlinks();
 			$this->initNewRelease();
 		} else {
@@ -157,10 +177,10 @@ class Task_Base_Environment extends Task_Base_Target {
 	public function execute () {
 		parent::execute();
 
-		if ( ! empty($this->aAttributes['withsymlink'])) {
-			$this->oProperties->setProperty('symlink', '');
+		if ($this->oProperties->getProperty('with_symlinks') === 'true') {
+			$this->oProperties->setProperty('with_symlinks', 'false');
 			$this->oLinkTask->execute();
-			$this->oProperties->setProperty('symlink', $this->aAttributes['withsymlink']);
+			$this->oProperties->setProperty('with_symlinks', 'true');
 		}
 	}
 }
