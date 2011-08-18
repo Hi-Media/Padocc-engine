@@ -12,6 +12,6 @@ DEFINES=`grep -E "^[a-zA-Z0-9_]+=(\"|\'|\$)" "$CFG_PATH" | sed -r s/^\([a-zA-Z0-
 echo "; INI file auto generated from $CFG_PATH" >$INI_PATH
 echo "; $(date +'%Y-%m-%d %H:%M:%S')" >>$INI_PATH
 for DEFINE in $DEFINES; do
-	echo -n "$DEFINE = " >>$INI_PATH
-	eval "echo \\\"\$$DEFINE\\\"" >>$INI_PATH
+    echo -n "$DEFINE = " >>$INI_PATH
+    eval "echo \\\"\$$DEFINE\\\"" >>$INI_PATH
 done

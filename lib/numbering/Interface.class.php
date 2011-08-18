@@ -2,9 +2,9 @@
 
 interface Numbering_Interface {
 
-	public function getNextCounterValue ();
+    public function getNextCounterValue ();
 
-	public function addCounterDivision ();
+    public function addCounterDivision ();
 
-	public function removeCounterDivision ();
+    public function removeCounterDivision ();
 }
