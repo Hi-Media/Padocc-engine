@@ -3,7 +3,7 @@
 class Curl
 {
 
-    public static $USER_AGENTS = array(
+    public static $aUserAgents = array(
         'FireFox3' => 'Mozilla/5.0 (Windows; U; Windows NT 6.0; fr; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)',
         'GoogleBot' => 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
         'IE7' => 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)',
@@ -15,7 +15,7 @@ class Curl
 
     // disguises the curl using fake headers and a fake user agent.
     // postfields = array ou urlencodedstring => attention au @
-    public static function disguiseCurl (array $options=array())
+    public static function disguiseCurl (array $aOptions=array())
     {
         $aDefaultOptions = array(
             'url' => '',
@@ -24,22 +24,22 @@ class Curl
             'login' => NULL,
             'password' => NULL,
             'content_type' => 'text/plain',
-            'user_agent' => self::$USER_AGENTS['GoogleBot'],
+            'user_agent' => self::$aUserAgents['GoogleBot'],
             'referer' => 'http://www.google.com',
             'header' => NULL,
             'return_header' => 1,
             'file' => NULL,
         );
-        $options = array_merge($aDefaultOptions, $options);
+        $aOptions = array_merge($aDefaultOptions, $aOptions);
 
         $curl = curl_init();
 
-        if ($options['header'] === NULL) {
+        if ($aOptions['header'] === NULL) {
             // Setup headers - I used the same headers from Firefox version 2.0.0.6
             // below was split up because php.net said the line was too long. :/
             $header[0] = "Accept: text/xml,application/xml,application/xhtml+xml,";
             $header[0] .= "text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5";
-            $header[] = "Content-type: " . $options['content_type'];
+            $header[] = "Content-type: " . $aOptions['content_type'];
             $header[] = "Cache-Control: max-age=0";
             $header[] = "Connection: keep-alive";
             $header[] = "Keep-Alive: 300";
@@ -48,35 +48,35 @@ class Curl
             $header[] = "Pragma: "; // browsers keep this blank.
             curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
         } else {
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $options['header']);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $aOptions['header']);
         }
 
-        curl_setopt($curl, CURLOPT_URL, $options['url']);
-        curl_setopt($curl, CURLOPT_USERAGENT, $options['user_agent']);
+        curl_setopt($curl, CURLOPT_URL, $aOptions['url']);
+        curl_setopt($curl, CURLOPT_USERAGENT, $aOptions['user_agent']);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($curl, CURLOPT_REFERER, $options['referer']);
+        curl_setopt($curl, CURLOPT_REFERER, $aOptions['referer']);
         curl_setopt($curl, CURLOPT_ENCODING, 'gzip,deflate');
         curl_setopt($curl, CURLOPT_AUTOREFERER, true);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 //		curl_setopt($curl, CURLOPT_VERBOSE, 1);
-        curl_setopt($curl, CURLOPT_TIMEOUT, $options['timeout']);
-        curl_setopt($curl, CURLOPT_HEADER, $options['return_header']);
+        curl_setopt($curl, CURLOPT_TIMEOUT, $aOptions['timeout']);
+        curl_setopt($curl, CURLOPT_HEADER, $aOptions['return_header']);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
         curl_setopt($curl, CURLOPT_FRESH_CONNECT, 1); // don't use a cached version of the url
 
-        if ($options['file'] !== NULL) {
-            curl_setopt($curl, CURLOPT_FILE, $options['file']);
+        if ($aOptions['file'] !== NULL) {
+            curl_setopt($curl, CURLOPT_FILE, $aOptions['file']);
         }
 
-        if ($options['post_fields'] !== NULL) {
+        if ($aOptions['post_fields'] !== NULL) {
             curl_setopt($curl, CURLOPT_POST, true);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $options['post_fields']);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $aOptions['post_fields']);
         }
 
-        if ($options['login'] !== NULL && $options['password'] !== NULL) {
-            curl_setopt($curl, CURLOPT_USERPWD, $options['login'] . ':' . $options['password']);
+        if ($aOptions['login'] !== NULL && $aOptions['password'] !== NULL) {
+            curl_setopt($curl, CURLOPT_USERPWD, $aOptions['login'] . ':' . $aOptions['password']);
         }
 
         try {

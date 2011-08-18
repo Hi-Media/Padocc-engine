@@ -3,9 +3,9 @@
 class Tasks
 {
 
-    private static $TYPES = array('base', 'extended');
+    private static $aTypes = array('base', 'extended');
 
-    private static $AVAILABLE_TASKS = array();
+    private static $aAvailableTasks = array();
 
     /**
      * Retourne un tableau associatif décrivant les tâches disponibles.
@@ -15,9 +15,9 @@ class Tasks
      */
     public static function getAvailableTasks ()
     {
-        if (count(self::$AVAILABLE_TASKS) === 0) {
+        if (count(self::$aAvailableTasks) === 0) {
             $aAvailableTasks = array();
-            foreach (self::$TYPES as $sTaskType) {
+            foreach (self::$aTypes as $sTaskType) {
                 $sTaskPaths = glob(DEPLOYMENT_TASKS_DIR . "/$sTaskType/*.class.php");
                 foreach ($sTaskPaths as $sTaskPath) {
                     $sClassName = strstr(substr(strrchr($sTaskPath, '/'), 1), '.', true);
@@ -30,9 +30,9 @@ class Tasks
                     }
                 }
             }
-            self::$AVAILABLE_TASKS = $aAvailableTasks;
+            self::$aAvailableTasks = $aAvailableTasks;
         }
-        return self::$AVAILABLE_TASKS;
+        return self::$aAvailableTasks;
     }
 
     /**

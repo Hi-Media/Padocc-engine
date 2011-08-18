@@ -62,8 +62,8 @@ class Task_Base_ExternalProperty extends Task
         $this->oLogger->log("Set external property '" . $this->aAttributes['name'] . "' (description: '" . $this->aAttributes['description'] . "')");
         try {
             $sValue = $this->oProperties->getProperty(self::EXTERNAL_PROPERTY_PREFIX . $this->iNumber);
-        } catch (UnexpectedValueException $e) {
-            throw new UnexpectedValueException("Property '" . $this->aAttributes['name'] . "' undefined!");
+        } catch (UnexpectedValueException $oException) {
+            throw new UnexpectedValueException("Property '" . $this->aAttributes['name'] . "' undefined!", 1, $oException);
         }
         $this->oProperties->setProperty($this->aAttributes['name'], $sValue);
         $this->oLogger->unindent();

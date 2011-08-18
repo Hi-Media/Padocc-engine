@@ -236,8 +236,8 @@ abstract class Task
                 $aToProcessPaths = $aPaths;
                 $aPaths = array();
 
-                $raw_value = $this->oProperties->getProperty($property);
-                $values = explode(' ', $raw_value);
+                $sRawValue = $this->oProperties->getProperty($property);
+                $values = explode(' ', $sRawValue);
                 foreach ($aToProcessPaths as $s) {
                     foreach ($values as $value) {
                         $aPaths[] = str_replace('${' . $property . '}', $value, $s);
@@ -260,7 +260,6 @@ abstract class Task
             $sReleaseSymLink = $sBaseSymLink . '_releases/' . $this->oProperties->getProperty('execution_id');
             for ($i=0, $iMax=count($aPaths); $i<$iMax; $i++) {
                 if (preg_match('#' . preg_quote($sBaseSymLink, '#') . '\b#', $aPaths[$i]) === 1) {
-                    $aResult = $this->oShell->isRemotePath($aPaths[$i]);
                     $sNewPath = str_replace($sBaseSymLink, $sReleaseSymLink, $aPaths[$i]);
                     $aPaths[$i] = $sNewPath;
                 }
