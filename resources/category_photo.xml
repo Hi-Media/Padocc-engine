@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	name="category_photo"
+	propertyshellfile="/home/aai/deployment/resources/master_synchro.cfg"
+>
+	<env name="prod" mailto="devaa@twenga.com, fabien.bernard@twenga.com, laurent.macret@twenga.com">
+		<gitexport repository="git@git.twenga.com:photo-tools/category_photo.git" ref="master"
+			destdir="${SERVER_CATEGORY_PHOTO}:/home/httpd/twengaproject/category_photo" />
+	</env>
+</project>
