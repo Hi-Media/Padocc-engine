@@ -1,6 +1,6 @@
 <?php
 
-class IndentedLoggerTest extends PHPUnit_Framework_TestCase {
+class IndentedLoggerTest extends PHPUnit_Extensions_OutputTestCase {
 
     const BASE_INDENTATION = '----';
 
@@ -19,33 +19,24 @@ class IndentedLoggerTest extends PHPUnit_Framework_TestCase {
      * @covers Logger_IndentedDecorator::log
      */
     public function testLogWithGreaterLevelError () {
-        ob_start();
+        $this->expectOutputString('A message...' . "\n");
         $this->oLogger->log('A message...', Logger_Interface::ERROR);
-        $sOut = ob_get_contents();
-        ob_end_clean();
-        $this->assertEquals('A message...' . "\n", $sOut);
     }
 
     /**
      * @covers Logger_IndentedDecorator::log
      */
     public function testLogWithEqualLevelError () {
-        ob_start();
+        $this->expectOutputString('A message...' . "\n");
         $this->oLogger->log('A message...', Logger_Interface::WARNING);
-        $sOut = ob_get_contents();
-        ob_end_clean();
-        $this->assertEquals('A message...' . "\n", $sOut);
     }
 
     /**
      * @covers Logger_IndentedDecorator::log
      */
     public function testLogWithLowerLevelError () {
-        ob_start();
+        $this->expectOutputString('');
         $this->oLogger->log('A message...', Logger_Interface::INFO);
-        $sOut = ob_get_contents();
-        ob_end_clean();
-        $this->assertEquals('', $sOut);
     }
 
     /**
@@ -53,11 +44,8 @@ class IndentedLoggerTest extends PHPUnit_Framework_TestCase {
      * @covers Logger_IndentedDecorator::unindent
      */
     public function testLogWithAbusiveUnindent () {
-        ob_start();
+        $this->expectOutputString('A message...' . "\n");
         $this->oLogger->unindent()->log('A message...', Logger_Interface::ERROR);
-        $sOut = ob_get_contents();
-        ob_end_clean();
-        $this->assertEquals('A message...' . "\n", $sOut);
     }
 
     /**
@@ -65,11 +53,8 @@ class IndentedLoggerTest extends PHPUnit_Framework_TestCase {
      * @covers Logger_IndentedDecorator::log
      */
     public function testLogWith2Indents () {
-        ob_start();
+        $this->expectOutputString(self::BASE_INDENTATION . self::BASE_INDENTATION . 'A message...' . "\n");
         $this->oLogger->indent()->indent()->log('A message...', Logger_Interface::ERROR);
-        $sOut = ob_get_contents();
-        ob_end_clean();
-        $this->assertEquals(self::BASE_INDENTATION . self::BASE_INDENTATION . 'A message...' . "\n", $sOut);
     }
 
     /**
@@ -78,10 +63,7 @@ class IndentedLoggerTest extends PHPUnit_Framework_TestCase {
      * @covers Logger_IndentedDecorator::unindent
      */
     public function testLogWithIndentUnindent () {
-        ob_start();
+        $this->expectOutputString('A message...' . "\n");
         $this->oLogger->indent()->unindent()->log('A message...', Logger_Interface::ERROR);
-        $sOut = ob_get_contents();
-        ob_end_clean();
-        $this->assertEquals('A message...' . "\n", $sOut);
     }
 }
