@@ -32,6 +32,7 @@ class Numbering_Adapter implements Numbering_Interface
         if ($this->iCurrentDivision >= count($this->aCounter)) {
             $this->aCounter[] = 0;
         }
+        return $this;
     }
 
     public function removeCounterDivision ()
@@ -39,5 +40,6 @@ class Numbering_Adapter implements Numbering_Interface
         if ($this->iCurrentDivision > 0) {
             $this->iCurrentDivision--;
         }
+        return $this;
     }
 }
