@@ -25,7 +25,6 @@ verbose="";
 TMPFILE="/home/tmp/.master_synchro-$RANDOM"
 TMPFILE_P="/home/tmp/.master_synchro_p-$RANDOM"
 TS=`date +'%Y%m%d%H%M%S'`
-TIMESTAMP_FORMAT='[%Y-%m-%d %H:%M:%S] ' # Formattage de l'horodatage des echo()
 
 function cvsexport
 {
@@ -95,7 +94,6 @@ do
 		option_autoconfirm=1;
 		continue;
 	fi
-	
 	if [ "$last_option" = "tmpphoto" ]; then
 		tmpphoto_filename=$option;
 		continue;
@@ -162,7 +160,7 @@ function confirmChange
 	if [ "$twengabuild_num" != "" ]; then
 		extramsg="(TWENGABUILD: $twengabuild_num) "
 	fi
-	echo `date "+$TIMESTAMP_FORMAT"`"You are about to migrate $web_target ${extramsg}on the following servers:";
+	echo "You are about to migrate $web_target ${extramsg}on the following servers:";
 	COLOR_RED="echo -en \\033[1;31m"
 	$COLOR_RED
 	echo "$web_servers";
@@ -224,10 +222,10 @@ if [ "$option_bin" = "1" ]; then
 	for server in $targetservers
 	do
 		echo -n "Waiting server $server ...";
-		wait ${RETVAL[$j]}	
+		wait ${RETVAL[$j]}
 		rc=$?
 		if [ "$rc" != "0" ]; then
-			echo "error ($rc)";	
+			echo "error ($rc)";
 		exit 1;
 		else
 			echo "done.";
@@ -281,18 +279,17 @@ if [ "$option_deployweb" = "1" ]; then
 	twengabuild_num=$twbuild
 
 	rc=0
-	echo `date "+$TIMESTAMP_FORMAT"`"Checking twengabuild consistency on each server..."
+	echo "Checking twengabuild consistency on each server..."
 	for server in $web_servers
 	do
 		ssh $server "cd $folder_httpd/ && \
 				test -d ${twengabuild_num}_twenga-common && \
 				test -d ${twengabuild_num}_www.twenga && \
 				test -d ${twengabuild_num}_hotel.twenga && \
-				test -d smarty/${twengabuild_num}_web && \
 				test -d smarty/${twengabuild_num}_common && \
 				test -d smarty/${twengabuild_num}_travel && \
 				echo TWOK" 1>$TMPFILE_P 2>&1
-		echo -n `date "+$TIMESTAMP_FORMAT"`"Server $server " 
+		echo -n "Server $server "
 		if ( [ -s "$TMPFILE_P" ] && [ "`grep TWOK $TMPFILE_P`" != "" ] ); then
 			echo "OK"
 		else
@@ -307,11 +304,14 @@ if [ "$option_deployweb" = "1" ]; then
 	fi
 
 	confirmChange
+	if ([ "$web_target" = "web" ]  && [ "$target_server" = "" ] ); then
+		$HOME/twenga/tools/send_nsca_fs3.sh MEP-activation 2 "MEP with build ${twengabuild_num} is switching"
+	fi
 
 	for server in $web_servers
 	do
 		if [ "$web_target" = "web" ]; then
-			echo -n `date "+$TIMESTAMP_FORMAT"`"Excluding $server from cluster... "
+			echo -n "Excluding $server from cluster... "
 				/home/prod/twenga/tools/wwwcluster $server Disable 1>&2 2>/dev/null
 				if [ "$?" != "0" ]; then
 					echo "Activation aborted." 1>&2
@@ -320,7 +320,13 @@ if [ "$option_deployweb" = "1" ]; then
 			echo "done.";
 		fi
 
-		echo -n `date "+$TIMESTAMP_FORMAT"`"Activating web files ($twengabuild_num) to $server ...";
+
+# If you wish to switch caches during activation, add the following lines below
+#                           /usr/local/bin/changeDynconfig.sh MEMCACHE_HOST_L1 cache-01 && \
+#                           /usr/local/bin/changeDynconfig.sh MEMCACHE_HOST_L1_FAILOVER cache-01 && \
+#							/usr/local/bin/changeConfig.sh MEMCACHE_HOST_L2 cache-01 && \
+#							/usr/local/bin/changeConfig.sh MEMCACHE_HOST_L2_FAILOVER cache-01 && \
+		echo -n "Activating web files ($twengabuild_num) to $server ...";
 			ssh $server "cd $folder_httpd/ && \
 							rm -f twenga-common www.twenga hotel.twenga smarty/common smarty/web smarty/travel && \
 							ln -sf ${twengabuild_num}_twenga-common twenga-common && \
@@ -337,18 +343,18 @@ if [ "$option_deployweb" = "1" ]; then
 			fi
 		echo "done. (rc=$rc)";
 		#A utiliser pour deploy twenga-web.so avec la mep
-		#scp /home/prod/twenga/master/TWENGA_SO/twenga-web.so $server:/usr/local/lib/php/extensions/no-debug-non-zts-20090626/twenga-web.so
+		scp /home/prod/twenga/master/TWENGA_SO/twenga-web.so $server:/usr/local/lib/php/extensions/no-debug-non-zts-20090626/twenga-web.so
 		ssh $server -tt "sudo /root/apache_restart"
 		#echo -n "Clearing opcode cache on server $server ...";
 		#	$HOME/twenga/tools/clear_cache $server opcode
 		#echo "done.";
-		echo -n `date "+$TIMESTAMP_FORMAT"`"Clearing smarty cache on server $server ...";
+		echo -n "Clearing smarty cache on server $server ...";
 			$HOME/twenga/tools/clear_cache $server smarty
 		echo "done.";
 		curl --silent --retry 2 --retry-delay 2 --max-time 5 -d server=$server -d app=$web_target http://aai.twenga.com/push.php &
 
 		if ( [ "$web_target" = "web" ] && [ "$target_server" = "" ] ); then
-			echo -n `date "+$TIMESTAMP_FORMAT"`"Including $server in cluster... "
+			echo -n "Including $server in cluster... "
 			/home/prod/twenga/tools/wwwcluster $server Enable 1>&2 2>/dev/null &
 			echo "done.";
 		fi
@@ -357,7 +363,8 @@ if [ "$option_deployweb" = "1" ]; then
 	if ( [ "$web_target" = "web" ] && [ "$target_server" = "" ] ); then
 		# Mise en production classique sans specifier de target specifique
 		# On peut donc synchroniser /home/httpd
-		/home/prod/twengaweb/tools/push_web web	
+		/home/prod/twengaweb/tools/push_web web
+		$HOME/twenga/tools/send_nsca_fs3.sh MEP-activation 0 "MEP with build ${twengabuild_num} is finished"
 	fi
 fi
 
@@ -503,7 +510,7 @@ if [ "$option_web" = "1" ]; then
 	confirmChange
 
 	if ( [ "$web_target" != "rewrite" ] && [ "$web_target" != "config" ] && [ "$web_target" != "internal" ] && [ "$web_target" != "qa" ] && [ "$web_target" != "bct" ] && [ "$web_target" != "web" ] ); then
-		CURPWD=`pwd` 
+		CURPWD=`pwd`
 		echo -e "Backing-up web files ...";
 		cd $FOLDER_HTTPD_SRC
 		if [ "$docommon" = "1" ]; then
@@ -514,10 +521,10 @@ if [ "$option_web" = "1" ]; then
 		tar cvfj /home/prod/twenga/master/BACKUPS/${tarname}.$TS.tar.bz2 $tar_target $extratar 1>/dev/null
 		echo "done".
 	fi
-   
-   
-   
-   
+
+
+
+
     ### EXCLUSIVE ###
     #/home/prod/twenga/tools/msm.sh --service "master_synchro" --message "target: $web_target"
 
@@ -528,7 +535,7 @@ if [ "$option_web" = "1" ]; then
 
 		#Euh... TODO dans le php et tpl
 		#echo $twengabuild_num > "/home/prod/twengaweb/smarty/web/v3/templates/twengabuild.tpl"
-		
+
 		TMPFILE=/tmp/.master_synchro_$web_target-$twengabuild_num
 		STATIC_ROOT_DIR=/home/prod/twengaweb/static/$web_target
         STATIC_DIR=$STATIC_ROOT_DIR/$twengabuild_num #Todo rajouter le web_target pour plus de secu
@@ -551,7 +558,7 @@ if [ "$option_web" = "1" ]; then
 		echo "done.";
 
 		echo -n "Preparing tar files to deploy..."
-		
+
 		PACKAGEHTML="$HOME/twengaweb/exclusive /home/httpd-qa/exclusive"
 
         cd $HOME/twengaweb/exclusive; tar cfz $WWWCODE_FOLDER/${twengabuild_num}_exclusive.tar.gz --exclude 'CVS' --exclude '*/\.#*' --exclude '.cvsignore' .
@@ -564,13 +571,13 @@ if [ "$option_web" = "1" ]; then
 
 		echo "Preparing static content ...";
 
-		/usr/local/bin/php $HOME/twenga/tools/combine/combine.php --from_template_dir "$HOME/twengaweb/smarty/web/v3/templates/" --to_dir "$STATIC_FOLDER" --twbuild "$twengabuild_num" --static_domain ".c4tw.net" 
-		
+		/usr/local/bin/php $HOME/twenga/tools/combine/combine.php --from_template_dir "$HOME/twengaweb/smarty/web/v3/templates/" --to_dir "$STATIC_FOLDER" --twbuild "$twengabuild_num" --static_domain ".c4tw.net"
+
 		tar cfz $WWWCODE_FOLDER/statics.tar.gz $STATIC_FOLDER
 		#/home/prod/twenga/tools/msm.sh --service "master_synchro" --message "target: $web_target" --tag "end combine"
 		echo "done.";
 
-	fi	
+	fi
 
 	if ( [ "$web_target" = "internal" ] || [ "$web_target" = "qa" ] || [ "$web_target" = "bct" ] || [ "$web_target" = "web" ] ); then
 		twengabuild_num="$TS$twengabuild_ext";
@@ -585,7 +592,7 @@ if [ "$option_web" = "1" ]; then
 		echo -e "<?php\ndefine('TWENGABUILD', '$twengabuild_num' );" > $TMPFILE_TWENGA
 		awk 'NR>1' $TWENGAPHP | grep -v "define('TWENGABUILD" >> $TMPFILE_TWENGA
 		mv $TMPFILE_TWENGA $TWENGAPHP
-		
+
 		echo -e "<?php\ndefine('TWENGABUILD', '$twengabuild_num' );" > $TMPFILE_TRAVEL
                 awk 'NR>1' $TRAVELPHP | grep -v "define('TWENGABUILD" >> $TMPFILE_TRAVEL
 		mv $TMPFILE_TRAVEL $TRAVELPHP
@@ -611,7 +618,7 @@ if [ "$option_web" = "1" ]; then
 		mkdir -p $WWWCODE_FOLDER
 		cd $HOME/twengaweb/web; tar cfz $WWWCODE_FOLDER/${twengabuild_num}_www.twenga.tar.gz --exclude 'CVS' --exclude '*/\.#*' --exclude '.cvsignore' .
 		if [ "$?" != "0" ]; then echo "Unable to prepare tar files. Aborted." 1>&2; exit 1; fi
-        cd $HOME/twengaweb/travel/Web; tar cfz $WWWCODE_FOLDER/${twengabuild_num}_hotel.twenga.tar.gz --exclude 'CVS' --exclude '*/\.#*' --exclude '.cvsignore' .			
+        cd $HOME/twengaweb/travel/Web; tar cfz $WWWCODE_FOLDER/${twengabuild_num}_hotel.twenga.tar.gz --exclude 'CVS' --exclude '*/\.#*' --exclude '.cvsignore' .
 		if [ "$?" != "0" ]; then echo "Unable to prepare tar files. Aborted." 1>&2; exit 1; fi
 		cd $HOME/twengaweb/common; tar cfz $WWWCODE_FOLDER/${twengabuild_num}_twenga-common.tar.gz --exclude 'CVS' --exclude '*/\.#*' --exclude '.cvsignore' .
 		if [ "$?" != "0" ]; then echo "Unable to prepare tar files. Aborted." 1>&2; exit 1; fi
@@ -644,14 +651,14 @@ if [ "$option_web" = "1" ]; then
 				while read line
 				do
 					rm -rf $line
-					ln -sf $last_prod_folder $line	
+					ln -sf $last_prod_folder $line
 				done < $TMPFILE_P
 
 				rm -f $TMPFILE_P 2>/dev/null
 			fi
 
 			echo "Preparing static content ...";
-	
+
 			mkdir $STATIC_DIR
 
 			# Merchant Logos
@@ -671,12 +678,12 @@ if [ "$option_web" = "1" ]; then
 			cp -r /home/prod/twengaweb/smarty/travel/css $STATIC_DIR/travel
 
 			mkdir -p $STATIC_DIR/web  2>/dev/null
-			cp -r /home/prod/twengaweb/smarty/web/v3/js $STATIC_DIR/web
-			cp -r /home/prod/twengaweb/smarty/web/v3/css $STATIC_DIR/web #IMG IN !!
+			cp -r /home/prod/twengaweb/web/v3/js $STATIC_DIR/web
+			cp -r /home/prod/twengaweb/web/v3/css $STATIC_DIR/web #IMG IN !!
 
 		    mkdir -p $STATIC_DIR/webv4 2>/dev/null
-			cp -r /home/prod/twengaweb/smarty/web/v4/js $STATIC_DIR/webv4
-            cp -r /home/prod/twengaweb/smarty/web/v4/css $STATIC_DIR/webv4 #IMG IN !!
+			cp -r /home/prod/twengaweb/web/v4/js $STATIC_DIR/webv4
+            cp -r /home/prod/twengaweb/web/v4/css $STATIC_DIR/webv4 #IMG IN !!
 
 #			cd /home/httpd/admin.twenga.com/html/
 			#/usr/local/bin/php /home/httpd/admin.twenga.com/html/combine_v3.php web $twengabuild_num
@@ -688,15 +695,15 @@ if [ "$option_web" = "1" ]; then
 			#	/usr/local/bin/php /home/httpd/admin.twenga.com/html/combine_v3.php travel $twengabuild_num "${zsuffix}.c4tw.net"
 			#	echo "done.";
 			#done
-		
+
 			#echo ":::::::::::::::::::::::::::"$STATIC_DIR
-				
+
 			for zsuffix in "" c cn; do
 				echo "Combining files for subdomain $zsuffix..."
-				
-				/usr/local/bin/php $HOME/twenga/tools/combine/combine.php --from_template_dir "$HOME/twengaweb/smarty/web/v3/templates/" --to_dir "$STATIC_DIR" --twbuild "$twengabuild_num" --static_domain "${zsuffix}.c4tw.net" --outpath "web"
 
-				/usr/local/bin/php $HOME/twenga/tools/combine/combine.php --from_template_dir "$HOME/twengaweb/smarty/web/v4/templates/" --to_dir "$STATIC_DIR" --twbuild "$twengabuild_num" --static_domain "${zsuffix}.c4tw.net" --outpath "webv4"
+				/usr/local/bin/php $HOME/twenga/tools/combine/combine.php --from_template_dir "$HOME/twengaweb/web/v3/templates/" --to_dir "$STATIC_DIR" --twbuild "$twengabuild_num" --static_domain "${zsuffix}.c4tw.net" --outpath "web"
+
+				/usr/local/bin/php $HOME/twenga/tools/combine/combine.php --from_template_dir "$HOME/twengaweb/web/v4/templates/" --to_dir "$STATIC_DIR" --twbuild "$twengabuild_num" --static_domain "${zsuffix}.c4tw.net" --outpath "webv4"
 
 				/usr/local/bin/php $HOME/twenga/tools/combine/combine.php --from_template_dir "$HOME/twengaweb/smarty/travel/templates/" --to_dir "$STATIC_DIR" --twbuild "$twengabuild_num" --static_domain "${zsuffix}.c4tw.net" --outpath "travel"
 
@@ -712,17 +719,17 @@ if [ "$option_web" = "1" ]; then
 			find . -name "CVS" -exec rm -rf {} \; 2>/dev/null
 			echo "done.";
 
-			echo -e `date "+$TIMESTAMP_FORMAT"`"Synchronizing static files ...";
-			
+			echo -e "Synchronizing static files ...";
+
 			typeset -i j=0
 			for server in $SERVER_STATIC_WEB_ALL
 			do
-				echo -e `date "+$TIMESTAMP_FORMAT"`"Deploying static files to $server ...";
+				echo -e "Deploying static files to $server ...";
 				rsync -rp --cvs-exclude --exclude=.cvsignore $additional_exclude_static --delete-after -l -e ssh $verbose $FOLDER_HTTPD_SRC/static/ $server:$FOLDER_STATIC_DST/ &
 				RETVAL[$j]=$!
 				j=$j+1
 			done
-			
+
 			echo -e "Waiting for synchronization to complete...";
 			typeset -i j=0
 			for server in $SERVER_STATIC_WEB_ALL
@@ -730,10 +737,10 @@ if [ "$option_web" = "1" ]; then
 				wait ${RETVAL[$j]}
 				rc=$?
 				if [ "$rc" != "0" ]; then
-					echo `date "+$TIMESTAMP_FORMAT"`"$server error ($rc)";	
+					echo "error ($rc)";
 					exit 1;
 				else
-					echo `date "+$TIMESTAMP_FORMAT"`"$server done.";
+					echo "$server done.";
 				fi
 				j=$j+1
 			done
@@ -745,8 +752,8 @@ if [ "$option_web" = "1" ]; then
 
 	for server in $web_servers
 	do
-		echo -n `date "+$TIMESTAMP_FORMAT"`"Copying web files to $server ...";
-		
+		echo -n "Copying web files to $server ...";
+
 		case $web_target in
 
 		config)
@@ -772,6 +779,8 @@ if [ "$option_web" = "1" ]; then
 								mkdir -p $folder_list && \
 								cd $folder_httpd/${twengabuild_num}_www.twenga && \
 								tar xfz /tmp/${twengabuild_num}_www.twenga.tar.gz . && \
+								chmod 777 $folder_httpd/${twengabuild_num}_www.twenga/v3/templates_c && \
+								chmod 777 $folder_httpd/${twengabuild_num}_www.twenga/v4/templates_c && \
 								rm -f /tmp/${twengabuild_num}_www.twenga.tar.gz && \
 								cd $folder_httpd/${twengabuild_num}_hotel.twenga && \
 								tar xfz /tmp/${twengabuild_num}_hotel.twenga.tar.gz . && \
@@ -788,6 +797,7 @@ if [ "$option_web" = "1" ]; then
 								cd $folder_httpd/smarty/${twengabuild_num}_common && \
 								tar xfz /tmp/${twengabuild_num}_smarty_common.tar.gz . && \
 								rm -f /tmp/${twengabuild_num}_smarty_common.tar.gz && \
+								ln -sf $folder_httpd/config/www.twenga/config_shorturl.php $folder_httpd/${twengabuild_num}_www.twenga/html/shorturl/config_shorturl.php && \
 								ln -sf $folder_httpd/config/www.twenga/config.php $folder_httpd/${twengabuild_num}_www.twenga/inc/config.php && \
 								ln -sf $folder_httpd/config/www.twenga/config-local $folder_httpd/${twengabuild_num}_www.twenga/inc/config-local && \
 								ln -sf $folder_httpd/config/www.twenga/config_tracker.php $folder_httpd/${twengabuild_num}_www.twenga/inc/config_tracker.php && \
@@ -811,10 +821,10 @@ if [ "$option_web" = "1" ]; then
             ssh $server '
 				cd '$folder_httpd/${twengabuild_num}' && \
 				for option in *.tar.gz; do  dir=${option/".tar.gz"}; mkdir $dir; tar xfz $option -C $dir; rm $dir".tar.gz"; done;
-				
-				 
+
+
 				echo TWOK' 1>/tmp/toto2 2>/tmp/toto3
-#/dev/null		   
+#/dev/null
 
 #for option in *.tar.gz; do   dir=${option/'.tar.gz'};   mkdir $dir;   tar xfz $option -C $dir; done
 
@@ -833,7 +843,7 @@ if [ "$option_web" = "1" ]; then
 					rc=1
 				fi
 				;;
-		
+
 		admin|fulladmin)
 				rsync -rpl --cvs-exclude --exclude=.cvsignore --exclude=site_hr_upload --exclude=templates_c --exclude=cache --exclude=config* $additional_exclude --delete-after -e ssh $verbose $FOLDER_HTTPD_SRC/$web_src/ $server:$folder_httpd/$web_dest
 				rc=0
@@ -855,7 +865,7 @@ if [ "$option_web" = "1" ]; then
 		esac
 
 		if [ "$rc" != "0" ]; then
-			echo "error ($rc)";	
+			echo "error ($rc)";
 			exit 1;
 		else
 			echo "done.";
@@ -865,7 +875,7 @@ if [ "$option_web" = "1" ]; then
 			rsync -rp --cvs-exclude --exclude=.cvsignore --exclude=config* $additional_exclude --delete-after -e ssh $verbose $FOLDER_HTTPD_SRC/$FOLDER_WEB_COMMON_SRC/ $server:$folder_httpd/$FOLDER_WEB_COMMON_DST
 			rc=$?
 			if [ "$rc" != "0" ]; then
-				echo "docommon:error ($rc)";	
+				echo "docommon:error ($rc)";
 				exit 1;
 			else
 				echo "done.";
@@ -878,7 +888,7 @@ if [ "$option_web" = "1" ]; then
 		#	rsync -rp --cvs-exclude --exclude=.cvsignore --exclude=config* $additional_exclude --delete-after -e ssh $verbose $FOLDER_HTTPD_SRC/web/html/travel/ $server:$folder_httpd/www.twenga/html/travel
 		#	rc=$?
 		#	if [ "$rc" != "0" ]; then
-		#		echo "dotravel:error ($rc)";	
+		#		echo "dotravel:error ($rc)";
 		#		exit 1;
 		#	else
 		#		echo "done.";
@@ -912,7 +922,7 @@ if [ "$option_tmpphoto" = "1" ]; then
 	fi
 	rc=$?
 	if [ "$rc" != "0" ]; then
-		echo "error ($rc)";	
+		echo "error ($rc)";
 		exit 1;
 	else
 		echo "done.";
@@ -927,7 +937,7 @@ if [ "$option_scripts" = "1" ]; then
 	fi
 
 	if [ "$scriptssrc" = "photo_crawler" ]; then
-		target_servers="$SERVER_PHOTO_CRAWLER"
+		target_servers="$SERVER_PHOTO_CRAWLER_ALL"
 		cd /home/prod/twengaweb/photo_crawler/; cvs up -d
 		echo "Deploying files on server Puppet-01 ..."
 		PUPPET_SRV="monitor09"
@@ -972,7 +982,7 @@ if [ "$option_scripts" = "1" ]; then
 			scp /home/prod/twenga/tools/start_photo_crawler $server:/home/prod/twenga/tools/start_photo_crawler
 		done
 	fi
-	
+
 	if [ "$scriptssrc" = "monitor" ]; then
 		target_servers="$SERVER_CRON"
 		for server in $target_servers;
@@ -1002,7 +1012,7 @@ if [ "$option_scripts" = "1" ]; then
 		cd /home/prod/twengaweb/twengaproject/pagekeyword/; cvs up -d
 		cd /home/prod/twengaweb/url_path/; cvs up -d
 		if [ "$scriptssrc" = "pagekeyword_staging" ]; then
-			target_servers="`echo $SERVER_WBATCH_ALL | tr ' ' '\n' | grep -v ^www | grep -v wbatch02 | grep -v wbatch03 | grep -v wbatch04 | grep -v wbatch05 | grep -v wbatch11 | grep -v wbatch12 | grep -v wbatch-02 | tr '\n' ' '`"
+			target_servers="`echo $SERVER_WBATCH_ALL | tr ' ' '\n' | grep -v ^www | grep -v wbatch02 | grep -v wbatch03 | grep -v wbatch04 | grep -v wbatch05 | grep -v wbatch11 | grep -v wbatch12 | grep -v wbatch-02 | grep -v wbatch-03 | tr '\n' ' '`"
 		fi
 		for server in $target_servers;
 		do
@@ -1088,7 +1098,8 @@ if [ "$option_scripts" = "1" ]; then
 	if [ "$scriptssrc" = "ebay" ]; then
 		cd /home/prod/twengaweb/scripts/special_feeds/ebay/; cvs up -d
         cd /home/prod/twengaweb/scripts/special_feeds/ebayClassifieds/; cvs up -d
-		target_servers="`grep "\bebay" /etc/hosts | awk '{print $2}' | cut -d '.' -f1 | uniq`"
+		#target_servers="`grep "\bebay" /etc/hosts | awk '{print $2}' | cut -d '.' -f1 | uniq`"
+		target_servers="$SERVER_EBAY_ALL"
 		for server in $target_servers;
 		do
 			echo "Deploying files on server $server ..."
@@ -1211,7 +1222,7 @@ if [ "$option_config" = "1" ]; then
                 ssh $server "/home/prod/bash_twenga_prod_to_travel /home/prod/.bash_twenga 2>/dev/null"
             fi
 			if [ "$rc" != "0" ]; then
-				echo "error ($rc)";	
+				echo "error ($rc)";
 				LST_SRV_ERR="$LST_SRV_ERR $server";
 				#exit 1;
 			fi
@@ -1222,7 +1233,7 @@ if [ "$option_config" = "1" ]; then
 	done < $TMPFILE
 
 	if [ "$configsrc" = "BASH_TWENGA" ]; then
-		for zserver in $SERVER_ADMIN ; 
+		for zserver in $SERVER_ADMIN ;
 		do
 			ssh $zserver "/home/prod/twenga/tools/build_config_db"
 			if [ "$zserver" = "dv2" ]; then
