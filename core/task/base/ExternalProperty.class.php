@@ -59,7 +59,7 @@ class Task_Base_ExternalProperty extends Task {
 		} catch (UnexpectedValueException $e) {
 			throw new UnexpectedValueException("Property '" . $this->aAttributes['name'] . "' undefined!");
 		}
-		$this->oProperties->addProperty($this->aAttributes['name'], $sValue);
+		$this->oProperties->setProperty($this->aAttributes['name'], $sValue);
 		$this->oLogger->unindent();
 	}
 

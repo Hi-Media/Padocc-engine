@@ -17,7 +17,7 @@ interface Properties_Interface {
 	 * @param string $sValue
 	 * @return Properties_Interface cette instance
 	 */
-	public function addProperty ($sPropertyName, $sValue);
+	public function setProperty ($sPropertyName, $sValue);
 
 	/**
 	 * Charge le fichier INI spécifié en ajoutant ou écrasant chacune de ses définitions aux propriétés existantes.

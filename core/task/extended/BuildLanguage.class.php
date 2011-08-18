@@ -85,7 +85,7 @@ class Task_Extended_BuildLanguage extends Task {
 
 		// Diffusion de l'archive :
 		$this->oLogger->log('Send language archive to servers');
-		$aDestDirs = $this->_expandPaths($this->aAttributes['destdir']);
+		$aDestDirs = $this->_processPath($this->aAttributes['destdir']);
 		foreach ($aDestDirs as $sDestDir) {
 			$aResult = $this->oShell->copy($sLanguagesPath, $sDestDir);
 			$sResult = implode("\n", $aResult);
