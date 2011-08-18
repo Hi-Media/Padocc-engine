@@ -49,6 +49,7 @@ class Deployment {
 				$aAvailableTargetsByProject[$sProjectName] = Tasks::getAvailableTargetsList($sProjectName);
 			}
 		}
+		ksort($aAvailableTargetsByProject);
 		return $aAvailableTargetsByProject;
 	}
 
