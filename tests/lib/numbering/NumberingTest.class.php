@@ -4,6 +4,8 @@ class NumberingTest extends PHPUnit_Framework_TestCase {
 
     const SEPARATOR = '#';
 
+    private $oNumbering;
+
     public function setUp () {
         $this->oNumbering = new Numbering_Adapter(self::SEPARATOR);
     }
