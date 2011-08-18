@@ -52,21 +52,21 @@ class ErrorHandler
      */
     private $excluded_paths;
 
-    public function __construct ($display_errors=true, $error_log_path='', $error_reporting=-1)
+    public function __construct ($bDisplayErrors=true, $sErrorLogPath='', $iErrorReporting=-1)
     {
-        $this->display_errors = $display_errors;
-        $this->error_log_path = $error_log_path;
-        $this->error_reporting = $error_reporting;
+        $this->display_errors = $bDisplayErrors;
+        $this->error_log_path = $sErrorLogPath;
+        $this->error_reporting = $iErrorReporting;
         $this->excluded_paths = array();
         $this->bIsRunningFromCLI = defined('STDIN');
 
-        error_reporting($error_reporting);
-        ini_set('display_errors', $display_errors);
+        error_reporting($iErrorReporting);
+        ini_set('display_errors', $bDisplayErrors);
         ini_set('log_errors', true);
         ini_set('html_errors', false);
-        ini_set('display_startup_errors',true);
-        if ($error_log_path !== '') {
-            ini_set('error_log', $error_log_path);
+        ini_set('display_startup_errors', true);
+        if ($sErrorLogPath !== '') {
+            ini_set('error_log', $sErrorLogPath);
         }
         ini_set('ignore_repeated_errors', true);
         ini_set('max_execution_time', 0);
@@ -86,34 +86,34 @@ class ErrorHandler
      * Utile par exemple pour exclure une librairie codée en PHP4 et donc dépréciée.
      * Le '/' en fin de chaîne n'est pas obligatoire.
      *
-     * @param string $path
+     * @param string $sPath
      */
-    public function addExcludedPath ($path)
+    public function addExcludedPath ($sPath)
     {
-        if (substr($path, -1) !== '/') {
-            $path .= '/';
+        if (substr($sPath, -1) !== '/') {
+            $sPath .= '/';
         }
-        $path = realpath($path);
-        if ( ! in_array($path, $this->excluded_paths)) {
-            $this->excluded_paths[] = $path;
+        $sPath = realpath($sPath);
+        if ( ! in_array($sPath, $this->excluded_paths)) {
+            $this->excluded_paths[] = $sPath;
         }
     }
 
     /**
      * Customized error handler function: throws an Exception with the message error if @ operator not used and error source is not in excluded paths.
      *
-     * @param int $errno level of the error raised.
-     * @param string $errstr the error message.
-     * @param string $errfile the filename that the error was raised in.
-     * @param int $errline the line number the error was raised at.
+     * @param int $iErrNo level of the error raised.
+     * @param string $sErrStr the error message.
+     * @param string $sErrFile the filename that the error was raised in.
+     * @param int $iErrLine the line number the error was raised at.
      * @return boolean true, then the normal error handler does not continues.
      * @see addExcludedPath()
      */
-    public function errorHandler ($errno, $errstr, $errfile, $errline)
+    public function errorHandler ($iErrNo, $sErrStr, $sErrFile, $iErrLine)
     {
         // Si l'erreur provient d'un répertoire exclu de ce handler, alors l'ignorer.
         foreach ($this->excluded_paths as $excluded_path) {
-            if (stripos($errfile, $excluded_path) === 0) {
+            if (stripos($sErrFile, $excluded_path) === 0) {
                 return true;
             }
         }
@@ -122,8 +122,8 @@ class ErrorHandler
             if (LOG_ERROR_SUPPRESSED)
                 ;//$debug->log("ERROR SUPRESSED WITH AN @ -- $errstr, $errfile, $errline");
         } else {
-            $msg = "[from error handler] " . self::$errorTypes[$errno] . " -- $errstr, in file: '$errfile', line $errline";
-            $oException = new ErrorException($msg, self::$iDefaultErrorCode, $errno, $errfile, $errline);
+            $msg = "[from error handler] " . self::$errorTypes[$iErrNo] . " -- $sErrStr, in file: '$sErrFile', line $iErrLine";
+            $oException = new ErrorException($msg, self::$iDefaultErrorCode, $iErrNo, $sErrFile, $iErrLine);
             //if ( ! $this->display_errors && $errno != E_ERROR) {
             //	$this->error_log($e);
             //} else {
@@ -148,25 +148,25 @@ class ErrorHandler
 
     /**
      *
-     * @param mixed $error
+     * @param mixed $mError
      */
-    public function error_log ($error)
+    public function error_log ($mError)
     {
         if ($this->display_errors) {
             if ($this->bIsRunningFromCLI) {
-                file_put_contents('php://stderr', $error . "\n", E_USER_ERROR);
-                $iErrorCode = ($error instanceof Exception ? $error->getCode() : self::$iDefaultErrorCode);
+                file_put_contents('php://stderr', $mError . "\n", E_USER_ERROR);
+                $iErrorCode = ($mError instanceof Exception ? $mError->getCode() : self::$iDefaultErrorCode);
                 exit($iErrorCode);
             } else {
-                print_r($error);
+                print_r($mError);
             }
         }
 
         if ( ! empty($this->error_log_path)) {
-            if (is_array($error) || (is_object($error) && ! ($error instanceof Exception))) {
-                $error = print_r($error, true);
+            if (is_array($mError) || (is_object($mError) && ! ($mError instanceof Exception))) {
+                $mError = print_r($mError, true);
             }
-            error_log($error);
+            error_log($mError);
         }
     }
 }
