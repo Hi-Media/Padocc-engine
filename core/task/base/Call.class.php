@@ -1,6 +1,7 @@
 <?php
 
-class Task_Base_Call extends Task_WithProperties {
+class Task_Base_Call extends Task_WithProperties
+{
 
     /**
      * Tâche appelée.
@@ -13,7 +14,8 @@ class Task_Base_Call extends Task_WithProperties {
      *
      * @return string nom du tag XML correspondant à cette tâche dans les config projet.
      */
-    public static function getTagName () {
+    public static function getTagName ()
+    {
         return 'call';
     }
 
@@ -25,7 +27,8 @@ class Task_Base_Call extends Task_WithProperties {
      * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
+    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer)
+    {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->aAttributeProperties = array_merge($this->aAttributeProperties, array(
             'target' => Task::ATTRIBUTE_REQUIRED
@@ -39,16 +42,20 @@ class Task_Base_Call extends Task_WithProperties {
         $this->oBoundTask = new Task_Base_Target($aTargets[0], $this->oProject, $sBackupPath, $this->oServiceContainer);
     }
 
-    public function setUp () {
+    public function setUp ()
+    {
         parent::setUp();
         $this->oBoundTask->setUp();
     }
 
-    public function execute () {
+    public function execute ()
+    {
         parent::execute();
         $this->oBoundTask->backup();
         $this->oBoundTask->execute();
     }
 
-    public function backup () {}
+    public function backup ()
+    {
+    }
 }

@@ -1,17 +1,18 @@
 <?php
 
-class Task_Base_Environment extends Task_Base_Target {
+class Task_Base_Environment extends Task_Base_Target
+{
 
     /**
      * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
      *
      * @return string nom du tag XML correspondant à cette tâche dans les config projet.
      */
-    public static function getTagName () {
+    public static function getTagName ()
+    {
         return 'env';
     }
 
-    private $oCopyTask;
     private $oLinkTask;
 
     /**
@@ -22,7 +23,8 @@ class Task_Base_Environment extends Task_Base_Target {
      * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
+    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer)
+    {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->aAttributeProperties = array_merge($this->aAttributeProperties, array(
             'name' => Task::ATTRIBUTE_REQUIRED,
@@ -62,13 +64,15 @@ class Task_Base_Environment extends Task_Base_Target {
      * @throws UnexpectedValueException en cas d'attribut ou fichier manquant
      * @throws DomainException en cas de valeur non permise
      */
-    public function check () {
+    public function check ()
+    {
         parent::check();
     }
 
     private $_aPathsToHandle;
 
-    private function analyzeRegisteredPaths () {
+    private function analyzeRegisteredPaths ()
+    {
         $this->_aPathsToHandle = array();
         $aPaths = array_keys(self::$aRegisteredPaths);
         //$this->oLogger->log(print_r($aPaths, true));
@@ -91,7 +95,8 @@ class Task_Base_Environment extends Task_Base_Target {
         $this->oProperties->setProperty('servers_concerned_with_base_dir', implode(' ', $aServersConcernedWithSymlinks));
     }
 
-    private function makeTransitionToSymlinks () {
+    private function makeTransitionToSymlinks ()
+    {
         $this->oProperties->setProperty('with_symlinks', 'false');
 
         $sBaseSymLink = $this->oProperties->getProperty('base_dir');
@@ -111,7 +116,8 @@ class Task_Base_Environment extends Task_Base_Target {
         $this->oProperties->setProperty('with_symlinks', 'true');
     }
 
-    private function makeTransitionFromSymlinks () {
+    private function makeTransitionFromSymlinks ()
+    {
         $sBaseSymLink = $this->oProperties->getProperty('base_dir');
         $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
@@ -127,7 +133,8 @@ class Task_Base_Environment extends Task_Base_Target {
         }
     }
 
-    private function initNewRelease () {
+    private function initNewRelease ()
+    {
         $this->oProperties->setProperty('with_symlinks', 'false');
 
         $sBaseSymLink = $this->oProperties->getProperty('base_dir');
@@ -148,7 +155,8 @@ class Task_Base_Environment extends Task_Base_Target {
         $this->oProperties->setProperty('with_symlinks', 'true');
     }
 
-    public function setUp () {
+    public function setUp ()
+    {
         if ($this->oProperties->getProperty('with_symlinks') === 'true') {
             array_push($this->aTasks, $this->oLinkTask);
         }
@@ -160,7 +168,8 @@ class Task_Base_Environment extends Task_Base_Target {
         }
     }
 
-    protected function _addMailTo () {
+    protected function _addMailTo ()
+    {
         $this->oLogger->indent();
         $this->analyzeRegisteredPaths();
         if ($this->oProperties->getProperty('with_symlinks') === 'true') {
@@ -174,7 +183,8 @@ class Task_Base_Environment extends Task_Base_Target {
         parent::_addMailTo();
     }
 
-    public function execute () {
+    public function execute ()
+    {
         parent::execute();
 
         if ($this->oProperties->getProperty('with_symlinks') === 'true') {

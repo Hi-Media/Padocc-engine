@@ -1,6 +1,7 @@
 <?php
 
-class Properties_Adapter implements Properties_Interface {
+class Properties_Adapter implements Properties_Interface
+{
 
     /**
      * @var array
@@ -13,7 +14,8 @@ class Properties_Adapter implements Properties_Interface {
      */
     private $oShell;
 
-    public function __construct (Shell_Interface $oShell) {
+    public function __construct (Shell_Interface $oShell)
+    {
         $this->aProperties = array();
         $this->oShell = $oShell;
     }
@@ -25,7 +27,8 @@ class Properties_Adapter implements Properties_Interface {
      * @return string valeur de la propriété spécifiée.
      * @throws UnexpectedValueException si propriété inconnue
      */
-    public function getProperty ($sPropertyName) {
+    public function getProperty ($sPropertyName)
+    {
         if ( ! isset($this->aProperties[strtolower($sPropertyName)])) {
             throw new UnexpectedValueException("Unknown property '$sPropertyName'!");
         }
@@ -39,7 +42,8 @@ class Properties_Adapter implements Properties_Interface {
      * @param string $sValue
      * @return Properties_Interface cette instance
      */
-    public function setProperty ($sPropertyName, $sValue) {
+    public function setProperty ($sPropertyName, $sValue)
+    {
         $this->aProperties[strtolower($sPropertyName)] = (string)$sValue;
     }
 
@@ -51,7 +55,8 @@ class Properties_Adapter implements Properties_Interface {
      * @throws RuntimeException si erreur de chargement du fichier INI
      * @throws UnexpectedValueException si fichier INI introuvable
      */
-    public function loadConfigIniFile ($sIniPath) {
+    public function loadConfigIniFile ($sIniPath)
+    {
         if ( ! file_exists($sIniPath)) {
             throw new UnexpectedValueException("Property file '$sIniPath' not found!");
         }
@@ -84,7 +89,8 @@ class Properties_Adapter implements Properties_Interface {
      * @throws RuntimeException si erreur de chargement du fichier
      * @throws UnexpectedValueException si fichier shell introuvable
      */
-    public function loadConfigShellFile ($sConfigShellPath) {
+    public function loadConfigShellFile ($sConfigShellPath)
+    {
         if ( ! file_exists($sConfigShellPath)) {
             throw new UnexpectedValueException("Property file '$sConfigShellPath' not found!");
         }

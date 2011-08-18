@@ -1,6 +1,7 @@
 <?php
 
-abstract class Task_WithProperties extends Task {
+abstract class Task_WithProperties extends Task
+{
 
     /**
      * Tâche de chargement des listes de serveurs Twenga sous-jacente.
@@ -16,7 +17,8 @@ abstract class Task_WithProperties extends Task {
      * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer) {
+    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer)
+    {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->aAttributeProperties = array(
             'propertyinifile' => Task::ATTRIBUTE_SRC_PATH,
@@ -34,7 +36,8 @@ abstract class Task_WithProperties extends Task {
         }
     }
 
-    protected function _loadProperties () {
+    protected function _loadProperties ()
+    {
         if ( ! empty($this->aAttributes['loadtwengaservers']) && $this->aAttributes['loadtwengaservers'] == 'true') {
             //$this->oLogger->log('Load Twenga servers');
             $this->oTwengaServersTask->execute();
@@ -49,7 +52,8 @@ abstract class Task_WithProperties extends Task {
         }
     }
 
-    public function setUp () {
+    public function setUp ()
+    {
         parent::setUp();
         if ($this->oTwengaServersTask !== NULL) {
             $this->oLogger->indent();
@@ -58,7 +62,8 @@ abstract class Task_WithProperties extends Task {
         }
     }
 
-    public function execute () {
+    public function execute ()
+    {
         parent::execute();
 
         $this->oLogger->indent();
@@ -66,5 +71,7 @@ abstract class Task_WithProperties extends Task {
         $this->oLogger->unindent();
     }
 
-    public function backup () {}
+    public function backup ()
+    {
+    }
 }

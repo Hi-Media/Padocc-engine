@@ -1,6 +1,7 @@
 <?php
 
-interface Logger_Interface {
+interface Logger_Interface
+{
 
     const DEBUG=10;
     const INFO=20;

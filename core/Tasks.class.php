@@ -1,6 +1,7 @@
 <?php
 
-class Tasks {
+class Tasks
+{
 
     private static $TYPES = array('base', 'extended');
 
@@ -12,7 +13,8 @@ class Tasks {
      * @return array tableau associatif des tâches disponibles : array('sTag' => 'sClassName', ...)
      * @throws LogicException si collision de nom de tag XML
      */
-    public static function getAvailableTasks () {
+    public static function getAvailableTasks ()
+    {
         if (count(self::$AVAILABLE_TASKS) === 0) {
             $aAvailableTasks = array();
             foreach (self::$TYPES as $sTaskType) {
@@ -40,7 +42,8 @@ class Tasks {
      * @throws UnexpectedValueException si fichier XML du projet non trouvé
      * @return SimpleXMLElement isntance du projet spécifié
      */
-    public static function getProject ($sProjectName) {
+    public static function getProject ($sProjectName)
+    {
         $sProjectFilename = DEPLOYMENT_RESOURCES_DIR . '/' . $sProjectName . '.xml';
         if ( ! file_exists($sProjectFilename)) {
             throw new UnexpectedValueException("Project definition not found: '$sProjectFilename'!");
@@ -48,7 +51,8 @@ class Tasks {
         return new SimpleXMLElement($sProjectFilename, NULL, true);
     }
 
-    public static function getAllProjectsName () {
+    public static function getAllProjectsName ()
+    {
         $aProjectName = array();
         if ($handle = opendir(DEPLOYMENT_RESOURCES_DIR)) {
             while ($file = readdir($handle)) {
@@ -69,7 +73,8 @@ class Tasks {
 
     // {"rts":["dev","qa","pre-prod"],"tests":["tests_gitexport","tests_languages","all_tests"],"wtpn":["prod"],"ptpn":["prod"]}
     // {"rts":{"dev":[],"qa":[],"pre-prod":[]},"tests":{"tests_gitexport":{"rts_ref":"Branch or tag to deploy"},"tests_languages":{"t1":"Branch","t2":"or tag","t3":"or tag"},"all_tests":[]},"wtpn":{"prod":[]},"ptpn":{"prod":[]}}
-    public static function getAvailableTargetsList ($sProjectName) {
+    public static function getAvailableTargetsList ($sProjectName)
+    {
         $oProject = self::getProject($sProjectName);
         $aTargets = $oProject->xpath("//env");
         $aTargetsList = array();
@@ -96,5 +101,7 @@ class Tasks {
     /**
      * Classe outil : pas d'instance.
      */
-    private function __construct () {}
+    private function __construct ()
+    {
+    }
 }

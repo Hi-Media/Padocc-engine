@@ -1,6 +1,7 @@
 <?php
 
-interface Properties_Interface {
+interface Properties_Interface
+{
 
     /**
      * Retourne la valeur de la propriété spécifiée.

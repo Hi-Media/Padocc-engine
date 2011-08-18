@@ -1,6 +1,7 @@
 <?php
 
-class ServiceContainer {
+class ServiceContainer
+{
 
     /**
      * Logger.
@@ -26,45 +27,54 @@ class ServiceContainer {
      */
     private $oNumbering;
 
-    public function __construct () {
+    public function __construct ()
+    {
         $this->oLogger = NULL;
         $this->oProperties = NULL;
         $this->oShell = NULL;
     }
 
-    public function setLogAdapter (Logger_IndentedInterface $oLogger) {
+    public function setLogAdapter (Logger_IndentedInterface $oLogger)
+    {
         $this->oLogger = $oLogger;
         return $this;
     }
 
-    public function setPropertiesAdapter (Properties_Interface $oProperties) {
+    public function setPropertiesAdapter (Properties_Interface $oProperties)
+    {
         $this->oProperties = $oProperties;
         return $this;
     }
 
-    public function setShellAdapter (Shell_Interface $oShell) {
+    public function setShellAdapter (Shell_Interface $oShell)
+    {
         $this->oShell = $oShell;
         return $this;
     }
 
-    public function setNumberingAdapter (Numbering_Interface $oNumbering) {
+    public function setNumberingAdapter (Numbering_Interface $oNumbering)
+    {
         $this->oNumbering = $oNumbering;
         return $this;
     }
 
-    public function getLogAdapter () {
+    public function getLogAdapter ()
+    {
         return $this->oLogger;
     }
 
-    public function getPropertiesAdapter () {
+    public function getPropertiesAdapter ()
+    {
         return $this->oProperties;
     }
 
-    public function getShellAdapter () {
+    public function getShellAdapter ()
+    {
         return $this->oShell;
     }
 
-    public function getNumberingAdapter () {
+    public function getNumberingAdapter ()
+    {
         return $this->oNumbering;
     }
 }

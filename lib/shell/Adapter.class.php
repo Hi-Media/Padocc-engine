@@ -1,6 +1,7 @@
 <?php
 
-class Shell_Adapter implements Shell_Interface {
+class Shell_Adapter implements Shell_Interface
+{
 
     private $aFileStatus;
 
@@ -12,7 +13,8 @@ class Shell_Adapter implements Shell_Interface {
      */
     private $oLogger;
 
-    public function __construct (Logger_Interface $oLogger) {
+    public function __construct (Logger_Interface $oLogger)
+    {
         $this->oLogger = $oLogger;
         $this->aFileStatus = array();
     }
@@ -25,7 +27,8 @@ class Shell_Adapter implements Shell_Interface {
      * @throws RuntimeException en cas d'erreur shell
      * @return array Tableau indexé du flux de sortie découpé par ligne
      */
-    public function exec ($sCmd) {
+    public function exec ($sCmd)
+    {
         $this->oLogger->log('[DEBUG] shell# ' . trim($sCmd), Logger_Interface::DEBUG);
         $sFullCmd = '( ' . $sCmd . ' ) 2>&1';
         exec($sFullCmd, $aResult, $iReturnCode);
@@ -44,7 +47,8 @@ class Shell_Adapter implements Shell_Interface {
      * @return array Tableau indexé du flux de sortie découpé par ligne
      * @see isRemotePath()
      */
-    public function execSSH ($sPatternCmd, $sParam) {
+    public function execSSH ($sPatternCmd, $sParam)
+    {
         list($bIsRemote, $aMatches) = $this->isRemotePath($sParam);
         $sCmd = sprintf($sPatternCmd, $this->escapePath($aMatches[2]));
         //$sCmd = vsprintf($sPatternCmd, array_map(array(self, 'escapePath'), $mParams));
@@ -66,7 +70,8 @@ class Shell_Adapter implements Shell_Interface {
      * @param string $sPath chemin à tester
      * @return int 0 si le chemin spécifié n'existe pas, 1 si c'est un fichier, 2 si c'est un répertoire.
      */
-    public function getFileStatus ($sPath) {
+    public function getFileStatus ($sPath)
+    {
         if (isset($this->aFileStatus[$sPath])) {
             $iStatus = $this->aFileStatus[$sPath];
         } else {
@@ -91,7 +96,8 @@ class Shell_Adapter implements Shell_Interface {
      * @return array
      * @throws DomainException si syntaxe invalide
      */
-    public function isRemotePath ($sPath) {
+    public function isRemotePath ($sPath)
+    {
         if (preg_match('/\$\{[^}]*\}/i', $sPath) === 1) {
             throw new DomainException("Invalid syntax: '$sPath'.");
         }
@@ -106,14 +112,15 @@ class Shell_Adapter implements Shell_Interface {
     // TODO ajouter gestion tar/gz
     // TODO ajouter gestion destfile
     // TODO a priori, $sSrcPath est un $sSrcFilePath
-    public function copy ($sSrcPath, $sDestPath, $bIsDestFile=false) {
+    public function copy ($sSrcPath, $sDestPath, $bIsDestFile=false)
+    {
         if ($bIsDestFile) {
             $this->mkdir(pathinfo($sDestPath, PATHINFO_DIRNAME));
         } else {
             $this->mkdir($sDestPath);
         }
-        list($bIsSrcRemote, $aSrcMatches) = $this->isRemotePath($sSrcPath);
-        list($bIsDestRemote, $aDestMatches) = $this->isRemotePath($sDestPath);
+        list(, $aSrcMatches) = $this->isRemotePath($sSrcPath);
+        list(, $aDestMatches) = $this->isRemotePath($sDestPath);
 
         if ($aSrcMatches[1] != $aDestMatches[1]) {
             $sCmd = 'scp -rpq ' . $this->escapePath($sSrcPath) . ' ' . $this->escapePath($sDestPath);
@@ -131,8 +138,9 @@ class Shell_Adapter implements Shell_Interface {
      * @param string $sTargetPath cible sur laquelle faire pointer le lien
      * @see Shell_Interface::createLink()
      */
-    public function createLink ($sLinkPath, $sTargetPath) {
-        list($bIsSrcRemote, $aSrcMatches) = $this->isRemotePath($sTargetPath);
+    public function createLink ($sLinkPath, $sTargetPath)
+    {
+        list(, $aSrcMatches) = $this->isRemotePath($sTargetPath);
         return $this->execSSH('mkdir -p "$(dirname %1$s)" && ln -snf "' . $aSrcMatches[2] . '" %1$s', $sLinkPath);
     }
 
@@ -144,7 +152,8 @@ class Shell_Adapter implements Shell_Interface {
      * @param string $sPath
      * @return string
      */
-    public function escapePath ($sPath) {
+    public function escapePath ($sPath)
+    {
         $sEscapedPath = preg_replace('#(\*|\?)#', '"\1"', '"' . $sPath . '"');
         $sEscapedPath = str_replace('""', '', $sEscapedPath);
         return $sEscapedPath;
@@ -158,7 +167,8 @@ class Shell_Adapter implements Shell_Interface {
      * @return array Tableau indexé du flux de sortie découpé par ligne
      * @throws DomainException si chemin invalide
      */
-    public function remove ($sPath) {
+    public function remove ($sPath)
+    {
         $sPath = trim($sPath);
 
         // Garde-fou :
@@ -179,9 +189,10 @@ cd `dirname /home/gaubry/deployment_test/a3.txt`; tar cfpz /home/gaubry/deployme
 cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubry/deployment_test/T"`.tar.gz
 cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubry/deployment_test/a3.txt"`.tar.gz
      */
-    public function backup ($sSrcPath, $sBackupPath) {
+    public function backup ($sSrcPath, $sBackupPath)
+    {
         list($bIsSrcRemote, $aSrcMatches) = $this->isRemotePath($sSrcPath);
-        list($bIsBackupRemote, $aBackupMatches) = $this->isRemotePath($sBackupPath);
+        list(, $aBackupMatches) = $this->isRemotePath($sBackupPath);
 
         if ($aSrcMatches[1] != $aBackupMatches[1]) {
             $sTmpDir = ($bIsSrcRemote ? $aSrcMatches[1]. ':' : '') . '/tmp/' . uniqid('deployment_', true);
@@ -206,7 +217,8 @@ cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubr
         }
     }
 
-    public function mkdir ($sPath, $sMode='') {
+    public function mkdir ($sPath, $sMode='')
+    {
         if ($sMode !== '') {
             $sMode = "-m $sMode ";
         }
@@ -224,7 +236,8 @@ t="$(tempfile)"; ls sss 2>>$t & ls dfhdfh 2>>$t & wait; [ ! -s "$t" ] && echo ">
 
 rsync  --bwlimit=4000
      */
-    public function sync ($sSrcPath, $mDestPath, array $aExcludedPaths=array()) {
+    public function sync ($sSrcPath, $mDestPath, array $aExcludedPaths=array())
+    {
         $aPaths = (is_array($mDestPath) ? $mDestPath : array($mDestPath));
 
         $aAllResults = array();
@@ -253,7 +266,8 @@ rsync  --bwlimit=4000
         return $aAllResults;
     }
 
-    private function _resumeSyncResult (array $aRawResult) {
+    private function _resumeSyncResult (array $aRawResult)
+    {
         $aKeys = array(
             'number of files',
             'number of files transferred',
