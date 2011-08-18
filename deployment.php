@@ -71,7 +71,7 @@ include_once(DEPLOYMENT_LIB_DIR . '/ErrorHandler.class.php');
 include_once(DEPLOYMENT_LIB_DIR . '/bootstrap.inc.php');
 
 if (function_exists('xdebug_disable')) {
-	xdebug_disable();
+    xdebug_disable();
 }
 
 // On supprime le 1er paramètre correspondant au nom du script courant :
@@ -79,20 +79,20 @@ $argc--;
 array_shift($argv);
 
 if ($argc == 1 && $argv[0] === "--getProjectsEnvsList") {
-	new ErrorHandler(false);
-	$oDeployment = new Deployment();
-	$aProjectsEnvsList = $oDeployment->getProjectsEnvsList();
-	echo json_encode($aProjectsEnvsList);
+    new ErrorHandler(false);
+    $oDeployment = new Deployment();
+    $aProjectsEnvsList = $oDeployment->getProjectsEnvsList();
+    echo json_encode($aProjectsEnvsList);
 } else if ($argc < 4) {
-	file_put_contents('php://stderr', 'Missing parameters! Supplied parameters: ' . print_r($argv, true) . ' Example: /usr/bin/php -q ~/deployment/deployment.php project1 dev 20110518121106 /tmp/deployment.php.20110518121106.error.log', E_USER_ERROR);
-	exit(1);
+    file_put_contents('php://stderr', 'Missing parameters! Supplied parameters: ' . print_r($argv, true) . ' Example: /usr/bin/php -q ~/deployment/deployment.php project1 dev 20110518121106 /tmp/deployment.php.20110518121106.error.log', E_USER_ERROR);
+    exit(1);
 } else {
-	$sErrorLogFile = array_pop($argv);
-	$sExecutionID = array_pop($argv);
-	$sProjectName = array_shift($argv);
-	$sEnvName = array_shift($argv);
+    $sErrorLogFile = array_pop($argv);
+    $sExecutionID = array_pop($argv);
+    $sProjectName = array_shift($argv);
+    $sEnvName = array_shift($argv);
 
-	new ErrorHandler(false, $sErrorLogFile);
-	$oDeployment = new Deployment();
-	$oDeployment->run($sProjectName, $sEnvName, $sExecutionID, $argv);
+    new ErrorHandler(false, $sErrorLogFile);
+    $oDeployment = new Deployment();
+    $oDeployment->run($sProjectName, $sEnvName, $sExecutionID, $argv);
 }

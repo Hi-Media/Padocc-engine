@@ -5,16 +5,16 @@ module="$2"
 srcdir="$3"
 
 if [ -z "$repository" ] || [ -z "$module" ] || [ -z "$srcdir" ]; then
-	echo 'Missing parameters!' >&2
-	exit 1
+    echo 'Missing parameters!' >&2
+    exit 1
 fi
 
 if [ -d "$srcdir/$module" ]; then
-	echo "CVS: reset local repository"
-	cd "$srcdir" && rm -rf * || exit $?
+    echo "CVS: reset local repository"
+    cd "$srcdir" && rm -rf * || exit $?
 elif [ ! -d "$srcdir" ]; then
-	echo "CVS: create directory"
-	mkdir -p "$srcdir" || exit $?
+    echo "CVS: create directory"
+    mkdir -p "$srcdir" || exit $?
 fi
 
 echo "CVS: export '$repository'"
