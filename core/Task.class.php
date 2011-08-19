@@ -267,8 +267,8 @@ abstract class Task
             $sBaseSymLink = $this->oProperties->getProperty('base_dir');
             $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX . '/' . $this->oProperties->getProperty('execution_id');
             for ($i=0, $iMax=count($aPaths); $i<$iMax; $i++) {
-                if (preg_match('#^(.*?:)?' . preg_quote($sBaseSymLink, '#') . '\b#', $aPaths[$i]) === 1) {
-                    $sNewPath = str_replace($sBaseSymLink, $sReleaseSymLink, $aPaths[$i]);
+                if (preg_match('#^(.*?:)' . preg_quote($sBaseSymLink, '#') . '\b#', $aPaths[$i], $aMatches) === 1) {
+                    $sNewPath = str_replace($aMatches[1] . $sBaseSymLink, $aMatches[1] . $sReleaseSymLink, $aPaths[$i]);
                     $aPaths[$i] = $sNewPath;
                 }
             }

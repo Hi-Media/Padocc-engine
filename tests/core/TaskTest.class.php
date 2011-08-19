@@ -573,12 +573,14 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $aSrc = array(
             $sBaseDir,
             $sBaseDir . '/subdir',
-            'user@server:' . $sBaseDir . '/sub/subdir'
+            'user@server:' . $sBaseDir,
+            'user@server:' . $sBaseDir . '/subdir'
         );
         $aDest = array(
-            $sBaseDir . Task::RELEASES_DIRECTORY_SUFFIX . '/12345',
-            $sBaseDir . Task::RELEASES_DIRECTORY_SUFFIX . '/12345/subdir',
-            'user@server:' . $sBaseDir . Task::RELEASES_DIRECTORY_SUFFIX . '/12345/sub/subdir'
+            $sBaseDir,
+            $sBaseDir . '/subdir',
+            'user@server:' . $sBaseDir . Task::RELEASES_DIRECTORY_SUFFIX . '/12345',
+            'user@server:' . $sBaseDir . Task::RELEASES_DIRECTORY_SUFFIX . '/12345/subdir'
         );
 
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);

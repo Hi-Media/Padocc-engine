@@ -59,7 +59,13 @@ class Task_Base_Copy extends Task
     {
         parent::execute();
         $this->oLogger->indent();
-        $this->oShell->copy($this->aAttributes['src'], $this->aAttributes['destdir']);
+
+        $aDestDirs = $this->_processPath($this->aAttributes['destdir']);
+        foreach ($aDestDirs as $sDestDir) {
+            $this->oShell->copy($this->aAttributes['src'], $sDestDir);
+        }
+
+        //$this->oShell->copy($this->aAttributes['src'], $this->aAttributes['destdir']);
         $this->oLogger->unindent();
     }
 
