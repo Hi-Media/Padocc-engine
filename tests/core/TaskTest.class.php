@@ -301,6 +301,49 @@ class TaskTest extends PHPUnit_Framework_TestCase {
     /**
      * @covers Task::check
      */
+    public function testCheckThrowExceptionIfBadBooleanAttribute () {
+        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $o = new ReflectionClass($oMockTask);
+
+        $oProperty = $o->getProperty('aAttributeProperties');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array('b' => Task::ATTRIBUTE_BOOLEAN));
+
+        $oProperty = $o->getProperty('aAttributes');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array('b' => 'not a boolean'));
+
+        $this->setExpectedException('DomainException');
+        $oMockTask->check();
+    }
+
+    /**
+     * @covers Task::check
+     */
+    public function testCheckBooleanAttribute () {
+        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $o = new ReflectionClass($oMockTask);
+
+        $oProperty = $o->getProperty('aAttributeProperties');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array(
+            'b_true' => Task::ATTRIBUTE_BOOLEAN,
+            'b_false' => Task::ATTRIBUTE_BOOLEAN
+        ));
+
+        $oProperty = $o->getProperty('aAttributes');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array('b_true' => 'true'));
+        $oProperty->setValue($oMockTask, array('b_false' => 'true'));
+
+        $oMockTask->check();
+    }
+
+    /**
+     * @covers Task::check
+     */
     public function testCheckFileJokerWithFilejokerAttribute () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
         $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
@@ -379,5 +422,222 @@ class TaskTest extends PHPUnit_Framework_TestCase {
 
         $this->setExpectedException('RuntimeException');
         $oMockTask->check();
+    }
+
+    /**
+     * @covers Task::getTagName
+     */
+    public function testGetTagNameThrowException () {
+        $this->setExpectedException('RuntimeException');
+        Task::getTagName();
+    }
+
+    /**
+     * @covers Task::getNewInstance
+     */
+    public function testGetNewInstanceThrowException () {
+        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+        $this->setExpectedException('RuntimeException');
+        Task::getNewInstance(array(), $oMockProject, '', $this->oServiceContainer);
+    }
+
+    /**
+     * @covers Task::getNewInstance
+     * @covers Task::_fetchAttributes
+     * @covers Task::__construct
+     */
+    public function testGetNewInstanceOk () {
+        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+        $oTaskCopy = Task_Base_Copy::getNewInstance(array('attr1' => 'v1', 'attr2' => 'v2'), $oMockProject, '', $this->oServiceContainer);
+        $this->assertAttributeEquals(array('attr1' => 'v1', 'attr2' => 'v2'), 'aAttributes', $oTaskCopy);
+    }
+
+    /**
+     * @covers Task::_reroutePaths
+     */
+    public function testReroutePathsWithoutSymlinksWithEmptyPath () {
+        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+
+        $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array(), '', false);
+        $oMockProperties->expects($this->at(0))->method('getProperty')
+            ->with($this->equalTo('with_symlinks'))
+            ->will($this->returnValue('false'));
+        $oMockProperties->expects($this->exactly(1))->method('getProperty');
+        $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
+
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+
+        $oClass = new ReflectionClass($oMockTask);
+        $oMethod = $oClass->getMethod('_reroutePaths');
+        $oMethod->setAccessible(true);
+
+        $aResult = $oMethod->invokeArgs($oMockTask, array(array()));
+        $this->assertEquals(array(), $aResult);
+    }
+
+    /**
+     * @covers Task::_reroutePaths
+     */
+    public function testReroutePathsWithoutSymlinks () {
+        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+
+        $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array(), '', false);
+        $oMockProperties->expects($this->at(0))->method('getProperty')
+            ->with($this->equalTo('with_symlinks'))
+            ->will($this->returnValue('false'));
+        $oMockProperties->expects($this->exactly(1))->method('getProperty');
+        $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
+
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+
+        $oClass = new ReflectionClass($oMockTask);
+        $oMethod = $oClass->getMethod('_reroutePaths');
+        $oMethod->setAccessible(true);
+
+        $aResult = $oMethod->invokeArgs($oMockTask, array(array('/path/to/my_dir', 'user@server:/other/path')));
+        $this->assertEquals(array('/path/to/my_dir', 'user@server:/other/path'), $aResult);
+    }
+
+    /**
+     * @covers Task::_reroutePaths
+     */
+    public function testReroutePathsWithSymlinksWithEmptyPath () {
+        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+
+        $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array(), '', false);
+        $oMockProperties->expects($this->at(0))->method('getProperty')
+            ->with($this->equalTo('with_symlinks'))
+            ->will($this->returnValue('true'));
+        $oMockProperties->expects($this->at(1))->method('getProperty')
+            ->with($this->equalTo('base_dir'))
+            ->will($this->returnValue('/path/to/base_dir'));
+        $oMockProperties->expects($this->at(2))->method('getProperty')
+            ->with($this->equalTo('execution_id'))
+            ->will($this->returnValue('12345'));
+        $oMockProperties->expects($this->exactly(3))->method('getProperty');
+        $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
+
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+
+        $oClass = new ReflectionClass($oMockTask);
+        $oMethod = $oClass->getMethod('_reroutePaths');
+        $oMethod->setAccessible(true);
+
+        $aResult = $oMethod->invokeArgs($oMockTask, array(array()));
+        $this->assertEquals(array(), $aResult);
+    }
+
+    /**
+     * @covers Task::_reroutePaths
+     */
+    public function testReroutePathsWithSymlinksWithNoReroute () {
+        $sBaseDir = '/path/to/basedir';
+        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+
+        $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array(), '', false);
+        $oMockProperties->expects($this->at(0))->method('getProperty')
+            ->with($this->equalTo('with_symlinks'))
+            ->will($this->returnValue('true'));
+        $oMockProperties->expects($this->at(1))->method('getProperty')
+            ->with($this->equalTo('base_dir'))
+            ->will($this->returnValue($sBaseDir));
+        $oMockProperties->expects($this->at(2))->method('getProperty')
+            ->with($this->equalTo('execution_id'))
+            ->will($this->returnValue('12345'));
+        $oMockProperties->expects($this->exactly(3))->method('getProperty');
+        $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
+
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+
+        $oClass = new ReflectionClass($oMockTask);
+        $oMethod = $oClass->getMethod('_reroutePaths');
+        $oMethod->setAccessible(true);
+
+        $aSrc = array(
+            $sBaseDir .'trapped',
+            '/path/to/elsewhere',
+            '/bad' . $sBaseDir,
+            'user@server:/other/path',
+            'user@server:/bad' . $sBaseDir
+        );
+        $aDest = $aSrc;
+        $aResult = $oMethod->invokeArgs($oMockTask, array($aSrc));
+        $this->assertEquals($aDest, $aResult);
+    }
+
+    /**
+     * @covers Task::_reroutePaths
+     */
+    public function testReroutePathsWithSymlinksWithReroute () {
+        $sBaseDir = '/path/to/basedir';
+        $aSrc = array(
+            $sBaseDir,
+            $sBaseDir . '/subdir',
+            'user@server:' . $sBaseDir . '/sub/subdir'
+        );
+        $aDest = array(
+            $sBaseDir . Task::RELEASES_DIRECTORY_SUFFIX . '/12345',
+            $sBaseDir . Task::RELEASES_DIRECTORY_SUFFIX . '/12345/subdir',
+            'user@server:' . $sBaseDir . Task::RELEASES_DIRECTORY_SUFFIX . '/12345/sub/subdir'
+        );
+
+        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+
+        $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array(), '', false);
+        $oMockProperties->expects($this->at(0))->method('getProperty')
+            ->with($this->equalTo('with_symlinks'))
+            ->will($this->returnValue('true'));
+        $oMockProperties->expects($this->at(1))->method('getProperty')
+            ->with($this->equalTo('base_dir'))
+            ->will($this->returnValue($sBaseDir));
+        $oMockProperties->expects($this->at(2))->method('getProperty')
+            ->with($this->equalTo('execution_id'))
+            ->will($this->returnValue('12345'));
+        $oMockProperties->expects($this->exactly(3))->method('getProperty');
+        $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
+
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oClass = new ReflectionClass($oMockTask);
+        $oMethod = $oClass->getMethod('_reroutePaths');
+        $oMethod->setAccessible(true);
+        $aResult = $oMethod->invokeArgs($oMockTask, array($aSrc));
+        $this->assertEquals($aDest, $aResult);
+    }
+
+
+    /**
+     * @covers Task::_registerPaths
+     */
+    public function testRegisterPaths () {
+        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oClass = new ReflectionClass($oMockTask);
+
+        $oProperty = $oClass->getProperty('aAttributeProperties');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array(
+            'srcpath' => Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_FILE,
+            'srcdir' => Task::ATTRIBUTE_DIR,
+            'srcfile' => Task::ATTRIBUTE_FILE,
+            'other' => 0
+        ));
+
+        $oProperty = $oClass->getProperty('aAttributes');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array(
+            'srcpath' => '/path/to/srcpath',
+            'srcdir' => 'user@server:/path/to/srcdir',
+            'srcfile' => '/path/to/srcfile',
+            'other' => '/path/to/other',
+        ));
+
+        $oMethod = $oClass->getMethod('_registerPaths');
+        $oMethod->setAccessible(true);
+        $oMethod->invokeArgs($oMockTask, array());
+        $this->assertAttributeEquals(array(
+            'user@server:/path/to/srcdir' => true,
+            '/path/to/srcfile' => true,
+            '/path/to/srcpath' => true
+        ), 'aRegisteredPaths', 'Task');
     }
 }

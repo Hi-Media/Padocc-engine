@@ -65,6 +65,6 @@ class Task_Base_Project extends Task_WithProperties
 
     public function getSXE ()
     {
-        return $this->oTask;
+        return $this->oXMLTask;
     }
 }

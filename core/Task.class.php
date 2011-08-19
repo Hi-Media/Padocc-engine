@@ -52,6 +52,12 @@ abstract class Task
     const ATTRIBUTE_BOOLEAN = 128;
 
     /**
+     * Suffixe concaténé au base directory pour obtenir le nom du répertoire regroupant les différentes releases.
+     * @var string
+     */
+    const RELEASES_DIRECTORY_SUFFIX = '_releases';
+
+    /**
      * Compteur d'instances pour s'y retrouver dans les backups des tâches.
      * @var Numbering_Interface
      * @see $sName
@@ -87,7 +93,7 @@ abstract class Task
      * Contenu XML de la tâche.
      * @var SimpleXMLElement
      */
-    protected $oTask;
+    protected $oXMLTask;
 
     /**
      * @var Task_Base_Project
@@ -141,10 +147,11 @@ abstract class Task
      * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
      *
      * @return string nom du tag XML correspondant à cette tâche dans les config projet.
+     * @throws RuntimeException si appelée directement sur Task.
      */
     public static function getTagName ()
     {
-        throw new RuntimeException('Not implemented!');
+        throw new RuntimeException('Not implemented at this level!');
     }
 
     /**
@@ -156,6 +163,7 @@ abstract class Task
      * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
      * @return Task
+     * @throws RuntimeException si appelée directement sur Task.
      */
     public static function getNewInstance (array $aAttributes, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer)
     {
@@ -177,9 +185,9 @@ abstract class Task
      * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer)
+    public function __construct (SimpleXMLElement $oXMLTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer)
     {
-        $this->oTask = $oTask;
+        $this->oXMLTask = $oXMLTask;
         $this->oProject = $oProject;
 
         $this->oServiceContainer = $oServiceContainer;
@@ -201,7 +209,7 @@ abstract class Task
     protected function _fetchAttributes ()
     {
         $this->aAttributes = array();
-        foreach ($this->oTask->attributes() as $key => $val) {
+        foreach ($this->oXMLTask->attributes() as $key => $val) {
             $this->aAttributes[$key] = (string)$val;
         }
     }
@@ -257,9 +265,9 @@ abstract class Task
     {
         if ($this->oProperties->getProperty('with_symlinks') === 'true') {
             $sBaseSymLink = $this->oProperties->getProperty('base_dir');
-            $sReleaseSymLink = $sBaseSymLink . '_releases/' . $this->oProperties->getProperty('execution_id');
+            $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX . '/' . $this->oProperties->getProperty('execution_id');
             for ($i=0, $iMax=count($aPaths); $i<$iMax; $i++) {
-                if (preg_match('#' . preg_quote($sBaseSymLink, '#') . '\b#', $aPaths[$i]) === 1) {
+                if (preg_match('#^(.*?:)?' . preg_quote($sBaseSymLink, '#') . '\b#', $aPaths[$i]) === 1) {
                     $sNewPath = str_replace($sBaseSymLink, $sReleaseSymLink, $aPaths[$i]);
                     $aPaths[$i] = $sNewPath;
                 }
@@ -278,6 +286,7 @@ abstract class Task
                 self::$aRegisteredPaths[$this->aAttributes[$sAttribute]] = true;
             }
         }
+        ksort(self::$aRegisteredPaths);
     }
 
     public function setUp ()
