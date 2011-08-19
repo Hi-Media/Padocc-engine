@@ -15,6 +15,29 @@ class Task_Base_Target extends Task_WithProperties
         return 'target';
     }
 
+    // {"rts":["dev","qa","pre-prod"],"tests":["tests_gitexport","tests_languages","all_tests"],"wtpn":["prod"],"ptpn":["prod"]}
+    // {"rts":{"dev":[],"qa":[],"pre-prod":[]},"tests":{"tests_gitexport":{"rts_ref":"Branch or tag to deploy"},"tests_languages":{"t1":"Branch","t2":"or tag","t3":"or tag"},"all_tests":[]},"wtpn":{"prod":[]},"ptpn":{"prod":[]}}
+    public static function getAvailableTargetsList ($sProjectName)
+    {
+        $oXMLProject = Task_Base_Project::getProject($sProjectName);
+        $aTargets = $oXMLProject->xpath("//env");
+        $aTargetsList = array();
+        foreach ($aTargets as $oTarget) {
+            $sEnvName = (string)$oTarget['name'];
+
+            $aExternalProperties = $oXMLProject->xpath("//env[@name='$sEnvName']/externalproperty");
+            $aExternalPropertiesList = array();
+            foreach ($aExternalProperties as $oExternalProperty) {
+                $sName = (string)$oExternalProperty['name'];
+                $sDesc = (string)$oExternalProperty['description'];
+                $aExternalPropertiesList[$sName] = $sDesc;
+            }
+            $aTargetsList[$sEnvName] = $aExternalPropertiesList;
+        }
+
+        return $aTargetsList;
+    }
+
     /**
      * Constructeur.
      *
@@ -36,6 +59,42 @@ class Task_Base_Target extends Task_WithProperties
     }
 
     /**
+     *
+     * Enter description here ...
+     * @var array
+     * @see getAvailableTasks()
+     */
+    private static $aAvailableTasks = array();
+
+    /**
+     * Retourne un tableau associatif décrivant les tâches disponibles.
+     *
+     * @return array tableau associatif des tâches disponibles : array('sTag' => 'sClassName', ...)
+     * @throws LogicException si collision de nom de tag XML
+     */
+    private static function getAvailableTasks ()
+    {
+        if (count(self::$aAvailableTasks) === 0) {
+            $aAvailableTasks = array();
+            foreach (array('base', 'extended') as $sTaskType) {
+                $sTaskPaths = glob(DEPLOYMENT_TASKS_DIR . "/$sTaskType/*.class.php");
+                foreach ($sTaskPaths as $sTaskPath) {
+                    $sClassName = strstr(substr(strrchr($sTaskPath, '/'), 1), '.', true);
+                    $sFullClassName = 'Task_' . ucfirst($sTaskType) . '_' . $sClassName;
+                    $sTag = $sFullClassName::getTagName();
+                    if (isset($aAvailableTasks[$sTag])) {
+                        throw new LogicException("Already defined task tag '$sTag' in '$aAvailableTasks[$sTag]'!");
+                    } else if ($sTag != 'project') {
+                        $aAvailableTasks[$sTag] = $sFullClassName;
+                    }
+                }
+            }
+            self::$aAvailableTasks = $aAvailableTasks;
+        }
+        return self::$aAvailableTasks;
+    }
+
+    /**
      * Retourne la liste des instances de tâches correspondant à chacune des tâches XML devant être exécutée
      * à l'intérieur du noeud XML spécifié.
      *
@@ -49,7 +108,7 @@ class Task_Base_Target extends Task_WithProperties
     private function getTaskInstances (SimpleXMLElement $oTarget, Task_Base_Project $oProject, $sBackupPath)
     {
         $this->oLogger->log('Initialize tasks');
-        $aAvailableTasks = Tasks::getAvailableTasks();
+        $aAvailableTasks = self::getAvailableTasks();
 
         // Mise à plat des tâches car SimpleXML regroupe celles successives de même nom
         // dans un tableau et les autres sont hors tableau :
