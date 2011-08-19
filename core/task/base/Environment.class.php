@@ -43,7 +43,7 @@ class Task_Base_Environment extends Task_Base_Target
         if ($this->oProperties->getProperty('with_symlinks') === 'true') {
             $this->oNumbering->addCounterDivision();
             $sBaseSymLink = $this->oProperties->getProperty('base_dir');
-            $sReleaseSymLink = $sBaseSymLink . '_releases/' . $this->oProperties->getProperty('execution_id');
+            $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX . '/' . $this->oProperties->getProperty('execution_id');
             $this->oLinkTask = Task_Base_Link::getNewInstance(array(
                 'src' => $sBaseSymLink,
                 'target' => $sReleaseSymLink,
@@ -67,6 +67,9 @@ class Task_Base_Environment extends Task_Base_Target
     public function check ()
     {
         parent::check();
+        if ($this->aAttributes['basedir'][0] !== '/') {
+            throw new DomainException("Attribute 'basedir' must begin by a '/'!");
+        }
     }
 
     private $_aPathsToHandle;
@@ -105,7 +108,7 @@ class Task_Base_Environment extends Task_Base_Target
             if ($this->oShell->getFileStatus($sExpandedPath) === 2) {
                 list(, $aMatches) = $this->oShell->isRemotePath($sExpandedPath);
                 $sDir = $sExpandedPath . '/*';
-                $sOriginRelease = $aMatches[1] . ':' . $sBaseSymLink . '_releases/' . $this->oProperties->getProperty('execution_id') . '_origin';
+                $sOriginRelease = $aMatches[1] . ':' . $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX . '/' . $this->oProperties->getProperty('execution_id') . '_origin';
                 $this->oLogger->log("Backup '$sDir' to '$sOriginRelease'.");
                 $this->oShell->copy($sDir, $sOriginRelease);
                 $this->oShell->remove($sExpandedPath);
@@ -139,7 +142,7 @@ class Task_Base_Environment extends Task_Base_Target
 
         $sBaseSymLink = $this->oProperties->getProperty('base_dir');
         $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
-        $sReleaseSymLink = $sBaseSymLink . '_releases/' . $this->oProperties->getProperty('execution_id');
+        $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX . '/' . $this->oProperties->getProperty('execution_id');
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
             list(, $aMatches) = $this->oShell->isRemotePath($sExpandedPath);
             $sDir = $sExpandedPath . '/*';
