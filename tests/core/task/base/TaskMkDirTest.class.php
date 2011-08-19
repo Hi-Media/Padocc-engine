@@ -120,7 +120,7 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
     /**
      * @covers Task_Base_MkDir::execute
      */
-    public function testExecuteWithModeAndSymLink () {
+    public function testExecuteWithModeAndSymLinks () {
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
@@ -134,11 +134,13 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
         $oMockProperties->expects($this->exactly(3))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTask = Task_Base_MkDir::getNewInstance(array('destdir' => '/path/to/destdir/subdir', 'mode' => '755'), $this->oMockProject, '', $this->oServiceContainer);
+        $oTask = Task_Base_MkDir::getNewInstance(array('destdir' => 'user@server:/path/to/destdir/subdir', 'mode' => '755'), $this->oMockProject, '', $this->oServiceContainer);
         $oTask->setUp();
         $oTask->execute();
         $this->assertEquals(array(
-            'mkdir -m 755 -p "/path/to/destdir_releases/12345/subdir"'
+            'ssh -T user@server /bin/bash <<EOF' . "\n"
+                . 'mkdir -m 755 -p "/path/to/destdir_releases/12345/subdir"' . "\n"
+                . 'EOF' . "\n"
         ), $this->aShellExecCmds);
     }
 
