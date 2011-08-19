@@ -46,11 +46,12 @@ class Task_Base_Copy extends Task
         // TODO si *|? alors s'assurer qu'il en existe ?
         // TODO droit seulement à \w et / et ' ' ?
         parent::check();
-        if (preg_match('#\*|\?#', $this->aAttributes['src']) === 0) {
-            if ($this->oShell->getFileStatus($this->aAttributes['src']) === 2) {
+        if (
+                preg_match('#\*|\?#', $this->aAttributes['src']) === 0
+                && $this->oShell->getFileStatus($this->aAttributes['src']) === 2
+        ) {
                 $this->aAttributes['destdir'] .= '/' . substr(strrchr($this->aAttributes['src'], '/'), 1);
                 $this->aAttributes['src'] .= '/*';
-            }
         }
     }
 
