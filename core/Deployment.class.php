@@ -29,7 +29,7 @@ class Deployment
 
         // Gestion des propriétés externes :
         foreach ($aExternalProperties as $i => $sValue) {
-            $sKey = Task_Base_ExternalProperty::sExternalPropertyPrefix . ($i+1);
+            $sKey = Task_Base_ExternalProperty::EXTERNAL_PROPERTY_PREFIX . ($i+1);
             $oProperties->setProperty($sKey, str_replace('&#0160;', ' ', $sValue));
         }
 
@@ -46,11 +46,11 @@ class Deployment
 
     public function getProjectsEnvsList ()
     {
-        $aAllProjectsName = Tasks::getAllProjectsName();
+        $aAllProjectsName = Task_Base_Project::getAllProjectsName();
         $aAvailableTargetsByProject = array();
         if ( ! empty($aAllProjectsName)) {
             foreach ($aAllProjectsName as $sProjectName) {
-                $aAvailableTargetsByProject[$sProjectName] = Tasks::getAvailableTargetsList($sProjectName);
+                $aAvailableTargetsByProject[$sProjectName] = Task_Base_Target::getAvailableTargetsList($sProjectName);
             }
         }
         ksort($aAvailableTargetsByProject);

@@ -3,6 +3,42 @@
 class Task_Base_Project extends Task_WithProperties
 {
 
+    public static function getAllProjectsName ()
+    {
+        $aProjectName = array();
+        if ($handle = opendir(DEPLOYMENT_RESOURCES_DIR)) {
+            while ($file = readdir($handle)) {
+                clearstatcache();
+                $sProjectFilename = DEPLOYMENT_RESOURCES_DIR.'/'.$file;
+                if (substr($file, strlen($file)-3, 3) == "xml" && is_file($sProjectFilename)) {
+                    $oProject = new SimpleXMLElement($sProjectFilename, NULL, true);
+                    if (isset($oProject['name'])) {
+                        $aProjectName[] = (string)$oProject['name'];
+                    }
+                }
+            }
+            closedir($handle);
+        }
+
+        return $aProjectName;
+    }
+
+    /**
+     * Retourne une instance SimpleXML du projet spécifié.
+     *
+     * @param string $sProjectName nom du projet à charger
+     * @throws UnexpectedValueException si fichier XML du projet non trouvé
+     * @return SimpleXMLElement isntance du projet spécifié
+     */
+    public static function getProject ($sProjectName)
+    {
+        $sProjectFilename = DEPLOYMENT_RESOURCES_DIR . '/' . $sProjectName . '.xml';
+        if ( ! file_exists($sProjectFilename)) {
+            throw new UnexpectedValueException("Project definition not found: '$sProjectFilename'!");
+        }
+        return new SimpleXMLElement($sProjectFilename, NULL, true);
+    }
+
     /**
      * Tâche appelée.
      * @var Task_Base_Environment
@@ -30,7 +66,7 @@ class Task_Base_Project extends Task_WithProperties
     public function __construct ($sProjectName, $sEnvName, $sExecutionID, ServiceContainer $oServiceContainer)
     {
         $sBackupPath = DEPLOYMENT_BACKUP_DIR . '/' . $sExecutionID;
-        $oProject = Tasks::getProject($sProjectName);
+        $oProject = self::getProject($sProjectName);
         $this->sEnvName = $sEnvName;
 
         parent::__construct($oProject, $this, $sBackupPath, $oServiceContainer);
