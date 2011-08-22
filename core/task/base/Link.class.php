@@ -71,19 +71,21 @@ class Task_Base_Link extends Task
         }
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
             if ( ! in_array($this->oShell->getFileStatus($sExpandedPath), array(0, 12))) {
-                throw new Exception("Src attribute must be a directoy symlink or not exist: '" . $sExpandedPath . "'");
+                throw new RuntimeException("Source attribute must be a directoy symlink or not exist: '" . $sExpandedPath . "'");
             }
         }
 
+        $sRawTargetPath = $this->aAttributes['target'];
         if ( ! empty($this->aAttributes['server'])) {
-            $aTargetPaths = $this->_processPath($this->aAttributes['server'] . ':' . $this->aAttributes['target']);
-            foreach ($aTargetPaths as $sTargetPath) {
-                list(, $aDestMatches) = $this->oShell->isRemotePath($sTargetPath);
-                $sSrc = $this->_processSimplePath($aDestMatches[1] . ':' . $this->aAttributes['src']);
-                $this->oShell->createLink($sSrc, $sTargetPath);
-            }
-        } else {
-            $this->oShell->createLink($this->aAttributes['src'], $this->aAttributes['target']);
+            $sRawTargetPath = $this->aAttributes['server'] . ':' . $sRawTargetPath;
+        }
+
+        $aTargetPaths = $this->_processPath($sRawTargetPath);
+        foreach ($aTargetPaths as $sTargetPath) {
+            list(, $aDestMatches) = $this->oShell->isRemotePath($sTargetPath);
+            list(, $aSrcMatches) = $this->oShell->isRemotePath($this->aAttributes['src']);
+            $sSrc = $this->_processSimplePath($aDestMatches[1] . ':' . $aSrcMatches[2]);
+            $this->oShell->createLink($sSrc, $sTargetPath);
         }
         $this->oLogger->unindent();
     }
