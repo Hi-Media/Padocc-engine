@@ -24,19 +24,9 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase {
         $oBaseLogger = new Logger_Adapter(Logger_Interface::WARNING);
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
 
-        /*$oMockShell = $this->getMock('Shell_Adapter', array('getFileStatus'), array($oLogger));
-        $oMockShell->expects($this->at(0))->method('getFileStatus')
-            ->with($this->equalTo('/path/to/srcdir'))
-            ->will($this->returnValue(2));
-        $oMockShell->expects($this->exactly(1))->method('getFileStatus');*/
-
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($oLogger));
-        //$oMockShell->expects($this->any())->method('exec')->will($this->returnArgument(0));
         $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
-        /*$oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(
-            function ($sCmd) {var_dump($this); echo $sCmd;}
-        ));*/
 
         //$oShell = new Shell_Adapter($oLogger);
         $oClass = new ReflectionClass('Shell_Adapter');
@@ -187,7 +177,7 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase {
         $oTaskCopy->setUp();
         $oTaskCopy->execute();
         $this->assertEquals(array(
-            //'xmkdir -p "/path/to/destdir/srcdir"',
+            //'mkdir -p "/path/to/destdir/srcdir"',
             //'cp -a "/path/to/srcdir/"* "/path/to/destdir/srcdir"'
             'ssh -T user@server /bin/bash <<EOF' . "\n"
                 . 'mkdir -p "/path/to/destdir_releases/12345/srcdir"' . "\n"

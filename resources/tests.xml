@@ -1,101 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- <project name="tests" propertyinifile="/home/gaubry/deployment/resources/tests_property_file.ini"> -->
-		<!-- propertyshellfile="/home/gaubry/deployment/resources/master_synchro.cfg" -->
-		<!-- propertyshellfile="${TWENGA_SERVERS}" -->
-		<!-- loadtwengaservers="true" -->
+        <!-- propertyshellfile="/home/gaubry/deployment/resources/master_synchro.cfg" -->
+        <!-- propertyshellfile="${TWENGA_SERVERS}" -->
+        <!-- loadtwengaservers="true" -->
 <project
-		name="tests"
-		propertyinifile="/home/gaubry/deployment/resources/tests_property_file.ini"
+        name="tests"
+        propertyinifile="/home/gaubry/deployment/resources/tests_property_file.ini"
 >
-	<target name="tests_copy">
-		<copy src="/home/gaubry/deployment_test/src/test_copy/a.txt" destdir="/home/gaubry/deployment_test/dest/test_copy1" />
-		<copy src="/home/gaubry/deployment_test/src/test_copy/light" destdir="/home/gaubry/deployment_test/dest/test_copy2" />
-		<copy src="/home/gaubry/deployment_test/src/test_copy/light/*" destdir="/home/gaubry/deployment_test/dest/test_copy3" />
-		<copy src="/home/gaubry/deployment_test/src/test_copy/light/a*.txt" destdir="/home/gaubry/deployment_test/dest/test_copy4" />
-		<copy src="/home/gaubry/deployment_test/src/test_copy/light/a???.txt" destdir="/home/gaubry/deployment_test/dest/test_copy5" />
-		<copy src="/home/gaubry/deployment_test/src/test_copy/a.txt" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy1" />
-		<copy src="/home/gaubry/deployment_test/src/test_copy/light" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy2" />
-		<copy src="/home/gaubry/deployment_test/src/test_copy/light/*" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy3" />
-		<copy src="/home/gaubry/deployment_test/src/test_copy/light/a*.txt" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy4" />
-		<copy src="/home/gaubry/deployment_test/src/test_copy/light/a???.txt" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy5" />
-	</target>
+    <target name="tests_copy">
+        <copy src="/home/gaubry/deployment_test/src/test_copy/a.txt" destdir="/home/gaubry/deployment_test/dest/test_copy1" />
+        <copy src="/home/gaubry/deployment_test/src/test_copy/light" destdir="/home/gaubry/deployment_test/dest/test_copy2" />
+        <copy src="/home/gaubry/deployment_test/src/test_copy/light/*" destdir="/home/gaubry/deployment_test/dest/test_copy3" />
+        <copy src="/home/gaubry/deployment_test/src/test_copy/light/a*.txt" destdir="/home/gaubry/deployment_test/dest/test_copy4" />
+        <copy src="/home/gaubry/deployment_test/src/test_copy/light/a???.txt" destdir="/home/gaubry/deployment_test/dest/test_copy5" />
+        <copy src="/home/gaubry/deployment_test/src/test_copy/a.txt" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy1" />
+        <copy src="/home/gaubry/deployment_test/src/test_copy/light" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy2" />
+        <copy src="/home/gaubry/deployment_test/src/test_copy/light/*" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy3" />
+        <copy src="/home/gaubry/deployment_test/src/test_copy/light/a*.txt" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy4" />
+        <copy src="/home/gaubry/deployment_test/src/test_copy/light/a???.txt" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_copy5" />
+    </target>
 
-	<target name="tests_sync">
-		<sync src="/home/gaubry/deployment_test/src/test_sync/merchant_logos" destdir="/home/gaubry/deployment_test/dest/test_sync1" />
-		<sync src="/home/gaubry/deployment_test/src/test_sync/merchant_logos/*" destdir="/home/gaubry/deployment_test/dest/test_sync2" />
-		<sync src="/home/gaubry/deployment_test/src/test_sync/merchant_logos/*.jpg" destdir="/home/gaubry/deployment_test/dest/test_sync3" />
-		<sync src="/home/gaubry/deployment_test/src/test_sync/merchant_logos/" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_sync1" />
-		<sync src="/home/gaubry/deployment_test/src/test_sync/merchant_logos/*" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_sync2" />
-		<sync src="/home/gaubry/deployment_test/src/test_sync/merchant_logos/*.jpg" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_sync3" />
-	</target>
+    <target name="tests_sync">
+        <sync src="/home/gaubry/deployment_test/src/test_sync/merchant_logos" destdir="/home/gaubry/deployment_test/dest/test_sync1" />
+        <sync src="/home/gaubry/deployment_test/src/test_sync/merchant_logos/*" destdir="/home/gaubry/deployment_test/dest/test_sync2" />
+        <sync src="/home/gaubry/deployment_test/src/test_sync/merchant_logos/*.jpg" destdir="/home/gaubry/deployment_test/dest/test_sync3" />
+        <sync src="/home/gaubry/deployment_test/src/test_sync/merchant_logos/" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_sync1" />
+        <sync src="/home/gaubry/deployment_test/src/test_sync/merchant_logos/*" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_sync2" />
+        <sync src="/home/gaubry/deployment_test/src/test_sync/merchant_logos/*.jpg" destdir="gaubry@dv2:/home/gaubry/deployment_test/test_sync3" />
+    </target>
 
-	<target name="tests_backup">
-		<backup src="/home/gaubry/deployment_test/src/test_backup/a.txt" destfile="/home/gaubry/deployment_test/dest/test_backup1.tar.gz" />
-		<backup src="/home/gaubry/deployment_test/src/test_backup/*.jpg" destfile="/home/gaubry/deployment_test/dest/test_backup2.tar.gz" />
-		<backup src="/home/gaubry/deployment_test/src/test_backup/[EXT] Phing 2.4.5" destfile="/home/gaubry/deployment_test/dest/test_backup3.tar.gz" />
-		<backup src="/home/gaubry/deployment_test/src/test_backup/a.txt" destfile="gaubry@dv2:/home/gaubry/deployment_test/test_backup1.tar.gz" />
-		<backup src="/home/gaubry/deployment_test/src/test_backup/*.jpg" destfile="gaubry@dv2:/home/gaubry/deployment_test/test_backup2.tar.gz" />
-		<backup src="/home/gaubry/deployment_test/src/test_backup/[EXT] Phing 2.4.5" destfile="gaubry@dv2:/home/gaubry/deployment_test/test_backup3.tar.gz" />
-	</target>
+    <target name="tests_backup">
+        <backup src="/home/gaubry/deployment_test/src/test_backup/a.txt" destfile="/home/gaubry/deployment_test/dest/test_backup1.tar.gz" />
+        <backup src="/home/gaubry/deployment_test/src/test_backup/*.jpg" destfile="/home/gaubry/deployment_test/dest/test_backup2.tar.gz" />
+        <backup src="/home/gaubry/deployment_test/src/test_backup/[EXT] Phing 2.4.5" destfile="/home/gaubry/deployment_test/dest/test_backup3.tar.gz" />
+        <backup src="/home/gaubry/deployment_test/src/test_backup/a.txt" destfile="gaubry@dv2:/home/gaubry/deployment_test/test_backup1.tar.gz" />
+        <backup src="/home/gaubry/deployment_test/src/test_backup/*.jpg" destfile="gaubry@dv2:/home/gaubry/deployment_test/test_backup2.tar.gz" />
+        <backup src="/home/gaubry/deployment_test/src/test_backup/[EXT] Phing 2.4.5" destfile="gaubry@dv2:/home/gaubry/deployment_test/test_backup3.tar.gz" />
+    </target>
 
-	<env
-			name="tests_gitexport"
-			propertyinifile="/home/gaubry/deployment/resources/tests_env_property_file.ini"
-			mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com"
-			loadtwengaservers="true"
-	>
-		<externalproperty name="rts_ref" description="Branch or tag to deploy" />
-		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="${rts_ref}"
-			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1"
-			exclude="site_hr_upload config*" />
-		<mkdir destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1/cache/smarty/cache" mode="777" />
-		<mkdir destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1/cache/smarty/templates_c" />
-		<cvsexport repository=":extssh:@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
-			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_cvsexport1" />
-		<link server="${SERVER_AAI}" src="/home/aai/deployment_test/dest/test_link/link" target="/home/aai/deployment_test/dest/test_gitexport1" />
-	</env>
+    <env
+            name="tests_gitexport"
+            propertyinifile="/home/gaubry/deployment/resources/tests_env_property_file.ini"
+            mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com"
+            loadtwengaservers="true"
+    >
+        <externalproperty name="rts_ref" description="Branch or tag to deploy" />
+        <gitexport repository="git@git.twenga.com:rts/rts.git" ref="${rts_ref}"
+            destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1"
+            exclude="site_hr_upload config*" />
+        <mkdir destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1/cache/smarty/cache" mode="777" />
+        <mkdir destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_gitexport1/cache/smarty/templates_c" />
+        <cvsexport repository=":extssh:@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
+            destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/test_cvsexport1" />
+        <link server="${SERVER_AAI}" src="/home/aai/deployment_test/dest/test_link/link" target="/home/aai/deployment_test/dest/test_gitexport1" />
+    </env>
 
-	<!-- withsymlinks="/home/aai/deployment_test/dest_test_symlink" -->
-	<env
-			name="tests_symlinks"
-			propertyinifile="/home/gaubry/deployment/resources/tests_env_property_file.ini"
-			mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com"
-			withsymlinks="true"
-			loadtwengaservers="true"
-			basedir="/home/aai/deployment_test/dest_test_symlink"
-	>
-		<externalproperty name="rts_ref" description="Branch or tag to deploy" />
-		<gitexport repository="git@git.twenga.com:rts/rts.git" ref="${rts_ref}"
-			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest_test_symlink/test_gitexport1"
-			exclude="site_hr_upload config*" />
-		<mkdir destdir="${SERVER_AAI}:/home/aai/deployment_test/dest_test_symlink/test_gitexport1/cache/smarty/cache" mode="777" />
-		<mkdir destdir="${SERVER_AAI}:/home/aai/deployment_test/dest_test_symlink/test_gitexport1/cache/smarty/templates_c" />
-		<cvsexport repository=":extssh:@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
-			destdir="${SERVER_AAI}:/home/aai/deployment_test/dest_test_symlink/test_cvsexport1" />
-		<link server="${SERVER_AAI}" src="/home/aai/deployment_test/dest_test_symlink/test_link/link" target="/home/aai/deployment_test/dest_test_symlink/test_gitexport1" />
-	</env>
+    <!-- withsymlinks="/home/aai/deployment_test/dest_test_symlink" -->
+    <env
+            name="tests_symlinks"
+            propertyinifile="/home/gaubry/deployment/resources/tests_env_property_file.ini"
+            mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com"
+            withsymlinks="true"
+            loadtwengaservers="true"
+            basedir="/home/aai/deployment_test/dest_test_symlink"
+    >
+        <externalproperty name="rts_ref" description="Branch or tag to deploy" />
+        <gitexport repository="git@git.twenga.com:rts/rts.git" ref="${rts_ref}"
+            destdir="aai@aai-01:/home/aai/deployment_test/dest_test_symlink/test_gitexport1"
+            exclude="site_hr_upload config*" />
+        <mkdir destdir="aai@aai-01:/home/aai/deployment_test/dest_test_symlink/test_gitexport1/cache/smarty/cache" mode="777" />
+        <mkdir destdir="aai@aai-01:/home/aai/deployment_test/dest_test_symlink/test_gitexport1/cache/smarty/templates_c" />
+        <cvsexport repository=":extssh:@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
+            destdir="aai@aai-01:/home/aai/deployment_test/dest_test_symlink/test_cvsexport1" />
+        <link server="aai@aai-01" src="/home/aai/deployment_test/dest_test_symlink/test_link/link" target="/home/aai/deployment_test/dest_test_symlink/test_gitexport1" />
+    </env>
 
-	<env
-			name="tests_languages"
-			propertyinifile="/home/gaubry/deployment/resources/tests_env_property_file.ini"
-			mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com"
-			withsymlinks="true"
-			basedir="/home/aai/deployment_test/dest/buildlanguage"
-			loadtwengaservers="true"
-	>
-		<externalproperty name="t1" description="Branch" />
-		<externalproperty name="t2" description="or tag" />
-		<buildlanguage project="rts" destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/buildlanguage" />
-		<externalproperty name="t3" description="or tag" />
-	</env>
+    <env
+            name="tests_languages"
+            propertyinifile="/home/gaubry/deployment/resources/tests_env_property_file.ini"
+            mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com"
+            withsymlinks="true"
+            basedir="/home/aai/deployment_test/dest/buildlanguage"
+            loadtwengaservers="true"
+    >
+        <externalproperty name="t1" description="Branch" />
+        <externalproperty name="t2" description="or tag" />
+        <buildlanguage project="rts" destdir="${SERVER_AAI}:/home/aai/deployment_test/dest/buildlanguage" />
+        <externalproperty name="t3" description="or tag" />
+    </env>
 
-	<env name="all_tests">
-		<call target="tests_copy" />
-		<call target="tests_sync" />
-		<call target="tests_backup" />
-	</env>
+    <env name="all_tests">
+        <call target="tests_copy" />
+        <call target="tests_sync" />
+        <call target="tests_backup" />
+    </env>
 
-	<target name="todo">
-		<call script="" />
-	</target>
+    <target name="todo">
+        <call script="" />
+    </target>
 </project>
