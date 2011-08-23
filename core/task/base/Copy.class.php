@@ -55,9 +55,9 @@ class Task_Base_Copy extends Task
         }
     }
 
-    public function execute ()
+    protected function _centralExecute ()
     {
-        parent::execute();
+        parent::_centralExecute();
         $this->oLogger->indent();
 
         $aDestDirs = $this->_processPath($this->aAttributes['destdir']);

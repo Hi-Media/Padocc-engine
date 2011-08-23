@@ -54,9 +54,9 @@ class Task_Extended_TwengaServers extends Task
         $this->oLogger->unindent();
     }
 
-    public function execute ()
+    protected function _centralExecute ()
     {
-        parent::execute();
+        parent::_centralExecute();
         $this->oLogger->indent();
         $this->oGitExportTask->execute();
         $sPathToLoad = $this->sTmpDir . '/master_synchro.cfg';

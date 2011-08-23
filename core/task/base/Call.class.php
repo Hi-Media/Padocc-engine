@@ -48,9 +48,9 @@ class Task_Base_Call extends Task_WithProperties
         $this->oBoundTask->setUp();
     }
 
-    public function execute ()
+    protected function _centralExecute ()
     {
-        parent::execute();
+        parent::_centralExecute();
         $this->oBoundTask->backup();
         $this->oBoundTask->execute();
     }

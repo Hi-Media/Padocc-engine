@@ -62,9 +62,9 @@ class Task_Base_Link extends Task
         }
     }
 
-    public function execute ()
+    protected function _centralExecute ()
     {
-        parent::execute();
+        parent::_centralExecute();
         $this->oLogger->indent();
 
         // La source doit être un lien ou ne pas exister :
