@@ -39,9 +39,9 @@ class Task_Base_ExternalProperty extends Task
         $this->iNumber = ++self::$iCounter;
     }
 
-    public function execute ()
+    protected function _centralExecute ()
     {
-        parent::execute();
+        parent::_centralExecute();
         $this->oLogger->indent();
         $this->oLogger->log("Set external property '" . $this->aAttributes['name'] . "' (description: '" . $this->aAttributes['description'] . "')");
         try {

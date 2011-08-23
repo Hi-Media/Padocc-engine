@@ -65,9 +65,9 @@ class Task_Extended_GitExport extends Task
         $this->oLogger->unindent();
     }
 
-    public function execute ()
+    protected function _centralExecute ()
     {
-        parent::execute();
+        parent::_centralExecute();
         $this->oLogger->indent();
 
         $aRef = $this->_processPath($this->aAttributes['ref']);

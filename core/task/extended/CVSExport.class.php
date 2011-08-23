@@ -63,9 +63,9 @@ class Task_Extended_CVSExport extends Task
         $this->oLogger->unindent();
     }
 
-    public function execute ()
+    protected function _centralExecute ()
     {
-        parent::execute();
+        parent::_centralExecute();
         $this->oLogger->indent();
 
         $this->oLogger->log("Export from '" . $this->aAttributes['repository'] . "' CVS repository");

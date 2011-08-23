@@ -30,25 +30,9 @@ class Task_Base_Backup extends Task
         );
     }
 
-    /**
-     * Vérifie au moyen de tests basiques que la tâche peut être exécutée.
-     * Lance une exception si tel n'est pas le cas.
-     *
-     * Comme toute les tâches sont vérifiées avant que la première ne soit exécutée,
-     * doit permettre de remonter au plus tôt tout dysfonctionnement.
-     * Appelé avant la méthode execute().
-     *
-     * @throws UnexpectedValueException en cas d'attribut ou fichier manquant
-     * @throws DomainException en cas de valeur non permise
-     */
-    public function check ()
+    protected function _centralExecute ()
     {
-        parent::check();
-    }
-
-    public function execute ()
-    {
-        parent::execute();
+        parent::_centralExecute();
         $this->oLogger->indent();
         $this->oShell->backup($this->aAttributes['src'], $this->aAttributes['destfile']);
         $this->oLogger->unindent();

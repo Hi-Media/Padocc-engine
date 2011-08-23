@@ -371,9 +371,24 @@ abstract class Task implements AttributeProperties
         $this->oLogger->unindent();
     }
 
-    public function execute ()
+    protected function _preExecute ()
     {
         $this->oLogger->log("Execute '" . $this->sName . "' task");
+    }
+
+    protected function _centralExecute ()
+    {
+    }
+
+    protected function _postExecute ()
+    {
+    }
+
+    public function execute ()
+    {
+        $this->_preExecute();
+        $this->_centralExecute();
+        $this->_postExecute();
     }
 
     public abstract function backup ();

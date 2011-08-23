@@ -53,9 +53,9 @@ class Task_Base_Sync extends Task
         }
     }
 
-    public function execute ()
+    protected function _centralExecute ()
     {
-        parent::execute();
+        parent::_centralExecute();
         $this->oLogger->indent();
         $this->oLogger->log("Synchronize '" . $this->aAttributes['src'] . "' with '" . $this->aAttributes['destdir'] . "'");
         $aExcludedPaths = (empty($this->aAttributes['exclude']) ? array() : explode(' ', $this->aAttributes['exclude']));

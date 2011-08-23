@@ -61,16 +61,11 @@ abstract class Task_WithProperties extends Task
         }
     }
 
-    public function execute ()
+    protected function _preExecute ()
     {
-        parent::execute();
-
+        parent::_preExecute();
         $this->oLogger->indent();
         $this->_loadProperties();
         $this->oLogger->unindent();
-    }
-
-    public function backup ()
-    {
     }
 }

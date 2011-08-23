@@ -171,8 +171,9 @@ class Task_Base_Environment extends Task_Base_Target
         }
     }
 
-    protected function _addMailTo ()
+    protected function _preExecute ()
     {
+        parent::_preExecute();
         $this->oLogger->indent();
         $this->analyzeRegisteredPaths();
         if ($this->oProperties->getProperty('with_symlinks') === 'true') {
@@ -182,14 +183,11 @@ class Task_Base_Environment extends Task_Base_Target
             $this->makeTransitionFromSymlinks();
         }
         $this->oLogger->unindent();
-
-        parent::_addMailTo();
     }
 
-    public function execute ()
+    protected function _centralExecute ()
     {
-        parent::execute();
-
+        parent::_centralExecute();
         if ($this->oProperties->getProperty('with_symlinks') === 'true') {
             $this->oProperties->setProperty('with_symlinks', 'false');
             $this->oLinkTask->execute();
