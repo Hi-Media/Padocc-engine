@@ -25,7 +25,7 @@ class Task_Base_Backup extends Task
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->aAttributeProperties = array(
-            'src' => Task::ATTRIBUTE_SRC_PATH | Task::ATTRIBUTE_FILE | Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_FILEJOKER | Task::ATTRIBUTE_REQUIRED,
+            'src' => Task::ATTRIBUTE_SRC_PATH | Task::ATTRIBUTE_FILEJOKER | Task::ATTRIBUTE_REQUIRED,
             'destfile' => Task::ATTRIBUTE_FILE | Task::ATTRIBUTE_REQUIRED
         );
     }

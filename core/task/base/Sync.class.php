@@ -25,7 +25,7 @@ class Task_Base_Sync extends Task
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->aAttributeProperties = array(
-            'src' => Task::ATTRIBUTE_SRC_PATH | Task::ATTRIBUTE_FILE | Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_FILEJOKER | Task::ATTRIBUTE_REQUIRED,
+            'src' => Task::ATTRIBUTE_SRC_PATH | Task::ATTRIBUTE_FILEJOKER | Task::ATTRIBUTE_REQUIRED,
             'destdir' => Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_REQUIRED | Task::ATTRIBUTE_ALLOW_PARAMETER,
             'exclude' => Task::ATTRIBUTE_FILEJOKER,
         );

@@ -23,7 +23,7 @@ abstract class Task_WithProperties extends Task
         $this->aAttributeProperties = array(
             'propertyinifile' => Task::ATTRIBUTE_SRC_PATH,
             'propertyshellfile' => Task::ATTRIBUTE_SRC_PATH,
-            'loadtwengaservers' => 0
+            'loadtwengaservers' => Task::ATTRIBUTE_BOOLEAN
         );
 
         // Création de la tâche de chargement des listes de serveurs Twenga sous-jacente :
