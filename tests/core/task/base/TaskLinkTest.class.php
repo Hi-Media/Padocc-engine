@@ -61,8 +61,37 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Link::__construct
      * @covers Task_Base_Link::check
      */
-    public function testCheckWithoutAttrServerThrowExceptionIfServersNotEquals () {
-        $oTask = Task_Base_Link::getNewInstance(array('src' => 'user@server1:/path/to/link', 'target' => 'user@server2:/path/to/destdir'), $this->oMockProject, '', $this->oServiceContainer);
+    public function testCheckWithoutAttrServerThrowExceptionIfServersNotEquals1 () {
+        $oTask = Task_Base_Link::getNewInstance(array(
+            'src' => 'user@server1:/path/to/link',
+            'target' => 'user@server2:/path/to/destdir'
+        ), $this->oMockProject, '', $this->oServiceContainer);
+        $this->setExpectedException('DomainException');
+        $oTask->setUp();
+    }
+
+    /**
+     * @covers Task_Base_Link::__construct
+     * @covers Task_Base_Link::check
+     */
+    public function testCheckWithoutAttrServerThrowExceptionIfServersNotEquals2 () {
+        $oTask = Task_Base_Link::getNewInstance(array(
+            'src' => 'user@server1:/path/to/link',
+            'target' => '/path/to/destdir'
+        ), $this->oMockProject, '', $this->oServiceContainer);
+        $this->setExpectedException('DomainException');
+        $oTask->setUp();
+    }
+
+    /**
+     * @covers Task_Base_Link::__construct
+     * @covers Task_Base_Link::check
+     */
+    public function testCheckWithoutAttrServerThrowExceptionIfServersNotEquals3 () {
+        $oTask = Task_Base_Link::getNewInstance(array(
+            'src' => '/path/to/link',
+            'target' => 'user@server1:/path/to/destdir'
+        ), $this->oMockProject, '', $this->oServiceContainer);
         $this->setExpectedException('DomainException');
         $oTask->setUp();
     }

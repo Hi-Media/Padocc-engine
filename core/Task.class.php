@@ -282,7 +282,10 @@ abstract class Task
     {
         //$this->oLogger->log("registerPaths");
         foreach ($this->aAttributeProperties as $sAttribute => $iProperties) {
-            if (($iProperties & self::ATTRIBUTE_DIR) > 0 || ($iProperties & self::ATTRIBUTE_FILE) > 0) {
+            if (
+                (($iProperties & self::ATTRIBUTE_DIR) > 0 || ($iProperties & self::ATTRIBUTE_FILE) > 0)
+                && isset($this->aAttributes[$sAttribute])
+            ) {
                 self::$aRegisteredPaths[$this->aAttributes[$sAttribute]] = true;
             }
         }
@@ -293,6 +296,26 @@ abstract class Task
     {
         $this->check();
         $this->_registerPaths();
+    }
+
+    /**
+     * Normalise les propriétés des attributs des tâches XML.
+     * Par exemple si c'est un self::ATTRIBUTE_FILEJOKER, alors c'est forcément aussi un self::ATTRIBUTE_FILE.
+     *
+     * @see aAttributeProperties
+     */
+    private function _normalizeAttributeProperties () {
+        foreach ($this->aAttributeProperties as $sAttribute => $iProperties) {
+            if (($iProperties & self::ATTRIBUTE_SRC_PATH) > 0) {
+                $this->aAttributeProperties[$sAttribute] |= self::ATTRIBUTE_FILE | self::ATTRIBUTE_DIR;
+            }
+            if (($iProperties & self::ATTRIBUTE_FILEJOKER) > 0) {
+                $this->aAttributeProperties[$sAttribute] |= self::ATTRIBUTE_FILE;
+            }
+            if (($iProperties & self::ATTRIBUTE_DIRJOKER) > 0) {
+                $this->aAttributeProperties[$sAttribute] |= self::ATTRIBUTE_DIR;
+            }
+        }
     }
 
     /**
@@ -309,6 +332,7 @@ abstract class Task
      */
     public function check ()
     {
+        $this->_normalizeAttributeProperties();
         $this->oLogger->log("Check '" . $this->sName . "' task");
         $this->oLogger->indent();
 
@@ -349,6 +373,7 @@ abstract class Task
                     $this->aAttributes[$sAttribute] = preg_replace('#/$#', '', $this->aAttributes[$sAttribute]);
                 }
 
+                // Vérification de présence de la source si chemin sans joker :
                 if (
                         ($iProperties & self::ATTRIBUTE_SRC_PATH) > 0
                         && preg_match('#\*|\?#', $this->aAttributes[$sAttribute]) === 0

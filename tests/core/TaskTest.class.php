@@ -606,7 +606,6 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($aDest, $aResult);
     }
 
-
     /**
      * @covers Task::_registerPaths
      */
@@ -641,5 +640,87 @@ class TaskTest extends PHPUnit_Framework_TestCase {
             '/path/to/srcfile' => true,
             '/path/to/srcpath' => true
         ), 'aRegisteredPaths', 'Task');
+    }
+
+    /**
+     * @covers Task::_normalizeAttributeProperties
+     */
+    public function testNormalizeAttributePropertiesWithAttrSrcPath () {
+        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oClass = new ReflectionClass($oMockTask);
+
+        $oProperty = $oClass->getProperty('aAttributeProperties');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array(
+            'srcpath1' => Task::ATTRIBUTE_SRC_PATH,
+            'srcpath2' => Task::ATTRIBUTE_SRC_PATH | Task::ATTRIBUTE_DIR,
+            'srcpath3' => Task::ATTRIBUTE_SRC_PATH | Task::ATTRIBUTE_FILE,
+            'srcpath4' => Task::ATTRIBUTE_SRC_PATH | Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_FILE,
+            'other' => 0
+        ));
+
+        $oMethod = $oClass->getMethod('_normalizeAttributeProperties');
+        $oMethod->setAccessible(true);
+        $oMethod->invokeArgs($oMockTask, array());
+        $this->assertAttributeEquals(array(
+            'srcpath1' => Task::ATTRIBUTE_SRC_PATH | Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_FILE,
+            'srcpath2' => Task::ATTRIBUTE_SRC_PATH | Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_FILE,
+            'srcpath3' => Task::ATTRIBUTE_SRC_PATH | Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_FILE,
+            'srcpath4' => Task::ATTRIBUTE_SRC_PATH | Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_FILE,
+            'other' => 0
+        ), 'aAttributeProperties', $oMockTask);
+    }
+
+    /**
+     * @covers Task::_normalizeAttributeProperties
+     */
+    public function testNormalizeAttributePropertiesWithAttrFileJoker () {
+        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oClass = new ReflectionClass($oMockTask);
+
+        $oProperty = $oClass->getProperty('aAttributeProperties');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array(
+            'srcpath1' => Task::ATTRIBUTE_FILEJOKER,
+            'srcpath2' => Task::ATTRIBUTE_FILEJOKER | Task::ATTRIBUTE_FILE,
+            'other' => 0
+        ));
+
+        $oMethod = $oClass->getMethod('_normalizeAttributeProperties');
+        $oMethod->setAccessible(true);
+        $oMethod->invokeArgs($oMockTask, array());
+        $this->assertAttributeEquals(array(
+            'srcpath1' => Task::ATTRIBUTE_FILEJOKER | Task::ATTRIBUTE_FILE,
+            'srcpath2' => Task::ATTRIBUTE_FILEJOKER | Task::ATTRIBUTE_FILE,
+            'other' => 0
+        ), 'aAttributeProperties', $oMockTask);
+    }
+
+    /**
+     * @covers Task::_normalizeAttributeProperties
+     */
+    public function testNormalizeAttributePropertiesWithAttrDirJoker () {
+        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oClass = new ReflectionClass($oMockTask);
+
+        $oProperty = $oClass->getProperty('aAttributeProperties');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array(
+            'srcpath1' => Task::ATTRIBUTE_DIRJOKER,
+            'srcpath2' => Task::ATTRIBUTE_DIRJOKER | Task::ATTRIBUTE_DIR,
+            'other' => 0
+        ));
+
+        $oMethod = $oClass->getMethod('_normalizeAttributeProperties');
+        $oMethod->setAccessible(true);
+        $oMethod->invokeArgs($oMockTask, array());
+        $this->assertAttributeEquals(array(
+            'srcpath1' => Task::ATTRIBUTE_DIRJOKER | Task::ATTRIBUTE_DIR,
+            'srcpath2' => Task::ATTRIBUTE_DIRJOKER | Task::ATTRIBUTE_DIR,
+            'other' => 0
+        ), 'aAttributeProperties', $oMockTask);
     }
 }
