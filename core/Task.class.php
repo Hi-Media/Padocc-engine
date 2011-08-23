@@ -326,6 +326,8 @@ abstract class Task
      * doit permettre de remonter au plus tôt tout dysfonctionnement.
      * Appelé avant la méthode execute().
      *
+     * Pour futur check email : http://atranchant.developpez.com/code/validation/
+     *
      * @throws UnexpectedValueException en cas d'attribut ou fichier manquant
      * @throws DomainException en cas de valeur non permise
      * @see self::$aAttributeProperties

@@ -15,5 +15,6 @@ class Logger_Adapter implements Logger_Interface
         if ($iLevel >= $this->iMinErrorLevel) {
             echo str_replace("\n", '\\\n', rtrim($sMessage)) . "\n";
         }
+        return $this;
     }
 }

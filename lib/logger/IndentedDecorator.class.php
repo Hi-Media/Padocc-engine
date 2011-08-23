@@ -31,7 +31,7 @@ class Logger_IndentedDecorator implements Logger_IndentedInterface
     public function log ($sMessage, $iLevel=self::INFO)
     {
         $sDecoratedMessage = str_repeat($this->sBaseIndentation, $this->iIndentationLevel) . $sMessage;
-        $this->oLogger->log($sDecoratedMessage, $iLevel);
+        return $this->oLogger->log($sDecoratedMessage, $iLevel);
     }
 
     public function indent ()

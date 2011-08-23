@@ -36,10 +36,9 @@ abstract class Task_WithProperties extends Task
         }
     }
 
-    protected function _loadProperties ()
+    private function _loadProperties ()
     {
         if ( ! empty($this->aAttributes['loadtwengaservers']) && $this->aAttributes['loadtwengaservers'] == 'true') {
-            //$this->oLogger->log('Load Twenga servers');
             $this->oTwengaServersTask->execute();
         }
         if ( ! empty($this->aAttributes['propertyshellfile'])) {

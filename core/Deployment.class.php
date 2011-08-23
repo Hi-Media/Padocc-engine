@@ -20,6 +20,14 @@ class Deployment
             ->setNumberingAdapter(new Numbering_Adapter());
     }
 
+    private function _setExternalProperties (array $aExternalProperties=array()) {
+        $oProperties = $this->oServiceContainer->getPropertiesAdapter();
+        foreach ($aExternalProperties as $i => $sValue) {
+            $sKey = Task_Base_ExternalProperty::EXTERNAL_PROPERTY_PREFIX . ($i+1);
+            $oProperties->setProperty($sKey, str_replace('&#0160;', ' ', $sValue));
+        }
+    }
+
     public function run ($sProjectName, $sEnvName, $sExecutionID, array $aExternalProperties=array())
     {
         $oProperties = $this->oServiceContainer->getPropertiesAdapter();
@@ -27,11 +35,7 @@ class Deployment
         $oProperties->setProperty('environment_name', $sEnvName);
         $oProperties->setProperty('execution_id', $sExecutionID);
 
-        // Gestion des propriétés externes :
-        foreach ($aExternalProperties as $i => $sValue) {
-            $sKey = Task_Base_ExternalProperty::EXTERNAL_PROPERTY_PREFIX . ($i+1);
-            $oProperties->setProperty($sKey, str_replace('&#0160;', ' ', $sValue));
-        }
+        $this->_setExternalProperties($aExternalProperties);
 
         $oProject = new Task_Base_Project($sProjectName, $sEnvName, $sExecutionID, $this->oServiceContainer);
         $this->oLogger->log('Check tasks:');
