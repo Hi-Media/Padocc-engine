@@ -21,7 +21,7 @@
  */
 class ErrorHandler
 {
-    public static $errorTypes = array(
+    public static $aErrorTypes = array(
         E_ERROR => 'ERROR',
         E_WARNING => 'WARNING',
         E_PARSE => 'PARSING ERROR',
@@ -39,9 +39,9 @@ class ErrorHandler
 
     private static $iDefaultErrorCode = 1;
 
-    private $display_errors;
-    private $error_log_path;
-    private $error_reporting;
+    private $bDisplayErrors;
+    private $sErrorLogPath;
+    private $iErrorReporting;
     private $bIsRunningFromCLI;
 
     /**
@@ -50,14 +50,14 @@ class ErrorHandler
      * @var array
      * @see addExcludedPath()
      */
-    private $excluded_paths;
+    private $aExcludedPaths;
 
     public function __construct ($bDisplayErrors=true, $sErrorLogPath='', $iErrorReporting=-1)
     {
-        $this->display_errors = $bDisplayErrors;
-        $this->error_log_path = $sErrorLogPath;
-        $this->error_reporting = $iErrorReporting;
-        $this->excluded_paths = array();
+        $this->bDisplayErrors = $bDisplayErrors;
+        $this->sErrorLogPath = $sErrorLogPath;
+        $this->iErrorReporting = $iErrorReporting;
+        $this->aExcludedPaths = array();
         $this->bIsRunningFromCLI = defined('STDIN');
 
         error_reporting($iErrorReporting);
@@ -77,8 +77,8 @@ class ErrorHandler
             date_default_timezone_set('Europe/Paris');
         }
 
-        set_error_handler(array($this, 'errorHandler'));
-        set_exception_handler(array($this, 'exceptionHandler'));
+        set_error_handler(array($this, '_errorHandler'));
+        set_exception_handler(array($this, '_exceptionHandler'));
     }
 
     /**
@@ -94,8 +94,8 @@ class ErrorHandler
             $sPath .= '/';
         }
         $sPath = realpath($sPath);
-        if ( ! in_array($sPath, $this->excluded_paths)) {
-            $this->excluded_paths[] = $sPath;
+        if ( ! in_array($sPath, $this->aExcludedPaths)) {
+            $this->aExcludedPaths[] = $sPath;
         }
     }
 
@@ -109,11 +109,11 @@ class ErrorHandler
      * @return boolean true, then the normal error handler does not continues.
      * @see addExcludedPath()
      */
-    public function errorHandler ($iErrNo, $sErrStr, $sErrFile, $iErrLine)
+    protected function _errorHandler ($iErrNo, $sErrStr, $sErrFile, $iErrLine)
     {
         // Si l'erreur provient d'un répertoire exclu de ce handler, alors l'ignorer.
-        foreach ($this->excluded_paths as $excluded_path) {
-            if (stripos($sErrFile, $excluded_path) === 0) {
+        foreach ($this->aExcludedPaths as $sExcludedPath) {
+            if (stripos($sErrFile, $sExcludedPath) === 0) {
                 return true;
             }
         }
@@ -122,7 +122,7 @@ class ErrorHandler
             if (LOG_ERROR_SUPPRESSED)
                 ;//$debug->log("ERROR SUPRESSED WITH AN @ -- $errstr, $errfile, $errline");
         } else {
-            $msg = "[from error handler] " . self::$errorTypes[$iErrNo] . " -- $sErrStr, in file: '$sErrFile', line $iErrLine";
+            $msg = "[from error handler] " . self::$aErrorTypes[$iErrNo] . " -- $sErrStr, in file: '$sErrFile', line $iErrLine";
             $oException = new ErrorException($msg, self::$iDefaultErrorCode, $iErrNo, $sErrFile, $iErrLine);
             //if ( ! $this->display_errors && $errno != E_ERROR) {
             //	$this->error_log($e);
@@ -137,22 +137,22 @@ class ErrorHandler
      *
      * @param Exception $oException
      */
-    public function exceptionHandler (Exception $oException)
+    protected function _exceptionHandler (Exception $oException)
     {
-        if ( ! $this->display_errors && ini_get('error_log') !== '' && ! $this->bIsRunningFromCLI) {
+        if ( ! $this->bDisplayErrors && ini_get('error_log') !== '' && ! $this->bIsRunningFromCLI) {
             echo '<div class="exception_handler_message">Une erreur d\'exécution est apparue.<br />'
                 . 'Nous sommes désolés pour la gêne occasionée.</div>';
         }
-        $this->error_log($oException);
+        $this->errorLog($oException);
     }
 
     /**
      *
      * @param mixed $mError
      */
-    public function error_log ($mError)
+    public function errorLog ($mError)
     {
-        if ($this->display_errors) {
+        if ($this->bDisplayErrors) {
             if ($this->bIsRunningFromCLI) {
                 file_put_contents('php://stderr', $mError . "\n", E_USER_ERROR);
                 $iErrorCode = ($mError instanceof Exception ? $mError->getCode() : self::$iDefaultErrorCode);
@@ -162,7 +162,7 @@ class ErrorHandler
             }
         }
 
-        if ( ! empty($this->error_log_path)) {
+        if ( ! empty($this->sErrorLogPath)) {
             if (is_array($mError) || (is_object($mError) && ! ($mError instanceof Exception))) {
                 $mError = print_r($mError, true);
             }

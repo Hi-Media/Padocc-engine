@@ -239,6 +239,7 @@ abstract class Task
     protected function _expandPath ($sPath)
     {
         if (preg_match_all('/\$\{([^}]+)\}/i', $sPath, $aMatches) > 0) {
+            // On traite dans un premier temps un maximum de remplacements sans récursivité :
             $aPaths = array($sPath);
             foreach ($aMatches[1] as $property) {
                 $aToProcessPaths = $aPaths;
@@ -345,11 +346,11 @@ abstract class Task
         $this->oLogger->log("Check '" . $this->sName . "' task");
         $this->oLogger->indent();
 
-        $aAvailablesAttributes = array_keys($this->aAttributeProperties);
-        $aUnknownAttributes = array_diff(array_keys($this->aAttributes), $aAvailablesAttributes);
+        $aAvailablesAttr = array_keys($this->aAttributeProperties);
+        $aUnknownAttributes = array_diff(array_keys($this->aAttributes), $aAvailablesAttr);
         if (count($aUnknownAttributes) > 0) {
             throw new DomainException(
-                "Available attributes: " . print_r($aAvailablesAttributes, true)
+                "Available attributes: " . print_r($aAvailablesAttr, true)
                 . " => Unknown attribute(s): " . print_r($aUnknownAttributes, true));
         }
 
