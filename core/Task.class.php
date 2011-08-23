@@ -46,7 +46,8 @@ abstract class Task
     const ATTRIBUTE_SRC_PATH = 64;
 
     /**
-     * Propriété d'attribut : l'attribut est un booléen sous forme de chaîne de caractères, valant soit 'true' soit 'false'.
+     * Propriété d'attribut : l'attribut est un booléen sous forme de chaîne de caractères,
+     * valant soit 'true' soit 'false'.
      * @var int
      */
     const ATTRIBUTE_BOOLEAN = 128;
@@ -161,12 +162,13 @@ abstract class Task
      * @param array $aAttributes Tableau associatif listant des attributs et leur valeur.
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
-     * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
+     * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      * @return Task
      * @throws RuntimeException si appelée directement sur Task.
      */
-    public static function getNewInstance (array $aAttributes, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer)
-    {
+    public static function getNewInstance (array $aAttributes, Task_Base_Project $oProject, $sBackupPath,
+        ServiceContainer $oServiceContainer
+    ) {
         $sAttributes = '';
         foreach ($aAttributes as $sName => $sValue) {
             $sAttributes .= ' ' . $sName . '="' . $sValue . '"';
@@ -183,10 +185,11 @@ abstract class Task
      * @param SimpleXMLElement $oTask Contenu XML de la tâche.
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
-     * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
+     * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oXMLTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer)
-    {
+    public function __construct (SimpleXMLElement $oXMLTask, Task_Base_Project $oProject, $sBackupPath,
+        ServiceContainer $oServiceContainer
+    ) {
         $this->oXMLTask = $oXMLTask;
         $this->oProject = $oProject;
 
@@ -225,7 +228,8 @@ abstract class Task
     {
         $aProcessedPaths = $this->_processPath($sPath);
         if (count($aProcessedPaths) !== 1) {
-            throw new RuntimeException("String '$sPath' should return a single path after process: " . print_r($aProcessedPaths, true));
+            $sMsg = "String '$sPath' should return a single path after process: " . print_r($aProcessedPaths, true);
+            throw new RuntimeException($sMsg);
         }
         return reset($aProcessedPaths);
     }
@@ -234,7 +238,7 @@ abstract class Task
      * Retourne la liste de tous les chemins générés en remplaçant les paramètres du chemin spécifié par leurs valeurs.
      *
      * @param string $sPath chemin pouvant contenir des paramètres
-     * @return array liste de tous les chemins générés en remplaçant les paramètres du chemin spécifié par leurs valeurs
+     * @return array liste de tous les chemins générés en remplaçant les paramètres par leurs valeurs
      */
     protected function _expandPath ($sPath)
     {
@@ -273,10 +277,15 @@ abstract class Task
     {
         if ($this->oProperties->getProperty('with_symlinks') === 'true') {
             $sBaseSymLink = $this->oProperties->getProperty('base_dir');
-            $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX . '/' . $this->oProperties->getProperty('execution_id');
+            $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX . '/'
+                             . $this->oProperties->getProperty('execution_id');
             for ($i=0, $iMax=count($aPaths); $i<$iMax; $i++) {
                 if (preg_match('#^(.*?:)' . preg_quote($sBaseSymLink, '#') . '\b#', $aPaths[$i], $aMatches) === 1) {
-                    $sNewPath = str_replace($aMatches[1] . $sBaseSymLink, $aMatches[1] . $sReleaseSymLink, $aPaths[$i]);
+                    $sNewPath = str_replace(
+                        $aMatches[1] . $sBaseSymLink,
+                        $aMatches[1] . $sReleaseSymLink,
+                        $aPaths[$i]
+                    );
                     $aPaths[$i] = $sNewPath;
                 }
             }
@@ -362,20 +371,34 @@ abstract class Task
                     $this->aAttributes[$sAttribute] = str_replace('\\', '/', $this->aAttributes[$sAttribute]);
                 }
 
-                if (($iProperties & self::ATTRIBUTE_BOOLEAN) > 0 && ! in_array($this->aAttributes[$sAttribute], array('true', 'false'))) {
-                    throw new DomainException("Value of '$sAttribute' attribute is restricted to 'true' or 'false'. Value: '" . $this->aAttributes[$sAttribute] . "'!");
+                if (($iProperties & self::ATTRIBUTE_BOOLEAN) > 0
+                    && ! in_array($this->aAttributes[$sAttribute], array('true', 'false'))
+                ) {
+                    $sMsg = "Value of '$sAttribute' attribute is restricted to 'true' or 'false'. Value: '"
+                            . $this->aAttributes[$sAttribute] . "'!";
+                    throw new DomainException($sMsg);
                 }
 
-                if (preg_match('#[*?].*/#', $this->aAttributes[$sAttribute]) !== 0 && ($iProperties & self::ATTRIBUTE_DIRJOKER) == 0) {
-                    throw new DomainException("'*' and '?' jokers are not authorized for directory in '$sAttribute' attribute!");
+                if (preg_match('#[*?].*/#', $this->aAttributes[$sAttribute]) !== 0
+                    && ($iProperties & self::ATTRIBUTE_DIRJOKER) == 0
+                ) {
+                    $sMsg = "'*' and '?' jokers are not authorized for directory in '$sAttribute' attribute!";
+                    throw new DomainException($sMsg);
                 }
 
-                if (preg_match('#[*?](.*[^/])?$#', $this->aAttributes[$sAttribute]) !== 0 && ($iProperties & self::ATTRIBUTE_FILEJOKER) == 0) {
-                    throw new DomainException("'*' and '?' jokers are not authorized for filename in '$sAttribute' attribute!");
+                if (preg_match('#[*?](.*[^/])?$#', $this->aAttributes[$sAttribute]) !== 0
+                    && ($iProperties & self::ATTRIBUTE_FILEJOKER) == 0
+                ) {
+                    $sMsg = "'*' and '?' jokers are not authorized for filename in '$sAttribute' attribute!";
+                    throw new DomainException($sMsg);
                 }
 
-                if (preg_match('#\$\{[^}]*\}#', $this->aAttributes[$sAttribute]) !== 0 && ($iProperties & self::ATTRIBUTE_ALLOW_PARAMETER) == 0) {
-                    throw new DomainException("Parameters are not allowed in '$sAttribute' attribute! Value: '" . $this->aAttributes[$sAttribute] . "'");
+                if (preg_match('#\$\{[^}]*\}#', $this->aAttributes[$sAttribute]) !== 0
+                    && ($iProperties & self::ATTRIBUTE_ALLOW_PARAMETER) == 0
+                ) {
+                    $sMsg = "Parameters are not allowed in '$sAttribute' attribute! Value: '"
+                            . $this->aAttributes[$sAttribute] . "'";
+                    throw new DomainException($sMsg);
                 }
 
                 // Suppression de l'éventuel slash terminal :
@@ -389,7 +412,8 @@ abstract class Task
                         && preg_match('#\*|\?#', $this->aAttributes[$sAttribute]) === 0
                         && $this->oShell->getFileStatus($this->aAttributes[$sAttribute]) === 0
                 ) {
-                    throw new UnexpectedValueException("File or directory '" . $this->aAttributes[$sAttribute] . "' not found!");
+                    $sMsg = "File or directory '" . $this->aAttributes[$sAttribute] . "' not found!";
+                    throw new UnexpectedValueException($sMsg);
                 }
             }
         }

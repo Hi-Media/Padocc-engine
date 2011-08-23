@@ -8,7 +8,8 @@ class Deployment
 
     public function __construct ()
     {
-        $oBaseLogger = new Logger_Adapter(DEPLOYMENT_DEBUG_MODE === 1 ? Logger_Interface::DEBUG : Logger_Interface::INFO);
+        $iDebugMode = (DEPLOYMENT_DEBUG_MODE === 1 ? Logger_Interface::DEBUG : Logger_Interface::INFO);
+        $oBaseLogger = new Logger_Adapter($iDebugMode);
         $this->oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
         $oShell = new Shell_Adapter($this->oLogger);
 
