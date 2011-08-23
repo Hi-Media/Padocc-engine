@@ -92,10 +92,10 @@ class Task_Base_Environment extends Task_Base_Target
         }
 
         //$this->oLogger->log(print_r($this->_aPathsToHandle, true));
-        $aServersConcernedWithSymlinks = array_keys($this->_aPathsToHandle);
-        sort($aServersConcernedWithSymlinks);
-        $this->oLogger->log("Servers concerned with base directory: '" . implode("', '", $aServersConcernedWithSymlinks) . "'.");
-        $this->oProperties->setProperty('servers_concerned_with_base_dir', implode(' ', $aServersConcernedWithSymlinks));
+        $aServersWithSymlinks = array_keys($this->_aPathsToHandle);
+        sort($aServersWithSymlinks);
+        $this->oLogger->log("Servers concerned with base directory: '" . implode("', '", $aServersWithSymlinks) . "'.");
+        $this->oProperties->setProperty('servers_concerned_with_base_dir', implode(' ', $aServersWithSymlinks));
     }
 
     private function makeTransitionToSymlinks ()

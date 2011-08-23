@@ -25,14 +25,14 @@ class Task_Base_Target extends Task_WithProperties
         foreach ($aTargets as $oTarget) {
             $sEnvName = (string)$oTarget['name'];
 
-            $aExternalProperties = $oXMLProject->xpath("//env[@name='$sEnvName']/externalproperty");
-            $aExternalPropertiesList = array();
-            foreach ($aExternalProperties as $oExternalProperty) {
+            $aRawExtProperties = $oXMLProject->xpath("//env[@name='$sEnvName']/externalproperty");
+            $aExtProperties = array();
+            foreach ($aRawExtProperties as $oExternalProperty) {
                 $sName = (string)$oExternalProperty['name'];
                 $sDesc = (string)$oExternalProperty['description'];
-                $aExternalPropertiesList[$sName] = $sDesc;
+                $aExtProperties[$sName] = $sDesc;
             }
-            $aTargetsList[$sEnvName] = $aExternalPropertiesList;
+            $aTargetsList[$sEnvName] = $aExtProperties;
         }
 
         return $aTargetsList;

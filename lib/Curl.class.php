@@ -11,7 +11,9 @@ class Curl
         'Opera' => 'Opera/9.25 (Windows NT 6.0; U; en)'
     );
 
-    private function __construct () {}
+    private function __construct ()
+    {
+    }
 
     // disguises the curl using fake headers and a fake user agent.
     // postfields = array ou urlencodedstring => attention au @
@@ -95,9 +97,9 @@ class Curl
         if ($error != '') {
             $result['curl_error'] = $error;
         } else {
-            $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-            $result['header'] = substr($response, 0, $header_size);
-            $result['body'] = substr($response, $header_size);
+            $sHeaderSize = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+            $result['header'] = substr($response, 0, $sHeaderSize);
+            $result['body'] = substr($response, $sHeaderSize);
             $result['http_code'] = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             $result['last_url'] = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
         }

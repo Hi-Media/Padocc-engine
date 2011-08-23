@@ -51,13 +51,13 @@ class Deployment
     public function getProjectsEnvsList ()
     {
         $aAllProjectsName = Task_Base_Project::getAllProjectsName();
-        $aAvailableTargetsByProject = array();
+        $aTargetsByProject = array();
         if ( ! empty($aAllProjectsName)) {
             foreach ($aAllProjectsName as $sProjectName) {
-                $aAvailableTargetsByProject[$sProjectName] = Task_Base_Target::getAvailableTargetsList($sProjectName);
+                $aTargetsByProject[$sProjectName] = Task_Base_Target::getAvailableTargetsList($sProjectName);
             }
         }
-        ksort($aAvailableTargetsByProject);
-        return $aAvailableTargetsByProject;
+        ksort($aTargetsByProject);
+        return $aTargetsByProject;
     }
 }
