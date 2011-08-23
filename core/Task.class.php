@@ -238,7 +238,7 @@ abstract class Task
      */
     protected function _expandPath ($sPath)
     {
-        if (preg_match_all('/\$\{([^}]*)\}/i', $sPath, $aMatches) > 0) {
+        if (preg_match_all('/\$\{([^}]+)\}/i', $sPath, $aMatches) > 0) {
             $aPaths = array($sPath);
             foreach ($aMatches[1] as $property) {
                 $aToProcessPaths = $aPaths;
@@ -246,17 +246,24 @@ abstract class Task
 
                 $sRawValue = $this->oProperties->getProperty($property);
                 $values = explode(' ', $sRawValue);
-                foreach ($aToProcessPaths as $s) {
+                foreach ($aToProcessPaths as $sPath) {
                     foreach ($values as $value) {
-                        $aPaths[] = str_replace('${' . $property . '}', $value, $s);
+                        $aPaths[] = str_replace('${' . $property . '}', $value, $sPath);
                     }
                 }
             }
+
+            // Perfectible mais suffisant, récursivité sur les propriétés de propriétés :
+            $aToRecursiveProcessPaths = $aPaths;
+            $aPaths = array();
+            foreach ($aToRecursiveProcessPaths as $sPath) {
+                $aPaths = array_merge($aPaths, $this->_expandPath($sPath));
+            }
+            $aPaths = array_values(array_unique($aPaths));
         } else {
             $aPaths = array($sPath);
         }
 
-        //return $this->_reroutePaths($aPaths);
         return $aPaths;
     }
 

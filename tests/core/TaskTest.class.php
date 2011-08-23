@@ -92,7 +92,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
     /**
      * @covers Task::_expandPath
      */
-    public function testExpandPathsWithTwoComplexParameter () {
+    public function testExpandPathsWithTwoComplexParameters () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
 
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array(), '', false);
@@ -119,7 +119,42 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         ), $aResult);
     }
 
+    /**
+     * @covers Task::_expandPath
+     */
+    public function testExpandPathsWithMultiComplexParameters () {
+        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
 
+        $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array(), '', false);
+        $oMockProperties->expects($this->at(0))->method('getProperty')
+            ->with($this->equalTo('one'))
+            ->will($this->returnValue('${two} ${three} four'));
+        $oMockProperties->expects($this->at(1))->method('getProperty')
+            ->with($this->equalTo('two'))
+            ->will($this->returnValue('a b'));
+        $oMockProperties->expects($this->at(2))->method('getProperty')
+            ->with($this->equalTo('three'))
+            ->will($this->returnValue('five ${two}'));
+        $oMockProperties->expects($this->at(3))->method('getProperty')
+            ->with($this->equalTo('two'))
+            ->will($this->returnValue('a b'));
+        $oMockProperties->expects($this->exactly(4))->method('getProperty');
+        $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
+
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, 'backup_path', $this->oServiceContainer));
+
+        $class = new ReflectionClass($oMockTask);
+        $method = $class->getMethod('_expandPath');
+        $method->setAccessible(true);
+
+        $aResult = $method->invokeArgs($oMockTask, array('${one}foo'));
+        $this->assertEquals(array(
+            'afoo',
+            'bfoo',
+            'fivefoo',
+            'fourfoo'
+        ), $aResult);
+    }
 
     /**
      * @covers Task::check
