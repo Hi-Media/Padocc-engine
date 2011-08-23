@@ -253,7 +253,7 @@ rsync  --bwlimit=4000
             $aCmd = array();
             for ($j=$i; $j<count($aPaths) && $j<$i+DEPLOYMENT_RSYNC_MAX_NB_PROCESSES; $j++) {
                 $aCmd[] =
-                    'rsync -axz --delete --exclude=.cvsignore ' . $sAdditionalExclude . '--stats -e'
+                    'rsync -axz --delete ' . $sAdditionalExclude . '--stats -e'
                     . ' ssh ' . $this->escapePath($sSrcPath) . ' ' . $this->escapePath($aPaths[$j]);
             }
             $i = $j-1;
