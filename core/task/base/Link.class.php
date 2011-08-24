@@ -74,8 +74,9 @@ class Task_Base_Link extends Task
             $sPath = $this->aAttributes['server'] . ':' . $sPath;
         }
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
-            if ( ! in_array($this->oShell->getFileStatus($sExpandedPath), array(0, 12))) {
-                $sMsg = "Source attribute must be a directoy symlink or not exist: '" . $sExpandedPath . "'";
+            if ( ! in_array($this->oShell->getFileStatus($sExpandedPath), array(0, 11, 12))) {
+                $sMsg = 'Source attribute must be a directoy symlink or a file symlink'
+                      . " or not exist: '" . $sExpandedPath . "'";
                 throw new RuntimeException($sMsg);
             }
         }
