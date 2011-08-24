@@ -250,8 +250,7 @@ rsync  --bwlimit=4000
             (count($aPaths) > 1 && $bIsSrcRemote)
             || (count($aPaths) === 1 && $bIsSrcRemote && $bIsDestRemote && $aSrcMatches[1] != $aDestMatches[1]))
         {
-            throw new RuntimeException('Not yet implemented!', $code, $previous);
-
+            throw new RuntimeException('Not yet implemented!');
         }
 
         $aAllResults = array();
