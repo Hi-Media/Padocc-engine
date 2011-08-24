@@ -114,7 +114,8 @@ class Task_Base_Environment extends Task_Base_Target
                 $sOriginRelease = $aMatches[1] . ':' . $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
                                 . '/' . $this->oProperties->getProperty('execution_id') . '_origin';
                 $this->oLogger->log("Backup '$sDir' to '$sOriginRelease'.");
-                $this->oShell->copy($sDir, $sOriginRelease);
+                //$this->oShell->copy($sDir, $sOriginRelease);
+                $this->oShell->sync($sDir, $sOriginRelease, array('smarty/*/wrt*', 'smarty/**/wrt*'));
                 $this->oShell->remove($sExpandedPath);
                 $this->oShell->createLink($sExpandedPath, $sOriginRelease);
             }
@@ -135,7 +136,8 @@ class Task_Base_Environment extends Task_Base_Target
                 $sMsg = "Remove symlink on '$sExpandedPath' base directory"
                       . " and initialize it with last release's content.";
                 $this->oLogger->log($sMsg);
-                $this->oShell->copy($sDir, $sTmpDest);
+                //$this->oShell->copy($sDir, $sTmpDest);
+                $this->oShell->sync($sDir, $sTmpDest, array('smarty/*/wrt*', 'smarty/**/wrt*'));
                 $this->oShell->remove($sExpandedPath);
                 $this->oShell->execSSH("mv %s '" . $aMatches[2] . "'", $sTmpDest);
             }
@@ -156,7 +158,8 @@ class Task_Base_Environment extends Task_Base_Target
             $sDest = $aMatches[1] . ':' . $sReleaseSymLink;
             if ($this->oShell->getFileStatus($sExpandedPath) === 12) {
                 $this->oLogger->log("Initialize '$sDest' with previous deployment: '$sExpandedPath'.");
-                $this->oShell->copy($sDir, $sDest);
+                //$this->oShell->copy($sDir, $sDest);
+                $this->oShell->sync($sDir, $sDest, array('smarty/*/wrt*', 'smarty/**/wrt*'));
             } else {
                 $this->oLogger->log("No previous deployment to initialize '$sDest'.");
             }
