@@ -118,8 +118,8 @@ abstract class Task implements AttributeProperties
      * @throws RuntimeException si appelée directement sur Task.
      */
     public static function getNewInstance (array $aAttributes, Task_Base_Project $oProject, $sBackupPath,
-        ServiceContainer $oServiceContainer
-    ) {
+        ServiceContainer $oServiceContainer)
+    {
         $sAttributes = '';
         foreach ($aAttributes as $sName => $sValue) {
             $sAttributes .= ' ' . $sName . '="' . $sValue . '"';
