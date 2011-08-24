@@ -84,7 +84,10 @@ if ($argc == 1 && $argv[0] === "--getProjectsEnvsList") {
     $aProjectsEnvsList = $oDeployment->getProjectsEnvsList();
     echo json_encode($aProjectsEnvsList);
 } else if ($argc < 4) {
-    file_put_contents('php://stderr', 'Missing parameters! Supplied parameters: ' . print_r($argv, true) . ' Example: /usr/bin/php -q ~/deployment/deployment.php project1 dev 20110518121106 /tmp/deployment.php.20110518121106.error.log', E_USER_ERROR);
+    $sMsg = 'Missing parameters! Supplied parameters: ' . print_r($argv, true)
+          . ' Example: /usr/bin/php -q ~/deployment/deployment.php project1 dev 20110518121106'
+          . ' /tmp/deployment.php.20110518121106.error.log';
+    file_put_contents('php://stderr', $sMsg, E_USER_ERROR);
     exit(1);
 } else {
     $sErrorLogFile = array_pop($argv);

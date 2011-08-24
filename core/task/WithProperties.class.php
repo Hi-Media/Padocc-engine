@@ -15,9 +15,10 @@ abstract class Task_WithProperties extends Task
      * @param SimpleXMLElement $oTask Contenu XML de la tâche.
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
-     * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
+     * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer)
+    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath,
+        ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->aAttributeProperties = array(
@@ -29,7 +30,8 @@ abstract class Task_WithProperties extends Task
         // Création de la tâche de chargement des listes de serveurs Twenga sous-jacente :
         if ( ! empty($this->aAttributes['loadtwengaservers']) && $this->aAttributes['loadtwengaservers'] == 'true') {
             $this->oNumbering->addCounterDivision();
-            $this->oTwengaServersTask = Task_Extended_TwengaServers::getNewInstance(array(), $oProject, $sBackupPath, $oServiceContainer);
+            $this->oTwengaServersTask = Task_Extended_TwengaServers::getNewInstance(array(), $oProject, $sBackupPath,
+                                                                                    $oServiceContainer);
             $this->oNumbering->removeCounterDivision();
         } else {
             $this->oTwengaServersTask = NULL;

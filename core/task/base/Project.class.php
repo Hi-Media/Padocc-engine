@@ -61,7 +61,7 @@ class Task_Base_Project extends Task_WithProperties
      * @param string $sProjectName Nom du projet.
      * @param string $sEnvName Environnement sélectionné.
      * @param string $sExecutionID Identifiant d'exécution.
-     * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
+     * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
     public function __construct ($sProjectName, $sEnvName, $sExecutionID, ServiceContainer $oServiceContainer)
     {
@@ -79,7 +79,8 @@ class Task_Base_Project extends Task_WithProperties
         if (count($aTargets) !== 1) {
             throw new UnexpectedValueException("Environment '$sEnvName' not found or not unique in this project!");
         }
-        $this->oBoundTask = new Task_Base_Environment($aTargets[0], $this->oProject, $sBackupPath, $this->oServiceContainer);
+        $this->oBoundTask = new Task_Base_Environment($aTargets[0], $this->oProject,
+                                                      $sBackupPath, $this->oServiceContainer);
     }
 
     public function setUp ()

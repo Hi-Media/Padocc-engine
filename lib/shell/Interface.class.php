@@ -34,7 +34,7 @@ interface Shell_Interface
     public function getFileStatus ($sPath);
 
     /**
-     * Retourne un couple dont la 1re valeur indique si oui ou non le chemin spécifié commence par '[user@]servername_or_ip:'
+     * Retourne un couple dont la 1re valeur indique si le chemin spécifié commence par '[user@]servername_or_ip:'
      * et la 2nde est un tableau indexé contenant le chemin initial, le serveur et le chemin dépourvu du serveur.
      *
      * @param string $sPath

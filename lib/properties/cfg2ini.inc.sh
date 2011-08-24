@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# /bin/bash ~/deployment/lib/properties/cfg2ini.inc.sh $HOME/deployment/resources/master_synchro.cfg $HOME/deployment/resources/master_synchro.cfg.ini
-# /bin/bash ~/deployment/lib/properties/cfg2ini.inc.sh $HOME/deployment/resources/tests_property_file.cfg $HOME/deployment/resources/tests_property_file.cfg.ini
+# Exemple d'appel :
+# /bin/bash ~/deployment/lib/properties/cfg2ini.inc.sh \
+#     $HOME/deployment/resources/master_synchro.cfg \
+#	  $HOME/deployment/resources/master_synchro.cfg.ini
 
 CFG_PATH="$1"
 INI_PATH="$2"

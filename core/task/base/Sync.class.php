@@ -19,9 +19,10 @@ class Task_Base_Sync extends Task
      * @param SimpleXMLElement $oTask Contenu XML de la tâche.
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
-     * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
+     * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer)
+    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath,
+        ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->aAttributeProperties = array(
@@ -57,9 +58,14 @@ class Task_Base_Sync extends Task
     {
         parent::_centralExecute();
         $this->oLogger->indent();
-        $this->oLogger->log("Synchronize '" . $this->aAttributes['src'] . "' with '" . $this->aAttributes['destdir'] . "'");
-        $aExcludedPaths = (empty($this->aAttributes['exclude']) ? array() : explode(' ', $this->aAttributes['exclude']));
-        $results = $this->oShell->sync($this->aAttributes['src'], $this->_processPath($this->aAttributes['destdir']), $aExcludedPaths);
+        $sMsg = "Synchronize '" . $this->aAttributes['src'] . "' with '" . $this->aAttributes['destdir'] . "'";
+        $this->oLogger->log($sMsg);
+        $aExcludedPaths = (empty($this->aAttributes['exclude'])
+                          ? array()
+                          : explode(' ', $this->aAttributes['exclude']));
+        $results = $this->oShell->sync($this->aAttributes['src'],
+                                       $this->_processPath($this->aAttributes['destdir']),
+                                       $aExcludedPaths);
         foreach ($results as $result) {
             $this->oLogger->log($result);
         }

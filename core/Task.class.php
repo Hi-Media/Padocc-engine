@@ -139,8 +139,8 @@ abstract class Task implements AttributeProperties
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
     public function __construct (SimpleXMLElement $oXMLTask, Task_Base_Project $oProject, $sBackupPath,
-        ServiceContainer $oServiceContainer
-    ) {
+        ServiceContainer $oServiceContainer)
+    {
         $this->oXMLTask = $oXMLTask;
         $this->oProject = $oProject;
 
@@ -272,7 +272,8 @@ abstract class Task implements AttributeProperties
      *
      * @see aAttributeProperties
      */
-    private function _normalizeAttributeProperties () {
+    private function _normalizeAttributeProperties ()
+    {
         foreach ($this->aAttributeProperties as $sAttribute => $iProperties) {
             if (($iProperties & self::ATTRIBUTE_SRC_PATH) > 0) {
                 $this->aAttributeProperties[$sAttribute] |= self::ATTRIBUTE_FILE | self::ATTRIBUTE_DIR;

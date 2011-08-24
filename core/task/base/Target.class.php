@@ -44,9 +44,10 @@ class Task_Base_Target extends Task_WithProperties
      * @param SimpleXMLElement $oTask Contenu XML de la tâche.
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
-     * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
+     * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer)
+    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath,
+        ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->aAttributeProperties = array_merge($this->aAttributeProperties, array(
@@ -54,7 +55,8 @@ class Task_Base_Target extends Task_WithProperties
         ));
 
         $this->oNumbering->addCounterDivision();
-        $this->aTasks = $this->getTaskInstances($oTask, $this->oProject, $sBackupPath); // et non $this->sBackupPath, pour les sous-tâches
+        // $sBackupPath et non $this->sBackupPath, pour les sous-tâches :
+        $this->aTasks = $this->getTaskInstances($oTask, $this->oProject, $sBackupPath);
         $this->oNumbering->removeCounterDivision();
     }
 
@@ -130,7 +132,8 @@ class Task_Base_Target extends Task_WithProperties
             if ( ! isset($aAvailableTasks[$sTag])) {
                 throw new UnexpectedValueException("Unkown task tag: '$sTag'!");
             } else {
-                $aTaskInstances[] = new $aAvailableTasks[$sTag]($oTask, $oProject, $sBackupPath, $this->oServiceContainer);
+                $aTaskInstances[] = new $aAvailableTasks[$sTag]($oTask, $oProject, $sBackupPath,
+                                                                $this->oServiceContainer);
             }
         }
 
@@ -153,7 +156,9 @@ class Task_Base_Target extends Task_WithProperties
         parent::check();
 
         if ( ! empty($this->aAttributes['mailto'])) {
-            $this->aAttributes['mailto'] = str_replace(array(';', ','), array(' ', ' '), trim($this->aAttributes['mailto']));
+            $this->aAttributes['mailto'] = str_replace(array(';', ','),
+                                                       array(' ', ' '),
+                                                       trim($this->aAttributes['mailto']));
             $this->aAttributes['mailto'] = preg_replace('/\s{2,}/', ' ', $this->aAttributes['mailto']);
         }
     }
