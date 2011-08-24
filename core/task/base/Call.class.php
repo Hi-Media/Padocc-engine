@@ -31,9 +31,10 @@ class Task_Base_Call extends Task_WithProperties
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-        $this->aAttributeProperties = array_merge($this->aAttributeProperties, array(
-            'target' => Task::ATTRIBUTE_REQUIRED
-        ));
+        $this->aAttributeProperties = array_merge(
+            $this->aAttributeProperties,
+            array('target' => Task::ATTRIBUTE_REQUIRED)
+        );
 
         // Crée une instance de la tâche target appelée :
         $aTargets = $this->oProject->getSXE()->xpath("target[@name='" . $this->aAttributes['target'] . "']");
@@ -41,8 +42,9 @@ class Task_Base_Call extends Task_WithProperties
             $sMsg = "Target '" . $this->aAttributes['target'] . "' not found or not unique in this project!";
             throw new UnexpectedValueException($sMsg);
         }
-        $this->_oBoundTask = new Task_Base_Target($aTargets[0], $this->oProject, $sBackupPath,
-                                                 $this->oServiceContainer);
+        $this->_oBoundTask = new Task_Base_Target(
+            $aTargets[0], $this->oProject, $sBackupPath, $this->oServiceContainer
+        );
     }
 
     public function setUp ()

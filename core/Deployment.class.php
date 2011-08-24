@@ -21,7 +21,8 @@ class Deployment
             ->setNumberingAdapter(new Numbering_Adapter());
     }
 
-    private function _setExternalProperties (array $aExternalProperties=array()) {
+    private function _setExternalProperties (array $aExternalProperties=array())
+    {
         $oProperties = $this->_oServiceContainer->getPropertiesAdapter();
         foreach ($aExternalProperties as $i => $sValue) {
             $sKey = Task_Base_ExternalProperty::EXTERNAL_PROPERTY_PREFIX . ($i+1);

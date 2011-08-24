@@ -53,13 +53,15 @@ class Task_Base_Link extends Task
             ($bIsSrcRemote && $bIsDestRemote && $aSrcMatches[1] != $aDestMatches[1])
             || ($bIsSrcRemote XOR $bIsDestRemote)
         ) {
-            throw new DomainException('Servers must be equals!'
-                . ' Src=' . $this->aAttributes['src'] . ' Target=' . $this->aAttributes['target']);
+            $sMsg = 'Servers must be equals!' . ' Src=' . $this->aAttributes['src']
+                  . ' Target=' . $this->aAttributes['target'];
+            throw new DomainException($sMsg);
         }
 
         if ( ! empty($this->aAttributes['server']) && ($bIsSrcRemote || $bIsDestRemote)) {
-            throw new DomainException('Multiple server declaration!' . ' Server=' . $this->aAttributes['server']
-                . ' Src=' . $this->aAttributes['src'] . ' Target=' . $this->aAttributes['target']);
+            $sMsg = 'Multiple server declaration!' . ' Server=' . $this->aAttributes['server']
+                  . ' Src=' . $this->aAttributes['src'] . ' Target=' . $this->aAttributes['target'];
+            throw new DomainException($sMsg);
         }
     }
 

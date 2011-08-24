@@ -38,12 +38,15 @@ class Task_Extended_TwengaServers extends Task
 
         // Création de la tâche de synchronisation sous-jacente :
         $this->oNumbering->addCounterDivision();
-        $this->_oGitExportTask = Task_Extended_GitExport::getNewInstance(array(
-            'repository' => 'git@git.twenga.com:aa/server_config.git',
-            'ref' => 'master',
-            'destdir' => $this->_sTmpDir,
-            'exclude' => ''
-        ), $oProject, $sBackupPath, $oServiceContainer);
+        $this->_oGitExportTask = Task_Extended_GitExport::getNewInstance(
+            array(
+                'repository' => 'git@git.twenga.com:aa/server_config.git',
+                'ref' => 'master',
+                'destdir' => $this->_sTmpDir,
+                'exclude' => ''
+            ),
+            $oProject, $sBackupPath, $oServiceContainer
+        );
         $this->oNumbering->removeCounterDivision();
     }
 

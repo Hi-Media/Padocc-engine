@@ -70,17 +70,20 @@ class Task_Base_Project extends Task_WithProperties
         $this->sEnvName = $sEnvName;
 
         parent::__construct($oProject, $this, $sBackupPath, $oServiceContainer);
-        $this->aAttributeProperties = array_merge($this->aAttributeProperties, array(
-            'name' => Task::ATTRIBUTE_REQUIRED
-        ));
+        $this->aAttributeProperties = array_merge(
+            $this->aAttributeProperties,
+            array('name' => Task::ATTRIBUTE_REQUIRED)
+        );
 
         // Crée une instance de la tâche environnement appelée :
         $aTargets = $this->oProject->getSXE()->xpath("env[@name='$sEnvName']");
         if (count($aTargets) !== 1) {
             throw new UnexpectedValueException("Environment '$sEnvName' not found or not unique in this project!");
         }
-        $this->_oBoundTask = new Task_Base_Environment($aTargets[0], $this->oProject,
-                                                      $sBackupPath, $this->oServiceContainer);
+        $this->_oBoundTask = new Task_Base_Environment(
+            $aTargets[0], $this->oProject,
+            $sBackupPath, $this->oServiceContainer
+        );
     }
 
     public function setUp ()
