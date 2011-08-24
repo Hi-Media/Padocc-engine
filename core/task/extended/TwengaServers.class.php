@@ -17,9 +17,9 @@ class Task_Extended_TwengaServers extends Task
      * Tâche d'export Git sous-jacente.
      * @var Task_Extended_GitExport
      */
-    private $oGitExportTask;
+    private $_oGitExportTask;
 
-    private $sTmpDir;
+    private $_sTmpDir;
 
     /**
      * Constructeur.
@@ -34,14 +34,14 @@ class Task_Extended_TwengaServers extends Task
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->aAttributeProperties = array();
-        $this->sTmpDir = '/tmp/' . $this->oProperties->getProperty('execution_id') . '_' . self::getTagName();
+        $this->_sTmpDir = '/tmp/' . $this->oProperties->getProperty('execution_id') . '_' . self::getTagName();
 
         // Création de la tâche de synchronisation sous-jacente :
         $this->oNumbering->addCounterDivision();
-        $this->oGitExportTask = Task_Extended_GitExport::getNewInstance(array(
+        $this->_oGitExportTask = Task_Extended_GitExport::getNewInstance(array(
             'repository' => 'git@git.twenga.com:aa/server_config.git',
             'ref' => 'master',
-            'destdir' => $this->sTmpDir,
+            'destdir' => $this->_sTmpDir,
             'exclude' => ''
         ), $oProject, $sBackupPath, $oServiceContainer);
         $this->oNumbering->removeCounterDivision();
@@ -51,7 +51,7 @@ class Task_Extended_TwengaServers extends Task
     {
         parent::setUp();
         $this->oLogger->indent();
-        $this->oGitExportTask->setUp();
+        $this->_oGitExportTask->setUp();
         $this->oLogger->unindent();
     }
 
@@ -59,11 +59,11 @@ class Task_Extended_TwengaServers extends Task
     {
         parent::_centralExecute();
         $this->oLogger->indent();
-        $this->oGitExportTask->execute();
-        $sPathToLoad = $this->sTmpDir . '/master_synchro.cfg';
+        $this->_oGitExportTask->execute();
+        $sPathToLoad = $this->_sTmpDir . '/master_synchro.cfg';
         $this->oLogger->log('Load shell properties: ' . $sPathToLoad);
         $this->oProperties->loadConfigShellFile($sPathToLoad);
-        $this->oShell->remove($this->sTmpDir);
+        $this->oShell->remove($this->_sTmpDir);
         $this->oLogger->unindent();
     }
 

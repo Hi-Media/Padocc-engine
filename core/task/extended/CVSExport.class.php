@@ -17,7 +17,7 @@ class Task_Extended_CVSExport extends Task
      * Tâche de synchronisation sous-jacente.
      * @var Task_Base_Sync
      */
-    private $oSyncTask;
+    private $_oSyncTask;
 
     /**
      * Constructeur.
@@ -49,7 +49,7 @@ class Task_Extended_CVSExport extends Task
         // Création de la tâche de synchronisation sous-jacente :
         $this->oNumbering->addCounterDivision();
         $sSrcDir = preg_replace('#/$#', '', $this->aAttributes['srcdir']) . '/' . $this->aAttributes['module'] . '/*';
-        $this->oSyncTask = Task_Base_Sync::getNewInstance(array(
+        $this->_oSyncTask = Task_Base_Sync::getNewInstance(array(
             'src' => $sSrcDir,
             'destdir' => $this->aAttributes['destdir']
         ), $oProject, $sBackupPath, $oServiceContainer);
@@ -60,7 +60,7 @@ class Task_Extended_CVSExport extends Task
     {
         parent::setUp();
         $this->oLogger->indent();
-        $this->oSyncTask->setUp();
+        $this->_oSyncTask->setUp();
         $this->oLogger->unindent();
     }
 
@@ -80,7 +80,7 @@ class Task_Extended_CVSExport extends Task
         $this->oLogger->log(implode("\n", $result));
         $this->oLogger->unindent();
 
-        $this->oSyncTask->execute();
+        $this->_oSyncTask->execute();
         $this->oLogger->unindent();
     }
 
