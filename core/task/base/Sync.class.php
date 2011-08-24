@@ -28,7 +28,8 @@ class Task_Base_Sync extends Task
         $this->aAttributeProperties = array(
             'src' => Task::ATTRIBUTE_SRC_PATH | Task::ATTRIBUTE_FILEJOKER | Task::ATTRIBUTE_REQUIRED,
             'destdir' => Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_REQUIRED | Task::ATTRIBUTE_ALLOW_PARAMETER,
-            'exclude' => Task::ATTRIBUTE_FILEJOKER,
+            // TODO Task::ATTRIBUTE_DIRJOKER abusif ici, mais à cause du multivalué :
+            'exclude' => Task::ATTRIBUTE_FILEJOKER | Task::ATTRIBUTE_DIRJOKER,
         );
     }
 

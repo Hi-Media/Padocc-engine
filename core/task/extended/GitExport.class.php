@@ -17,7 +17,7 @@ class Task_Extended_GitExport extends Task
      * Tâche de synchronisation sous-jacente.
      * @var Task_Base_Sync
      */
-    private $oSyncTask;
+    private $_oSyncTask;
 
     /**
      * Constructeur.
@@ -36,7 +36,8 @@ class Task_Extended_GitExport extends Task
             'ref' => Task::ATTRIBUTE_REQUIRED | Task::ATTRIBUTE_ALLOW_PARAMETER,
             'srcdir' => Task::ATTRIBUTE_DIR,
             'destdir' => Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_REQUIRED | Task::ATTRIBUTE_ALLOW_PARAMETER,
-            'exclude' => Task::ATTRIBUTE_FILEJOKER
+            // TODO Task::ATTRIBUTE_DIRJOKER abusif ici, mais à cause du multivalué :
+            'exclude' => Task::ATTRIBUTE_FILEJOKER | Task::ATTRIBUTE_DIRJOKER,
         );
 
         if (empty($this->aAttributes['srcdir'])) {
@@ -50,7 +51,7 @@ class Task_Extended_GitExport extends Task
         // Création de la tâche de synchronisation sous-jacente :
         $this->oNumbering->addCounterDivision();
         $sSrcDir = preg_replace('#/$#', '', $this->aAttributes['srcdir']) . '/*';
-        $this->oSyncTask = Task_Base_Sync::getNewInstance(array(
+        $this->_oSyncTask = Task_Base_Sync::getNewInstance(array(
             'src' => $sSrcDir,
             'destdir' => $this->aAttributes['destdir'],
             'exclude' => $this->aAttributes['exclude']
@@ -62,7 +63,7 @@ class Task_Extended_GitExport extends Task
     {
         parent::setUp();
         $this->oLogger->indent();
-        $this->oSyncTask->setUp();
+        $this->_oSyncTask->setUp();
         $this->oLogger->unindent();
     }
 
@@ -85,7 +86,7 @@ class Task_Extended_GitExport extends Task
         $this->oLogger->log(implode("\n", $result));
         $this->oLogger->unindent();
 
-        $this->oSyncTask->execute();
+        $this->_oSyncTask->execute();
         $this->oLogger->unindent();
     }
 
