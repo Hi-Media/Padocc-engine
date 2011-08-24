@@ -60,7 +60,7 @@
             name="tests_symlinks"
             propertyinifile="/home/gaubry/deployment/resources/tests_env_property_file.ini"
             mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com"
-            withsymlinks="true"
+            withsymlinks="false"
             loadtwengaservers="true"
             basedir="/home/aai/deployment_test/dest_test_symlink"
     >

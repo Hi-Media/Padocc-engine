@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-	name="boc_common"
-	propertyshellfile="/home/aai/deployment/resources/master_synchro.cfg"
->
-	<env name="qa" mailto="devaa@twenga.com,boc@twenga.com">
-		<cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
-			destdir="www2:/home/boc/qa/twenga-common" />
-	</env>
-	
-	<env name="prod" mailto="devaa@twenga.com,boc@twenga.com">
-		<cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
-			destdir="${SERVER_ADMIN}:/home/httpd/twenga-common" />
-	</env>
+<project name="boc_common">
+    <env name="qa" mailto="devaa@twenga.com, boc@twenga.com">
+        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
+            destdir="www2:/home/boc/qa/twenga-common" />
+    </env>
+
+    <env
+        name="prod"
+        mailto="devaa@twenga.com, boc@twenga.com"
+        withsymlinks="true"
+        loadtwengaservers="true"
+        basedir="/home/httpd/twenga-common"
+    >
+        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
+            destdir="${SERVER_ADMIN}:/home/httpd/twenga-common" />
+    </env>
 </project>

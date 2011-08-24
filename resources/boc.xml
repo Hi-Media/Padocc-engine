@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-		name="boc"
-		propertyshellfile="/home/aai/deployment/resources/master_synchro.cfg"
->
-	<env name="dev" mailto="devaa@twenga.com, steven.van-poeck@twenga.com, romain.barraja@twenga.com">
-		<externalproperty name="ref" description="Branch or tag to deploy" />
-		<externalproperty name="vhost" description="VHost" />
-		<gitexport repository="git@git.twenga.com:boc/boc.git" ref="${ref}"
-			destdir="dv5:/home/${vhost}/twengaweb/admin" />
-	</env>
-	
-	<env name="qa" mailto="devaa@twenga.com,boc@twenga.com">
-		<gitexport repository="git@git.twenga.com:boc/boc_prod.git" ref="master_prod"
-			destdir="www2:/home/boc/qa/admin.twenga.com" 
-			exclude="inc/config.php inc/config-db.php inc/common_config.php" />
-	</env>
-	
-	<env name="prod" mailto="devaa@twenga.com,boc@twenga.com">
-		<gitexport repository="git@git.twenga.com:boc/boc_prod.git" ref="master_prod"
-			destdir="${SERVER_ADMIN}:/home/httpd/admin.twenga.com" 
-			exclude="inc/config.php inc/config-db.php inc/common_config.php" />
-	</env>
+<project name="boc">
+    <env name="dev" mailto="devaa@twenga.com, boc@twenga.com">
+        <externalproperty name="ref" description="Branch or tag to deploy" />
+        <externalproperty name="vhost" description="VHost" />
+        <gitexport repository="git@git.twenga.com:boc/boc.git" ref="${ref}"
+            destdir="dv5:/home/${vhost}/twengaweb/admin" />
+    </env>
+
+    <env name="qa" mailto="devaa@twenga.com, boc@twenga.com">
+        <gitexport repository="git@git.twenga.com:boc/boc_prod.git" ref="master_prod"
+            destdir="www2:/home/boc/qa/admin.twenga.com"
+            exclude="inc/config.php inc/config-db.php inc/common_config.php" />
+    </env>
+
+    <env
+        name="prod"
+        mailto="devaa@twenga.com, boc@twenga.com"
+        withsymlinks="true"
+        loadtwengaservers="true"
+        basedir="/home/httpd/admin.twenga.com"
+    >
+        <gitexport repository="git@git.twenga.com:boc/boc_prod.git" ref="master_prod"
+            destdir="${SERVER_ADMIN}:/home/httpd/admin.twenga.com"
+            exclude="inc/config.php inc/config-db.php inc/common_config.php" />
+    </env>
 </project>

@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-	name="webservices"
-	propertyshellfile="/home/aai/deployment/resources/master_synchro.cfg"
->
-	<env name="qa" mailto="devaa@twenga.com,yann.brigant@twenga.com">
-		<gitexport repository="git@git.twenga.com:webservices/webservices.git" ref="master"
-			destdir="www17:/home/httpd-qa/webservices" 
-			exclude="config.php config-local" />
-		<link server="www17" src="/home/httpd-qa/webservices/config.php" target="/home/httpd-qa/config/webservices/config.php" />
-		<link server="www17" src="/home/httpd-qa/webservices/config-local" target="/home/httpd-qa/config/webservices/config-local" />
-	</env>
+<project name="webservices">
+    <env
+        name="qa"
+        mailto="devaa@twenga.com,yann.brigant@twenga.com"
+        withsymlinks="true"
+        basedir="/home/httpd-qa/webservices"
+    >
+        <gitexport repository="git@git.twenga.com:webservices/webservices.git" ref="master"
+            destdir="www17:/home/httpd-qa/webservices" exclude="config.php config-local" />
+        <link server="www17" src="/home/httpd-qa/webservices/config.php"
+            target="/home/httpd-qa/config/webservices/config.php" />
+        <link server="www17" src="/home/httpd-qa/webservices/config-local"
+            target="/home/httpd-qa/config/webservices/config-local" />
+    </env>
 </project>
