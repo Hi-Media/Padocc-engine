@@ -29,7 +29,7 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
         $this->aShellExecCmds = array();
 
         $oClass = new ReflectionClass('Shell_Adapter');
-        $oProperty = $oClass->getProperty('aFileStatus');
+        $oProperty = $oClass->getProperty('_aFileStatus');
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockShell, array(
             '/path/to/srcdir' => 2

@@ -427,7 +427,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 
         $aResult = $oMockShell->getFileStatus('/path/to/my file');
         $this->assertEquals(1, $aResult);
-        $this->assertAttributeEquals(array('/path/to/my file' => 1), 'aFileStatus', $oMockShell);
+        $this->assertAttributeEquals(array('/path/to/my file' => 1), '_aFileStatus', $oMockShell);
 
         return $oMockShell;
     }
@@ -437,7 +437,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
      * @covers Shell_Adapter::getFileStatus
      */
     public function testGetFileStatusWithFileOnCache (Shell_Adapter $oMockShell) {
-        $this->assertAttributeEquals(array('/path/to/my file' => 1), 'aFileStatus', $oMockShell);
+        $this->assertAttributeEquals(array('/path/to/my file' => 1), '_aFileStatus', $oMockShell);
         $oMockShell->expects($this->never())->method('exec');
         $aResult = $oMockShell->getFileStatus('/path/to/my file');
         $this->assertEquals(1, $aResult);
@@ -456,7 +456,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
         $aResult = $oMockShell->getFileStatus('/path/to/dir');
         $this->assertEquals(2, $aResult);
 
-        $this->assertAttributeEquals(array('/path/to/dir' => 2), 'aFileStatus', $oMockShell);
+        $this->assertAttributeEquals(array('/path/to/dir' => 2), '_aFileStatus', $oMockShell);
     }
 
     /**
@@ -472,7 +472,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
         $aResult = $oMockShell->getFileStatus('/path/to/unknwon');
         $this->assertEquals(0, $aResult);
 
-        $this->assertAttributeEquals(array(), 'aFileStatus', $oMockShell);
+        $this->assertAttributeEquals(array(), '_aFileStatus', $oMockShell);
     }
 
 

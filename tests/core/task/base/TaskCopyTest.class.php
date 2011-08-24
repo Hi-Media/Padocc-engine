@@ -30,7 +30,7 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase {
 
         //$oShell = new Shell_Adapter($oLogger);
         $oClass = new ReflectionClass('Shell_Adapter');
-        $oProperty = $oClass->getProperty('aFileStatus');
+        $oProperty = $oClass->getProperty('_aFileStatus');
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockShell, array(
             '/path/to/srcdir' => 2,
