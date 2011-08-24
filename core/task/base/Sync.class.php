@@ -64,9 +64,11 @@ class Task_Base_Sync extends Task
         $aExcludedPaths = (empty($this->aAttributes['exclude'])
                           ? array()
                           : explode(' ', $this->aAttributes['exclude']));
-        $results = $this->oShell->sync($this->aAttributes['src'],
-                                       $this->_processPath($this->aAttributes['destdir']),
-                                       $aExcludedPaths);
+        $results = $this->oShell->sync(
+            $this->aAttributes['src'],
+            $this->_processPath($this->aAttributes['destdir']),
+            $aExcludedPaths
+        );
         foreach ($results as $result) {
             $this->oLogger->log($result);
         }

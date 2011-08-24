@@ -313,7 +313,8 @@ abstract class Task implements AttributeProperties
         if (count($aUnknownAttributes) > 0) {
             throw new DomainException(
                 "Available attributes: " . print_r($aAvailablesAttr, true)
-                . " => Unknown attribute(s): " . print_r($aUnknownAttributes, true));
+                . " => Unknown attribute(s): " . print_r($aUnknownAttributes, true)
+            );
         }
 
         foreach ($this->aAttributeProperties as $sAttribute => $iProperties) {

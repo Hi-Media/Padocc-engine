@@ -30,8 +30,9 @@ abstract class Task_WithProperties extends Task
         // Création de la tâche de chargement des listes de serveurs Twenga sous-jacente :
         if ( ! empty($this->aAttributes['loadtwengaservers']) && $this->aAttributes['loadtwengaservers'] == 'true') {
             $this->oNumbering->addCounterDivision();
-            $this->oTwengaServersTask = Task_Extended_TwengaServers::getNewInstance(array(), $oProject, $sBackupPath,
-                                                                                    $oServiceContainer);
+            $this->oTwengaServersTask = Task_Extended_TwengaServers::getNewInstance(
+                array(), $oProject, $sBackupPath, $oServiceContainer
+            );
             $this->oNumbering->removeCounterDivision();
         } else {
             $this->oTwengaServersTask = NULL;

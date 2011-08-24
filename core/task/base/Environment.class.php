@@ -27,12 +27,15 @@ class Task_Base_Environment extends Task_Base_Target
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-        $this->aAttributeProperties = array_merge($this->aAttributeProperties, array(
-            'name' => Task::ATTRIBUTE_REQUIRED,
-            'mailto' => 0,
-            'withsymlinks' => Task::ATTRIBUTE_BOOLEAN,
-            'basedir' => Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_REQUIRED
-        ));
+        $this->aAttributeProperties = array_merge(
+            $this->aAttributeProperties,
+            array(
+                'name' => Task::ATTRIBUTE_REQUIRED,
+                'mailto' => 0,
+                'withsymlinks' => Task::ATTRIBUTE_BOOLEAN,
+                'basedir' => Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_REQUIRED
+            )
+        );
 
         // Positionnement des 2 propriétés basedir et withsymlinks :
         $sBaseDir = (empty($this->aAttributes['basedir']) ? '[check() will failed]' : $this->aAttributes['basedir']);
@@ -46,11 +49,14 @@ class Task_Base_Environment extends Task_Base_Target
             $sBaseSymLink = $this->oProperties->getProperty('base_dir');
             $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
                              . '/' . $this->oProperties->getProperty('execution_id');
-            $this->_oLinkTask = Task_Base_Link::getNewInstance(array(
-                'src' => $sBaseSymLink,
-                'target' => $sReleaseSymLink,
-                'server' => '${SERVERS_CONCERNED_WITH_BASE_DIR}'
-            ), $oProject, $sBackupPath, $oServiceContainer);
+            $this->_oLinkTask = Task_Base_Link::getNewInstance(
+                array(
+                    'src' => $sBaseSymLink,
+                    'target' => $sReleaseSymLink,
+                    'server' => '${SERVERS_CONCERNED_WITH_BASE_DIR}'
+                ),
+                $oProject, $sBackupPath, $oServiceContainer
+            );
             $this->oNumbering->removeCounterDivision();
         }
     }

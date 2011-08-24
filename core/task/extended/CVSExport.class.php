@@ -49,10 +49,13 @@ class Task_Extended_CVSExport extends Task
         // Création de la tâche de synchronisation sous-jacente :
         $this->oNumbering->addCounterDivision();
         $sSrcDir = preg_replace('#/$#', '', $this->aAttributes['srcdir']) . '/' . $this->aAttributes['module'] . '/*';
-        $this->_oSyncTask = Task_Base_Sync::getNewInstance(array(
-            'src' => $sSrcDir,
-            'destdir' => $this->aAttributes['destdir']
-        ), $oProject, $sBackupPath, $oServiceContainer);
+        $this->_oSyncTask = Task_Base_Sync::getNewInstance(
+            array(
+                'src' => $sSrcDir,
+                'destdir' => $this->aAttributes['destdir']
+            ),
+            $oProject, $sBackupPath, $oServiceContainer
+        );
         $this->oNumbering->removeCounterDivision();
     }
 

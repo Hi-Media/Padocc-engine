@@ -191,7 +191,8 @@ class Shell_Adapter implements Shell_Interface
             return array_merge(
                 $this->backup($sSrcPath, $sTmpPath),
                 $this->copy($sTmpPath, $sBackupPath, true),
-                $this->remove($sTmpDir));
+                $this->remove($sTmpDir)
+            );
         } else {
             $this->mkdir(pathinfo($sBackupPath, PATHINFO_DIRNAME));
             $sSrcFile = pathinfo($aSrcMatches[2], PATHINFO_BASENAME);
@@ -199,16 +200,20 @@ class Shell_Adapter implements Shell_Interface
             if ($bIsSrcRemote) {
                 $sSrcDir = pathinfo($aSrcMatches[2], PATHINFO_DIRNAME);
                 $sFormat = 'ssh %4$s <<EOF' . "\n" . $sFormat . "\nEOF\n";
-                $sCmd = sprintf($sFormat,
-                                $this->escapePath($sSrcDir),
-                                $this->escapePath($aBackupMatches[2]),
-                                $this->escapePath($sSrcFile), $aSrcMatches[1]);
+                $sCmd = sprintf(
+                    $sFormat,
+                    $this->escapePath($sSrcDir),
+                    $this->escapePath($aBackupMatches[2]),
+                    $this->escapePath($sSrcFile), $aSrcMatches[1]
+                );
             } else {
                 $sSrcDir = pathinfo($sSrcPath, PATHINFO_DIRNAME);
-                $sCmd = sprintf($sFormat,
-                                $this->escapePath($sSrcDir),
-                                $this->escapePath($sBackupPath),
-                                $this->escapePath($sSrcFile));
+                $sCmd = sprintf(
+                    $sFormat,
+                    $this->escapePath($sSrcDir),
+                    $this->escapePath($sBackupPath),
+                    $this->escapePath($sSrcFile)
+                );
             }
             return $this->exec($sCmd);
         }

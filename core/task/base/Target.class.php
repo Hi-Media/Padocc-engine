@@ -50,9 +50,10 @@ class Task_Base_Target extends Task_WithProperties
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-        $this->aAttributeProperties = array_merge($this->aAttributeProperties, array(
-            'name' => Task::ATTRIBUTE_REQUIRED,
-        ));
+        $this->aAttributeProperties = array_merge(
+            $this->aAttributeProperties,
+            array('name' => Task::ATTRIBUTE_REQUIRED)
+        );
 
         $this->oNumbering->addCounterDivision();
         // $sBackupPath et non $this->sBackupPath, pour les sous-tâches :
@@ -156,9 +157,11 @@ class Task_Base_Target extends Task_WithProperties
         parent::check();
 
         if ( ! empty($this->aAttributes['mailto'])) {
-            $this->aAttributes['mailto'] = str_replace(array(';', ','),
-                                                       array(' ', ' '),
-                                                       trim($this->aAttributes['mailto']));
+            $this->aAttributes['mailto'] = str_replace(
+                array(';', ','),
+                array(' ', ' '),
+                trim($this->aAttributes['mailto'])
+            );
             $this->aAttributes['mailto'] = preg_replace('/\s{2,}/', ' ', $this->aAttributes['mailto']);
         }
     }
@@ -173,7 +176,8 @@ class Task_Base_Target extends Task_WithProperties
         $this->oLogger->unindent();
     }
 
-    protected function _preExecute () {
+    protected function _preExecute ()
+    {
         parent::_preExecute();
         if ( ! empty($this->aAttributes['mailto'])) {
             $this->oLogger->indent();
