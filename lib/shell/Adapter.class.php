@@ -214,6 +214,7 @@ class Shell_Adapter implements Shell_Interface
         }
     }
 
+    // mkdir -m xxx exécuté ssi répertoire inexistant...
     public function mkdir ($sPath, $sMode='')
     {
         if ($sMode !== '') {

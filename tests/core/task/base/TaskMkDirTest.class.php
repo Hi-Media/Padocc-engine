@@ -112,9 +112,7 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
         $oTask = Task_Base_MkDir::getNewInstance(array('destdir' => '/path/to/destdir', 'mode' => '755'), $this->oMockProject, '', $this->oServiceContainer);
         $oTask->setUp();
         $oTask->execute();
-        $this->assertEquals(array(
-            'mkdir -m 755 -p "/path/to/destdir"'
-        ), $this->aShellExecCmds);
+        $this->assertEquals(array('mkdir -p "/path/to/destdir" && chmod 755 "/path/to/destdir"'), $this->aShellExecCmds);
     }
 
     /**
@@ -139,7 +137,7 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
         $oTask->execute();
         $this->assertEquals(array(
             'ssh -T user@server /bin/bash <<EOF' . "\n"
-                . 'mkdir -m 755 -p "/path/to/destdir_releases/12345/subdir"' . "\n"
+                . 'mkdir -p "/path/to/destdir_releases/12345/subdir" && chmod 755 "/path/to/destdir_releases/12345/subdir"' . "\n"
                 . 'EOF' . "\n"
         ), $this->aShellExecCmds);
     }
