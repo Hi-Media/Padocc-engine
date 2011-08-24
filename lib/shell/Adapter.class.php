@@ -243,6 +243,17 @@ rsync  --bwlimit=4000
     {
         $aPaths = (is_array($mDestPath) ? $mDestPath : array($mDestPath));
 
+        // Cas non gérés :
+        list($bIsSrcRemote, $aSrcMatches) = $this->isRemotePath($sSrcPath);
+        list($bIsDestRemote, $aDestMatches) = $this->isRemotePath(reset($aPaths));
+        if (
+            (count($aPaths) > 1 && $bIsSrcRemote)
+            || (count($aPaths) === 1 && $bIsSrcRemote && $bIsDestRemote && $aSrcMatches[1] != $aDestMatches[1]))
+        {
+            throw new RuntimeException('Not yet implemented!', $code, $previous);
+
+        }
+
         $aAllResults = array();
         for ($i=0; $i<count($aPaths); $i++) {
             $aResult = $this->mkdir($aPaths[$i]);
@@ -255,8 +266,6 @@ rsync  --bwlimit=4000
                               : '--exclude="' . implode('" --exclude="', $aExcludedPaths) . '" ');
         $sRsyncCmd = 'rsync -axz --delete ' . $sAdditionalExclude . '--stats -e ssh %1$s %2$s';
 
-        list($bIsSrcRemote, $aSrcMatches) = $this->isRemotePath($sSrcPath);
-        list($bIsDestRemote, $aDestMatches) = $this->isRemotePath(reset($aPaths));
         if (count($aPaths) === 1 && $bIsSrcRemote && $bIsDestRemote && $aSrcMatches[1] == $aDestMatches[1]) {
             $sCmd = sprintf($sRsyncCmd, '%1$s', $this->escapePath($aDestMatches[2]));
             $aRawResult = $this->execSSH($sCmd, $sSrcPath);

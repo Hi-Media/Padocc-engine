@@ -475,8 +475,6 @@ class ShellTest extends PHPUnit_Framework_TestCase {
         $this->assertAttributeEquals(array(), '_aFileStatus', $oMockShell);
     }
 
-
-
     /**
      * @covers Shell_Adapter::sync
      */
@@ -600,6 +598,40 @@ total size is 64093953  speedup is 1618.29');
 
         $aResult = $oMockShell->sync('/srcpath/to/my file', array('server1:/destpath/to/my dir', 'login@server2:/destpath/to/my dir'));
         $this->assertEquals(preg_replace('/\s/', '', $aExpectedResult[0]), preg_replace('/\s/', '', $aResult[0]));
+    }
+
+    /**
+     * @covers Shell_Adapter::sync
+     */
+    public function testSyncRemoteDirToRemoteDirWithSameHost () {
+        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+        $oMockShell->expects($this->at(0))->method('exec')
+            ->with($this->equalTo('ssh -T user@server /bin/bash <<EOF' . "\n"
+                . 'mkdir -p "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
+            ->will($this->returnValue(array()));
+        $oMockShell->expects($this->at(1))->method('exec')
+            ->with($this->equalTo('ssh -T user@server /bin/bash <<EOF' . "\n"
+                . 'rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --exclude="smarty/*/wrt*" --exclude="smarty/**/wrt*" --stats -e ssh "/srcpath/to/my dir" "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
+            ->will($this->returnValue(array()));
+        $oMockShell->expects($this->exactly(2))->method('exec');
+
+        $oMockShell->sync('user@server:/srcpath/to/my dir', 'user@server:/destpath/to/my dir', array('smarty/*/wrt*', 'smarty/**/wrt*'));
+    }
+
+    /**
+     * @covers Shell_Adapter::sync
+     */
+    public function testSyncRemoteDirToRemoteDirWithDifferentHostThrowException () {
+        $this->setExpectedException('RuntimeException');
+        $this->oShell->sync('user@server1:/srcpath/to/my dir', 'server2:/destpath/to/my dir');
+    }
+
+    /**
+     * @covers Shell_Adapter::sync
+     */
+    public function testSyncRemoteDirToLocalDirsThrowException () {
+        $this->setExpectedException('RuntimeException');
+        $this->oShell->sync('user@server1:/srcpath/to/my dir', array('/destpath/to/my dir1', '/destpath/to/my dir2'));
     }
 
 
