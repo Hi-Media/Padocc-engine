@@ -162,7 +162,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
         $this->assertAttributeEquals(array(
             'src' => '/path/to/link',
             'target' => '/path/to/destdir'
-        ), 'aAttributes', $oTask);
+        ), '_aAttributes', $oTask);
     }
 
     /**
@@ -180,7 +180,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
             'src' => '/path/to/link',
             'target' => '/path/to/destdir',
             'server' => 'user@server'
-        ), 'aAttributes', $oTask);
+        ), '_aAttributes', $oTask);
     }
 
     /**
@@ -193,7 +193,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
         $this->assertAttributeEquals(array(
             'src' => 'user@server:/path/to/link',
             'target' => 'user@server:/path/to/destdir'
-        ), 'aAttributes', $oTask);
+        ), '_aAttributes', $oTask);
     }
 
     /**

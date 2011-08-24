@@ -50,15 +50,15 @@ class Task_Base_Target extends Task_WithProperties
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-        $this->aAttributeProperties = array_merge(
-            $this->aAttributeProperties,
+        $this->_aAttributeProperties = array_merge(
+            $this->_aAttributeProperties,
             array('name' => Task::ATTRIBUTE_REQUIRED)
         );
 
-        $this->oNumbering->addCounterDivision();
-        // $sBackupPath et non $this->sBackupPath, pour les sous-tâches :
-        $this->aTasks = $this->_getTaskInstances($oTask, $this->oProject, $sBackupPath);
-        $this->oNumbering->removeCounterDivision();
+        $this->_oNumbering->addCounterDivision();
+        // $sBackupPath et non $this->_sBackupPath, pour les sous-tâches :
+        $this->aTasks = $this->_getTaskInstances($oTask, $this->_oProject, $sBackupPath);
+        $this->_oNumbering->removeCounterDivision();
     }
 
     /**
@@ -110,7 +110,7 @@ class Task_Base_Target extends Task_WithProperties
      */
     private function _getTaskInstances (SimpleXMLElement $oTarget, Task_Base_Project $oProject, $sBackupPath)
     {
-        $this->oLogger->log('Initialize tasks');
+        $this->_oLogger->log('Initialize tasks');
         $aAvailableTasks = self::_getAvailableTasks();
 
         // Mise à plat des tâches car SimpleXML regroupe celles successives de même nom
@@ -134,7 +134,7 @@ class Task_Base_Target extends Task_WithProperties
                 throw new UnexpectedValueException("Unkown task tag: '$sTag'!");
             } else {
                 $aTaskInstances[] = new $aAvailableTasks[$sTag]($oTask, $oProject, $sBackupPath,
-                                                                $this->oServiceContainer);
+                                                                $this->_oServiceContainer);
             }
         }
 
@@ -156,45 +156,45 @@ class Task_Base_Target extends Task_WithProperties
     {
         parent::check();
 
-        if ( ! empty($this->aAttributes['mailto'])) {
-            $this->aAttributes['mailto'] = str_replace(
+        if ( ! empty($this->_aAttributes['mailto'])) {
+            $this->_aAttributes['mailto'] = str_replace(
                 array(';', ','),
                 array(' ', ' '),
-                trim($this->aAttributes['mailto'])
+                trim($this->_aAttributes['mailto'])
             );
-            $this->aAttributes['mailto'] = preg_replace('/\s{2,}/', ' ', $this->aAttributes['mailto']);
+            $this->_aAttributes['mailto'] = preg_replace('/\s{2,}/', ' ', $this->_aAttributes['mailto']);
         }
     }
 
     public function setUp ()
     {
         parent::setUp();
-        $this->oLogger->indent();
+        $this->_oLogger->indent();
         foreach ($this->aTasks as $oTask) {
             $oTask->setUp();
         }
-        $this->oLogger->unindent();
+        $this->_oLogger->unindent();
     }
 
     protected function _preExecute ()
     {
         parent::_preExecute();
-        if ( ! empty($this->aAttributes['mailto'])) {
-            $this->oLogger->indent();
-            $this->oLogger->log('[MAILTO] ' . $this->aAttributes['mailto']);
-            $this->oLogger->unindent();
+        if ( ! empty($this->_aAttributes['mailto'])) {
+            $this->_oLogger->indent();
+            $this->_oLogger->log('[MAILTO] ' . $this->_aAttributes['mailto']);
+            $this->_oLogger->unindent();
         }
     }
 
     protected function _centralExecute ()
     {
         parent::_centralExecute();
-        $this->oLogger->indent();
+        $this->_oLogger->indent();
         foreach ($this->aTasks as $oTask) {
             $oTask->backup();
             $oTask->execute();
         }
-        $this->oLogger->unindent();
+        $this->_oLogger->unindent();
     }
 
     public function backup ()

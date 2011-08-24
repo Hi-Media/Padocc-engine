@@ -31,19 +31,19 @@ class Task_Base_Call extends Task_WithProperties
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-        $this->aAttributeProperties = array_merge(
-            $this->aAttributeProperties,
+        $this->_aAttributeProperties = array_merge(
+            $this->_aAttributeProperties,
             array('target' => Task::ATTRIBUTE_REQUIRED)
         );
 
         // Crée une instance de la tâche target appelée :
-        $aTargets = $this->oProject->getSXE()->xpath("target[@name='" . $this->aAttributes['target'] . "']");
+        $aTargets = $this->_oProject->getSXE()->xpath("target[@name='" . $this->_aAttributes['target'] . "']");
         if (count($aTargets) !== 1) {
-            $sMsg = "Target '" . $this->aAttributes['target'] . "' not found or not unique in this project!";
+            $sMsg = "Target '" . $this->_aAttributes['target'] . "' not found or not unique in this project!";
             throw new UnexpectedValueException($sMsg);
         }
         $this->_oBoundTask = new Task_Base_Target(
-            $aTargets[0], $this->oProject, $sBackupPath, $this->oServiceContainer
+            $aTargets[0], $this->_oProject, $sBackupPath, $this->_oServiceContainer
         );
     }
 

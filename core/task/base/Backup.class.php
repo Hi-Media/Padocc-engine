@@ -25,7 +25,7 @@ class Task_Base_Backup extends Task
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-        $this->aAttributeProperties = array(
+        $this->_aAttributeProperties = array(
             'src' => Task::ATTRIBUTE_SRC_PATH | Task::ATTRIBUTE_FILEJOKER | Task::ATTRIBUTE_REQUIRED,
             'destfile' => Task::ATTRIBUTE_FILE | Task::ATTRIBUTE_REQUIRED
         );
@@ -34,18 +34,18 @@ class Task_Base_Backup extends Task
     protected function _centralExecute ()
     {
         parent::_centralExecute();
-        $this->oLogger->indent();
-        $this->oShell->backup($this->aAttributes['src'], $this->aAttributes['destfile']);
-        $this->oLogger->unindent();
+        $this->_oLogger->indent();
+        $this->_oShell->backup($this->_aAttributes['src'], $this->_aAttributes['destfile']);
+        $this->_oLogger->unindent();
     }
 
     public function backup ()
     {
-        if ($this->oShell->getFileStatus($this->aAttributes['destfile']) !== 0) {
-            list($bIsRemote, $aMatches) = $this->oShell->isRemotePath($this->aAttributes['destfile']);
+        if ($this->_oShell->getFileStatus($this->_aAttributes['destfile']) !== 0) {
+            list($bIsRemote, $aMatches) = $this->_oShell->isRemotePath($this->_aAttributes['destfile']);
             $sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '')
-                         . $this->sBackupPath . '/' . pathinfo($aMatches[2], PATHINFO_BASENAME);
-            $this->oShell->copy($this->aAttributes['destfile'], $sBackupPath, true);
+                         . $this->_sBackupPath . '/' . pathinfo($aMatches[2], PATHINFO_BASENAME);
+            $this->_oShell->copy($this->_aAttributes['destfile'], $sBackupPath, true);
         }
     }
 }

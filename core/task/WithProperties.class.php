@@ -7,7 +7,7 @@ abstract class Task_WithProperties extends Task
      * Tâche de chargement des listes de serveurs Twenga sous-jacente.
      * @var Task_Extended_TwengaServers
      */
-    private $oTwengaServersTask;
+    private $_oTwengaServersTask;
 
     /**
      * Constructeur.
@@ -21,54 +21,54 @@ abstract class Task_WithProperties extends Task
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-        $this->aAttributeProperties = array(
+        $this->_aAttributeProperties = array(
             'propertyinifile' => Task::ATTRIBUTE_SRC_PATH,
             'propertyshellfile' => Task::ATTRIBUTE_SRC_PATH,
             'loadtwengaservers' => Task::ATTRIBUTE_BOOLEAN
         );
 
         // Création de la tâche de chargement des listes de serveurs Twenga sous-jacente :
-        if ( ! empty($this->aAttributes['loadtwengaservers']) && $this->aAttributes['loadtwengaservers'] == 'true') {
-            $this->oNumbering->addCounterDivision();
-            $this->oTwengaServersTask = Task_Extended_TwengaServers::getNewInstance(
+        if ( ! empty($this->_aAttributes['loadtwengaservers']) && $this->_aAttributes['loadtwengaservers'] == 'true') {
+            $this->_oNumbering->addCounterDivision();
+            $this->_oTwengaServersTask = Task_Extended_TwengaServers::getNewInstance(
                 array(), $oProject, $sBackupPath, $oServiceContainer
             );
-            $this->oNumbering->removeCounterDivision();
+            $this->_oNumbering->removeCounterDivision();
         } else {
-            $this->oTwengaServersTask = NULL;
+            $this->_oTwengaServersTask = NULL;
         }
     }
 
     private function _loadProperties ()
     {
-        if ( ! empty($this->aAttributes['loadtwengaservers']) && $this->aAttributes['loadtwengaservers'] == 'true') {
-            $this->oTwengaServersTask->execute();
+        if ( ! empty($this->_aAttributes['loadtwengaservers']) && $this->_aAttributes['loadtwengaservers'] == 'true') {
+            $this->_oTwengaServersTask->execute();
         }
-        if ( ! empty($this->aAttributes['propertyshellfile'])) {
-            $this->oLogger->log('Load shell properties: ' . $this->aAttributes['propertyshellfile']);
-            $this->oProperties->loadConfigShellFile($this->aAttributes['propertyshellfile']);
+        if ( ! empty($this->_aAttributes['propertyshellfile'])) {
+            $this->_oLogger->log('Load shell properties: ' . $this->_aAttributes['propertyshellfile']);
+            $this->_oProperties->loadConfigShellFile($this->_aAttributes['propertyshellfile']);
         }
-        if ( ! empty($this->aAttributes['propertyinifile'])) {
-            $this->oLogger->log('Load ini properties: ' . $this->aAttributes['propertyinifile']);
-            $this->oProperties->loadConfigIniFile($this->aAttributes['propertyinifile']);
+        if ( ! empty($this->_aAttributes['propertyinifile'])) {
+            $this->_oLogger->log('Load ini properties: ' . $this->_aAttributes['propertyinifile']);
+            $this->_oProperties->loadConfigIniFile($this->_aAttributes['propertyinifile']);
         }
     }
 
     public function setUp ()
     {
         parent::setUp();
-        if ($this->oTwengaServersTask !== NULL) {
-            $this->oLogger->indent();
-            $this->oTwengaServersTask->setUp();
-            $this->oLogger->unindent();
+        if ($this->_oTwengaServersTask !== NULL) {
+            $this->_oLogger->indent();
+            $this->_oTwengaServersTask->setUp();
+            $this->_oLogger->unindent();
         }
     }
 
     protected function _preExecute ()
     {
         parent::_preExecute();
-        $this->oLogger->indent();
+        $this->_oLogger->indent();
         $this->_loadProperties();
-        $this->oLogger->unindent();
+        $this->_oLogger->unindent();
     }
 }

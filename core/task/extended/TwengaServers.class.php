@@ -33,11 +33,11 @@ class Task_Extended_TwengaServers extends Task
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-        $this->aAttributeProperties = array();
-        $this->_sTmpDir = '/tmp/' . $this->oProperties->getProperty('execution_id') . '_' . self::getTagName();
+        $this->_aAttributeProperties = array();
+        $this->_sTmpDir = '/tmp/' . $this->_oProperties->getProperty('execution_id') . '_' . self::getTagName();
 
         // Création de la tâche de synchronisation sous-jacente :
-        $this->oNumbering->addCounterDivision();
+        $this->_oNumbering->addCounterDivision();
         $this->_oGitExportTask = Task_Extended_GitExport::getNewInstance(
             array(
                 'repository' => 'git@git.twenga.com:aa/server_config.git',
@@ -47,36 +47,30 @@ class Task_Extended_TwengaServers extends Task
             ),
             $oProject, $sBackupPath, $oServiceContainer
         );
-        $this->oNumbering->removeCounterDivision();
+        $this->_oNumbering->removeCounterDivision();
     }
 
     public function setUp ()
     {
         parent::setUp();
-        $this->oLogger->indent();
+        $this->_oLogger->indent();
         $this->_oGitExportTask->setUp();
-        $this->oLogger->unindent();
+        $this->_oLogger->unindent();
     }
 
     protected function _centralExecute ()
     {
         parent::_centralExecute();
-        $this->oLogger->indent();
+        $this->_oLogger->indent();
         $this->_oGitExportTask->execute();
         $sPathToLoad = $this->_sTmpDir . '/master_synchro.cfg';
-        $this->oLogger->log('Load shell properties: ' . $sPathToLoad);
-        $this->oProperties->loadConfigShellFile($sPathToLoad);
-        $this->oShell->remove($this->_sTmpDir);
-        $this->oLogger->unindent();
+        $this->_oLogger->log('Load shell properties: ' . $sPathToLoad);
+        $this->_oProperties->loadConfigShellFile($sPathToLoad);
+        $this->_oShell->remove($this->_sTmpDir);
+        $this->_oLogger->unindent();
     }
 
     public function backup ()
     {
-        /*if ($this->oShell->getFileStatus($this->aAttributes['destdir']) !== 0) {
-            list($bIsRemote, $aMatches) = $this->oShell->isRemotePath($this->aAttributes['destdir']);
-            $sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '') . $this->sBackupPath . '/'
-                . pathinfo($aMatches[2], PATHINFO_BASENAME) . '.tar.gz';
-            $this->oShell->backup($this->aAttributes['destdir'], $sBackupPath);
-        }*/
     }
 }
