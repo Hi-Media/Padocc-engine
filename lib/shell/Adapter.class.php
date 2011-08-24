@@ -244,21 +244,33 @@ rsync  --bwlimit=4000
         }
 
         $aExcludedPaths = array_merge(self::$aDefaultRsyncExclude, $aExcludedPaths);
-        for ($i=0; $i<count($aPaths); $i++) {
-            $sAdditionalExclude = (count($aExcludedPaths) === 0
-                                  ? ''
-                                  : '--exclude="' . implode('" --exclude="', $aExcludedPaths) . '" ');
-            $aCmd = array();
-            for ($j=$i; $j<count($aPaths) && $j<$i+DEPLOYMENT_RSYNC_MAX_NB_PROCESSES; $j++) {
-                $aCmd[] =
-                    'rsync -axz --delete ' . $sAdditionalExclude . '--stats -e'
-                    . ' ssh ' . $this->escapePath($sSrcPath) . ' ' . $this->escapePath($aPaths[$j]);
-            }
-            $i = $j-1;
-            $sCmd = implode(" & \\\n", $aCmd) . (count($aCmd) > 1 ? " & \\\nwait" : '');
-            $aRawResult = $this->exec($sCmd);
+        $sAdditionalExclude = (count($aExcludedPaths) === 0
+                              ? ''
+                              : '--exclude="' . implode('" --exclude="', $aExcludedPaths) . '" ');
+        $sRsyncCmd = 'rsync -axz --delete ' . $sAdditionalExclude . '--stats -e ssh %1$s %2$s';
+
+        list($bIsSrcRemote, $aSrcMatches) = $this->isRemotePath($sSrcPath);
+        list($bIsDestRemote, $aDestMatches) = $this->isRemotePath(reset($aPaths));
+        if (count($aPaths) === 1 && $bIsSrcRemote && $bIsDestRemote && $aSrcMatches[1] == $aDestMatches[1]) {
+            $sCmd = sprintf($sRsyncCmd, '%1$s', $this->escapePath($aDestMatches[2]));
+            $aRawResult = $this->execSSH($sCmd, $sSrcPath);
             $aResult = $this->_resumeSyncResult($aRawResult);
             $aAllResults = array_merge($aAllResults, $aResult);
+
+        } else {
+            for ($i=0; $i<count($aPaths); $i++) {
+                $aCmds = array();
+                for ($j=$i; $j<count($aPaths) && $j<$i+DEPLOYMENT_RSYNC_MAX_NB_PROCESSES; $j++) {
+                    $aCmds[] = sprintf($sRsyncCmd, $this->escapePath($sSrcPath), $this->escapePath($aPaths[$j]));
+                        /*'rsync -axz --delete ' . $sAdditionalExclude . '--stats -e'
+                        . ' ssh ' . $this->escapePath($sSrcPath) . ' ' . $this->escapePath($aPaths[$j]);*/
+                }
+                $i = $j-1;
+                $sCmd = implode(" & \\\n", $aCmds) . (count($aCmds) > 1 ? " & \\\nwait" : '');
+                $aRawResult = $this->exec($sCmd);
+                $aResult = $this->_resumeSyncResult($aRawResult);
+                $aAllResults = array_merge($aAllResults, $aResult);
+            }
         }
 
         return $aAllResults;
