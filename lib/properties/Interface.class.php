@@ -21,7 +21,7 @@ interface Properties_Interface
     public function setProperty ($sPropertyName, $sValue);
 
     /**
-     * Charge le fichier INI spécifié en ajoutant ou écrasant chacune de ses définitions aux propriétés existantes.
+     * Charge le fichier INI spécifié en ajoutant ou écrasant ses définitions aux propriétés existantes.
      *
      * @param string $sIniPath path du fichier INI à charger
      * @return Properties_Interface cette instance
@@ -29,7 +29,7 @@ interface Properties_Interface
     public function loadConfigIniFile ($sIniPath);
 
     /**
-     * Charge le fichier shell spécifié en ajoutant ou écrasant chacune de ses définitions aux propriétés existantes.
+     * Charge le fichier shell spécifié en ajoutant ou écrasant ses définitions aux propriétés existantes.
      *
      * Format du fichier :
      *    PROPRIETE_1="chaîne"

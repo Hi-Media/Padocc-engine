@@ -186,7 +186,8 @@ abstract class Task implements AttributeProperties
     }
 
     /**
-     * Retourne la liste de tous les chemins générés en remplaçant les paramètres du chemin spécifié par leurs valeurs.
+     * Retourne la liste de tous les chemins générés en remplaçant les paramètres
+     * du chemin spécifié par leurs valeurs.
      *
      * @param string $sPath chemin pouvant contenir des paramètres
      * @return array liste de tous les chemins générés en remplaçant les paramètres par leurs valeurs
