@@ -174,13 +174,13 @@ class Task_Base_Environment extends Task_Base_Target
     public function setUp ()
     {
         if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
-            array_push($this->aTasks, $this->_oLinkTask);
+            array_push($this->_aTasks, $this->_oLinkTask);
         }
 
         parent::setUp();
 
         if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
-            array_pop($this->aTasks);
+            array_pop($this->_aTasks);
         }
     }
 

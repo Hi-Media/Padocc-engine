@@ -210,9 +210,9 @@ abstract class Task implements AttributeProperties
             }
 
             // Perfectible mais suffisant, récursivité sur les propriétés de propriétés :
-            $aToRecursiveProcessPaths = $aPaths;
+            $aRecursivePaths = $aPaths;
             $aPaths = array();
-            foreach ($aToRecursiveProcessPaths as $sPath) {
+            foreach ($aRecursivePaths as $sPath) {
                 $aPaths = array_merge($aPaths, $this->_expandPath($sPath));
             }
             $aPaths = array_values(array_unique($aPaths));

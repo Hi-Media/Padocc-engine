@@ -3,7 +3,7 @@
 class Task_Base_Target extends Task_WithProperties
 {
 
-    protected $aTasks;
+    protected $_aTasks;
 
     /**
      * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
@@ -57,7 +57,7 @@ class Task_Base_Target extends Task_WithProperties
 
         $this->_oNumbering->addCounterDivision();
         // $sBackupPath et non $this->_sBackupPath, pour les sous-tâches :
-        $this->aTasks = $this->_getTaskInstances($oTask, $this->_oProject, $sBackupPath);
+        $this->_aTasks = $this->_getTaskInstances($oTask, $this->_oProject, $sBackupPath);
         $this->_oNumbering->removeCounterDivision();
     }
 
@@ -170,7 +170,7 @@ class Task_Base_Target extends Task_WithProperties
     {
         parent::setUp();
         $this->_oLogger->indent();
-        foreach ($this->aTasks as $oTask) {
+        foreach ($this->_aTasks as $oTask) {
             $oTask->setUp();
         }
         $this->_oLogger->unindent();
@@ -190,7 +190,7 @@ class Task_Base_Target extends Task_WithProperties
     {
         parent::_centralExecute();
         $this->_oLogger->indent();
-        foreach ($this->aTasks as $oTask) {
+        foreach ($this->_aTasks as $oTask) {
             $oTask->backup();
             $oTask->execute();
         }
