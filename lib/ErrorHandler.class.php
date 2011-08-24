@@ -71,8 +71,9 @@ class ErrorHandler
         ini_set('ignore_repeated_errors', true);
         ini_set('max_execution_time', 0);
 
-        // Make sure we have a timezone for date functions.
-        // It is not safe to rely on the system's timezone settings. Please use the date.timezone setting, the TZ environment variable or the date_default_timezone_set() function.
+        // Make sure we have a timezone for date functions. It is not safe to rely on the system's timezone settings.
+        // Please use the date.timezone setting, the TZ environment variable
+        // or the date_default_timezone_set() function.
         if (ini_get('date.timezone') == '') {
             date_default_timezone_set('Europe/Paris');
         }
@@ -100,7 +101,8 @@ class ErrorHandler
     }
 
     /**
-     * Customized error handler function: throws an Exception with the message error if @ operator not used and error source is not in excluded paths.
+     * Customized error handler function: throws an Exception with the message error if @ operator not used
+     * and error source is not in excluded paths.
      *
      * @param int $iErrNo level of the error raised.
      * @param string $sErrStr the error message.
@@ -122,7 +124,8 @@ class ErrorHandler
             if (LOG_ERROR_SUPPRESSED)
                 ;//$debug->log("ERROR SUPRESSED WITH AN @ -- $errstr, $errfile, $errline");
         } else {
-            $msg = "[from error handler] " . self::$aErrorTypes[$iErrNo] . " -- $sErrStr, in file: '$sErrFile', line $iErrLine";
+            $msg = "[from error handler] " . self::$aErrorTypes[$iErrNo]
+                 . " -- $sErrStr, in file: '$sErrFile', line $iErrLine";
             $oException = new ErrorException($msg, self::$iDefaultErrorCode, $iErrNo, $sErrFile, $iErrLine);
             //if ( ! $this->display_errors && $errno != E_ERROR) {
             //	$this->error_log($e);

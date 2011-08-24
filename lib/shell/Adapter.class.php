@@ -5,7 +5,8 @@ class Shell_Adapter implements Shell_Interface
 
     private $aFileStatus;
 
-    private static $aDefaultRsyncExclude = array('.bzr/', '.cvsignore', '.git/', '.gitignore', '.svn/', 'cvslog.*', 'CVS', 'CVS.adm');
+    private static $aDefaultRsyncExclude = array('.bzr/', '.cvsignore', '.git/', '.gitignore', '.svn/', 'cvslog.*',
+                                                 'CVS', 'CVS.adm');
 
     /**
      * Log adapter.
@@ -75,9 +76,6 @@ class Shell_Adapter implements Shell_Interface
         if (isset($this->aFileStatus[$sPath])) {
             $iStatus = $this->aFileStatus[$sPath];
         } else {
-            // path="link_logs"; [ -h "$path" ] && echo -n 1; [ -d "$path" ] && echo 2 || ([ -f "$path" ] && echo 1 || echo 0)
-            // [ -h %1$s ] && echo -n 1; [ -d %1$s ] && echo 2 || ([ -f %1$s ] && echo 1 || echo 0)
-            //$sFormat = '[ -d %1$s ] && echo 2 || ( [ -f %1$s ] && echo 1 || echo 0 )';
             $sFormat = '[ -h %1$s ] && echo -n 1; [ -d %1$s ] && echo 2 || ([ -f %1$s ] && echo 1 || echo 0)';
             $aResult = $this->execSSH($sFormat, $sPath);
             $iStatus = (int)$aResult[0];
@@ -89,7 +87,7 @@ class Shell_Adapter implements Shell_Interface
     }
 
     /**
-     * Retourne un couple dont la 1re valeur indique si oui ou non le chemin spécifié commence par '[user@]servername_or_ip:'
+     * Retourne un couple dont la 1re valeur indique si le chemin spécifié commence par '[user@]servername_or_ip:'
      * et la 2nde est un tableau indexé contenant le chemin initial, le serveur et le chemin dépourvu du serveur.
      *
      * @param string $sPath
@@ -182,13 +180,6 @@ class Shell_Adapter implements Shell_Interface
         return $this->execSSH('rm -rf %s', $sPath);
     }
 
-    /*
-cd `dirname /home/gaubry/deployment_test/T`; tar cfpz /home/gaubry/deployment_backup/`basename "/home/gaubry/deployment_test/T"`.tar.gz ./`basename "/home/gaubry/deployment_test/T"`
-cd `dirname /home/gaubry/deployment_test/a3.txt`; tar cfpz /home/gaubry/deployment_backup/`basename "/home/gaubry/deployment_test/a3.txt"`.tar.gz ./`basename "/home/gaubry/deployment_test/a3.txt"`
-
-cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubry/deployment_test/T"`.tar.gz
-cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubry/deployment_test/a3.txt"`.tar.gz
-     */
     public function backup ($sSrcPath, $sBackupPath)
     {
         list($bIsSrcRemote, $aSrcMatches) = $this->isRemotePath($sSrcPath);
@@ -208,10 +199,16 @@ cd /home/gaubry/t; tar -xf /home/gaubry/deployment_backup/`basename "/home/gaubr
             if ($bIsSrcRemote) {
                 $sSrcDir = pathinfo($aSrcMatches[2], PATHINFO_DIRNAME);
                 $sFormat = 'ssh %4$s <<EOF' . "\n" . $sFormat . "\nEOF\n";
-                $sCmd = sprintf($sFormat, $this->escapePath($sSrcDir), $this->escapePath($aBackupMatches[2]), $this->escapePath($sSrcFile), $aSrcMatches[1]);
+                $sCmd = sprintf($sFormat,
+                                $this->escapePath($sSrcDir),
+                                $this->escapePath($aBackupMatches[2]),
+                                $this->escapePath($sSrcFile), $aSrcMatches[1]);
             } else {
                 $sSrcDir = pathinfo($sSrcPath, PATHINFO_DIRNAME);
-                $sCmd = sprintf($sFormat, $this->escapePath($sSrcDir), $this->escapePath($sBackupPath), $this->escapePath($sSrcFile));
+                $sCmd = sprintf($sFormat,
+                                $this->escapePath($sSrcDir),
+                                $this->escapePath($sBackupPath),
+                                $this->escapePath($sSrcFile));
             }
             return $this->exec($sCmd);
         }
@@ -248,8 +245,9 @@ rsync  --bwlimit=4000
 
         $aExcludedPaths = array_merge(self::$aDefaultRsyncExclude, $aExcludedPaths);
         for ($i=0; $i<count($aPaths); $i++) {
-            $sAdditionalExclude = (count($aExcludedPaths) === 0 ? '' : '--exclude="' . implode('" --exclude="', $aExcludedPaths) . '" ');
-
+            $sAdditionalExclude = (count($aExcludedPaths) === 0
+                                  ? ''
+                                  : '--exclude="' . implode('" --exclude="', $aExcludedPaths) . '" ');
             $aCmd = array();
             for ($j=$i; $j<count($aPaths) && $j<$i+DEPLOYMENT_RSYNC_MAX_NB_PROCESSES; $j++) {
                 $aCmd[] =
@@ -298,9 +296,11 @@ rsync  --bwlimit=4000
 
         $aResult = array();
         foreach ($aAllStats as $aStats) {
-            $aResult[] =
-                'Number of transferred files ( / total): ' . $aStats['number of files transferred'] . ' / ' . $aStats['number of files'] . "\n"
-                . 'Total transferred file size ( / total): ' . round($aStats['total transferred file size']/1024/1024) . ' / ' . round($aStats['total file size']/1024/1024) . " Mio\n";
+            $aResult[] = 'Number of transferred files ( / total): ' . $aStats['number of files transferred']
+                       . ' / ' . $aStats['number of files'] . "\n"
+                       . 'Total transferred file size ( / total): '
+                       . round($aStats['total transferred file size']/1024/1024)
+                       . ' / ' . round($aStats['total file size']/1024/1024) . " Mio\n";
         }
         return $aResult;
     }

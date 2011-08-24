@@ -19,9 +19,10 @@ class Task_Extended_BuildLanguage extends Task
      * @param SimpleXMLElement $oTask Contenu XML de la tâche.
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
-     * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
+     * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer)
+    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath,
+        ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->aAttributeProperties = array(
@@ -85,7 +86,8 @@ class Task_Extended_BuildLanguage extends Task
 
         // Décompression des archives :
         $this->oLogger->log('Extract language files from archive on servers');
-        $sPatternCmd = 'cd %1$s && tar -xf %1$s/"' . basename($sLanguagesPath) . '" && rm -f %1$s/"' . basename($sLanguagesPath) . '"';
+        $sPatternCmd = 'cd %1$s && tar -xf %1$s/"' . basename($sLanguagesPath)
+                     . '" && rm -f %1$s/"' . basename($sLanguagesPath) . '"';
         foreach ($aDestDirs as $sDestDir) {
             $aResult = $this->oShell->execSSH($sPatternCmd, $sDestDir);
             $sResult = implode("\n", $aResult);

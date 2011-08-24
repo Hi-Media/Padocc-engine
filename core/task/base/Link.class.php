@@ -19,9 +19,10 @@ class Task_Base_Link extends Task
      * @param SimpleXMLElement $oTask Contenu XML de la tâche.
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
-     * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
+     * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer)
+    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath,
+        ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->aAttributeProperties = array(
@@ -74,7 +75,8 @@ class Task_Base_Link extends Task
         }
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
             if ( ! in_array($this->oShell->getFileStatus($sExpandedPath), array(0, 12))) {
-                throw new RuntimeException("Source attribute must be a directoy symlink or not exist: '" . $sExpandedPath . "'");
+                $sMsg = "Source attribute must be a directoy symlink or not exist: '" . $sExpandedPath . "'";
+                throw new RuntimeException($sMsg);
             }
         }
 

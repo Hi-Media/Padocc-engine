@@ -19,9 +19,10 @@ class Task_Base_Backup extends Task
      * @param SimpleXMLElement $oTask Contenu XML de la tâche.
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
-     * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
+     * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer)
+    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath,
+        ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->aAttributeProperties = array(
@@ -42,7 +43,8 @@ class Task_Base_Backup extends Task
     {
         if ($this->oShell->getFileStatus($this->aAttributes['destfile']) !== 0) {
             list($bIsRemote, $aMatches) = $this->oShell->isRemotePath($this->aAttributes['destfile']);
-            $sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '') . $this->sBackupPath . '/' . pathinfo($aMatches[2], PATHINFO_BASENAME);
+            $sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '')
+                         . $this->sBackupPath . '/' . pathinfo($aMatches[2], PATHINFO_BASENAME);
             $this->oShell->copy($this->aAttributes['destfile'], $sBackupPath, true);
         }
     }

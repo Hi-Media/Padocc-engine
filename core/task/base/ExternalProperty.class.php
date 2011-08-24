@@ -27,9 +27,10 @@ class Task_Base_ExternalProperty extends Task
      * @param SimpleXMLElement $oTask Contenu XML de la tâche.
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
-     * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, Logger_Interface, ...).
+     * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath, ServiceContainer $oServiceContainer)
+    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath,
+        ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->aAttributeProperties = array(
@@ -43,11 +44,14 @@ class Task_Base_ExternalProperty extends Task
     {
         parent::_centralExecute();
         $this->oLogger->indent();
-        $this->oLogger->log("Set external property '" . $this->aAttributes['name'] . "' (description: '" . $this->aAttributes['description'] . "')");
+        $sMsg = "Set external property '" . $this->aAttributes['name'] . "' (description: '"
+              . $this->aAttributes['description'] . "')";
+        $this->oLogger->log($sMsg);
         try {
             $sValue = $this->oProperties->getProperty(self::EXTERNAL_PROPERTY_PREFIX . $this->iNumber);
         } catch (UnexpectedValueException $oException) {
-            throw new UnexpectedValueException("Property '" . $this->aAttributes['name'] . "' undefined!", 1, $oException);
+            $sMsg = "Property '" . $this->aAttributes['name'] . "' undefined!";
+            throw new UnexpectedValueException($sMsg, 1, $oException);
         }
         $this->oProperties->setProperty($this->aAttributes['name'], $sValue);
         $this->oLogger->unindent();
