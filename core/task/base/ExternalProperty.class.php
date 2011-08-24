@@ -9,8 +9,6 @@ class Task_Base_ExternalProperty extends Task
 
     private $_iNumber;
 
-    protected $aTasks;
-
     /**
      * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
      *
