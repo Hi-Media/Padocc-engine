@@ -2,7 +2,7 @@
 <project name="ptpn">
     <env
         name="qa"
-        mailto="devaa@twenga.com, romain.derocle@twenga.com"
+        mailto="devaa@twenga.com, laurent.salomon@twenga.com, laurent.toussaint@twenga.com, romain.derocle@twenga.com"
         withsymlinks="true"
         basedir="/home/httpd/ptpn"
     >
@@ -16,7 +16,7 @@
 
     <env
         name="prod"
-        mailto="devaa@twenga.com, romain.derocle@twenga.com"
+        mailto="devaa@twenga.com, laurent.salomon@twenga.com, laurent.toussaint@twenga.com, romain.derocle@twenga.com"
         withsymlinks="true"
         basedir="/home/httpd/ptpn"
     >
