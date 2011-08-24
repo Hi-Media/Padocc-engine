@@ -49,7 +49,7 @@ class Properties_Adapter implements Properties_Interface
     }
 
     /**
-     * Charge le fichier INI spécifié en ajoutant ou écrasant chacune de ses définitions aux propriétés existantes.
+     * Charge le fichier INI spécifié en ajoutant ou écrasant ses définitions aux propriétés existantes.
      *
      * @param string $sIniPath path du fichier INI à charger
      * @return Properties_Interface cette instance
@@ -78,7 +78,7 @@ class Properties_Adapter implements Properties_Interface
     }
 
     /**
-     * Charge le fichier shell spécifié en ajoutant ou écrasant chacune de ses définitions aux propriétés existantes.
+     * Charge le fichier shell spécifié en ajoutant ou écrasant ses définitions aux propriétés existantes.
      *
      * Format du fichier :
      *    PROPRIETE_1="chaîne"
