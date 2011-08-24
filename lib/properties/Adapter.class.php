@@ -6,18 +6,18 @@ class Properties_Adapter implements Properties_Interface
     /**
      * @var array
      */
-    private $aProperties;
+    private $_aProperties;
 
     /**
      * Shell adapter.
      * @var Shell_Interface
      */
-    private $oShell;
+    private $_oShell;
 
     public function __construct (Shell_Interface $oShell)
     {
-        $this->aProperties = array();
-        $this->oShell = $oShell;
+        $this->_aProperties = array();
+        $this->_oShell = $oShell;
     }
 
     /**
@@ -29,10 +29,10 @@ class Properties_Adapter implements Properties_Interface
      */
     public function getProperty ($sPropertyName)
     {
-        if ( ! isset($this->aProperties[strtolower($sPropertyName)])) {
+        if ( ! isset($this->_aProperties[strtolower($sPropertyName)])) {
             throw new UnexpectedValueException("Unknown property '$sPropertyName'!");
         }
-        return $this->aProperties[strtolower($sPropertyName)];
+        return $this->_aProperties[strtolower($sPropertyName)];
     }
 
     /**
@@ -44,7 +44,7 @@ class Properties_Adapter implements Properties_Interface
      */
     public function setProperty ($sPropertyName, $sValue)
     {
-        $this->aProperties[strtolower($sPropertyName)] = (string)$sValue;
+        $this->_aProperties[strtolower($sPropertyName)] = (string)$sValue;
         return $this;
     }
 
@@ -73,7 +73,7 @@ class Properties_Adapter implements Properties_Interface
             $aProperties[strtolower($sProperty)] = $sValue;
         }
 
-        $this->aProperties = array_merge($this->aProperties, $aProperties);
+        $this->_aProperties = array_merge($this->_aProperties, $aProperties);
         return $this;
     }
 
@@ -97,7 +97,7 @@ class Properties_Adapter implements Properties_Interface
         }
         $sConfigIniPath = DEPLOYMENT_RESOURCES_DIR . strrchr($sConfigShellPath, '/') . '.ini';
         $sCmd = DEPLOYMENT_BASH_PATH . ' ' . __DIR__ . "/cfg2ini.inc.sh '$sConfigShellPath' '$sConfigIniPath'";
-        $this->oShell->exec($sCmd);
+        $this->_oShell->exec($sCmd);
         return $this->loadConfigIniFile($sConfigIniPath);
     }
 }

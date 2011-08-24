@@ -56,7 +56,7 @@ class Task_Base_Target extends Task_WithProperties
 
         $this->oNumbering->addCounterDivision();
         // $sBackupPath et non $this->sBackupPath, pour les sous-tâches :
-        $this->aTasks = $this->getTaskInstances($oTask, $this->oProject, $sBackupPath);
+        $this->aTasks = $this->_getTaskInstances($oTask, $this->oProject, $sBackupPath);
         $this->oNumbering->removeCounterDivision();
     }
 
@@ -66,7 +66,7 @@ class Task_Base_Target extends Task_WithProperties
      * @var array
      * @see getAvailableTasks()
      */
-    private static $aAvailableTasks = array();
+    private static $_aAvailableTasks = array();
 
     /**
      * Retourne un tableau associatif décrivant les tâches disponibles.
@@ -74,9 +74,9 @@ class Task_Base_Target extends Task_WithProperties
      * @return array tableau associatif des tâches disponibles : array('sTag' => 'sClassName', ...)
      * @throws LogicException si collision de nom de tag XML
      */
-    private static function getAvailableTasks ()
+    private static function _getAvailableTasks ()
     {
-        if (count(self::$aAvailableTasks) === 0) {
+        if (count(self::$_aAvailableTasks) === 0) {
             $aAvailableTasks = array();
             foreach (array('base', 'extended') as $sTaskType) {
                 $sTaskPaths = glob(DEPLOYMENT_TASKS_DIR . "/$sTaskType/*.class.php");
@@ -91,9 +91,9 @@ class Task_Base_Target extends Task_WithProperties
                     }
                 }
             }
-            self::$aAvailableTasks = $aAvailableTasks;
+            self::$_aAvailableTasks = $aAvailableTasks;
         }
-        return self::$aAvailableTasks;
+        return self::$_aAvailableTasks;
     }
 
     /**
@@ -107,10 +107,10 @@ class Task_Base_Target extends Task_WithProperties
      * @throws Exception si tag XML inconnu.
      * @see Task
      */
-    private function getTaskInstances (SimpleXMLElement $oTarget, Task_Base_Project $oProject, $sBackupPath)
+    private function _getTaskInstances (SimpleXMLElement $oTarget, Task_Base_Project $oProject, $sBackupPath)
     {
         $this->oLogger->log('Initialize tasks');
-        $aAvailableTasks = self::getAvailableTasks();
+        $aAvailableTasks = self::_getAvailableTasks();
 
         // Mise à plat des tâches car SimpleXML regroupe celles successives de même nom
         // dans un tableau et les autres sont hors tableau :

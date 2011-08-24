@@ -3,21 +3,21 @@
 class Shell_Adapter implements Shell_Interface
 {
 
-    private $aFileStatus;
+    private $_aFileStatus;
 
-    private static $aDefaultRsyncExclude = array('.bzr/', '.cvsignore', '.git/', '.gitignore', '.svn/', 'cvslog.*',
+    private static $_aDefaultRsyncExclude = array('.bzr/', '.cvsignore', '.git/', '.gitignore', '.svn/', 'cvslog.*',
                                                  'CVS', 'CVS.adm');
 
     /**
      * Log adapter.
      * @var Logger_Interface
      */
-    private $oLogger;
+    private $_oLogger;
 
     public function __construct (Logger_Interface $oLogger)
     {
-        $this->oLogger = $oLogger;
-        $this->aFileStatus = array();
+        $this->_oLogger = $oLogger;
+        $this->_aFileStatus = array();
     }
 
     /**
@@ -30,7 +30,7 @@ class Shell_Adapter implements Shell_Interface
      */
     public function exec ($sCmd)
     {
-        $this->oLogger->log('[DEBUG] shell# ' . trim($sCmd), Logger_Interface::DEBUG);
+        $this->_oLogger->log('[DEBUG] shell# ' . trim($sCmd), Logger_Interface::DEBUG);
         $sFullCmd = '( ' . $sCmd . ' ) 2>&1';
         exec($sFullCmd, $aResult, $iReturnCode);
         if ($iReturnCode !== 0) {
@@ -73,14 +73,14 @@ class Shell_Adapter implements Shell_Interface
      */
     public function getFileStatus ($sPath)
     {
-        if (isset($this->aFileStatus[$sPath])) {
-            $iStatus = $this->aFileStatus[$sPath];
+        if (isset($this->_aFileStatus[$sPath])) {
+            $iStatus = $this->_aFileStatus[$sPath];
         } else {
             $sFormat = '[ -h %1$s ] && echo -n 1; [ -d %1$s ] && echo 2 || ([ -f %1$s ] && echo 1 || echo 0)';
             $aResult = $this->execSSH($sFormat, $sPath);
             $iStatus = (int)$aResult[0];
             if ($iStatus !== 0) {
-                $this->aFileStatus[$sPath] = $iStatus;
+                $this->_aFileStatus[$sPath] = $iStatus;
             }
         }
         return $iStatus;
@@ -175,7 +175,7 @@ class Shell_Adapter implements Shell_Interface
         }
 
         // Supprimer du cache de getFileStatus() :
-        unset($this->aFileStatus[$sPath]);
+        unset($this->_aFileStatus[$sPath]);
 
         return $this->execSSH('rm -rf %s', $sPath);
     }
@@ -244,7 +244,7 @@ rsync  --bwlimit=4000
             $aAllResults = array_merge($aAllResults, $aResult);
         }
 
-        $aExcludedPaths = array_merge(self::$aDefaultRsyncExclude, $aExcludedPaths);
+        $aExcludedPaths = array_merge(self::$_aDefaultRsyncExclude, $aExcludedPaths);
         $sAdditionalExclude = (count($aExcludedPaths) === 0
                               ? ''
                               : '--exclude="' . implode('" --exclude="', $aExcludedPaths) . '" ');

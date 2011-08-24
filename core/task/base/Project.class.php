@@ -43,7 +43,7 @@ class Task_Base_Project extends Task_WithProperties
      * Tâche appelée.
      * @var Task_Base_Environment
      */
-    private $oBoundTask;
+    private $_oBoundTask;
 
     /**
      * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
@@ -79,21 +79,21 @@ class Task_Base_Project extends Task_WithProperties
         if (count($aTargets) !== 1) {
             throw new UnexpectedValueException("Environment '$sEnvName' not found or not unique in this project!");
         }
-        $this->oBoundTask = new Task_Base_Environment($aTargets[0], $this->oProject,
+        $this->_oBoundTask = new Task_Base_Environment($aTargets[0], $this->oProject,
                                                       $sBackupPath, $this->oServiceContainer);
     }
 
     public function setUp ()
     {
         parent::setUp();
-        $this->oBoundTask->setUp();
+        $this->_oBoundTask->setUp();
     }
 
     protected function _centralExecute ()
     {
         parent::_centralExecute();
-        $this->oBoundTask->backup();
-        $this->oBoundTask->execute();
+        $this->_oBoundTask->backup();
+        $this->_oBoundTask->execute();
     }
 
     public function backup ()
