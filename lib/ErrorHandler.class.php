@@ -78,8 +78,8 @@ class ErrorHandler
             date_default_timezone_set('Europe/Paris');
         }
 
-        set_error_handler(array($this, '_errorHandler'));
-        set_exception_handler(array($this, '_exceptionHandler'));
+        set_error_handler(array($this, 'internalErrorHandler'));
+        set_exception_handler(array($this, 'internalExceptionHandler'));
     }
 
     /**
@@ -111,7 +111,7 @@ class ErrorHandler
      * @return boolean true, then the normal error handler does not continues.
      * @see addExcludedPath()
      */
-    protected function _errorHandler ($iErrNo, $sErrStr, $sErrFile, $iErrLine)
+    public function internalErrorHandler ($iErrNo, $sErrStr, $sErrFile, $iErrLine)
     {
         // Si l'erreur provient d'un répertoire exclu de ce handler, alors l'ignorer.
         foreach ($this->aExcludedPaths as $sExcludedPath) {
@@ -140,7 +140,7 @@ class ErrorHandler
      *
      * @param Exception $oException
      */
-    protected function _exceptionHandler (Exception $oException)
+    public function internalExceptionHandler (Exception $oException)
     {
         if ( ! $this->bDisplayErrors && ini_get('error_log') !== '' && ! $this->bIsRunningFromCLI) {
             echo '<div class="exception_handler_message">Une erreur d\'exécution est apparue.<br />'
