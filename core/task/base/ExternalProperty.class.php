@@ -33,7 +33,7 @@ class Task_Base_ExternalProperty extends Task
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-        $this->aAttributeProperties = array(
+        $this->_aAttributeProperties = array(
             'name' => Task::ATTRIBUTE_REQUIRED,
             'description' => Task::ATTRIBUTE_REQUIRED
         );
@@ -43,18 +43,18 @@ class Task_Base_ExternalProperty extends Task
     protected function _centralExecute ()
     {
         parent::_centralExecute();
-        $this->oLogger->indent();
-        $sMsg = "Set external property '" . $this->aAttributes['name'] . "' (description: '"
-              . $this->aAttributes['description'] . "')";
-        $this->oLogger->log($sMsg);
+        $this->_oLogger->indent();
+        $sMsg = "Set external property '" . $this->_aAttributes['name'] . "' (description: '"
+              . $this->_aAttributes['description'] . "')";
+        $this->_oLogger->log($sMsg);
         try {
-            $sValue = $this->oProperties->getProperty(self::EXTERNAL_PROPERTY_PREFIX . $this->_iNumber);
+            $sValue = $this->_oProperties->getProperty(self::EXTERNAL_PROPERTY_PREFIX . $this->_iNumber);
         } catch (UnexpectedValueException $oException) {
-            $sMsg = "Property '" . $this->aAttributes['name'] . "' undefined!";
+            $sMsg = "Property '" . $this->_aAttributes['name'] . "' undefined!";
             throw new UnexpectedValueException($sMsg, 1, $oException);
         }
-        $this->oProperties->setProperty($this->aAttributes['name'], $sValue);
-        $this->oLogger->unindent();
+        $this->_oProperties->setProperty($this->_aAttributes['name'], $sValue);
+        $this->_oLogger->unindent();
     }
 
     public function backup ()

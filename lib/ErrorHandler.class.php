@@ -50,14 +50,14 @@ class ErrorHandler
      * @var array
      * @see addExcludedPath()
      */
-    private $aExcludedPaths;
+    private $_aExcludedPaths;
 
     public function __construct ($bDisplayErrors=true, $sErrorLogPath='', $iErrorReporting=-1)
     {
         $this->_bDisplayErrors = $bDisplayErrors;
         $this->_sErrorLogPath = $sErrorLogPath;
         $this->_iErrorReporting = $iErrorReporting;
-        $this->aExcludedPaths = array();
+        $this->_aExcludedPaths = array();
         $this->_bIsRunningFromCLI = defined('STDIN');
 
         error_reporting($iErrorReporting);
@@ -95,8 +95,8 @@ class ErrorHandler
             $sPath .= '/';
         }
         $sPath = realpath($sPath);
-        if ( ! in_array($sPath, $this->aExcludedPaths)) {
-            $this->aExcludedPaths[] = $sPath;
+        if ( ! in_array($sPath, $this->_aExcludedPaths)) {
+            $this->_aExcludedPaths[] = $sPath;
         }
     }
 
@@ -114,7 +114,7 @@ class ErrorHandler
     public function internalErrorHandler ($iErrNo, $sErrStr, $sErrFile, $iErrLine)
     {
         // Si l'erreur provient d'un répertoire exclu de ce handler, alors l'ignorer.
-        foreach ($this->aExcludedPaths as $sExcludedPath) {
+        foreach ($this->_aExcludedPaths as $sExcludedPath) {
             if (stripos($sErrFile, $sExcludedPath) === 0) {
                 return true;
             }

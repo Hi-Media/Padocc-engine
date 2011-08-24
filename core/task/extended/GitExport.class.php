@@ -31,7 +31,7 @@ class Task_Extended_GitExport extends Task
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-        $this->aAttributeProperties = array(
+        $this->_aAttributeProperties = array(
             'repository' => Task::ATTRIBUTE_FILE | Task::ATTRIBUTE_REQUIRED,
             'ref' => Task::ATTRIBUTE_REQUIRED | Task::ATTRIBUTE_ALLOW_PARAMETER,
             'srcdir' => Task::ATTRIBUTE_DIR,
@@ -40,66 +40,60 @@ class Task_Extended_GitExport extends Task
             'exclude' => Task::ATTRIBUTE_FILEJOKER | Task::ATTRIBUTE_DIRJOKER,
         );
 
-        if (empty($this->aAttributes['srcdir'])) {
-            $this->aAttributes['srcdir'] =
+        if (empty($this->_aAttributes['srcdir'])) {
+            $this->_aAttributes['srcdir'] =
                 DEPLOYMENT_REPOSITORIES_DIR . '/git/'
-                . $this->oProperties->getProperty('project_name') . '_'
-                . $this->oProperties->getProperty('environment_name') . '_'
-                . $this->sCounter;
+                . $this->_oProperties->getProperty('project_name') . '_'
+                . $this->_oProperties->getProperty('environment_name') . '_'
+                . $this->_sCounter;
         }
 
         // Création de la tâche de synchronisation sous-jacente :
-        $this->oNumbering->addCounterDivision();
-        $sSrcDir = preg_replace('#/$#', '', $this->aAttributes['srcdir']) . '/*';
+        $this->_oNumbering->addCounterDivision();
+        $sSrcDir = preg_replace('#/$#', '', $this->_aAttributes['srcdir']) . '/*';
         $this->_oSyncTask = Task_Base_Sync::getNewInstance(
             array(
                 'src' => $sSrcDir,
-                'destdir' => $this->aAttributes['destdir'],
-                'exclude' => $this->aAttributes['exclude']
+                'destdir' => $this->_aAttributes['destdir'],
+                'exclude' => $this->_aAttributes['exclude']
             ),
             $oProject, $sBackupPath, $oServiceContainer
         );
-        $this->oNumbering->removeCounterDivision();
+        $this->_oNumbering->removeCounterDivision();
     }
 
     public function setUp ()
     {
         parent::setUp();
-        $this->oLogger->indent();
+        $this->_oLogger->indent();
         $this->_oSyncTask->setUp();
-        $this->oLogger->unindent();
+        $this->_oLogger->unindent();
     }
 
     protected function _centralExecute ()
     {
         parent::_centralExecute();
-        $this->oLogger->indent();
+        $this->_oLogger->indent();
 
-        $aRef = $this->_processPath($this->aAttributes['ref']);
+        $aRef = $this->_processPath($this->_aAttributes['ref']);
         $sRef = $aRef[0];
 
-        $this->oLogger->log("Export '$sRef' reference from '" . $this->aAttributes['repository'] . "' git repository");
-        $this->oLogger->indent();
-        $result = $this->oShell->exec(
+        $this->_oLogger->log("Export '$sRef' reference from '" . $this->_aAttributes['repository'] . "' git repository");
+        $this->_oLogger->indent();
+        $result = $this->_oShell->exec(
             DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/gitexport.inc.sh'
-            . ' "' . $this->aAttributes['repository'] . '"'
+            . ' "' . $this->_aAttributes['repository'] . '"'
             . ' "' . $sRef . '"'
-            . ' "' . $this->aAttributes['srcdir'] . '"'
+            . ' "' . $this->_aAttributes['srcdir'] . '"'
         );
-        $this->oLogger->log(implode("\n", $result));
-        $this->oLogger->unindent();
+        $this->_oLogger->log(implode("\n", $result));
+        $this->_oLogger->unindent();
 
         $this->_oSyncTask->execute();
-        $this->oLogger->unindent();
+        $this->_oLogger->unindent();
     }
 
     public function backup ()
     {
-        /*if ($this->oShell->getFileStatus($this->aAttributes['destdir']) !== 0) {
-            list($bIsRemote, $aMatches) = $this->oShell->isRemotePath($this->aAttributes['destdir']);
-            $sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '') . $this->sBackupPath . '/'
-                . pathinfo($aMatches[2], PATHINFO_BASENAME) . '.tar.gz';
-            $this->oShell->backup($this->aAttributes['destdir'], $sBackupPath);
-        }*/
     }
 }

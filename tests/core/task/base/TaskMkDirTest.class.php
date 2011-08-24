@@ -63,7 +63,7 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
         $oTask->setUp();
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir'
-        ), 'aAttributes', $oTask);
+        ), '_aAttributes', $oTask);
     }
 
     /**
@@ -76,7 +76,7 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir',
             'mode' => '755'
-        ), 'aAttributes', $oTask);
+        ), '_aAttributes', $oTask);
     }
 
     /**

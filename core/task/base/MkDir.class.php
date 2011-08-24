@@ -25,7 +25,7 @@ class Task_Base_MkDir extends Task
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-        $this->aAttributeProperties = array(
+        $this->_aAttributeProperties = array(
             'destdir' => Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_REQUIRED | Task::ATTRIBUTE_ALLOW_PARAMETER,
             'mode' => 0
         );
@@ -34,14 +34,14 @@ class Task_Base_MkDir extends Task
     protected function _centralExecute ()
     {
         parent::_centralExecute();
-        $this->oLogger->indent();
-        $sMode = (empty($this->aAttributes['mode']) ? '' : $this->aAttributes['mode']);
+        $this->_oLogger->indent();
+        $sMode = (empty($this->_aAttributes['mode']) ? '' : $this->_aAttributes['mode']);
 
-        $aDestDirs = $this->_processPath($this->aAttributes['destdir']);
+        $aDestDirs = $this->_processPath($this->_aAttributes['destdir']);
         foreach ($aDestDirs as $sDestDir) {
-            $this->oShell->mkdir($sDestDir, $sMode);
+            $this->_oShell->mkdir($sDestDir, $sMode);
         }
-        $this->oLogger->unindent();
+        $this->_oLogger->unindent();
     }
 
     public function backup ()

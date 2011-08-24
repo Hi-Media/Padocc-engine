@@ -15,62 +15,62 @@ abstract class Task implements AttributeProperties
      * @see $sName
      * @see $sBackupPath
      */
-    protected $oNumbering;
+    protected $_oNumbering;
 
     /**
      * Collection de services.
      * @var ServiceContainer
      */
-    protected $oServiceContainer;
+    protected $_oServiceContainer;
 
     /**
      * Adaptater shell.
      * @var Shell_Interface
      */
-    protected $oShell;
+    protected $_oShell;
 
     /**
      * Adaptateur de log.
      * @var Logger_IndentedInterface
      */
-    protected $oLogger;
+    protected $_oLogger;
 
     /**
      * Adaptateur de propriétés.
      * @var Properties_Interface
      */
-    protected $oProperties;
+    protected $_oProperties;
 
     /**
      * Contenu XML de la tâche.
      * @var SimpleXMLElement
      */
-    protected $oXMLTask;
+    protected $_oXMLTask;
 
     /**
      * @var Task_Base_Project
      */
-    protected $oProject;
+    protected $_oProject;
 
     /**
      * Chaîne numérotant la tâche.
      * @var string
      * @see Numbering_Interface::getNextCounterValue()
      */
-    protected $sCounter;
+    protected $_sCounter;
 
     /**
      * Nom complet de la tâche, utilisé notamment dans le suivi d'exécution.
      * @var string
      */
-    protected $sName;
+    protected $_sName;
 
     /**
      * Attributs XML de la tâche.
      * Tableau ((string) clé, (string) valeur).
      * @var array
      */
-    protected $aAttributes;
+    protected $_aAttributes;
 
     /**
      * Liste des propriétés des attributs déclarés de la tâche.
@@ -83,7 +83,7 @@ abstract class Task implements AttributeProperties
      * @var array
      * @see check()
      */
-    protected $aAttributeProperties;
+    protected $_aAttributeProperties;
 
     /**
      * Chemin du répertoire backup dédié à la tâche.
@@ -93,7 +93,7 @@ abstract class Task implements AttributeProperties
      *    et où 'name' est le nom de la classe de la tâche.
      * @var string
      */
-    protected $sBackupPath;
+    protected $_sBackupPath;
 
     /**
      * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
@@ -141,30 +141,29 @@ abstract class Task implements AttributeProperties
     public function __construct (SimpleXMLElement $oXMLTask, Task_Base_Project $oProject, $sBackupPath,
         ServiceContainer $oServiceContainer)
     {
-        $this->oXMLTask = $oXMLTask;
-        $this->oProject = $oProject;
+        $this->_oXMLTask = $oXMLTask;
+        $this->_oProject = $oProject;
 
-        $this->oServiceContainer = $oServiceContainer;
-        $this->oShell = $this->oServiceContainer->getShellAdapter();
-        $this->oLogger = $this->oServiceContainer->getLogAdapter();
-        $this->oProperties = $this->oServiceContainer->getPropertiesAdapter();
-        $this->oNumbering = $this->oServiceContainer->getNumberingAdapter();
+        $this->_oServiceContainer = $oServiceContainer;
+        $this->_oShell = $this->_oServiceContainer->getShellAdapter();
+        $this->_oLogger = $this->_oServiceContainer->getLogAdapter();
+        $this->_oProperties = $this->_oServiceContainer->getPropertiesAdapter();
+        $this->_oNumbering = $this->_oServiceContainer->getNumberingAdapter();
 
-        $sCounter = $this->oNumbering->getNextCounterValue();
-        //$this->sCounter = (strlen($sCounter) === 2 ? '' : substr($sCounter, 2));
-        $this->sCounter = $sCounter;
-        $this->sName = (strlen($this->sCounter) === 0 ? '' : $this->sCounter . '_') . get_class($this);
-        $this->sBackupPath = $sBackupPath . '/' . $this->sName;
+        $sCounter = $this->_oNumbering->getNextCounterValue();
+        $this->_sCounter = $sCounter;
+        $this->_sName = (strlen($this->_sCounter) === 0 ? '' : $this->_sCounter . '_') . get_class($this);
+        $this->_sBackupPath = $sBackupPath . '/' . $this->_sName;
 
-        $this->aAttributeProperties = array();
+        $this->_aAttributeProperties = array();
         $this->_fetchAttributes();
     }
 
     protected function _fetchAttributes ()
     {
-        $this->aAttributes = array();
-        foreach ($this->oXMLTask->attributes() as $key => $val) {
-            $this->aAttributes[$key] = (string)$val;
+        $this->_aAttributes = array();
+        foreach ($this->_oXMLTask->attributes() as $key => $val) {
+            $this->_aAttributes[$key] = (string)$val;
         }
     }
 
@@ -201,7 +200,7 @@ abstract class Task implements AttributeProperties
                 $aToProcessPaths = $aPaths;
                 $aPaths = array();
 
-                $sRawValue = $this->oProperties->getProperty($property);
+                $sRawValue = $this->_oProperties->getProperty($property);
                 $values = explode(' ', $sRawValue);
                 foreach ($aToProcessPaths as $sPath) {
                     foreach ($values as $value) {
@@ -227,10 +226,10 @@ abstract class Task implements AttributeProperties
     //private static $aPreparedEnv = array();
     protected function _reroutePaths ($aPaths)
     {
-        if ($this->oProperties->getProperty('with_symlinks') === 'true') {
-            $sBaseSymLink = $this->oProperties->getProperty('base_dir');
+        if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
+            $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
             $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX . '/'
-                             . $this->oProperties->getProperty('execution_id');
+                             . $this->_oProperties->getProperty('execution_id');
             for ($i=0, $iMax=count($aPaths); $i<$iMax; $i++) {
                 if (preg_match('#^(.*?:)' . preg_quote($sBaseSymLink, '#') . '\b#', $aPaths[$i], $aMatches) === 1) {
                     $sNewPath = str_replace(
@@ -245,20 +244,20 @@ abstract class Task implements AttributeProperties
         return $aPaths;
     }
 
-    protected static $aRegisteredPaths = array();
+    protected static $_aRegisteredPaths = array();
 
     protected function _registerPaths ()
     {
-        //$this->oLogger->log("registerPaths");
-        foreach ($this->aAttributeProperties as $sAttribute => $iProperties) {
+        //$this->_oLogger->log("registerPaths");
+        foreach ($this->_aAttributeProperties as $sAttribute => $iProperties) {
             if (
                 (($iProperties & self::ATTRIBUTE_DIR) > 0 || ($iProperties & self::ATTRIBUTE_FILE) > 0)
-                && isset($this->aAttributes[$sAttribute])
+                && isset($this->_aAttributes[$sAttribute])
             ) {
-                self::$aRegisteredPaths[$this->aAttributes[$sAttribute]] = true;
+                self::$_aRegisteredPaths[$this->_aAttributes[$sAttribute]] = true;
             }
         }
-        ksort(self::$aRegisteredPaths);
+        ksort(self::$_aRegisteredPaths);
     }
 
     public function setUp ()
@@ -275,15 +274,15 @@ abstract class Task implements AttributeProperties
      */
     private function _normalizeAttributeProperties ()
     {
-        foreach ($this->aAttributeProperties as $sAttribute => $iProperties) {
+        foreach ($this->_aAttributeProperties as $sAttribute => $iProperties) {
             if (($iProperties & self::ATTRIBUTE_SRC_PATH) > 0) {
-                $this->aAttributeProperties[$sAttribute] |= self::ATTRIBUTE_FILE | self::ATTRIBUTE_DIR;
+                $this->_aAttributeProperties[$sAttribute] |= self::ATTRIBUTE_FILE | self::ATTRIBUTE_DIR;
             }
             if (($iProperties & self::ATTRIBUTE_FILEJOKER) > 0) {
-                $this->aAttributeProperties[$sAttribute] |= self::ATTRIBUTE_FILE;
+                $this->_aAttributeProperties[$sAttribute] |= self::ATTRIBUTE_FILE;
             }
             if (($iProperties & self::ATTRIBUTE_DIRJOKER) > 0) {
-                $this->aAttributeProperties[$sAttribute] |= self::ATTRIBUTE_DIR;
+                $this->_aAttributeProperties[$sAttribute] |= self::ATTRIBUTE_DIR;
             }
         }
     }
@@ -305,11 +304,11 @@ abstract class Task implements AttributeProperties
     public function check ()
     {
         $this->_normalizeAttributeProperties();
-        $this->oLogger->log("Check '" . $this->sName . "' task");
-        $this->oLogger->indent();
+        $this->_oLogger->log("Check '" . $this->_sName . "' task");
+        $this->_oLogger->indent();
 
-        $aAvailablesAttr = array_keys($this->aAttributeProperties);
-        $aUnknownAttributes = array_diff(array_keys($this->aAttributes), $aAvailablesAttr);
+        $aAvailablesAttr = array_keys($this->_aAttributeProperties);
+        $aUnknownAttributes = array_diff(array_keys($this->_aAttributes), $aAvailablesAttr);
         if (count($aUnknownAttributes) > 0) {
             throw new DomainException(
                 "Available attributes: " . print_r($aAvailablesAttr, true)
@@ -317,66 +316,66 @@ abstract class Task implements AttributeProperties
             );
         }
 
-        foreach ($this->aAttributeProperties as $sAttribute => $iProperties) {
-            if (empty($this->aAttributes[$sAttribute]) && ($iProperties & self::ATTRIBUTE_REQUIRED) > 0) {
+        foreach ($this->_aAttributeProperties as $sAttribute => $iProperties) {
+            if (empty($this->_aAttributes[$sAttribute]) && ($iProperties & self::ATTRIBUTE_REQUIRED) > 0) {
                 throw new UnexpectedValueException("'$sAttribute' attribute is required!");
-            } else if ( ! empty($this->aAttributes[$sAttribute])) {
+            } else if ( ! empty($this->_aAttributes[$sAttribute])) {
                 if (($iProperties & self::ATTRIBUTE_DIR) > 0 || ($iProperties & self::ATTRIBUTE_FILE) > 0) {
-                    $this->aAttributes[$sAttribute] = str_replace('\\', '/', $this->aAttributes[$sAttribute]);
+                    $this->_aAttributes[$sAttribute] = str_replace('\\', '/', $this->_aAttributes[$sAttribute]);
                 }
 
                 if (($iProperties & self::ATTRIBUTE_BOOLEAN) > 0
-                    && ! in_array($this->aAttributes[$sAttribute], array('true', 'false'))
+                    && ! in_array($this->_aAttributes[$sAttribute], array('true', 'false'))
                 ) {
                     $sMsg = "Value of '$sAttribute' attribute is restricted to 'true' or 'false'. Value: '"
-                            . $this->aAttributes[$sAttribute] . "'!";
+                            . $this->_aAttributes[$sAttribute] . "'!";
                     throw new DomainException($sMsg);
                 }
 
-                if (preg_match('#[*?].*/#', $this->aAttributes[$sAttribute]) !== 0
+                if (preg_match('#[*?].*/#', $this->_aAttributes[$sAttribute]) !== 0
                     && ($iProperties & self::ATTRIBUTE_DIRJOKER) == 0
                 ) {
                     $sMsg = "'*' and '?' jokers are not authorized for directory in '$sAttribute' attribute!";
                     throw new DomainException($sMsg);
                 }
 
-                if (preg_match('#[*?](.*[^/])?$#', $this->aAttributes[$sAttribute]) !== 0
+                if (preg_match('#[*?](.*[^/])?$#', $this->_aAttributes[$sAttribute]) !== 0
                     && ($iProperties & self::ATTRIBUTE_FILEJOKER) == 0
                 ) {
                     $sMsg = "'*' and '?' jokers are not authorized for filename in '$sAttribute' attribute!";
                     throw new DomainException($sMsg);
                 }
 
-                if (preg_match('#\$\{[^}]*\}#', $this->aAttributes[$sAttribute]) !== 0
+                if (preg_match('#\$\{[^}]*\}#', $this->_aAttributes[$sAttribute]) !== 0
                     && ($iProperties & self::ATTRIBUTE_ALLOW_PARAMETER) == 0
                 ) {
                     $sMsg = "Parameters are not allowed in '$sAttribute' attribute! Value: '"
-                            . $this->aAttributes[$sAttribute] . "'";
+                            . $this->_aAttributes[$sAttribute] . "'";
                     throw new DomainException($sMsg);
                 }
 
                 // Suppression de l'éventuel slash terminal :
                 if (($iProperties & self::ATTRIBUTE_DIR) > 0) {
-                    $this->aAttributes[$sAttribute] = preg_replace('#/$#', '', $this->aAttributes[$sAttribute]);
+                    $this->_aAttributes[$sAttribute] = preg_replace('#/$#', '', $this->_aAttributes[$sAttribute]);
                 }
 
                 // Vérification de présence de la source si chemin sans joker :
                 if (
                         ($iProperties & self::ATTRIBUTE_SRC_PATH) > 0
-                        && preg_match('#\*|\?#', $this->aAttributes[$sAttribute]) === 0
-                        && $this->oShell->getFileStatus($this->aAttributes[$sAttribute]) === 0
+                        && preg_match('#\*|\?#', $this->_aAttributes[$sAttribute]) === 0
+                        && $this->_oShell->getFileStatus($this->_aAttributes[$sAttribute]) === 0
                 ) {
-                    $sMsg = "File or directory '" . $this->aAttributes[$sAttribute] . "' not found!";
+                    $sMsg = "File or directory '" . $this->_aAttributes[$sAttribute] . "' not found!";
                     throw new UnexpectedValueException($sMsg);
                 }
             }
         }
-        $this->oLogger->unindent();
+        $this->_oLogger->unindent();
     }
 
     protected function _preExecute ()
     {
-        $this->oLogger->log("Execute '" . $this->sName . "' task");
+        $this->_oLogger->log("Execute '" . $this->_sName . "' task");
     }
 
     protected function _centralExecute ()

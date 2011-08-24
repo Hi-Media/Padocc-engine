@@ -25,7 +25,7 @@ class Task_Base_Copy extends Task
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-        $this->aAttributeProperties = array(
+        $this->_aAttributeProperties = array(
             'src' => Task::ATTRIBUTE_SRC_PATH | Task::ATTRIBUTE_FILEJOKER | Task::ATTRIBUTE_REQUIRED,
             'destdir' => Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_REQUIRED
         );
@@ -48,34 +48,34 @@ class Task_Base_Copy extends Task
         // TODO droit seulement à \w et / et ' ' ?
         parent::check();
         if (
-                preg_match('#\*|\?#', $this->aAttributes['src']) === 0
-                && $this->oShell->getFileStatus($this->aAttributes['src']) === 2
+                preg_match('#\*|\?#', $this->_aAttributes['src']) === 0
+                && $this->_oShell->getFileStatus($this->_aAttributes['src']) === 2
         ) {
-                $this->aAttributes['destdir'] .= '/' . substr(strrchr($this->aAttributes['src'], '/'), 1);
-                $this->aAttributes['src'] .= '/*';
+                $this->_aAttributes['destdir'] .= '/' . substr(strrchr($this->_aAttributes['src'], '/'), 1);
+                $this->_aAttributes['src'] .= '/*';
         }
     }
 
     protected function _centralExecute ()
     {
         parent::_centralExecute();
-        $this->oLogger->indent();
+        $this->_oLogger->indent();
 
-        $aDestDirs = $this->_processPath($this->aAttributes['destdir']);
+        $aDestDirs = $this->_processPath($this->_aAttributes['destdir']);
         foreach ($aDestDirs as $sDestDir) {
-            $this->oShell->copy($this->aAttributes['src'], $sDestDir);
+            $this->_oShell->copy($this->_aAttributes['src'], $sDestDir);
         }
 
-        $this->oLogger->unindent();
+        $this->_oLogger->unindent();
     }
 
     public function backup ()
     {
-        if ($this->oShell->getFileStatus($this->aAttributes['destdir']) !== 0) {
-            list($bIsRemote, $aMatches) = $this->oShell->isRemotePath($this->aAttributes['destdir']);
-            $sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '') . $this->sBackupPath . '/'
+        if ($this->_oShell->getFileStatus($this->_aAttributes['destdir']) !== 0) {
+            list($bIsRemote, $aMatches) = $this->_oShell->isRemotePath($this->_aAttributes['destdir']);
+            $sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '') . $this->_sBackupPath . '/'
                 . pathinfo($aMatches[2], PATHINFO_BASENAME) . '.tar.gz';
-            $this->oShell->backup($this->aAttributes['destdir'], $sBackupPath);
+            $this->_oShell->backup($this->_aAttributes['destdir'], $sBackupPath);
         }
     }
 }

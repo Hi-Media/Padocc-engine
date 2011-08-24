@@ -66,7 +66,7 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase {
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir',
             'src' => '/path/to/srcfile'
-        ), 'aAttributes', $oTaskCopy);
+        ), '_aAttributes', $oTaskCopy);
     }
 
     /**
@@ -79,7 +79,7 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase {
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir',
             'src' => '/path/to/src*file?'
-        ), 'aAttributes', $oTaskCopy);
+        ), '_aAttributes', $oTaskCopy);
     }
 
     /**
@@ -92,7 +92,7 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase {
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir/srcdir',
             'src' => '/path/to/srcdir/*'
-        ), 'aAttributes', $oTaskCopy);
+        ), '_aAttributes', $oTaskCopy);
     }
 
     /**

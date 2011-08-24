@@ -25,7 +25,7 @@ class Task_Base_Link extends Task
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-        $this->aAttributeProperties = array(
+        $this->_aAttributeProperties = array(
             'src' => Task::ATTRIBUTE_REQUIRED | Task::ATTRIBUTE_FILE | Task::ATTRIBUTE_DIR,
             'target' => Task::ATTRIBUTE_FILE | Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_REQUIRED,
             'server' => Task::ATTRIBUTE_ALLOW_PARAMETER
@@ -47,20 +47,20 @@ class Task_Base_Link extends Task
     {
         parent::check();
 
-        list($bIsSrcRemote, $aSrcMatches) = $this->oShell->isRemotePath($this->aAttributes['src']);
-        list($bIsDestRemote, $aDestMatches) = $this->oShell->isRemotePath($this->aAttributes['target']);
+        list($bIsSrcRemote, $aSrcMatches) = $this->_oShell->isRemotePath($this->_aAttributes['src']);
+        list($bIsDestRemote, $aDestMatches) = $this->_oShell->isRemotePath($this->_aAttributes['target']);
         if (
             ($bIsSrcRemote XOR $bIsDestRemote)
             || ($bIsSrcRemote && $bIsDestRemote && $aSrcMatches[1] != $aDestMatches[1])
         ) {
-            $sMsg = 'Servers must be equals!' . ' Src=' . $this->aAttributes['src']
-                  . ' Target=' . $this->aAttributes['target'];
+            $sMsg = 'Servers must be equals!' . ' Src=' . $this->_aAttributes['src']
+                  . ' Target=' . $this->_aAttributes['target'];
             throw new DomainException($sMsg);
         }
 
-        if ( ! empty($this->aAttributes['server']) && ($bIsSrcRemote || $bIsDestRemote)) {
-            $sMsg = 'Multiple server declaration!' . ' Server=' . $this->aAttributes['server']
-                  . ' Src=' . $this->aAttributes['src'] . ' Target=' . $this->aAttributes['target'];
+        if ( ! empty($this->_aAttributes['server']) && ($bIsSrcRemote || $bIsDestRemote)) {
+            $sMsg = 'Multiple server declaration!' . ' Server=' . $this->_aAttributes['server']
+                  . ' Src=' . $this->_aAttributes['src'] . ' Target=' . $this->_aAttributes['target'];
             throw new DomainException($sMsg);
         }
     }
@@ -68,34 +68,34 @@ class Task_Base_Link extends Task
     protected function _centralExecute ()
     {
         parent::_centralExecute();
-        $this->oLogger->indent();
+        $this->_oLogger->indent();
 
         // La source doit être un lien ou ne pas exister :
-        $sPath = $this->aAttributes['src'];
-        if ( ! empty($this->aAttributes['server'])) {
-            $sPath = $this->aAttributes['server'] . ':' . $sPath;
+        $sPath = $this->_aAttributes['src'];
+        if ( ! empty($this->_aAttributes['server'])) {
+            $sPath = $this->_aAttributes['server'] . ':' . $sPath;
         }
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
-            if ( ! in_array($this->oShell->getFileStatus($sExpandedPath), array(0, 11, 12))) {
+            if ( ! in_array($this->_oShell->getFileStatus($sExpandedPath), array(0, 11, 12))) {
                 $sMsg = 'Source attribute must be a directoy symlink or a file symlink'
                       . " or not exist: '" . $sExpandedPath . "'";
                 throw new RuntimeException($sMsg);
             }
         }
 
-        $sRawTargetPath = $this->aAttributes['target'];
-        if ( ! empty($this->aAttributes['server'])) {
-            $sRawTargetPath = $this->aAttributes['server'] . ':' . $sRawTargetPath;
+        $sRawTargetPath = $this->_aAttributes['target'];
+        if ( ! empty($this->_aAttributes['server'])) {
+            $sRawTargetPath = $this->_aAttributes['server'] . ':' . $sRawTargetPath;
         }
 
         $aTargetPaths = $this->_processPath($sRawTargetPath);
         foreach ($aTargetPaths as $sTargetPath) {
-            list(, $aDestMatches) = $this->oShell->isRemotePath($sTargetPath);
-            list(, $aSrcMatches) = $this->oShell->isRemotePath($this->aAttributes['src']);
+            list(, $aDestMatches) = $this->_oShell->isRemotePath($sTargetPath);
+            list(, $aSrcMatches) = $this->_oShell->isRemotePath($this->_aAttributes['src']);
             $sSrc = $this->_processSimplePath($aDestMatches[1] . ':' . $aSrcMatches[2]);
-            $this->oShell->createLink($sSrc, $sTargetPath);
+            $this->_oShell->createLink($sSrc, $sTargetPath);
         }
-        $this->oLogger->unindent();
+        $this->_oLogger->unindent();
     }
 
     public function backup ()
