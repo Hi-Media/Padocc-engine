@@ -43,7 +43,7 @@ class Task_Extended_BuildLanguage extends Task
             'url' => 'https://admin.twenga.com/translation_tool/build_language_files.php?project=rts',
             'login' => 'gaubry',
             'password' => 'jR7nN0',
-            'user_agent' => Curl::$USER_AGENTS['FireFox3'],
+            'user_agent' => Curl::$aUserAgents['FireFox3'],
             'referer' => 'http://aai.twenga.com',
             'file' => $fh,
             'timeout' => 120,
