@@ -217,9 +217,9 @@ class Shell_Adapter implements Shell_Interface
     public function mkdir ($sPath, $sMode='')
     {
         if ($sMode !== '') {
-            $sMode = "-m $sMode ";
+            $sMode = " && chmod $sMode %1\$s";
         }
-        return $this->execSSH("mkdir $sMode-p %s", $sPath);
+        return $this->execSSH("mkdir -p %1\$s$sMode", $sPath);
     }
 
     /*
