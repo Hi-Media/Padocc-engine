@@ -142,6 +142,20 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Link::__construct
      * @covers Task_Base_Link::check
      */
+    public function testCheckWithAttrServerThrowExceptionIfTwoOtherServers () {
+        $oTask = Task_Base_Link::getNewInstance(array(
+            'src' => 'user@server1:/path/to/link',
+            'target' => 'user@server1:/path/to/destdir',
+            'server' => 'user@server2'
+        ), $this->oMockProject, '', $this->oServiceContainer);
+        $this->setExpectedException('DomainException');
+        $oTask->setUp();
+    }
+
+    /**
+     * @covers Task_Base_Link::__construct
+     * @covers Task_Base_Link::check
+     */
     public function testCheckWithoutAttrServerAndServers () {
         $oTask = Task_Base_Link::getNewInstance(array('src' => '/path/to/link', 'target' => '/path/to/destdir'), $this->oMockProject, '', $this->oServiceContainer);
         $oTask->setUp();
@@ -184,6 +198,9 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @covers Task_Base_Link::execute
+     * @covers Task_Base_Link::_preExecute
+     * @covers Task_Base_Link::_centralExecute
+     * @covers Task_Base_Link::_postExecute
      */
     public function testExecuteWithoutAttrServer () {
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
@@ -193,12 +210,6 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
         $oMockProperties->expects($this->at(1))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
-        /*$oMockProperties->expects($this->at(1))->method('getProperty')
-            ->with($this->equalTo('base_dir'))
-            ->will($this->returnValue('/path/to/destdir'));
-        $oMockProperties->expects($this->at(2))->method('getProperty')
-            ->with($this->equalTo('execution_id'))
-            ->will($this->returnValue('12345'));*/
         $oMockProperties->expects($this->exactly(2))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
@@ -217,6 +228,9 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @covers Task_Base_Link::execute
+     * @covers Task_Base_Link::_preExecute
+     * @covers Task_Base_Link::_centralExecute
+     * @covers Task_Base_Link::_postExecute
      */
     public function testExecuteWithoutAttrServerThrowExceptionIfBadSrc () {
         $oTask = Task_Base_Link::getNewInstance(array(
@@ -230,6 +244,9 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @covers Task_Base_Link::execute
+     * @covers Task_Base_Link::_preExecute
+     * @covers Task_Base_Link::_centralExecute
+     * @covers Task_Base_Link::_postExecute
      */
     public function testExecuteWithAttrServer () {
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
@@ -255,6 +272,9 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @covers Task_Base_Link::execute
+     * @covers Task_Base_Link::_preExecute
+     * @covers Task_Base_Link::_centralExecute
+     * @covers Task_Base_Link::_postExecute
      */
     public function testExecuteWithAttrServerAndSymlink () {
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
@@ -295,6 +315,9 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @covers Task_Base_Link::execute
+     * @covers Task_Base_Link::_preExecute
+     * @covers Task_Base_Link::_centralExecute
+     * @covers Task_Base_Link::_postExecute
      */
     public function testExecuteWithoutAttrServerWithSymlink () {
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));

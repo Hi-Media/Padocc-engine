@@ -50,8 +50,8 @@ class Task_Base_Link extends Task
         list($bIsSrcRemote, $aSrcMatches) = $this->oShell->isRemotePath($this->aAttributes['src']);
         list($bIsDestRemote, $aDestMatches) = $this->oShell->isRemotePath($this->aAttributes['target']);
         if (
-            ($bIsSrcRemote && $bIsDestRemote && $aSrcMatches[1] != $aDestMatches[1])
-            || ($bIsSrcRemote XOR $bIsDestRemote)
+            ($bIsSrcRemote XOR $bIsDestRemote)
+            || ($bIsSrcRemote && $bIsDestRemote && $aSrcMatches[1] != $aDestMatches[1])
         ) {
             $sMsg = 'Servers must be equals!' . ' Src=' . $this->aAttributes['src']
                   . ' Target=' . $this->aAttributes['target'];
