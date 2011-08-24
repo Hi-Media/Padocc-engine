@@ -13,7 +13,7 @@ class Task_Base_Environment extends Task_Base_Target
         return 'env';
     }
 
-    private $oLinkTask;
+    private $_oLinkTask;
 
     /**
      * Constructeur.
@@ -46,7 +46,7 @@ class Task_Base_Environment extends Task_Base_Target
             $sBaseSymLink = $this->oProperties->getProperty('base_dir');
             $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
                              . '/' . $this->oProperties->getProperty('execution_id');
-            $this->oLinkTask = Task_Base_Link::getNewInstance(array(
+            $this->_oLinkTask = Task_Base_Link::getNewInstance(array(
                 'src' => $sBaseSymLink,
                 'target' => $sReleaseSymLink,
                 'server' => '${SERVERS_CONCERNED_WITH_BASE_DIR}'
@@ -171,7 +171,7 @@ class Task_Base_Environment extends Task_Base_Target
     public function setUp ()
     {
         if ($this->oProperties->getProperty('with_symlinks') === 'true') {
-            array_push($this->aTasks, $this->oLinkTask);
+            array_push($this->aTasks, $this->_oLinkTask);
         }
 
         parent::setUp();
@@ -200,7 +200,7 @@ class Task_Base_Environment extends Task_Base_Target
         parent::_centralExecute();
         if ($this->oProperties->getProperty('with_symlinks') === 'true') {
             $this->oProperties->setProperty('with_symlinks', 'false');
-            $this->oLinkTask->execute();
+            $this->_oLinkTask->execute();
             $this->oProperties->setProperty('with_symlinks', 'true');
         }
     }

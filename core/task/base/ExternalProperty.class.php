@@ -5,9 +5,9 @@ class Task_Base_ExternalProperty extends Task
 
     const EXTERNAL_PROPERTY_PREFIX = 'external_property_';
 
-    private static $iCounter = 0;
+    private static $_iCounter = 0;
 
-    private $iNumber;
+    private $_iNumber;
 
     protected $aTasks;
 
@@ -37,7 +37,7 @@ class Task_Base_ExternalProperty extends Task
             'name' => Task::ATTRIBUTE_REQUIRED,
             'description' => Task::ATTRIBUTE_REQUIRED
         );
-        $this->iNumber = ++self::$iCounter;
+        $this->_iNumber = ++self::$_iCounter;
     }
 
     protected function _centralExecute ()
@@ -48,7 +48,7 @@ class Task_Base_ExternalProperty extends Task
               . $this->aAttributes['description'] . "')";
         $this->oLogger->log($sMsg);
         try {
-            $sValue = $this->oProperties->getProperty(self::EXTERNAL_PROPERTY_PREFIX . $this->iNumber);
+            $sValue = $this->oProperties->getProperty(self::EXTERNAL_PROPERTY_PREFIX . $this->_iNumber);
         } catch (UnexpectedValueException $oException) {
             $sMsg = "Property '" . $this->aAttributes['name'] . "' undefined!";
             throw new UnexpectedValueException($sMsg, 1, $oException);

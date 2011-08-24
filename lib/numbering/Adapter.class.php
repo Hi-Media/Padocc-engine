@@ -7,38 +7,38 @@ class Numbering_Adapter implements Numbering_Interface
      * Compteur.
      * @var array
      */
-    private $aCounter;
+    private $_aCounter;
 
-    private $sSeparator;
+    private $_sSeparator;
 
-    private $iCurrentDivision;
+    private $_iCurrentDivision;
 
     public function __construct ($sSeparator='.')
     {
-        $this->sSeparator = $sSeparator;
-        $this->aCounter = array(0);
-        $this->iCurrentDivision = 0;
+        $this->_sSeparator = $sSeparator;
+        $this->_aCounter = array(0);
+        $this->_iCurrentDivision = 0;
     }
 
     public function getNextCounterValue ()
     {
-        $this->aCounter[$this->iCurrentDivision]++;
-        return implode($this->sSeparator, array_slice($this->aCounter, 0, $this->iCurrentDivision+1));
+        $this->_aCounter[$this->_iCurrentDivision]++;
+        return implode($this->_sSeparator, array_slice($this->_aCounter, 0, $this->_iCurrentDivision+1));
     }
 
     public function addCounterDivision ()
     {
-        $this->iCurrentDivision++;
-        if ($this->iCurrentDivision >= count($this->aCounter)) {
-            $this->aCounter[] = 0;
+        $this->_iCurrentDivision++;
+        if ($this->_iCurrentDivision >= count($this->_aCounter)) {
+            $this->_aCounter[] = 0;
         }
         return $this;
     }
 
     public function removeCounterDivision ()
     {
-        if ($this->iCurrentDivision > 0) {
-            $this->iCurrentDivision--;
+        if ($this->_iCurrentDivision > 0) {
+            $this->_iCurrentDivision--;
         }
         return $this;
     }

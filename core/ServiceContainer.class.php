@@ -7,74 +7,75 @@ class ServiceContainer
      * Logger.
      * @var Logger_IndentedInterface
      */
-    private $oLogger;
+    private $_oLogger;
 
     /**
      * Properties.
      * @var Properties_Interface
      */
-    private $oProperties;
+    private $_oProperties;
 
     /**
      * Adaptateur Shell.
      * @var Shell_Interface
      */
-    private $oShell;
+    private $_oShell;
 
     /**
      * Adaptateur de numérotation.
      * @var Numbering_Interface
      */
-    private $oNumbering;
+    private $_oNumbering;
 
     public function __construct ()
     {
-        $this->oLogger = NULL;
-        $this->oProperties = NULL;
-        $this->oShell = NULL;
+        $this->_oLogger = NULL;
+        $this->_oProperties = NULL;
+        $this->_oShell = NULL;
+        $this->_oNumbering = NULL;
     }
 
     public function setLogAdapter (Logger_IndentedInterface $oLogger)
     {
-        $this->oLogger = $oLogger;
+        $this->_oLogger = $oLogger;
         return $this;
     }
 
     public function setPropertiesAdapter (Properties_Interface $oProperties)
     {
-        $this->oProperties = $oProperties;
+        $this->_oProperties = $oProperties;
         return $this;
     }
 
     public function setShellAdapter (Shell_Interface $oShell)
     {
-        $this->oShell = $oShell;
+        $this->_oShell = $oShell;
         return $this;
     }
 
     public function setNumberingAdapter (Numbering_Interface $oNumbering)
     {
-        $this->oNumbering = $oNumbering;
+        $this->_oNumbering = $oNumbering;
         return $this;
     }
 
     public function getLogAdapter ()
     {
-        return $this->oLogger;
+        return $this->_oLogger;
     }
 
     public function getPropertiesAdapter ()
     {
-        return $this->oProperties;
+        return $this->_oProperties;
     }
 
     public function getShellAdapter ()
     {
-        return $this->oShell;
+        return $this->_oShell;
     }
 
     public function getNumberingAdapter ()
     {
-        return $this->oNumbering;
+        return $this->_oNumbering;
     }
 }

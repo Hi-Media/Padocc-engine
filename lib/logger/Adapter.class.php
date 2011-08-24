@@ -3,16 +3,16 @@
 class Logger_Adapter implements Logger_Interface
 {
 
-    private $iMinErrorLevel;
+    private $_iMinErrorLevel;
 
     public function __construct ($iMinErrorLevel)
     {
-        $this->iMinErrorLevel = $iMinErrorLevel;
+        $this->_iMinErrorLevel = $iMinErrorLevel;
     }
 
     public function log ($sMessage, $iLevel=self::INFO)
     {
-        if ($iLevel >= $this->iMinErrorLevel) {
+        if ($iLevel >= $this->_iMinErrorLevel) {
             echo str_replace("\n", '\\\n', rtrim($sMessage)) . "\n";
         }
         return $this;

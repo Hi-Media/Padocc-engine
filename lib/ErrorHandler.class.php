@@ -37,12 +37,12 @@ class ErrorHandler
         E_RECOVERABLE_ERROR => 'RECOVERABLE ERROR'
     );
 
-    private static $iDefaultErrorCode = 1;
+    private static $_iDefaultErrorCode = 1;
 
-    private $bDisplayErrors;
-    private $sErrorLogPath;
-    private $iErrorReporting;
-    private $bIsRunningFromCLI;
+    private $_bDisplayErrors;
+    private $_sErrorLogPath;
+    private $_iErrorReporting;
+    private $_bIsRunningFromCLI;
 
     /**
      * Recense les répertoires exclus du spectre de ce handler.
@@ -54,11 +54,11 @@ class ErrorHandler
 
     public function __construct ($bDisplayErrors=true, $sErrorLogPath='', $iErrorReporting=-1)
     {
-        $this->bDisplayErrors = $bDisplayErrors;
-        $this->sErrorLogPath = $sErrorLogPath;
-        $this->iErrorReporting = $iErrorReporting;
+        $this->_bDisplayErrors = $bDisplayErrors;
+        $this->_sErrorLogPath = $sErrorLogPath;
+        $this->_iErrorReporting = $iErrorReporting;
         $this->aExcludedPaths = array();
-        $this->bIsRunningFromCLI = defined('STDIN');
+        $this->_bIsRunningFromCLI = defined('STDIN');
 
         error_reporting($iErrorReporting);
         ini_set('display_errors', $bDisplayErrors);
@@ -126,7 +126,7 @@ class ErrorHandler
         } else {
             $msg = "[from error handler] " . self::$aErrorTypes[$iErrNo]
                  . " -- $sErrStr, in file: '$sErrFile', line $iErrLine";
-            $oException = new ErrorException($msg, self::$iDefaultErrorCode, $iErrNo, $sErrFile, $iErrLine);
+            $oException = new ErrorException($msg, self::$_iDefaultErrorCode, $iErrNo, $sErrFile, $iErrLine);
             //if ( ! $this->display_errors && $errno != E_ERROR) {
             //	$this->error_log($e);
             //} else {
@@ -142,7 +142,7 @@ class ErrorHandler
      */
     public function internalExceptionHandler (Exception $oException)
     {
-        if ( ! $this->bDisplayErrors && ini_get('error_log') !== '' && ! $this->bIsRunningFromCLI) {
+        if ( ! $this->_bDisplayErrors && ini_get('error_log') !== '' && ! $this->_bIsRunningFromCLI) {
             echo '<div class="exception_handler_message">Une erreur d\'exécution est apparue.<br />'
                 . 'Nous sommes désolés pour la gêne occasionée.</div>';
         }
@@ -155,17 +155,17 @@ class ErrorHandler
      */
     public function errorLog ($mError)
     {
-        if ($this->bDisplayErrors) {
-            if ($this->bIsRunningFromCLI) {
+        if ($this->_bDisplayErrors) {
+            if ($this->_bIsRunningFromCLI) {
                 file_put_contents('php://stderr', $mError . "\n", E_USER_ERROR);
-                $iErrorCode = ($mError instanceof Exception ? $mError->getCode() : self::$iDefaultErrorCode);
+                $iErrorCode = ($mError instanceof Exception ? $mError->getCode() : self::$_iDefaultErrorCode);
                 exit($iErrorCode);
             } else {
                 print_r($mError);
             }
         }
 
-        if ( ! empty($this->sErrorLogPath)) {
+        if ( ! empty($this->_sErrorLogPath)) {
             if (is_array($mError) || (is_object($mError) && ! ($mError instanceof Exception))) {
                 $mError = print_r($mError, true);
             }
