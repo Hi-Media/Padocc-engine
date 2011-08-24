@@ -81,6 +81,9 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @covers Task_Base_MkDir::execute
+     * @covers Task_Base_MkDir::_preExecute
+     * @covers Task_Base_MkDir::_centralExecute
+     * @covers Task_Base_MkDir::_postExecute
      */
     public function testExecuteWithoutMode () {
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
@@ -100,6 +103,9 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @covers Task_Base_MkDir::execute
+     * @covers Task_Base_MkDir::_preExecute
+     * @covers Task_Base_MkDir::_centralExecute
+     * @covers Task_Base_MkDir::_postExecute
      */
     public function testExecuteWithMode () {
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
@@ -117,6 +123,9 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @covers Task_Base_MkDir::execute
+     * @covers Task_Base_MkDir::_preExecute
+     * @covers Task_Base_MkDir::_centralExecute
+     * @covers Task_Base_MkDir::_postExecute
      */
     public function testExecuteWithModeAndSymLinks () {
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
