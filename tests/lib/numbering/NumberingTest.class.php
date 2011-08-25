@@ -55,13 +55,38 @@ class NumberingTest extends PHPUnit_Framework_TestCase {
      * @covers Numbering_Adapter::getNextCounterValue
      * @covers Numbering_Adapter::removeCounterDivision
      */
-    public function testGetNextCounterValueAfterMultipleCalls () {
+    public function testGetNextCounterValueAfterMultipleCalls1 () {
         $this->_oNumbering->getNextCounterValue(); // 1
-        $this->_oNumbering->addCounterDivision()   // 1.0
+        $this->_oNumbering
+            ->addCounterDivision()   // 1.0
             ->getNextCounterValue();              // 1.1
-        $sCounterValue = $this->_oNumbering->removeCounterDivision() // 1
-            ->addCounterDivision()   // 1.1
-            ->getNextCounterValue(); // 1.2
+        $sCounterValue = $this->_oNumbering->getNextCounterValue(); // 1.2
         $this->assertEquals('1' . self::SEPARATOR . '2', $sCounterValue);
+        $sCounterValue = $this->_oNumbering
+            ->removeCounterDivision() // 1
+            ->addCounterDivision()   // 1.2
+            ->getNextCounterValue(); // 1.3
+        $this->assertEquals('1' . self::SEPARATOR . '3', $sCounterValue);
+    }
+
+    /**
+     * @covers Numbering_Adapter::addCounterDivision
+     * @covers Numbering_Adapter::getNextCounterValue
+     * @covers Numbering_Adapter::removeCounterDivision
+     */
+    public function testGetNextCounterValueAfterMultipleCalls2 () {
+        $this->_oNumbering->getNextCounterValue(); // 1
+        $this->_oNumbering
+            ->addCounterDivision()   // 1.0
+            ->getNextCounterValue();              // 1.1
+        $sCounterValue = $this->_oNumbering->getNextCounterValue(); // 1.2
+        $this->assertEquals('1' . self::SEPARATOR . '2', $sCounterValue);
+        $this->_oNumbering
+            ->removeCounterDivision() // 1
+            ->getNextCounterValue();              // 2
+        $sCounterValue = $this->_oNumbering
+            ->addCounterDivision()   // 2.0
+            ->getNextCounterValue(); // 1.1
+        $this->assertEquals('2' . self::SEPARATOR . '1', $sCounterValue);
     }
 }
