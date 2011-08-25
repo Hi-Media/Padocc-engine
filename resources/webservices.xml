@@ -2,7 +2,7 @@
 <project name="webservices">
     <env
         name="qa"
-        mailto="devaa@twenga.com,yann.brigant@twenga.com"
+        mailto="devaa@twenga.com, yann.brigant@twenga.com"
         withsymlinks="true"
         loadtwengaservers="true"
         basedir="/home/httpd-qa/webservices"
@@ -13,5 +13,20 @@
             target="/home/httpd-qa/config/webservices/config.php" />
         <link server="${SERVER_QA_PHPWEB_ALL}" src="/home/httpd-qa/webservices/config-local"
             target="/home/httpd-qa/config/webservices/config-local" />
+    </env>
+
+    <env
+        name="prod"
+        mailto="devaa@twenga.com, yann.brigant@twenga.com"
+        withsymlinks="true"
+        loadtwengaservers="true"
+        basedir="/home/httpd/webservices"
+    >
+        <gitexport repository="git@git.twenga.com:webservices/webservices.git" ref="master"
+            destdir="${SERVER_PHPWEB_ALL}:/home/httpd/webservices" exclude="config.php config-local" />
+        <link server="${SERVER_PHPWEB_ALL}" src="/home/httpd/webservices/config.php"
+            target="/home/httpd/config/webservices/config.php" />
+        <link server="${SERVER_PHPWEB_ALL}" src="/home/httpd/webservices/config-local"
+            target="/home/httpd/config/webservices/config-local" />
     </env>
 </project>
