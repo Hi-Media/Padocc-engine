@@ -51,13 +51,15 @@ class Task_Extended_GitExport extends Task
         // Création de la tâche de synchronisation sous-jacente :
         $this->_oNumbering->addCounterDivision();
         $sSrcDir = preg_replace('#/$#', '', $this->_aAttributes['srcdir']) . '/*';
+        $aSyncAttributes = array(
+            'src' => $sSrcDir,
+            'destdir' => $this->_aAttributes['destdir'],
+        );
+        if ( ! empty($this->_aAttributes['exclude'])) {
+            $aSyncAttributes['exclude'] = $this->_aAttributes['exclude'];
+        }
         $this->_oSyncTask = Task_Base_Sync::getNewInstance(
-            array(
-                'src' => $sSrcDir,
-                'destdir' => $this->_aAttributes['destdir'],
-                'exclude' => $this->_aAttributes['exclude']
-            ),
-            $oProject, $sBackupPath, $oServiceContainer
+            $aSyncAttributes, $oProject, $sBackupPath, $oServiceContainer
         );
         $this->_oNumbering->removeCounterDivision();
     }
