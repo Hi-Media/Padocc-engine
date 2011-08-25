@@ -23,9 +23,14 @@ class Numbering_Adapter implements Numbering_Interface
     public function getNextCounterValue ()
     {
         $this->_aCounter[$this->_iCurrentDivision]++;
+        if (count($this->_aCounter) > $this->_iCurrentDivision+1) {
+            $this->_aCounter = array_slice($this->_aCounter, 0, $this->_iCurrentDivision+1);
+        }
         return implode($this->_sSeparator, array_slice($this->_aCounter, 0, $this->_iCurrentDivision+1));
     }
 
+    // Les nouvelles divisions commencent à 0.
+    // Les préexistantes conservent leur valeur.
     public function addCounterDivision ()
     {
         $this->_iCurrentDivision++;
