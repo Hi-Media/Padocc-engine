@@ -304,7 +304,11 @@ abstract class Task implements AttributeProperties
     public function check ()
     {
         $this->_normalizeAttributeProperties();
-        $this->_oLogger->log("Check '" . $this->_sName . "' task");
+        $sMsg = "Check '" . $this->_sName . "' task";
+        if ( ! empty($this->_aAttributes['name'])) {
+            $sMsg .= ': \'' . $this->_aAttributes['name'] . '\'';
+        }
+        $this->_oLogger->log($sMsg);
         $this->_oLogger->indent();
 
         $aAvailablesAttr = array_keys($this->_aAttributeProperties);
