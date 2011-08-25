@@ -78,6 +78,14 @@ class Task_Base_Environment extends Task_Base_Target
         if ($this->_aAttributes['basedir'][0] !== '/') {
             throw new DomainException("Attribute 'basedir' must begin by a '/'!");
         }
+
+        $this->_oLogger->indent();
+        foreach ($this->_aAttributes as $sAttribute => $sValue) {
+            if ( ! empty($sValue) && $sAttribute !== 'name') {
+                $this->_oLogger->log("Attribute: $sAttribute = '$sValue'");
+            }
+        }
+        $this->_oLogger->unindent();
     }
 
     private $_aPathsToHandle;
@@ -198,13 +206,23 @@ class Task_Base_Environment extends Task_Base_Target
         $this->_oLogger->unindent();
     }
 
-    protected function _centralExecute ()
+    protected function _postExecute()
     {
-        parent::_centralExecute();
         if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
+            $this->_oLogger->indent();
             $this->_oProperties->setProperty('with_symlinks', 'false');
             $this->_oLinkTask->execute();
             $this->_oProperties->setProperty('with_symlinks', 'true');
+
+            $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
+            $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
+                             . '/' . $this->_oProperties->getProperty('execution_id');
+            $sMsg = "Change target of base directory's symbolic link to new deployment: '$sReleaseSymLink'";
+            $this->_oLogger->indent();
+            $this->_oLogger->log($sMsg);
+            $this->_oLogger->unindent();
+            $this->_oLogger->unindent();
         }
+        parent::_postExecute();
     }
 }

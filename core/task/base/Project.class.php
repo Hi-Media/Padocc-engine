@@ -86,6 +86,17 @@ class Task_Base_Project extends Task_WithProperties
         );
     }
 
+    public function check() {
+        parent::check();
+        $this->_oLogger->indent();
+        foreach ($this->_aAttributes as $sAttribute => $sValue) {
+            if ( ! empty($sValue) && $sAttribute !== 'name') {
+                $this->_oLogger->log("Attribute: $sAttribute = '$sValue'");
+            }
+        }
+        $this->_oLogger->unindent();
+    }
+
     public function setUp ()
     {
         parent::setUp();
