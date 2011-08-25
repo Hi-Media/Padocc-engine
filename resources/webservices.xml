@@ -4,13 +4,14 @@
         name="qa"
         mailto="devaa@twenga.com,yann.brigant@twenga.com"
         withsymlinks="true"
+        loadtwengaservers="true"
         basedir="/home/httpd-qa/webservices"
     >
         <gitexport repository="git@git.twenga.com:webservices/webservices.git" ref="master"
-            destdir="www17:/home/httpd-qa/webservices" exclude="config.php config-local" />
-        <link server="www17" src="/home/httpd-qa/webservices/config.php"
+            destdir="${SERVER_QA_PHPWEB_ALL}:/home/httpd-qa/webservices" exclude="config.php config-local" />
+        <link server="${SERVER_QA_PHPWEB_ALL}" src="/home/httpd-qa/webservices/config.php"
             target="/home/httpd-qa/config/webservices/config.php" />
-        <link server="www17" src="/home/httpd-qa/webservices/config-local"
+        <link server="${SERVER_QA_PHPWEB_ALL}" src="/home/httpd-qa/webservices/config-local"
             target="/home/httpd-qa/config/webservices/config-local" />
     </env>
 </project>
