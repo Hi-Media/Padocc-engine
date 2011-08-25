@@ -1,16 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="mtpn">
     <env name="qa" mailto="devaa@twenga.com, laurent.salomon@twenga.com, laurent.toussaint@twenga.com, romain.derocle@twenga.com">
-        <gitexport repository="git@git.twenga.com:distribution/wtpn.git" ref="master"
-            destdir="www10:/home/httpd/wtpn" exclude="config.* dynconfig* config_application.php" />
-        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
-            destdir="www10:/home/httpd/twenga-common" />
-    </env>
-
-    <env name="prod" mailto="devaa@twenga.com, laurent.salomon@twenga.com, laurent.toussaint@twenga.com, romain.derocle@twenga.com">
-        <gitexport repository="git@git.twenga.com:distribution/wtpn.git" ref="master"
-            destdir="www46:/home/httpd/wtpn" exclude="config.* dynconfig* config_application.php" />
-        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
-            destdir="www46:/home/httpd/twenga-common" />
+        <externalproperty name="ref" description="Branch or tag to deploy" />
+        <gitexport repository="git@git.twenga.com:distribution/mtpn.git" ref="${ref}"
+            destdir="www10:/home/httpd/mtpn" exclude="config.* db.ini logs/* public/mirrors/*" />
     </env>
 </project>
