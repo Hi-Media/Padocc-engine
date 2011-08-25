@@ -117,8 +117,9 @@ class Task_Base_Environment extends Task_Base_Target
 
     private function makeTransitionToSymlinks ()
     {
+        $this->_oLogger->log('If needed, make transition to symlinks');
+        $this->_oLogger->indent();
         $this->_oProperties->setProperty('with_symlinks', 'false');
-
         $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
         $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
@@ -135,10 +136,13 @@ class Task_Base_Environment extends Task_Base_Target
         }
 
         $this->_oProperties->setProperty('with_symlinks', 'true');
+        $this->_oLogger->unindent();
     }
 
     private function makeTransitionFromSymlinks ()
     {
+        $this->_oLogger->log('If needed, make transition from symlinks');
+        $this->_oLogger->indent();
         $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
         $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
@@ -154,12 +158,14 @@ class Task_Base_Environment extends Task_Base_Target
                 $this->_oShell->execSSH("mv %s '" . $aMatches[2] . "'", $sTmpDest);
             }
         }
+        $this->_oLogger->unindent();
     }
 
     private function initNewRelease ()
     {
+        $this->_oLogger->log('Initialize with content of previous deployment');
+        $this->_oLogger->indent();
         $this->_oProperties->setProperty('with_symlinks', 'false');
-
         $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
         $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
         $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
@@ -170,13 +176,15 @@ class Task_Base_Environment extends Task_Base_Target
             $sDest = $aMatches[1] . ':' . $sReleaseSymLink;
             if ($this->_oShell->getFileStatus($sExpandedPath) === 12) {
                 $this->_oLogger->log("Initialize '$sDest' with previous deployment: '$sExpandedPath'.");
+                $this->_oLogger->indent();
                 $this->_oShell->sync($sDir, $sDest, array('smarty/*/wrt*', 'smarty/**/wrt*'));
+                $this->_oLogger->unindent();
             } else {
                 $this->_oLogger->log("No previous deployment to initialize '$sDest'.");
             }
         }
-
         $this->_oProperties->setProperty('with_symlinks', 'true');
+        $this->_oLogger->unindent();
     }
 
     public function setUp ()

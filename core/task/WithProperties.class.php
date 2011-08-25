@@ -46,7 +46,9 @@ abstract class Task_WithProperties extends Task
         }
         if ( ! empty($this->_aAttributes['propertyshellfile'])) {
             $this->_oLogger->log('Load shell properties: ' . $this->_aAttributes['propertyshellfile']);
+            $this->_oLogger->indent();
             $this->_oProperties->loadConfigShellFile($this->_aAttributes['propertyshellfile']);
+            $this->_oLogger->unindent();
         }
         if ( ! empty($this->_aAttributes['propertyinifile'])) {
             $this->_oLogger->log('Load ini properties: ' . $this->_aAttributes['propertyinifile']);

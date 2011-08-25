@@ -65,8 +65,10 @@ class Task_Extended_TwengaServers extends Task
         $this->_oGitExportTask->execute();
         $sPathToLoad = $this->_sTmpDir . '/master_synchro.cfg';
         $this->_oLogger->log('Load shell properties: ' . $sPathToLoad);
+        $this->_oLogger->indent();
         $this->_oProperties->loadConfigShellFile($sPathToLoad);
         $this->_oShell->remove($this->_sTmpDir);
+        $this->_oLogger->unindent();
         $this->_oLogger->unindent();
     }
 

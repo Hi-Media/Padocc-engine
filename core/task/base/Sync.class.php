@@ -61,6 +61,7 @@ class Task_Base_Sync extends Task
         $this->_oLogger->indent();
         $sMsg = "Synchronize '" . $this->_aAttributes['src'] . "' with '" . $this->_aAttributes['destdir'] . "'";
         $this->_oLogger->log($sMsg);
+        $this->_oLogger->indent();
         $aExcludedPaths = (empty($this->_aAttributes['exclude'])
                           ? array()
                           : explode(' ', $this->_aAttributes['exclude']));
@@ -72,6 +73,7 @@ class Task_Base_Sync extends Task
         foreach ($results as $result) {
             $this->_oLogger->log($result);
         }
+        $this->_oLogger->unindent();
         $this->_oLogger->unindent();
     }
 
