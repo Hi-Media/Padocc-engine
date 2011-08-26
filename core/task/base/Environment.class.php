@@ -175,9 +175,12 @@ class Task_Base_Environment extends Task_Base_Target
             $sDir = $sExpandedPath . '/*';
             $sDest = $aMatches[1] . ':' . $sReleaseSymLink;
             if ($this->_oShell->getFileStatus($sExpandedPath) === 12) {
-                $this->_oLogger->log("Initialize '$sDest' with previous deployment: '$sExpandedPath'.");
+                $this->_oLogger->log("Initialize '$sDest' with previous deployment.");
                 $this->_oLogger->indent();
-                $this->_oShell->sync($sDir, $sDest, array('smarty/*/wrt*', 'smarty/**/wrt*'));
+                $aResults = $this->_oShell->sync($sDir, $sDest, array('smarty/*/wrt*', 'smarty/**/wrt*'));
+                foreach ($aResults as $sResult) {
+                    $this->_oLogger->log($sResult);
+                }
                 $this->_oLogger->unindent();
             } else {
                 $this->_oLogger->log("No previous deployment to initialize '$sDest'.");
