@@ -264,10 +264,19 @@ rsync  --bwlimit=4000
                               ? ''
                               : '--exclude="' . implode('" --exclude="', $aExcludedPaths) . '" ');
         $sRsyncCmd = 'rsync -axz --delete ' . $sAdditionalExclude . '--stats -e ssh %1$s %2$s';
+        if (substr($sSrcPath, -2) === '/*') {
+            /*$sRsyncCmd = '[ "$(ls -1 "' . substr($aSrcMatches[2], 0, -2) . '" | wc -l)" = 0 ] ' . "\\\n"
+                       . '&& echo "Empty source directory." ' . "\\\n"
+                       . '|| ' . $sRsyncCmd;*/
+            /*$sRsyncCmd = '[ "$(ls -1 "' . substr($aSrcMatches[2], 0, -2) . '" | wc -l)" -gt 0 ] ' . "\\\n"
+                       . '&& ' . $sRsyncCmd;*/
+            $sRsyncCmd = 'if ls -1 "' . substr($aSrcMatches[2], 0, -2) . '" | grep -q .; then ' . $sRsyncCmd . '; fi';
+        }
 
         if (count($aPaths) === 1 && $bIsSrcRemote && $bIsDestRemote && $aSrcMatches[1] == $aDestMatches[1]) {
             $sCmd = sprintf($sRsyncCmd, '%1$s', $this->escapePath($aDestMatches[2]));
             $aRawResult = $this->execSSH($sCmd, $sSrcPath);
+            //$this->_oLogger->log(print_r($aRawResult, true));
             $aResult = $this->_resumeSyncResult($aRawResult);
             $aAllResults = array_merge($aAllResults, $aResult);
 
@@ -276,11 +285,14 @@ rsync  --bwlimit=4000
                 $aCmds = array();
                 for ($j=$i; $j<count($aPaths) && $j<$i+DEPLOYMENT_RSYNC_MAX_NB_PROCESSES; $j++) {
                     $aCmds[] = sprintf($sRsyncCmd, $this->escapePath($sSrcPath), $this->escapePath($aPaths[$j]));
-                        /*'rsync -axz --delete ' . $sAdditionalExclude . '--stats -e'
-                        . ' ssh ' . $this->escapePath($sSrcPath) . ' ' . $this->escapePath($aPaths[$j]);*/
                 }
+
                 $i = $j-1;
-                $sCmd = implode(" & \\\n", $aCmds) . (count($aCmds) > 1 ? " & \\\nwait" : '');
+                if (count($aCmds) > 1) {
+                    $sCmd = implode(" & \\\n", $aCmds) . " & \\\nwait";
+                } else {
+                    $sCmd = reset($aCmds);
+                }
                 $aRawResult = $this->exec($sCmd);
                 $aResult = $this->_resumeSyncResult($aRawResult);
                 $aAllResults = array_merge($aAllResults, $aResult);
@@ -292,41 +304,45 @@ rsync  --bwlimit=4000
 
     private function _resumeSyncResult (array $aRawResult)
     {
-        $aKeys = array(
-            'number of files',
-            'number of files transferred',
-            'total file size',
-            'total transferred file size',
-        );
-        $aEmptyStats = array_fill_keys($aKeys, '?');
+        if (count($aRawResult) === 0) {
+            $aResult = array('Empty source directory.');
+        } else {
+            $aKeys = array(
+                'number of files',
+                'number of files transferred',
+                'total file size',
+                'total transferred file size',
+            );
+            $aEmptyStats = array_fill_keys($aKeys, '?');
 
-        $aAllStats = array();
-        $aStats = NULL;
-        foreach ($aRawResult as $sLine) {
-            if (preg_match('/^([^:]+):\s(\d+)\b/i', $sLine, $aMatches) === 1) {
-                $sKey = strtolower($aMatches[1]);
-                if ($sKey === 'number of files') {
-                    if ($aStats !== NULL) {
-                        $aAllStats[] = $aStats;
+            $aAllStats = array();
+            $aStats = NULL;
+            foreach ($aRawResult as $sLine) {
+                if (preg_match('/^([^:]+):\s(\d+)\b/i', $sLine, $aMatches) === 1) {
+                    $sKey = strtolower($aMatches[1]);
+                    if ($sKey === 'number of files') {
+                        if ($aStats !== NULL) {
+                            $aAllStats[] = $aStats;
+                        }
+                        $aStats = $aEmptyStats;
                     }
-                    $aStats = $aEmptyStats;
-                }
-                if (isset($aStats[$sKey])) {
-                    $aStats[$sKey] = (int)$aMatches[2];
+                    if (isset($aStats[$sKey])) {
+                        $aStats[$sKey] = (int)$aMatches[2];
+                    }
                 }
             }
-        }
-        if ($aStats !== NULL) {
-            $aAllStats[] = $aStats;
-        }
+            if ($aStats !== NULL) {
+                $aAllStats[] = $aStats;
+            }
 
-        $aResult = array();
-        foreach ($aAllStats as $aStats) {
-            $aResult[] = 'Number of transferred files ( / total): ' . $aStats['number of files transferred']
-                       . ' / ' . $aStats['number of files'] . "\n"
-                       . 'Total transferred file size ( / total): '
-                       . round($aStats['total transferred file size']/1024/1024)
-                       . ' / ' . round($aStats['total file size']/1024/1024) . " Mio\n";
+            $aResult = array();
+            foreach ($aAllStats as $aStats) {
+                $aResult[] = 'Number of transferred files ( / total): ' . $aStats['number of files transferred']
+                           . ' / ' . $aStats['number of files'] . "\n"
+                           . 'Total transferred file size ( / total): '
+                           . round($aStats['total transferred file size']/1024/1024)
+                           . ' / ' . round($aStats['total file size']/1024/1024) . " Mio\n";
+            }
         }
         return $aResult;
     }
