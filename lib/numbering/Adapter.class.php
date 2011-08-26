@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @category TwengaDeploy
+ * @package Lib
+ * @author Geoffroy AUBRY
+ */
 class Numbering_Adapter implements Numbering_Interface
 {
 

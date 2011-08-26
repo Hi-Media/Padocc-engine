@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @category TwengaDeploy
+ * @package Core
+ * @author Geoffroy AUBRY
+ */
 class Task_Base_Target extends Task_WithProperties
 {
 

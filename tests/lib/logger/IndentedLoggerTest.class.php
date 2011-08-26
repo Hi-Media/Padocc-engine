@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @category TwengaDeploy
+ * @package Tests
+ * @author Geoffroy AUBRY
+ */
 class IndentedLoggerTest extends PHPUnit_Extensions_OutputTestCase {
 
     const BASE_INDENTATION = '----';

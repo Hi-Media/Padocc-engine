@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @category TwengaDeploy
+ * @package Lib
+ * @author Geoffroy AUBRY
+ */
 interface Shell_Interface
 {
 

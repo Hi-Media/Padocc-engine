@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @category TwengaDeploy
+ * @package Lib
+ * @author Geoffroy AUBRY
+ */
 class Properties_Adapter implements Properties_Interface
 {
 

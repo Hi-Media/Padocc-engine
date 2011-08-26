@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @category TwengaDeploy
+ * @package Tests
+ * @author Geoffroy AUBRY
+ */
 class NumberingTest extends PHPUnit_Framework_TestCase {
 
     const SEPARATOR = '#';

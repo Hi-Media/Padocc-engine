@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @category TwengaDeploy
+ * @package Lib
+ * @author Geoffroy AUBRY
+ */
 class Logger_IndentedDecorator implements Logger_IndentedInterface
 {
 

@@ -3,6 +3,11 @@
 include_once(__DIR__ . '/..' . '/conf/config.inc.php');
 include_once(DEPLOYMENT_LIB_DIR . '/bootstrap.inc.php');
 
+/**
+ * @category TwengaDeploy
+ * @package Tests
+ * @author Geoffroy AUBRY
+ */
 class AllTests {
 
     public static function suite() {
