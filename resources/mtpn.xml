@@ -10,5 +10,6 @@
         <externalproperty name="ref" description="Branch or tag to deploy" />
         <gitexport repository="git@git.twenga.com:distribution/mtpn.git" ref="${ref}"
             destdir="www10:/home/httpd/mtpn" exclude="config.* db.ini" />
+        <mkdir destdir="www10:/home/httpd/mtpn/cache/smarty" mode="777" />
     </env>
 </project>
