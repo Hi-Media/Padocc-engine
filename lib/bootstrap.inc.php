@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @category TwengaDeploy
+ * @package Lib
+ * @author Geoffroy AUBRY
+ */
+
 set_include_path(
     get_include_path()
     . PATH_SEPARATOR . DEPLOYMENT_CORE_DIR . '/'

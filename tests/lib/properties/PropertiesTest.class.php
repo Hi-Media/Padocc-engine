@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @category TwengaDeploy
+ * @package Tests
+ * @author Geoffroy AUBRY
+ */
 class PropertiesTest extends PHPUnit_Framework_TestCase {
 
     private $oLogger;

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @category TwengaDeploy
+ * @package Core
+ * @author Geoffroy AUBRY
+ */
 class Deployment
 {
 

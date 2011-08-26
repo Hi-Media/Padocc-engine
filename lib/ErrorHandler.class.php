@@ -17,6 +17,8 @@
  * TODO SPL
  * TODO shutdown function pour fatals ?
  *
+ * @category TwengaDeploy
+ * @package Lib
  * @author Geoffroy AUBRY
  */
 class ErrorHandler

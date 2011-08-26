@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @category TwengaDeploy
+ * @package Main
+ * @author Geoffroy AUBRY
+ */
+
 // /usr/bin/php -q ~/deployment/deployment.php tests tests_gitexport v4.12.0 `date +'%Y%m%d%H%M%S'` /tmp/deployment.php.xxx.error.log
 // tail -fn 500 /tmp/deployment.php.xxx.error.log
 // rm -rf /home/gaubry/deployment_backup/* && rm -rf /home/gaubry/test/dest/*

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @category TwengaDeploy
+ * @package Tests
+ * @author Geoffroy AUBRY
+ */
 class ServiceContainerTest extends PHPUnit_Framework_TestCase {
 
     /**
