@@ -2,7 +2,7 @@
 <project name="webservices">
     <env
         name="qa"
-        mailto="devaa@twenga.com, yann.brigant@twenga.com"
+        mailto="devaa@twenga.com, laurent.macret@twenga.com, yann.brigant@twenga.com"
         withsymlinks="true"
         loadtwengaservers="true"
         basedir="/home/httpd-qa/webservices"
