@@ -91,7 +91,8 @@ class Task_Base_Project extends Task_WithProperties
         );
     }
 
-    public function check() {
+    public function check()
+    {
         parent::check();
         $this->_oLogger->indent();
         foreach ($this->_aAttributes as $sAttribute => $sValue) {
