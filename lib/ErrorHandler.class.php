@@ -12,9 +12,6 @@
  * TODO mieux gérer opérateur @
  * TODO mieux gérer level error à partir duquel convertir en exception
  * TODO parler du excluded path (Smarty, AdoDB)
- * TODO conventions codage Twenga
- * TODO attention errorHandler() stop le script qd exception, sinon juste error_log()
- * TODO SPL
  * TODO shutdown function pour fatals ?
  *
  * @category TwengaDeploy
@@ -23,6 +20,12 @@
  */
 class ErrorHandler
 {
+
+    /**
+     * Traduction des codes d'erreurs PHP.
+     * @var array
+     * @see internalErrorHandler()
+     */
     public static $aErrorTypes = array(
         E_ERROR => 'ERROR',
         E_WARNING => 'WARNING',
@@ -39,26 +42,51 @@ class ErrorHandler
         E_RECOVERABLE_ERROR => 'RECOVERABLE ERROR'
     );
 
+    /**
+     * Code d'erreur accompagnant les exceptions générées par internalErrorHandler() et log().
+     * @var int
+     * @see internalErrorHadler()
+     * @see log()
+     */
     private static $_iDefaultErrorCode = 1;
 
+    /**
+     * Doit-on afficher les erreurs (à l'écran ou dans le canal d'erreur en mode CLI).
+     * @var bool
+     */
     private $_bDisplayErrors;
+
+    /**
+     * Chemin du fichier de log d'erreur.
+     * @var string
+     */
     private $_sErrorLogPath;
-    private $_iErrorReporting;
+
+    /**
+     * Est-on en mode CLI.
+     * @var bool
+     */
     private $_bIsRunningFromCLI;
 
     /**
-     * Recense les répertoires exclus du spectre de ce handler.
+     * Recense les répertoires exclus du spectre du gestionnaire interne d'erreur.
      *
      * @var array
      * @see addExcludedPath()
      */
     private $_aExcludedPaths;
 
+    /**
+     * Constructeur.
+     *
+     * @param bool $bDisplayErrors affiche ou non les erreurs à l'écran ou dans le canal d'erreur en mode CLI
+     * @param string $sErrorLogPath chemin du fichier de log d'erreur
+     * @param int $iErrorReporting Seuil de remontée d'erreur, transmis à error_reporting()
+     */
     public function __construct ($bDisplayErrors=true, $sErrorLogPath='', $iErrorReporting=-1)
     {
         $this->_bDisplayErrors = $bDisplayErrors;
         $this->_sErrorLogPath = $sErrorLogPath;
-        $this->_iErrorReporting = $iErrorReporting;
         $this->_aExcludedPaths = array();
         $this->_bIsRunningFromCLI = defined('STDIN');
 
@@ -85,11 +113,12 @@ class ErrorHandler
     }
 
     /**
-     * Exclu un répertoire du spectre de ce handler.
+     * Exclu un répertoire du spectre du gestionnaire interne d'erreur.
      * Utile par exemple pour exclure une librairie codée en PHP4 et donc dépréciée.
      * Le '/' en fin de chaîne n'est pas obligatoire.
      *
      * @param string $sPath
+     * @see internalErrorHandler()
      */
     public function addExcludedPath ($sPath)
     {
@@ -139,8 +168,11 @@ class ErrorHandler
     }
 
     /**
+     * Gestionnaire d'exception.
+     * Log systématiquement l'erreur.
      *
      * @param Exception $oException
+     * @see log()
      */
     public function internalExceptionHandler (Exception $oException)
     {
@@ -148,14 +180,17 @@ class ErrorHandler
             echo '<div class="exception_handler_message">Une erreur d\'exécution est apparue.<br />'
                 . 'Nous sommes désolés pour la gêne occasionée.</div>';
         }
-        $this->errorLog($oException);
+        $this->log($oException);
     }
 
     /**
+     * Log l'erreur spécifiée dans le fichier de log si défini.
+     * Si l'affichage des erreurs est activé, alors envoi l'erreur sur le canal d'erreur en mode CLI,
+     * ou réalise un print_r sinon.
      *
-     * @param mixed $mError
+     * @param mixed $mError Erreur à loguer, tableau ou objet.
      */
-    public function errorLog ($mError)
+    public function log ($mError)
     {
         if ($this->_bDisplayErrors) {
             if ($this->_bIsRunningFromCLI) {

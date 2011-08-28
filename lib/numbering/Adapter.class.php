@@ -1,6 +1,12 @@
 <?php
 
 /**
+ * Gestion d'une numérotation hiérarchique (1.1, 1.2, ...).
+ *
+ * Un appel à addCounterDivision() suivi d'un appel à removeCounterDivision() est sans effet.
+ * L'inverse est également vrai si l'on n'est pas au niveau le plus haut.
+ * Par exemple : 1.3.7 => 1.3 => 1.3.7
+ *
  * @category TwengaDeploy
  * @package Lib
  * @author Geoffroy AUBRY
@@ -9,15 +15,31 @@ class Numbering_Adapter implements Numbering_Interface
 {
 
     /**
-     * Compteur.
+     * Compteur hiérarchique.
+     * Mémorise pour la plus haute valeur d'un niveau hiérarchique donné
+     * la plus haute valeur atteinte du sous-niveau.
      * @var array
      */
     private $_aCounter;
 
+    /**
+     * Chaîne intercalée entre chaque niveau hiérarchique.
+     * @var string
+     * @see getNextCounterValue()
+     */
     private $_sSeparator;
 
+    /**
+     * Niveau hierarchique courant.
+     * @var int
+     */
     private $_iCurrentDivision;
 
+    /**
+     * Constructeur.
+     *
+     * @param string $sSeparator chaîne intercalée entre chaque niveau hiérarchique
+     */
     public function __construct ($sSeparator='.')
     {
         $this->_sSeparator = $sSeparator;
@@ -25,6 +47,12 @@ class Numbering_Adapter implements Numbering_Interface
         $this->_iCurrentDivision = 0;
     }
 
+    /**
+     * Retourne la prochaine valeur du compteur hiérarchique en incrémentant le plus bas niveau.
+     * Exemple : 1.1 => 1.2
+     *
+     * @return string prochaine valeur du compteur hiérarchique en intercalant le séparateur entre chaque niveau
+     */
     public function getNextCounterValue ()
     {
         $this->_aCounter[$this->_iCurrentDivision]++;
@@ -34,8 +62,12 @@ class Numbering_Adapter implements Numbering_Interface
         return implode($this->_sSeparator, array_slice($this->_aCounter, 0, $this->_iCurrentDivision+1));
     }
 
-    // Les nouvelles divisions commencent à 0.
-    // Les préexistantes conservent leur valeur.
+    /**
+     * Ajoute une nouvelle division hiérarchique et l'initialise à 0.
+     * Par exemple : 1.1 => 1.1.0
+     *
+     * @return Numbering_Interface $this
+     */
     public function addCounterDivision ()
     {
         $this->_iCurrentDivision++;
@@ -45,6 +77,11 @@ class Numbering_Adapter implements Numbering_Interface
         return $this;
     }
 
+    /**
+     * Remonte d'un niveau hiérarchique.
+     *
+     * @return Numbering_Interface $this
+     */
     public function removeCounterDivision ()
     {
         if ($this->_iCurrentDivision > 0) {

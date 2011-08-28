@@ -1,6 +1,13 @@
 <?php
 
 /**
+ * Gestionnaire de propriétés (table de hashage).
+ * Le nom des propriétés est insensible à la casse.
+ * Sait charger les fichiers de configuration PHP au format INI.
+ * Sait également charger les fichiers de configuration shell (qui acceptent la factorisation) au format suivant :
+ *    PROPRIETE_1="chaîne"
+ *    PROPRIETE_2="chaîne $PROPRIETE_1 chaîne"
+ *
  * @category TwengaDeploy
  * @package Lib
  * @author Geoffroy AUBRY
@@ -9,6 +16,7 @@ class Properties_Adapter implements Properties_Interface
 {
 
     /**
+     * Table de hashage des propriétés (clé => valeur).
      * @var array
      */
     private $_aProperties;
@@ -16,9 +24,15 @@ class Properties_Adapter implements Properties_Interface
     /**
      * Shell adapter.
      * @var Shell_Interface
+     * @see loadConfigShellFile()
      */
     private $_oShell;
 
+    /**
+     * Constructeur.
+     *
+     * @param Shell_Interface $oShell instance utilisée pour charger les fichiers de configuration shell
+     */
     public function __construct (Shell_Interface $oShell)
     {
         $this->_aProperties = array();
@@ -26,7 +40,7 @@ class Properties_Adapter implements Properties_Interface
     }
 
     /**
-     * Retourne la valeur de la propriété spécifiée.
+     * Retourne la valeur de la propriété spécifiée (insensible à la casse).
      *
      * @param string $sPropertyName propriété dont on recherche la valeur
      * @return string valeur de la propriété spécifiée.
@@ -41,11 +55,11 @@ class Properties_Adapter implements Properties_Interface
     }
 
     /**
-     * Initialise ou met à jour la valeur de la propriété spécifiée.
+     * Initialise ou met à jour la valeur de la propriété spécifiée (insensible à la casse).
      *
      * @param string $sPropertyName propriété
      * @param string $sValue
-     * @return Properties_Interface cette instance
+     * @return Properties_Interface $this
      */
     public function setProperty ($sPropertyName, $sValue)
     {
@@ -55,6 +69,7 @@ class Properties_Adapter implements Properties_Interface
 
     /**
      * Charge le fichier INI spécifié en ajoutant ou écrasant ses définitions aux propriétés existantes.
+     * Le nom des propriétés sont insensibles à la casse.
      *
      * @param string $sIniPath path du fichier INI à charger
      * @return Properties_Interface cette instance
@@ -84,6 +99,7 @@ class Properties_Adapter implements Properties_Interface
 
     /**
      * Charge le fichier shell spécifié en ajoutant ou écrasant ses définitions aux propriétés existantes.
+     * Le nom des propriétés sont insensibles à la casse.
      *
      * Format du fichier :
      *    PROPRIETE_1="chaîne"

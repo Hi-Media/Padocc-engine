@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Classe outil facilitant l'exécution des commandes shell.
+ *
  * @category TwengaDeploy
  * @package Lib
  * @author Geoffroy AUBRY
@@ -8,17 +10,35 @@
 class Shell_Adapter implements Shell_Interface
 {
 
+    /**
+     * Table de hashage de mise en cache des demande de statuts de chemins système.
+     * @var array
+     * @see getPathStatus()
+     * @see Shell_PathStatusInterface
+     */
     private $_aFileStatus;
 
-    private static $_aDefaultRsyncExclude = array('.bzr/', '.cvsignore', '.git/', '.gitignore', '.svn/', 'cvslog.*',
-                                                 'CVS', 'CVS.adm');
+    /**
+     * Liste d'exclusions par défaut de toute commande rsync (traduits en --exclude xxx).
+     * @var array
+     * @see sync()
+     */
+    private static $_aDefaultRsyncExclude = array(
+        '.bzr/', '.cvsignore', '.git/', '.gitignore', '.svn/', 'cvslog.*', 'CVS', 'CVS.adm'
+    );
 
     /**
-     * Log adapter.
+     * Log adapter, utilisé pour loguer les commandes exécutées.
      * @var Logger_Interface
+     * @see exec()
      */
     private $_oLogger;
 
+    /**
+     * Constructeur.
+     *
+     * @param Logger_Interface $oLogger Instance utilisée pour loguer les commandes exécutées
+     */
     public function __construct (Logger_Interface $oLogger)
     {
         $this->_oLogger = $oLogger;
@@ -27,11 +47,11 @@ class Shell_Adapter implements Shell_Interface
 
     /**
      * Exécute la commande shell spécifiée et retourne la sortie découpée par ligne dans un tableau.
-     * En cas d'erreur shell, lance une exception avec le message d'erreur.
+     * En cas d'erreur shell (code d'erreur <> 0), lance une exception incluant le message d'erreur.
      *
      * @param string $sCmd
+     * @return array tableau indexé du flux de sortie shell découpé par ligne
      * @throws RuntimeException en cas d'erreur shell
-     * @return array Tableau indexé du flux de sortie découpé par ligne
      */
     public function exec ($sCmd)
     {
@@ -45,12 +65,14 @@ class Shell_Adapter implements Shell_Interface
     }
 
     /**
-     * Exécute la commande spécifiée en l'encapsulant au besoin dans une connexion SSH.
+     * Exécute la commande shell spécifiée en l'encapsulant au besoin dans une connexion SSH
+     * pour atteindre les hôtes distants.
      *
      * @param string $sPatternCmd commande au format printf
      * @param string $sParam paramètre du pattern $sPatternCmd, permettant en plus de décider si l'on
      * doit encapsuler la commande dans un SSH (si serveur distant) ou non.
-     * @return array Tableau indexé du flux de sortie découpé par ligne
+     * @return array tableau indexé du flux de sortie shell découpé par ligne
+     * @throws RuntimeException en cas d'erreur shell
      * @see isRemotePath()
      */
     public function execSSH ($sPatternCmd, $sParam)
@@ -65,18 +87,22 @@ class Shell_Adapter implements Shell_Interface
     }
 
     /**
-     * Retourne 0 si le chemin spécifié n'existe pas, 1 si c'est un fichier 'classique', 2 si c'est un répertoire.
-     * Si le statut est différent de 0, l'appel est mis en cache.
-     * Passe par SSH au besoin.
+     * Retourne l'une des constantes de Shell_PathStatusInterface, indiquant pour le chemin spécifié s'il est
+     * inexistant, un fichier, un répertoire, un lien symbolique sur fichier ou encore un lien symbolique sur
+     * répertoire.
      *
-     * TODO NOTER que marche aussi sur distant.
-     * TODO retourne codes lien sym
-     * TODO see remove()
+     * Si le statut est différent de inexistant, l'appel est mis en cache.
+     * Un appel à remove() s'efforce de maintenir cohérent ce cache.
      *
-     * @param string $sPath chemin à tester
-     * @return int 0 si le chemin spécifié n'existe pas, 1 si c'est un fichier, 2 si c'est un répertoire.
+     * Le chemin spécifié peut concerner un hôte distant (user@server:/path), auquel cas un appel SSH sera effectué.
+     *
+     * @param string $sPath chemin à tester, de la forme [user@server:]/path
+     * @return int l'une des constantes de Shell_PathStatusInterface
+     * @throws RuntimeException en cas d'erreur shell
+     * @see Shell_PathStatusInterface
+     * @see _aFileStatus
      */
-    public function getFileStatus ($sPath)
+    public function getPathStatus ($sPath)
     {
         if (isset($this->_aFileStatus[$sPath])) {
             $iStatus = $this->_aFileStatus[$sPath];
@@ -95,8 +121,9 @@ class Shell_Adapter implements Shell_Interface
      * Retourne un couple dont la 1re valeur indique si le chemin spécifié commence par '[user@]servername_or_ip:'
      * et la 2nde est un tableau indexé contenant le chemin initial, le serveur et le chemin dépourvu du serveur.
      *
-     * @param string $sPath
-     * @return array
+     * @param string $sPath chemin au format [[user@]servername_or_ip:]/path
+     * @return array couple dont la 1re valeur indique si le chemin spécifié commence par '[user@]servername_or_ip:'
+     * et la 2nde est un tableau indexé contenant le chemin initial, le serveur et le chemin dépourvu du serveur.
      * @throws DomainException si syntaxe invalide
      */
     public function isRemotePath ($sPath)
@@ -112,9 +139,21 @@ class Shell_Adapter implements Shell_Interface
         return array($result === 1, $aMatches);
     }
 
-    // TODO ajouter gestion tar/gz
-    // TODO ajouter gestion destfile
-    // TODO a priori, $sSrcPath est un $sSrcFilePath
+    /**
+     * Copie un chemin vers un autre.
+     * Les jokers '*' et '?' sont autorisés.
+     * Par exemple copiera le contenu de $sSrcPath si celui-ci se termine par '/*'.
+     * Si le chemin de destination n'existe pas, il sera créé.
+     *
+     * TODO ajouter gestion tar/gz
+     *
+     * @param string $sSrcPath chemin source, au format [[user@sername_or_ip:]/path
+     * @param string $sDestPath chemin de destination, au format [[user@sername_or_ip:]/path
+     * @param bool $bIsDestFile précise si le chemin de destination est un simple fichier ou non,
+     * information nécessaire si l'on doit créer une partie de ce chemin si inexistant
+     * @return array tableau indexé du flux de sortie shell découpé par ligne
+     * @throws RuntimeException en cas d'erreur shell
+     */
     public function copy ($sSrcPath, $sDestPath, $bIsDestFile=false)
     {
         if ($bIsDestFile) {
@@ -137,14 +176,20 @@ class Shell_Adapter implements Shell_Interface
     /**
      * Crée un lien symbolique de chemin $sLinkPath vers la cible $sTargetPath.
      *
-     * @param string $sLinkPath nom du lien
-     * @param string $sTargetPath cible sur laquelle faire pointer le lien
-     * @see Shell_Interface::createLink()
+     * @param string $sLinkPath nom du lien, au format [[user@sername_or_ip:]/path
+     * @param string $sTargetPath cible sur laquelle faire pointer le lien, au format [[user@sername_or_ip:]/path
+     * @return array tableau indexé du flux de sortie shell découpé par ligne
+     * @throws DomainException si les chemins référencent des serveurs différents
+     * @throws RuntimeException en cas d'erreur shell
      */
     public function createLink ($sLinkPath, $sTargetPath)
     {
-        list(, $aSrcMatches) = $this->isRemotePath($sTargetPath);
-        return $this->execSSH('mkdir -p "$(dirname %1$s)" && ln -snf "' . $aSrcMatches[2] . '" %1$s', $sLinkPath);
+        list(, $aLinkMatches) = $this->isRemotePath($sLinkPath);
+        list(, $aTargetMatches) = $this->isRemotePath($sTargetPath);
+        if ($aLinkMatches[1] != $aTargetMatches[1]) {
+            throw new DomainException("Hosts must be equals. Link='$sLinkPath'. Target='$sTargetPath'.");
+        }
+        return $this->execSSH('mkdir -p "$(dirname %1$s)" && ln -snf "' . $aTargetMatches[2] . '" %1$s', $sLinkPath);
     }
 
     /**
@@ -164,11 +209,13 @@ class Shell_Adapter implements Shell_Interface
 
     /**
      * Supprime le chemin spécifié, répertoire ou fichier, distant ou local.
-     * Exemple : 'aai@aai-01:/path/to/delete'
+     * S'efforce de maintenir cohérent le cache de statut de chemins rempli par getPathStatus().
      *
-     * @param string $sPath chemin à spécifier
-     * @return array Tableau indexé du flux de sortie découpé par ligne
-     * @throws DomainException si chemin invalide
+     * @param string $sPath chemin à supprimer, au format [[user@sername_or_ip:]/path
+     * @return array tableau indexé du flux de sortie shell découpé par ligne
+     * @throws DomainException si chemin invalide (garde-fou)
+     * @throws RuntimeException en cas d'erreur shell
+     * @see getPathStatus()
      */
     public function remove ($sPath)
     {
@@ -179,7 +226,7 @@ class Shell_Adapter implements Shell_Interface
             throw new DomainException("Illegal path: '$sPath'");
         }
 
-        // Supprimer du cache de getFileStatus() :
+        // Supprimer du cache de getPathStatus() :
         unset($this->_aFileStatus[$sPath]);
 
         return $this->execSSH('rm -rf %s', $sPath);
@@ -224,9 +271,17 @@ class Shell_Adapter implements Shell_Interface
         }
     }
 
-    // mkdir -m xxx exécuté ssi répertoire inexistant...
+    /**
+     * Crée le chemin spécifié s'il n'existe pas déjà, avec les droits éventuellement transmis dans tous les cas.
+     *
+     * @param string $sPath chemin à créer, au format [[user@sername_or_ip:]/path
+     * @param string $sMode droits utilisateur du chemin, par ex. '644', appliqués même si ce dernier existe déjà
+     * @return array tableau indexé du flux de sortie shell découpé par ligne
+     * @throws RuntimeException en cas d'erreur shell
+     */
     public function mkdir ($sPath, $sMode='')
     {
+        // On passe par 'chmod' car 'mkdir -m xxx' exécuté ssi répertoire inexistant :
         if ($sMode !== '') {
             $sMode = " && chmod $sMode %1\$s";
         }

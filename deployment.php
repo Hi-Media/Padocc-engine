@@ -37,7 +37,6 @@ chmod 777 deployment/resources -R
 // TODO si fatal error, demander au supervisor de proposer un rollback ?
 // TODO description des tâches
 // TODO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="biblio10.xsd"
-// TODO Que doit retourner Shell_Adapter->exec() : array ou string ?
 // TODO test multi rsync
 // TODO Le chemin menant au fichier de configuration INI ou CFG est en absolu pour l'instant. Le passer en relatif ?
 // TODO imposer des attributs desc et les remonter dans le nom des tâches ?
@@ -54,12 +53,10 @@ chmod 777 deployment/resources -R
 // TODO Task::_expandPath() => ajouter un paramètre pour signifier qu'il ne doit pas y avoir plus d'une valeur générée ?
 // TODO tableau dashboard du nb de déploiement par semaine/projet/env et succès
 // TODO tableau new deployment de l'état des env pour le projet en cours, ou tous les projets
-// TODO surveiller l'espace disque restant à cause des dépôts cumulés
-// TODO tester getFileStatus() avec host distant
-// TODO Task::ATTRIBUTE_PATH ?= Task::ATTRIBUTE_FILE | Task::ATTRIBUTE_DIR
-// TODO phpdoc properties insensible à la casse
+// TODO tester getPathStatus() avec host distant
+
 // TODO ne garder que les N dernières releases qd symlinks
-// TODO ACL simples AAI ? => user project env, par ex gaubry * *...
+// TODO Shell:remove() ne supprime du cache que $sPath et non les sous-répertoires...
 
 /*
  * Features :

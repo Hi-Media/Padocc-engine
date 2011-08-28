@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Builder d'appels cURL.
+ *
  * @category TwengaDeploy
  * @package Lib
  * @author Geoffroy AUBRY
@@ -8,6 +10,11 @@
 class Curl
 {
 
+    /**
+     * Liste de user agents potentiels.
+     * @var array
+     * @see disguiseCurl()
+     */
     public static $aUserAgents = array(
         'FireFox3' => 'Mozilla/5.0 (Windows; U; Windows NT 6.0; fr; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)',
         'GoogleBot' => 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
@@ -16,12 +23,44 @@ class Curl
         'Opera' => 'Opera/9.25 (Windows NT 6.0; U; en)'
     );
 
+    /**
+     * Classe outils.
+     */
     private function __construct ()
     {
     }
 
-    // disguises the curl using fake headers and a fake user agent.
-    // postfields = array ou urlencodedstring => attention au @
+    /**
+     * Réalise un appel cURL selon les options spécifiées.
+     *
+     * Options par défaut :
+     * array(
+     *     'url' => '',
+     *     'timeout' => 10,
+     *     'post_fields' => NULL,
+     *     'login' => NULL,
+     *     'password' => NULL,
+     *     'content_type' => 'text/plain',
+     *     'user_agent' => self::$aUserAgents['GoogleBot'],
+     *     'referer' => 'http://www.google.com',
+     *     'header' => NULL,
+     *     'return_header' => 1,
+     *     'file' => NULL,
+     * );
+     *
+     * Un header sera généré si acun n'est spécifié.
+     * La clé 'post_fieds' est soit un array soit une chaîne URL-encodée (attention à l'@).
+     * Si une exception est générée, elle sera retournée dans la clé 'curl_error' du tableau de retour.
+     *
+     * @param array $aOptions tableau associatif d'options pour l'appel cURL
+     * @return array array(
+     *      'header' => NULL|(string),
+     *      'body' => NULL|(string),
+     *      'curl_error' => NULL|(string),
+     *      'http_code' => NULL|(string),
+     *      'last_url' => NULL|(string),
+     * );
+     */
     public static function disguiseCurl (array $aOptions=array())
     {
         $aDefaultOptions = array(

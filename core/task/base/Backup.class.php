@@ -46,7 +46,7 @@ class Task_Base_Backup extends Task
 
     public function backup ()
     {
-        if ($this->_oShell->getFileStatus($this->_aAttributes['destfile']) !== 0) {
+        if ($this->_oShell->getPathStatus($this->_aAttributes['destfile']) !== Shell_Interface::STATUS_NOT_EXISTS) {
             list($bIsRemote, $aMatches) = $this->_oShell->isRemotePath($this->_aAttributes['destfile']);
             $sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '')
                          . $this->_sBackupPath . '/' . pathinfo($aMatches[2], PATHINFO_BASENAME);

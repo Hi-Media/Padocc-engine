@@ -5,7 +5,7 @@
  * @package Lib
  * @author Geoffroy AUBRY
  */
-interface Shell_Interface
+interface Shell_Interface extends Shell_PathStatusInterface
 {
 
     /**
@@ -36,7 +36,7 @@ interface Shell_Interface
      * @param string $sPath chemin à tester
      * @return int 0 si le chemin spécifié n'existe pas, 1 si c'est un fichier, 2 si c'est un répertoire.
      */
-    public function getFileStatus ($sPath);
+    public function getPathStatus ($sPath);
 
     /**
      * Retourne un couple dont la 1re valeur indique si le chemin spécifié commence par '[user@]servername_or_ip:'

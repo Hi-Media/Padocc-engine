@@ -410,27 +410,27 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 
 
     /**
-     * @covers Shell_Adapter::getFileStatus
+     * @covers Shell_Adapter::getPathStatus
      */
-    public function testGetFileStatusThrowExceptionWhenExecFailed () {
+    public function testGetPathStatusThrowExceptionWhenExecFailed () {
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->exactly(1))->method('exec');
         $oMockShell->expects($this->at(0))->method('exec')->will($this->throwException(new RuntimeException()));
         $this->setExpectedException('RuntimeException');
-        $oMockShell->getFileStatus('foo');
+        $oMockShell->getPathStatus('foo');
     }
 
     /**
-     * @covers Shell_Adapter::getFileStatus
+     * @covers Shell_Adapter::getPathStatus
      */
-    public function testGetFileStatusWithFile () {
+    public function testGetPathStatusWithFile () {
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
             ->with($this->equalTo('[ -h "/path/to/my file" ] && echo -n 1; [ -d "/path/to/my file" ] && echo 2 || ([ -f "/path/to/my file" ] && echo 1 || echo 0)'))
             ->will($this->returnValue(array('1')));
         $oMockShell->expects($this->exactly(1))->method('exec');
 
-        $aResult = $oMockShell->getFileStatus('/path/to/my file');
+        $aResult = $oMockShell->getPathStatus('/path/to/my file');
         $this->assertEquals(1, $aResult);
         $this->assertAttributeEquals(array('/path/to/my file' => 1), '_aFileStatus', $oMockShell);
 
@@ -438,43 +438,43 @@ class ShellTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @depends testGetFileStatusWithFile
-     * @covers Shell_Adapter::getFileStatus
+     * @depends testGetPathStatusWithFile
+     * @covers Shell_Adapter::getPathStatus
      */
-    public function testGetFileStatusWithFileOnCache (Shell_Adapter $oMockShell) {
+    public function testGetPathStatusWithFileOnCache (Shell_Adapter $oMockShell) {
         $this->assertAttributeEquals(array('/path/to/my file' => 1), '_aFileStatus', $oMockShell);
         $oMockShell->expects($this->never())->method('exec');
-        $aResult = $oMockShell->getFileStatus('/path/to/my file');
+        $aResult = $oMockShell->getPathStatus('/path/to/my file');
         $this->assertEquals(1, $aResult);
     }
 
     /**
-     * @covers Shell_Adapter::getFileStatus
+     * @covers Shell_Adapter::getPathStatus
      */
-    public function testGetFileStatusWithDir () {
+    public function testGetPathStatusWithDir () {
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
             ->with($this->equalTo('[ -h "/path/to/dir" ] && echo -n 1; [ -d "/path/to/dir" ] && echo 2 || ([ -f "/path/to/dir" ] && echo 1 || echo 0)'))
             ->will($this->returnValue(array('2')));
         $oMockShell->expects($this->exactly(1))->method('exec');
 
-        $aResult = $oMockShell->getFileStatus('/path/to/dir');
+        $aResult = $oMockShell->getPathStatus('/path/to/dir');
         $this->assertEquals(2, $aResult);
 
         $this->assertAttributeEquals(array('/path/to/dir' => 2), '_aFileStatus', $oMockShell);
     }
 
     /**
-     * @covers Shell_Adapter::getFileStatus
+     * @covers Shell_Adapter::getPathStatus
      */
-    public function testGetFileStatusWithUnknown () {
+    public function testGetPathStatusWithUnknown () {
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
             ->with($this->equalTo('[ -h "/path/to/unknwon" ] && echo -n 1; [ -d "/path/to/unknwon" ] && echo 2 || ([ -f "/path/to/unknwon" ] && echo 1 || echo 0)'))
             ->will($this->returnValue(array('0')));
         $oMockShell->expects($this->exactly(1))->method('exec');
 
-        $aResult = $oMockShell->getFileStatus('/path/to/unknwon');
+        $aResult = $oMockShell->getPathStatus('/path/to/unknwon');
         $this->assertEquals(0, $aResult);
 
         $this->assertAttributeEquals(array(), '_aFileStatus', $oMockShell);
@@ -650,6 +650,30 @@ total size is 64093953  speedup is 1618.29');
         $oMockShell->expects($this->at(0))->method('exec')->will($this->throwException(new RuntimeException()));
         $this->setExpectedException('RuntimeException');
         $oMockShell->createLink('foo', 'bar');
+    }
+
+    /**
+     * @covers Shell_Adapter::createLink
+     */
+    public function testCreateLinkThrowExceptionWhenDifferentHosts1 () {
+        $this->setExpectedException('DomainException');
+        $this->oShell->createLink('/foo', 'server:/bar');
+    }
+
+    /**
+     * @covers Shell_Adapter::createLink
+     */
+    public function testCreateLinkThrowExceptionWhenDifferentHosts2 () {
+        $this->setExpectedException('DomainException');
+        $this->oShell->createLink('user@server:/foo', '/bar');
+    }
+
+    /**
+     * @covers Shell_Adapter::createLink
+     */
+    public function testCreateLinkThrowExceptionWhenDifferentHosts3 () {
+        $this->setExpectedException('DomainException');
+        $this->oShell->createLink('server1:/foo', 'server2:/bar');
     }
 
     /**

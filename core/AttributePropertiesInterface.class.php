@@ -1,11 +1,15 @@
 <?php
 
 /**
+ * Collection des propriétés possibles pour un attribut de tâche.
+ * Ces propriétés sont manipulées au sein de champs de bits dans la classe Task.
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY
+ * @see Task::$_aAttributeProperties()
  */
-interface AttributeProperties
+interface AttributePropertiesInterface
 {
     /**
      * Propriété d'attribut : autorise l'utilisation des '${parameter}'.
