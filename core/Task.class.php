@@ -5,7 +5,7 @@
  * @package Core
  * @author Geoffroy AUBRY
  */
-abstract class Task implements AttributeProperties
+abstract class Task implements AttributePropertiesInterface
 {
 
     /**
@@ -372,7 +372,8 @@ abstract class Task implements AttributeProperties
                 if (
                         ($iProperties & self::ATTRIBUTE_SRC_PATH) > 0
                         && preg_match('#\*|\?#', $this->_aAttributes[$sAttribute]) === 0
-                        && $this->_oShell->getFileStatus($this->_aAttributes[$sAttribute]) === 0
+                        && $this->_oShell->getPathStatus($this->_aAttributes[$sAttribute])
+                            === Shell_Interface::STATUS_NOT_EXISTS
                 ) {
                     $sMsg = "File or directory '" . $this->_aAttributes[$sAttribute] . "' not found!";
                     throw new UnexpectedValueException($sMsg);

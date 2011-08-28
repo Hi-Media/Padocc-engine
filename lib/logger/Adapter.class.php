@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Classe de log rudimentaire, pour loguer le messages à partir d'un seuil d'importance.
+ *
  * @category TwengaDeploy
  * @package Lib
  * @author Geoffroy AUBRY
@@ -8,16 +10,33 @@
 class Logger_Adapter implements Logger_Interface
 {
 
-    private $_iMinErrorLevel;
+    /**
+     * Seuil d'importance à partir duquel accepter de loguer un message.
+     * @var int
+     * @see log()
+     */
+    private $_iMinMsgLevel;
 
-    public function __construct ($iMinErrorLevel)
+    /**
+     * Constructeur.
+     *
+     * @param int $iMinMsgLevel Seuil d'importance à partir duquel accepter de loguer un message.
+     */
+    public function __construct ($iMinMsgLevel)
     {
-        $this->_iMinErrorLevel = $iMinErrorLevel;
+        $this->_iMinMsgLevel = $iMinMsgLevel;
     }
 
+    /**
+     * Log le message spécifié si son importance égale au moins le seuil transmis au constructeur.
+     *
+     * @param string $sMessage message à loguer
+     * @param int $iLevel importance du message
+     * @return Logger_Interface $this
+     */
     public function log ($sMessage, $iLevel=self::INFO)
     {
-        if ($iLevel >= $this->_iMinErrorLevel) {
+        if ($iLevel >= $this->_iMinMsgLevel) {
             echo str_replace("\n", '\\\n', rtrim($sMessage)) . "\n";
         }
         return $this;
