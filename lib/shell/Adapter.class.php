@@ -288,16 +288,18 @@ class Shell_Adapter implements Shell_Interface
         return $this->execSSH("mkdir -p %1\$s$sMode", $sPath);
     }
 
-    /*
-time ( \
-    rsync -axz --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats -e ssh "/home/gaubry/deployment_test/src/test_gitexport1/"* "aai@aai-01:/home/aai/deployment_test/dest/test_gitexport1" & \
-    rsync -axz --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats -e ssh "/home/gaubry/deployment_test/src/test_gitexport1/"* "aai@aai-02:/home/aai/deployment_test/dest/test_gitexport1" & \
-    rsync -axz --delete --delete-excluded --cvs-exclude --exclude=.cvsignore --stats -e ssh "/home/gaubry/deployment_test/src/test_gitexport1/"* "gaubry@dv2:/home/gaubry/deployment_test/dest/test_gitexport1" & \
-    wait)
-
-t="$(tempfile)"; ls sss 2>>$t & ls dfhdfh 2>>$t & wait; [ ! -s "$t" ] && echo ">>OK" || (cat $t; rm -f $t; exit 2)
-
-rsync  --bwlimit=4000
+    /**
+     * Synchronise une source avec une ou plusieurs destinations.
+     *
+     * @param string $sSrcPath, au format [[user@sername_or_ip:]/path
+     * @param string|array $mDestPath, chaque destination au format [[user@sername_or_ip:]/path
+     * @param array $aExcludedPaths chemins à transmettre aux paramètres --exclude de la commande shell rsync
+     * @return array tableau indexé du flux de sortie shell des commandes rsync exécutées,
+     * découpé par ligne et analysé par _resumeSyncResult()
+     * @throws RuntimeException en cas d'erreur shell
+     * @throws RuntimeException car non implémenté quand plusieurs $mDestPath et $sSrcPath est distant
+     * @throws RuntimeException car non implémenté quand un seul $mDestPath mais $sSrcPath et $mDestPath
+     * pointent sur deux serveurs distants différents
      */
     public function sync ($sSrcPath, $mDestPath, array $aExcludedPaths=array())
     {
@@ -325,18 +327,12 @@ rsync  --bwlimit=4000
                               : '--exclude="' . implode('" --exclude="', $aExcludedPaths) . '" ');
         $sRsyncCmd = 'rsync -axz --delete ' . $sAdditionalExclude . '--stats -e ssh %1$s %2$s';
         if (substr($sSrcPath, -2) === '/*') {
-            /*$sRsyncCmd = '[ "$(ls -1 "' . substr($aSrcMatches[2], 0, -2) . '" | wc -l)" = 0 ] ' . "\\\n"
-                       . '&& echo "Empty source directory." ' . "\\\n"
-                       . '|| ' . $sRsyncCmd;*/
-            /*$sRsyncCmd = '[ "$(ls -1 "' . substr($aSrcMatches[2], 0, -2) . '" | wc -l)" -gt 0 ] ' . "\\\n"
-                       . '&& ' . $sRsyncCmd;*/
             $sRsyncCmd = 'if ls -1 "' . substr($aSrcMatches[2], 0, -2) . '" | grep -q .; then ' . $sRsyncCmd . '; fi';
         }
 
         if (count($aPaths) === 1 && $bIsSrcRemote && $bIsDestRemote && $aSrcMatches[1] == $aDestMatches[1]) {
             $sCmd = sprintf($sRsyncCmd, '%1$s', $this->escapePath($aDestMatches[2]));
             $aRawResult = $this->execSSH($sCmd, $sSrcPath);
-            //$this->_oLogger->log(print_r($aRawResult, true));
             $aResult = $this->_resumeSyncResult($aRawResult);
             $aAllResults = array_merge($aAllResults, $aResult);
 
@@ -362,6 +358,32 @@ rsync  --bwlimit=4000
         return $aAllResults;
     }
 
+    /**
+     * Analyse la sortie shell de commandes rsync et en propose un résumé.
+     *
+     * Exemple :
+     *  - entrée :
+     *  	Number of files: 1774
+     *  	Number of files transferred: 2
+     *  	Total file size: 64093953 bytes
+     *  	Total transferred file size: 178 bytes
+     *  	Literal data: 178 bytes
+     *  	Matched data: 0 bytes
+     *  	File list size: 39177
+     *  	File list generation time: 0.013 seconds
+     *  	File list transfer time: 0.000 seconds
+     *  	Total bytes sent: 39542
+     *  	Total bytes received: 64
+     *  	sent 39542 bytes  received 64 bytes  26404.00 bytes/sec
+     *  	total size is 64093953  speedup is 1618.29
+     *  - sortie :
+     *  	Number of transferred files ( / total): 2 / 1774
+     *  	Total transferred file size ( / total): 0 / 61 Mio
+     *
+     * @param array $aRawResult tableau indexé du flux de sortie shell de la commande rsync, découpé par ligne
+     * @return array du tableau indexé du flux de sortie shell de commandes rsync résumé
+     * et découpé par ligne
+     */
     private function _resumeSyncResult (array $aRawResult)
     {
         if (count($aRawResult) === 0) {

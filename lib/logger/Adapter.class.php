@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Classe de log rudimentaire, pour loguer le messages à partir d'un seuil d'importance.
+ * Classe de log rudimentaire, pour loguer les messages à partir d'un seuil d'importance.
  *
  * @category TwengaDeploy
  * @package Lib
