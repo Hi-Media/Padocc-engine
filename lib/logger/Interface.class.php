@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Interface de log rudimentaire, pour loguer le messages à partir d'un seuil d'importance.
+ * Interface de log rudimentaire, pour loguer les messages à partir d'un seuil d'importance.
  *
  * @category TwengaDeploy
  * @package Lib
