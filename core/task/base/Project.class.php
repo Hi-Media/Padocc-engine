@@ -3,7 +3,7 @@
 /**
  * @category TwengaDeploy
  * @package Core
- * @author Geoffroy AUBRY
+ * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
 class Task_Base_Project extends Task_WithProperties
 {
@@ -77,7 +77,7 @@ class Task_Base_Project extends Task_WithProperties
         parent::__construct($oProject, $this, $sBackupPath, $oServiceContainer);
         $this->_aAttributeProperties = array_merge(
             $this->_aAttributeProperties,
-            array('name' => Task::ATTRIBUTE_REQUIRED)
+            array('name' => AttributeProperties::REQUIRED)
         );
 
         // Crée une instance de la tâche environnement appelée :

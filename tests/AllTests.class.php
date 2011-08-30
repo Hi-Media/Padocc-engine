@@ -6,7 +6,7 @@ include_once(DEPLOYMENT_LIB_DIR . '/bootstrap.inc.php');
 /**
  * @category TwengaDeploy
  * @package Tests
- * @author Geoffroy AUBRY
+ * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
 class AllTests {
 

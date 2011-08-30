@@ -3,7 +3,7 @@
 /**
  * @category TwengaDeploy
  * @package Tests
- * @author Geoffroy AUBRY
+ * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
 class IndentedLoggerTest extends PHPUnit_Extensions_OutputTestCase {
 

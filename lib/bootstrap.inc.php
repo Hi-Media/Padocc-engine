@@ -3,7 +3,7 @@
 /**
  * @category TwengaDeploy
  * @package Lib
- * @author Geoffroy AUBRY
+ * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
 
 set_include_path(

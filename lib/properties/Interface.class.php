@@ -10,7 +10,7 @@
  *
  * @category TwengaDeploy
  * @package Lib
- * @author Geoffroy AUBRY
+ * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
 interface Properties_Interface
 {

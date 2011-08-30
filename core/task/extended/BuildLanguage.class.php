@@ -3,7 +3,7 @@
 /**
  * @category TwengaDeploy
  * @package Core
- * @author Geoffroy AUBRY
+ * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
 class Task_Extended_BuildLanguage extends Task
 {
@@ -31,8 +31,9 @@ class Task_Extended_BuildLanguage extends Task
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->_aAttributeProperties = array(
-            'project' => Task::ATTRIBUTE_REQUIRED,
-            'destdir' => Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_REQUIRED | Task::ATTRIBUTE_ALLOW_PARAMETER
+            'project' => AttributeProperties::REQUIRED,
+            'destdir' => AttributeProperties::DIR | AttributeProperties::REQUIRED
+                | AttributeProperties::ALLOW_PARAMETER
         );
     }
 

@@ -3,7 +3,7 @@
 /**
  * @category TwengaDeploy
  * @package Core
- * @author Geoffroy AUBRY
+ * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
 abstract class Task_WithProperties extends Task
 {
@@ -27,9 +27,9 @@ abstract class Task_WithProperties extends Task
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->_aAttributeProperties = array(
-            'propertyinifile' => Task::ATTRIBUTE_SRC_PATH,
-            'propertyshellfile' => Task::ATTRIBUTE_SRC_PATH,
-            'loadtwengaservers' => Task::ATTRIBUTE_BOOLEAN
+            'propertyinifile' => AttributeProperties::SRC_PATH,
+            'propertyshellfile' => AttributeProperties::SRC_PATH,
+            'loadtwengaservers' => AttributeProperties::BOOLEAN
         );
 
         // Création de la tâche de chargement des listes de serveurs Twenga sous-jacente :

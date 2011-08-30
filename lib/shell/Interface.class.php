@@ -5,7 +5,7 @@
  *
  * @category TwengaDeploy
  * @package Lib
- * @author Geoffroy AUBRY
+ * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
 interface Shell_Interface extends Shell_PathStatusInterface
 {

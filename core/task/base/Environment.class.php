@@ -3,7 +3,7 @@
 /**
  * @category TwengaDeploy
  * @package Core
- * @author Geoffroy AUBRY
+ * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
 class Task_Base_Environment extends Task_Base_Target
 {
@@ -36,10 +36,10 @@ class Task_Base_Environment extends Task_Base_Target
         $this->_aAttributeProperties = array_merge(
             $this->_aAttributeProperties,
             array(
-                'name' => Task::ATTRIBUTE_REQUIRED,
+                'name' => AttributeProperties::REQUIRED,
                 'mailto' => 0,
-                'withsymlinks' => Task::ATTRIBUTE_BOOLEAN,
-                'basedir' => Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_REQUIRED
+                'withsymlinks' => AttributeProperties::BOOLEAN,
+                'basedir' => AttributeProperties::DIR | AttributeProperties::REQUIRED
             )
         );
 

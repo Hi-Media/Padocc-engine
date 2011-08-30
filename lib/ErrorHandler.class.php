@@ -16,7 +16,7 @@
  *
  * @category TwengaDeploy
  * @package Lib
- * @author Geoffroy AUBRY
+ * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
 class ErrorHandler
 {

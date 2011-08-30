@@ -5,7 +5,7 @@
  *
  * @category TwengaDeploy
  * @package Lib
- * @author Geoffroy AUBRY
+ * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  * @see Shell_Interface::getPathStatus()
  */
 interface Shell_PathStatusInterface

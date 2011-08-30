@@ -3,7 +3,7 @@
 /**
  * @category TwengaDeploy
  * @package Core
- * @author Geoffroy AUBRY
+ * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
 class Task_Extended_CVSExport extends Task
 {
@@ -37,10 +37,11 @@ class Task_Extended_CVSExport extends Task
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->_aAttributeProperties = array(
-            'repository' => Task::ATTRIBUTE_FILE | Task::ATTRIBUTE_REQUIRED,
-            'module' => Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_REQUIRED,
-            'srcdir' => Task::ATTRIBUTE_DIR,
-            'destdir' => Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_REQUIRED | Task::ATTRIBUTE_ALLOW_PARAMETER
+            'repository' => AttributeProperties::FILE | AttributeProperties::REQUIRED,
+            'module' => AttributeProperties::DIR | AttributeProperties::REQUIRED,
+            'srcdir' => AttributeProperties::DIR,
+            'destdir' => AttributeProperties::DIR | AttributeProperties::REQUIRED
+                | AttributeProperties::ALLOW_PARAMETER
         );
 
         if (empty($this->_aAttributes['srcdir'])) {

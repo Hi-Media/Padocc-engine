@@ -3,7 +3,7 @@
 /**
  * @category TwengaDeploy
  * @package Core
- * @author Geoffroy AUBRY
+ * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
 class Task_Base_Call extends Task_WithProperties
 {
@@ -38,7 +38,7 @@ class Task_Base_Call extends Task_WithProperties
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->_aAttributeProperties = array_merge(
             $this->_aAttributeProperties,
-            array('target' => Task::ATTRIBUTE_REQUIRED)
+            array('target' => AttributeProperties::REQUIRED)
         );
 
         // Crée une instance de la tâche target appelée :

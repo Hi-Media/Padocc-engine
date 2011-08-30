@@ -3,9 +3,9 @@
 /**
  * @category TwengaDeploy
  * @package Core
- * @author Geoffroy AUBRY
+ * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
-abstract class Task implements AttributePropertiesInterface
+abstract class Task
 {
 
     /**
@@ -81,12 +81,10 @@ abstract class Task implements AttributePropertiesInterface
      * Liste des propriétés des attributs déclarés de la tâche.
      *
      * Structure : array('attribute' => iValue, ...)
-     * Où iValue vaut 0 ou une combinaison des bits suivants (au sens |):
-     *    self::ATTRIBUTE_ALLOW_PARAMETER, self::ATTRIBUTE_DIR, self::ATTRIBUTE_DIRJOKER,
-     *    self::ATTRIBUTE_FILE, self::ATTRIBUTE_FILEJOKER, self::ATTRIBUTE_REQUIRED, self::ATTRIBUTE_SRC_PATH
-     *
+     * Où iValue vaut 0 ou une combinaison de bits au sens |, à partir des constantes de la classe AttributeProperties.
      * @var array
      * @see check()
+     * @see AttributeProperties
      */
     protected $_aAttributeProperties;
 
@@ -256,7 +254,7 @@ abstract class Task implements AttributePropertiesInterface
         //$this->_oLogger->log("registerPaths");
         foreach ($this->_aAttributeProperties as $sAttribute => $iProperties) {
             if (
-                (($iProperties & self::ATTRIBUTE_DIR) > 0 || ($iProperties & self::ATTRIBUTE_FILE) > 0)
+                (($iProperties & AttributeProperties::DIR) > 0 || ($iProperties & AttributeProperties::FILE) > 0)
                 && isset($this->_aAttributes[$sAttribute])
             ) {
                 self::$_aRegisteredPaths[$this->_aAttributes[$sAttribute]] = true;
@@ -273,21 +271,22 @@ abstract class Task implements AttributePropertiesInterface
 
     /**
      * Normalise les propriétés des attributs des tâches XML.
-     * Par exemple si c'est un self::ATTRIBUTE_FILEJOKER, alors c'est forcément aussi un self::ATTRIBUTE_FILE.
+     * Par exemple si c'est un AttributeProperties::FILEJOKER, alors c'est forcément aussi
+     * un AttributeProperties::FILE.
      *
      * @see aAttributeProperties
      */
     private function _normalizeAttributeProperties ()
     {
         foreach ($this->_aAttributeProperties as $sAttribute => $iProperties) {
-            if (($iProperties & self::ATTRIBUTE_SRC_PATH) > 0) {
-                $this->_aAttributeProperties[$sAttribute] |= self::ATTRIBUTE_FILE | self::ATTRIBUTE_DIR;
+            if (($iProperties & AttributeProperties::SRC_PATH) > 0) {
+                $this->_aAttributeProperties[$sAttribute] |= AttributeProperties::FILE | AttributeProperties::DIR;
             }
-            if (($iProperties & self::ATTRIBUTE_FILEJOKER) > 0) {
-                $this->_aAttributeProperties[$sAttribute] |= self::ATTRIBUTE_FILE;
+            if (($iProperties & AttributeProperties::FILEJOKER) > 0) {
+                $this->_aAttributeProperties[$sAttribute] |= AttributeProperties::FILE;
             }
-            if (($iProperties & self::ATTRIBUTE_DIRJOKER) > 0) {
-                $this->_aAttributeProperties[$sAttribute] |= self::ATTRIBUTE_DIR;
+            if (($iProperties & AttributeProperties::DIRJOKER) > 0) {
+                $this->_aAttributeProperties[$sAttribute] |= AttributeProperties::DIR;
             }
         }
     }
@@ -326,14 +325,14 @@ abstract class Task implements AttributePropertiesInterface
         }
 
         foreach ($this->_aAttributeProperties as $sAttribute => $iProperties) {
-            if (empty($this->_aAttributes[$sAttribute]) && ($iProperties & self::ATTRIBUTE_REQUIRED) > 0) {
+            if (empty($this->_aAttributes[$sAttribute]) && ($iProperties & AttributeProperties::REQUIRED) > 0) {
                 throw new UnexpectedValueException("'$sAttribute' attribute is required!");
             } else if ( ! empty($this->_aAttributes[$sAttribute])) {
-                if (($iProperties & self::ATTRIBUTE_DIR) > 0 || ($iProperties & self::ATTRIBUTE_FILE) > 0) {
+                if (($iProperties & AttributeProperties::DIR) > 0 || ($iProperties & AttributeProperties::FILE) > 0) {
                     $this->_aAttributes[$sAttribute] = str_replace('\\', '/', $this->_aAttributes[$sAttribute]);
                 }
 
-                if (($iProperties & self::ATTRIBUTE_BOOLEAN) > 0
+                if (($iProperties & AttributeProperties::BOOLEAN) > 0
                     && ! in_array($this->_aAttributes[$sAttribute], array('true', 'false'))
                 ) {
                     $sMsg = "Value of '$sAttribute' attribute is restricted to 'true' or 'false'. Value: '"
@@ -342,21 +341,21 @@ abstract class Task implements AttributePropertiesInterface
                 }
 
                 if (preg_match('#[*?].*/#', $this->_aAttributes[$sAttribute]) !== 0
-                    && ($iProperties & self::ATTRIBUTE_DIRJOKER) == 0
+                    && ($iProperties & AttributeProperties::DIRJOKER) == 0
                 ) {
                     $sMsg = "'*' and '?' jokers are not authorized for directory in '$sAttribute' attribute!";
                     throw new DomainException($sMsg);
                 }
 
                 if (preg_match('#[*?](.*[^/])?$#', $this->_aAttributes[$sAttribute]) !== 0
-                    && ($iProperties & self::ATTRIBUTE_FILEJOKER) == 0
+                    && ($iProperties & AttributeProperties::FILEJOKER) == 0
                 ) {
                     $sMsg = "'*' and '?' jokers are not authorized for filename in '$sAttribute' attribute!";
                     throw new DomainException($sMsg);
                 }
 
                 if (preg_match('#\$\{[^}]*\}#', $this->_aAttributes[$sAttribute]) !== 0
-                    && ($iProperties & self::ATTRIBUTE_ALLOW_PARAMETER) == 0
+                    && ($iProperties & AttributeProperties::ALLOW_PARAMETER) == 0
                 ) {
                     $sMsg = "Parameters are not allowed in '$sAttribute' attribute! Value: '"
                             . $this->_aAttributes[$sAttribute] . "'";
@@ -364,13 +363,13 @@ abstract class Task implements AttributePropertiesInterface
                 }
 
                 // Suppression de l'éventuel slash terminal :
-                if (($iProperties & self::ATTRIBUTE_DIR) > 0) {
+                if (($iProperties & AttributeProperties::DIR) > 0) {
                     $this->_aAttributes[$sAttribute] = preg_replace('#/$#', '', $this->_aAttributes[$sAttribute]);
                 }
 
                 // Vérification de présence de la source si chemin sans joker :
                 if (
-                        ($iProperties & self::ATTRIBUTE_SRC_PATH) > 0
+                        ($iProperties & AttributeProperties::SRC_PATH) > 0
                         && preg_match('#\*|\?#', $this->_aAttributes[$sAttribute]) === 0
                         && $this->_oShell->getPathStatus($this->_aAttributes[$sAttribute])
                             === Shell_Interface::STATUS_NOT_EXISTS
