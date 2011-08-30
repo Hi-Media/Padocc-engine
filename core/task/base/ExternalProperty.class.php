@@ -3,7 +3,7 @@
 /**
  * @category TwengaDeploy
  * @package Core
- * @author Geoffroy AUBRY
+ * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
 class Task_Base_ExternalProperty extends Task
 {
@@ -37,8 +37,8 @@ class Task_Base_ExternalProperty extends Task
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->_aAttributeProperties = array(
-            'name' => Task::ATTRIBUTE_REQUIRED,
-            'description' => Task::ATTRIBUTE_REQUIRED
+            'name' => AttributeProperties::REQUIRED,
+            'description' => AttributeProperties::REQUIRED
         );
         $this->_iNumber = ++self::$_iCounter;
     }

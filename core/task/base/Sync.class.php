@@ -3,7 +3,7 @@
 /**
  * @category TwengaDeploy
  * @package Core
- * @author Geoffroy AUBRY
+ * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
 class Task_Base_Sync extends Task
 {
@@ -31,10 +31,11 @@ class Task_Base_Sync extends Task
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->_aAttributeProperties = array(
-            'src' => Task::ATTRIBUTE_SRC_PATH | Task::ATTRIBUTE_FILEJOKER | Task::ATTRIBUTE_REQUIRED,
-            'destdir' => Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_REQUIRED | Task::ATTRIBUTE_ALLOW_PARAMETER,
-            // TODO Task::ATTRIBUTE_DIRJOKER abusif ici, mais à cause du multivalué :
-            'exclude' => Task::ATTRIBUTE_FILEJOKER | Task::ATTRIBUTE_DIRJOKER,
+            'src' => AttributeProperties::SRC_PATH | AttributeProperties::FILEJOKER | AttributeProperties::REQUIRED,
+            'destdir' => AttributeProperties::DIR | AttributeProperties::REQUIRED
+                | AttributeProperties::ALLOW_PARAMETER,
+            // TODO AttributeProperties::DIRJOKER abusif ici, mais à cause du multivalué :
+            'exclude' => AttributeProperties::FILEJOKER | AttributeProperties::DIRJOKER,
         );
     }
 

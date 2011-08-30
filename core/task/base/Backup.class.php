@@ -3,7 +3,7 @@
 /**
  * @category TwengaDeploy
  * @package Core
- * @author Geoffroy AUBRY
+ * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
 class Task_Base_Backup extends Task
 {
@@ -31,8 +31,8 @@ class Task_Base_Backup extends Task
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->_aAttributeProperties = array(
-            'src' => Task::ATTRIBUTE_SRC_PATH | Task::ATTRIBUTE_FILEJOKER | Task::ATTRIBUTE_REQUIRED,
-            'destfile' => Task::ATTRIBUTE_FILE | Task::ATTRIBUTE_REQUIRED
+            'src' => AttributeProperties::SRC_PATH | AttributeProperties::FILEJOKER | AttributeProperties::REQUIRED,
+            'destfile' => AttributeProperties::FILE | AttributeProperties::REQUIRED
         );
     }
 

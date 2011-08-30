@@ -3,7 +3,7 @@
 /**
  * @category TwengaDeploy
  * @package Core
- * @author Geoffroy AUBRY
+ * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
 class Task_Base_MkDir extends Task
 {
@@ -31,7 +31,8 @@ class Task_Base_MkDir extends Task
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->_aAttributeProperties = array(
-            'destdir' => Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_REQUIRED | Task::ATTRIBUTE_ALLOW_PARAMETER,
+            'destdir' => AttributeProperties::DIR | AttributeProperties::REQUIRED
+                | AttributeProperties::ALLOW_PARAMETER,
             'mode' => 0
         );
     }

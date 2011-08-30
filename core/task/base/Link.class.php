@@ -3,7 +3,7 @@
 /**
  * @category TwengaDeploy
  * @package Core
- * @author Geoffroy AUBRY
+ * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
 class Task_Base_Link extends Task
 {
@@ -31,9 +31,9 @@ class Task_Base_Link extends Task
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
         $this->_aAttributeProperties = array(
-            'src' => Task::ATTRIBUTE_REQUIRED | Task::ATTRIBUTE_FILE | Task::ATTRIBUTE_DIR,
-            'target' => Task::ATTRIBUTE_FILE | Task::ATTRIBUTE_DIR | Task::ATTRIBUTE_REQUIRED,
-            'server' => Task::ATTRIBUTE_ALLOW_PARAMETER
+            'src' => AttributeProperties::REQUIRED | AttributeProperties::FILE | AttributeProperties::DIR,
+            'target' => AttributeProperties::FILE | AttributeProperties::DIR | AttributeProperties::REQUIRED,
+            'server' => AttributeProperties::ALLOW_PARAMETER
         );
     }
 
