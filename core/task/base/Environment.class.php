@@ -7,6 +7,7 @@
  */
 class Task_Base_Environment extends Task_Base_Target
 {
+    static private $iDefaultMaxNbReleases = DEPLOYMENT_SYMLINK_MAX_NB_RELEASES;
 
     /**
      * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
@@ -195,6 +196,47 @@ class Task_Base_Environment extends Task_Base_Target
         $this->_oLogger->unindent();
     }
 
+    private function removeOldestReleases () {
+        $this->_oLogger->log('Remove too old releases');
+        $this->_oLogger->indent();
+        $this->_oProperties->setProperty('with_symlinks', 'false');
+        $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
+        $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX;
+        foreach ($this->_expandPath($sPath) as $sExpandedPath) {
+            list(, $aMatches) = $this->_oShell->isRemotePath($sExpandedPath);
+            $this->_oLogger->log("Check " . $aMatches[1]);
+            $this->_oLogger->indent();
+
+            $sCmd = "ls -t %s | grep -E '^[0-9]{14}_[0-9]{5}(_origin)?$'";
+            $aAllReleases = $this->_oShell->execSSH($sCmd, $sExpandedPath);
+            $iNbReleases = count($aAllReleases);
+            if ($iNbReleases === 0) {
+                $this->_oLogger->log('No release found.');
+            } else {
+                $bIsQuotaExceeded = ($iNbReleases > self::$iDefaultMaxNbReleases);
+                $sMsg = $iNbReleases . ' release' . ($iNbReleases > 1 ? 's' : '') . ' found: quota '
+                      . ($bIsQuotaExceeded ? 'exceeded' : 'not reached')
+                      . ' (' . self::$iDefaultMaxNbReleases . ' backups max).';
+                $this->_oLogger->log($sMsg);
+                if ($bIsQuotaExceeded) {
+                    $aReleasesToDelete = array_slice($aAllReleases, self::$iDefaultMaxNbReleases);
+                    $sMsg = 'Release' . (count($aReleasesToDelete) > 1 ? 's' : '') . ' deleted: '
+                          . implode(', ', $aReleasesToDelete) . '.';
+                    $sFirst = $sExpandedPath . '/' . array_shift($aReleasesToDelete);
+                    $sCmd = 'rm -rf %s';
+                    if (count($aReleasesToDelete) > 0) {
+                        $sCmd .= ' ' . $aMatches[2] . '/' . implode(' ' . $aMatches[2] . '/', $aReleasesToDelete);
+                    }
+                    $this->_oShell->execSSH($sCmd, $sFirst);
+                    $this->_oLogger->log($sMsg);
+                }
+            }
+            $this->_oLogger->unindent();
+        }
+        $this->_oProperties->setProperty('with_symlinks', 'true');
+        $this->_oLogger->unindent();
+    }
+
     public function setUp ()
     {
         if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
@@ -216,6 +258,7 @@ class Task_Base_Environment extends Task_Base_Target
         if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
             $this->makeTransitionToSymlinks();
             $this->initNewRelease();
+            $this->removeOldestReleases();
         } else {
             $this->makeTransitionFromSymlinks();
         }
