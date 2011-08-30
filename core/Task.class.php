@@ -305,7 +305,7 @@ abstract class Task
      * @throws DomainException en cas de valeur non permise
      * @see self::$aAttributeProperties
      */
-    public function check ()
+    protected function check ()
     {
         $this->_normalizeAttributeProperties();
         $sMsg = "Check '" . $this->_sName . "' task";

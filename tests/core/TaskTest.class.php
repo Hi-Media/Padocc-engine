@@ -177,7 +177,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockTask, array());
 
-        $oMockTask->check();
+        $oMockTask->setUp();
     }
 
     /**
@@ -197,7 +197,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oProperty->setValue($oMockTask, array('foo' => 'bar'));
 
         $this->setExpectedException('DomainException');
-        $oMockTask->check();
+        $oMockTask->setUp();
     }
 
     /**
@@ -217,7 +217,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oProperty->setValue($oMockTask, array());
 
         $this->setExpectedException('UnexpectedValueException');
-        $oMockTask->check();
+        $oMockTask->setUp();
     }
 
     /**
@@ -236,7 +236,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockTask, array('srcdir' => 'foo'));
 
-        $oMockTask->check();
+        $oMockTask->setUp();
     }
 
     /**
@@ -255,7 +255,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockTask, array('srcfile' => '\path\to/foo'));
 
-        $oMockTask->check();
+        $oMockTask->setUp();
         $this->assertAttributeEquals(array('srcfile' => '/path/to/foo'), '_aAttributes', $oMockTask);
     }
 
@@ -275,7 +275,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockTask, array('srcdir' => '\path\to/foo/'));
 
-        $oMockTask->check();
+        $oMockTask->setUp();
         $this->assertAttributeEquals(array('srcdir' => '/path/to/foo'), '_aAttributes', $oMockTask);
     }
 
@@ -296,7 +296,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oProperty->setValue($oMockTask, array('srcdir' => '/foo*XXX/'));
 
         $this->setExpectedException('DomainException');
-        $oMockTask->check();
+        $oMockTask->setUp();
     }
 
     /**
@@ -315,7 +315,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockTask, array('srcdir' => '/foo*XXX/'));
 
-        $oMockTask->check();
+        $oMockTask->setUp();
     }
 
     /**
@@ -335,7 +335,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oProperty->setValue($oMockTask, array('srcfile' => '/foo/*'));
 
         $this->setExpectedException('DomainException');
-        $oMockTask->check();
+        $oMockTask->setUp();
     }
 
     /**
@@ -355,7 +355,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oProperty->setValue($oMockTask, array('b' => 'not a boolean'));
 
         $this->setExpectedException('DomainException');
-        $oMockTask->check();
+        $oMockTask->setUp();
     }
 
     /**
@@ -378,7 +378,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oProperty->setValue($oMockTask, array('b_true' => 'true'));
         $oProperty->setValue($oMockTask, array('b_false' => 'true'));
 
-        $oMockTask->check();
+        $oMockTask->setUp();
     }
 
     /**
@@ -397,7 +397,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockTask, array('srcfile' => '/foo/*'));
 
-        $oMockTask->check();
+        $oMockTask->setUp();
     }
 
     /**
@@ -417,7 +417,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oProperty->setValue($oMockTask, array('src' => '${foo}:/bar/'));
 
         $this->setExpectedException('DomainException');
-        $oMockTask->check();
+        $oMockTask->setUp();
     }
 
     /**
@@ -436,7 +436,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockTask, array('src' => '${foo}:/bar/'));
 
-        $oMockTask->check();
+        $oMockTask->setUp();
     }
 
     /**
@@ -461,7 +461,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oProperty->setValue($oMockTask, array('src' => 'foo'));
 
         $this->setExpectedException('RuntimeException');
-        $oMockTask->check();
+        $oMockTask->setUp();
     }
 
     /**
@@ -653,6 +653,10 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
         $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
         $oClass = new ReflectionClass($oMockTask);
+
+        $oProperty = $oClass->getProperty('_aRegisteredPaths');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array());
 
         $oProperty = $oClass->getProperty('_aAttributeProperties');
         $oProperty->setAccessible(true);
