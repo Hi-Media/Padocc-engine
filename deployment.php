@@ -58,6 +58,13 @@ chmod 777 deployment/resources -R
 // TODO ne garder que les N dernières releases qd symlinks
 // TODO Shell:remove() ne supprime du cache que $sPath et non les sous-répertoires...
 
+/* Combine :
+ * 		http://java-applets.org/jsmin-vs-yui-compressor.html
+ * 		http://www.electrictoolbox.com/minify-javascript-css-yui-compressor/
+ * 		http://www.bloggingdeveloper.com/post/Closure-Compiler-vs-YUI-Compressor-Comparing-the-Javascript-Compression-Tools.aspx
+ * 		http://scoop.simplyexcited.co.uk/2009/11/24/yui-compressor-vs-google-closure-compiler-for-javascript-compression/
+*/
+
 /*
  * Features :
  *  - load sh config files : master_synchro.cfg
