@@ -7,7 +7,7 @@
  */
 class Task_Base_Environment extends Task_Base_Target
 {
-    static private $iDefaultMaxNbReleases = DEPLOYMENT_SYMLINK_MAX_NB_RELEASES;
+    static private $_iDefaultMaxNbReleases = DEPLOYMENT_SYMLINK_MAX_NB_RELEASES;
 
     /**
      * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
@@ -213,13 +213,13 @@ class Task_Base_Environment extends Task_Base_Target
             if ($iNbReleases === 0) {
                 $this->_oLogger->log('No release found.');
             } else {
-                $bIsQuotaExceeded = ($iNbReleases > self::$iDefaultMaxNbReleases);
+                $bIsQuotaExceeded = ($iNbReleases > self::$_iDefaultMaxNbReleases);
                 $sMsg = $iNbReleases . ' release' . ($iNbReleases > 1 ? 's' : '') . ' found: quota '
                       . ($bIsQuotaExceeded ? 'exceeded' : 'not reached')
-                      . ' (' . self::$iDefaultMaxNbReleases . ' backups max).';
+                      . ' (' . self::$_iDefaultMaxNbReleases . ' backups max).';
                 $this->_oLogger->log($sMsg);
                 if ($bIsQuotaExceeded) {
-                    $aReleasesToDelete = array_slice($aAllReleases, self::$iDefaultMaxNbReleases);
+                    $aReleasesToDelete = array_slice($aAllReleases, self::$_iDefaultMaxNbReleases);
                     $sMsg = 'Release' . (count($aReleasesToDelete) > 1 ? 's' : '') . ' deleted: '
                           . implode(', ', $aReleasesToDelete) . '.';
                     $sFirst = $sExpandedPath . '/' . array_shift($aReleasesToDelete);
