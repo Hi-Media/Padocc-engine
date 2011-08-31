@@ -196,7 +196,8 @@ class Task_Base_Environment extends Task_Base_Target
         $this->_oLogger->unindent();
     }
 
-    private function removeOldestReleases () {
+    private function removeOldestReleases ()
+    {
         $this->_oLogger->log('Remove too old releases');
         $this->_oLogger->indent();
         $this->_oProperties->setProperty('with_symlinks', 'false');
