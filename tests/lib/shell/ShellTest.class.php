@@ -20,6 +20,8 @@ class ShellTest extends PHPUnit_Framework_TestCase {
         $this->oShell = NULL;
     }
 
+//----------------------------------------------------------------------------
+
     /**
      * @covers Shell_Adapter::isRemotePath
      */
@@ -56,7 +58,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
         $this->oShell->isRemotePath('${sdg}');
     }
 
-
+//----------------------------------------------------------------------------
 
     /**
      * @covers Shell_Adapter::escapePath
@@ -93,7 +95,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals('?"/a/b/img"*', $this->oShell->escapePath('?/a/b/img*'));
     }
 
-
+//----------------------------------------------------------------------------
 
     /**
      * @covers Shell_Adapter::exec
@@ -127,7 +129,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(array('abc', 'def'), $aResult);
     }
 
-
+//----------------------------------------------------------------------------
 
     /**
      * @covers Shell_Adapter::execSSH
@@ -188,7 +190,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($aExpectedResult, $aResult);
     }
 
-
+//----------------------------------------------------------------------------
 
     /**
      * @covers Shell_Adapter::mkdir
@@ -255,7 +257,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
         $aResult = $oMockShell->mkdir('gaubry@dv2:/path/to/my file', '777');
     }
 
-
+//----------------------------------------------------------------------------
 
     /**
      * @covers Shell_Adapter::remove
@@ -282,8 +284,19 @@ class ShellTest extends PHPUnit_Framework_TestCase {
      */
     public function testRemoveWithLocalPath () {
         $aExpectedResult = array('blabla');
-
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+
+        $oClass = new ReflectionClass('Shell_Adapter');
+        $oProperty = $oClass->getProperty('_aFileStatus');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockShell, array(
+            '/path/to/my file/subdir1' => 1,
+            '/path/to/a' => 2,
+            '/path/to/my file/sub/subdir2' => 1,
+            '/path/to/b' => 1,
+            '/path/to/my file' => 1,
+        ));
+
         $oMockShell->expects($this->at(0))->method('exec')
             ->with($this->equalTo('rm -rf "/path/to/my file"'))
             ->will($this->returnValue($aExpectedResult));
@@ -291,6 +304,11 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 
         $aResult = $oMockShell->remove('/path/to/my file');
         $this->assertEquals($aExpectedResult, $aResult);
+
+        $this->assertAttributeEquals(array(
+            '/path/to/a' => 2,
+            '/path/to/b' => 1,
+        ), '_aFileStatus', $oMockShell);
     }
 
     /**
@@ -298,8 +316,19 @@ class ShellTest extends PHPUnit_Framework_TestCase {
      */
     public function testRemoveWithRemotePath () {
         $aExpectedResult = array('blabla');
-
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+
+        $oClass = new ReflectionClass('Shell_Adapter');
+        $oProperty = $oClass->getProperty('_aFileStatus');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockShell, array(
+            '/path/to/my file/subdir1' => 1,
+            '/path/to/a' => 2,
+            'gaubry@dv2:/path/to/my file/sub/subdir2' => 1,
+            '/path/to/b' => 1,
+            'gaubry@dv2:/path/to/my file' => 1,
+        ));
+
         $oMockShell->expects($this->at(0))->method('exec')
             ->with($this->equalTo('ssh -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'rm -rf "/path/to/my file"' . "\n" . 'EOF' . "\n"))
             ->will($this->returnValue($aExpectedResult));
@@ -307,9 +336,15 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 
         $aResult = $oMockShell->remove('gaubry@dv2:/path/to/my file');
         $this->assertEquals($aExpectedResult, $aResult);
+
+        $this->assertAttributeEquals(array(
+            '/path/to/my file/subdir1' => 1,
+            '/path/to/a' => 2,
+            '/path/to/b' => 1,
+        ), '_aFileStatus', $oMockShell);
     }
 
-
+//----------------------------------------------------------------------------
 
     /**
      * @covers Shell_Adapter::copy
@@ -407,7 +442,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($aExpectedResult, $aResult);
     }
 
-
+//----------------------------------------------------------------------------
 
     /**
      * @covers Shell_Adapter::getPathStatus
@@ -479,6 +514,8 @@ class ShellTest extends PHPUnit_Framework_TestCase {
 
         $this->assertAttributeEquals(array(), '_aFileStatus', $oMockShell);
     }
+
+//----------------------------------------------------------------------------
 
     /**
      * @covers Shell_Adapter::sync
@@ -639,7 +676,7 @@ total size is 64093953  speedup is 1618.29');
         $this->oShell->sync('user@server1:/srcpath/to/my dir', array('/destpath/to/my dir1', '/destpath/to/my dir2'));
     }
 
-
+//----------------------------------------------------------------------------
 
     /**
      * @covers Shell_Adapter::createLink
