@@ -61,6 +61,12 @@ final class AttributeProperties
     const BOOLEAN = 128;
 
     /**
+     * Propriété d'attribut : l'attribut est une URL.
+     * @var int
+     */
+    const URL = 256;
+
+    /**
      * Classe de constantes non instanciable.
      */
     private function __construct()
