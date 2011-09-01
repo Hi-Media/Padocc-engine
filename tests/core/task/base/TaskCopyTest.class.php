@@ -23,6 +23,7 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase {
 
     public function shellExecCallback ($sCmd) {
         $this->aShellExecCmds[] = $sCmd;
+        return array();
     }
 
     public function setUp () {
@@ -194,8 +195,6 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase {
         $oTaskCopy->setUp();
         $oTaskCopy->execute();
         $this->assertEquals(array(
-            //'mkdir -p "/path/to/destdir/srcdir"',
-            //'cp -a "/path/to/srcdir/"* "/path/to/destdir/srcdir"'
             'ssh -T user@server /bin/bash <<EOF' . "\n"
                 . 'mkdir -p "/path/to/destdir_releases/12345/srcdir"' . "\n"
                 . 'EOF' . "\n",
