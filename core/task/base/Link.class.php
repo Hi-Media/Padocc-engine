@@ -81,9 +81,9 @@ class Task_Base_Link extends Task
             $sPath = $this->_aAttributes['server'] . ':' . $sPath;
         }
         $aValidSources = array(
-            Shell_Interface::STATUS_NOT_EXISTS,
-            Shell_Interface::STATUS_SYMLINKED_FILE,
-            Shell_Interface::STATUS_SYMLINKED_DIR
+            Shell_PathStatus::STATUS_NOT_EXISTS,
+            Shell_PathStatus::STATUS_SYMLINKED_FILE,
+            Shell_PathStatus::STATUS_SYMLINKED_DIR
         );
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
             if ( ! in_array($this->_oShell->getPathStatus($sExpandedPath), $aValidSources)) {

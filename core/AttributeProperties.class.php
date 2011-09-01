@@ -67,7 +67,7 @@ final class AttributeProperties
     const URL = 256;
 
     /**
-     * Classe de constantes non instanciable.
+     * Classe de constantes, non instanciable.
      */
     private function __construct()
     {

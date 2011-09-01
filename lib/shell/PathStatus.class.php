@@ -8,7 +8,7 @@
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  * @see Shell_Interface::getPathStatus()
  */
-interface Shell_PathStatusInterface
+final class Shell_PathStatus
 {
     /**
      * Le chemin n'existe pas.
@@ -39,4 +39,11 @@ interface Shell_PathStatusInterface
      * @var int
      */
     const STATUS_SYMLINKED_DIR = 12;
+
+    /**
+     * Classe de constantes, non instanciable.
+     */
+    private function __construct()
+    {
+    }
 }

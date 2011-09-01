@@ -14,7 +14,7 @@ class Shell_Adapter implements Shell_Interface
      * Table de hashage de mise en cache des demande de statuts de chemins système.
      * @var array
      * @see getPathStatus()
-     * @see Shell_PathStatusInterface
+     * @see Shell_PathStatus
      */
     private $_aFileStatus;
 
@@ -87,7 +87,7 @@ class Shell_Adapter implements Shell_Interface
     }
 
     /**
-     * Retourne l'une des constantes de Shell_PathStatusInterface, indiquant pour le chemin spécifié s'il est
+     * Retourne l'une des constantes de Shell_PathStatus, indiquant pour le chemin spécifié s'il est
      * inexistant, un fichier, un répertoire, un lien symbolique sur fichier ou encore un lien symbolique sur
      * répertoire.
      *
@@ -97,9 +97,9 @@ class Shell_Adapter implements Shell_Interface
      * Le chemin spécifié peut concerner un hôte distant (user@server:/path), auquel cas un appel SSH sera effectué.
      *
      * @param string $sPath chemin à tester, de la forme [user@server:]/path
-     * @return int l'une des constantes de Shell_PathStatusInterface
+     * @return int l'une des constantes de Shell_PathStatus
      * @throws RuntimeException en cas d'erreur shell
-     * @see Shell_PathStatusInterface
+     * @see Shell_PathStatus
      * @see _aFileStatus
      */
     public function getPathStatus ($sPath)
