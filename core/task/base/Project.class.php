@@ -75,8 +75,8 @@ class Task_Base_Project extends Task_WithProperties
         $this->sEnvName = $sEnvName;
 
         parent::__construct($oProject, $this, $sBackupPath, $oServiceContainer);
-        $this->_aAttributeProperties = array_merge(
-            $this->_aAttributeProperties,
+        $this->_aAttrProperties = array_merge(
+            $this->_aAttrProperties,
             array('name' => AttributeProperties::REQUIRED)
         );
 

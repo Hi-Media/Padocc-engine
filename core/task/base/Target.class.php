@@ -55,8 +55,8 @@ class Task_Base_Target extends Task_WithProperties
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-        $this->_aAttributeProperties = array_merge(
-            $this->_aAttributeProperties,
+        $this->_aAttrProperties = array_merge(
+            $this->_aAttrProperties,
             array('name' => AttributeProperties::REQUIRED)
         );
 

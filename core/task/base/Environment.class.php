@@ -33,8 +33,8 @@ class Task_Base_Environment extends Task_Base_Target
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-        $this->_aAttributeProperties = array_merge(
-            $this->_aAttributeProperties,
+        $this->_aAttrProperties = array_merge(
+            $this->_aAttrProperties,
             array(
                 'name' => AttributeProperties::REQUIRED,
                 'mailto' => 0,

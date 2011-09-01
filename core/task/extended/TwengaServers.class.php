@@ -38,7 +38,7 @@ class Task_Extended_TwengaServers extends Task
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-        $this->_aAttributeProperties = array();
+        $this->_aAttrProperties = array();
         $this->_sTmpDir = '/tmp/' . $this->_oProperties->getProperty('execution_id') . '_' . self::getTagName();
 
         // Création de la tâche de synchronisation sous-jacente :

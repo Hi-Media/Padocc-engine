@@ -36,7 +36,7 @@ class Task_Extended_CVSExport extends Task
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-        $this->_aAttributeProperties = array(
+        $this->_aAttrProperties = array(
             'repository' => AttributeProperties::FILE | AttributeProperties::REQUIRED,
             'module' => AttributeProperties::DIR | AttributeProperties::REQUIRED,
             'srcdir' => AttributeProperties::DIR,
