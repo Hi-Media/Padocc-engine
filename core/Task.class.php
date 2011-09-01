@@ -379,7 +379,7 @@ abstract class Task
                         ($iProperties & AttributeProperties::SRC_PATH) > 0
                         && preg_match('#\*|\?#', $this->_aAttributes[$sAttribute]) === 0
                         && $this->_oShell->getPathStatus($this->_aAttributes[$sAttribute])
-                            === Shell_Interface::STATUS_NOT_EXISTS
+                            === Shell_PathStatus::STATUS_NOT_EXISTS
                 ) {
                     $sMsg = "File or directory '" . $this->_aAttributes[$sAttribute] . "' not found!";
                     throw new UnexpectedValueException($sMsg);

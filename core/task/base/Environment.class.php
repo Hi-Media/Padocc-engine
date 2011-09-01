@@ -129,7 +129,7 @@ class Task_Base_Environment extends Task_Base_Target
         $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
         $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
-            if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_Interface::STATUS_DIR) {
+            if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_PathStatus::STATUS_DIR) {
                 list(, $aMatches) = $this->_oShell->isRemotePath($sExpandedPath);
                 $sDir = $sExpandedPath . '/*';
                 $sOriginRelease = $aMatches[1] . ':' . $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
@@ -152,7 +152,7 @@ class Task_Base_Environment extends Task_Base_Target
         $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
         $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
-            if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_Interface::STATUS_SYMLINKED_DIR) {
+            if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_PathStatus::STATUS_SYMLINKED_DIR) {
                 list(, $aMatches) = $this->_oShell->isRemotePath($sExpandedPath);
                 $sDir = $sExpandedPath . '/*';
                 $sTmpDest = $sExpandedPath . '_tmp';
@@ -180,7 +180,7 @@ class Task_Base_Environment extends Task_Base_Target
             list(, $aMatches) = $this->_oShell->isRemotePath($sExpandedPath);
             $sDir = $sExpandedPath . '/*';
             $sDest = $aMatches[1] . ':' . $sReleaseSymLink;
-            if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_Interface::STATUS_SYMLINKED_DIR) {
+            if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_PathStatus::STATUS_SYMLINKED_DIR) {
                 $this->_oLogger->log("Initialize '$sDest' with previous deployment.");
                 $this->_oLogger->indent();
                 $aResults = $this->_oShell->sync($sDir, $sDest, array('smarty/*/wrt*', 'smarty/**/wrt*'));

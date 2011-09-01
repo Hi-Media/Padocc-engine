@@ -95,7 +95,7 @@ class Task_Extended_CVSExport extends Task
 
     public function backup ()
     {
-        /*if ($this->_oShell->getPathStatus($this->_aAttributes['destdir']) !== Shell_Interface::STATUS_NOT_EXISTS) {
+        /*if ($this->_oShell->getPathStatus($this->_aAttributes['destdir']) !== Shell_PathStatus::STATUS_NOT_EXISTS) {
             list($bIsRemote, $aMatches) = $this->_oShell->isRemotePath($this->_aAttributes['destdir']);
             $sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '') . $this->_sBackupPath . '/'
                 . pathinfo($aMatches[2], PATHINFO_BASENAME) . '.tar.gz';

@@ -7,7 +7,7 @@
  * @package Lib
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
-interface Shell_Interface extends Shell_PathStatusInterface
+interface Shell_Interface
 {
 
     /**
@@ -34,7 +34,7 @@ interface Shell_Interface extends Shell_PathStatusInterface
     public function execSSH ($sPatternCmd, $sParam);
 
     /**
-     * Retourne l'une des constantes de Shell_PathStatusInterface, indiquant pour le chemin spécifié s'il est
+     * Retourne l'une des constantes de Shell_PathStatus, indiquant pour le chemin spécifié s'il est
      * inexistant, un fichier, un répertoire, un lien symbolique sur fichier ou encore un lien symbolique sur
      * répertoire.
      *
@@ -44,9 +44,9 @@ interface Shell_Interface extends Shell_PathStatusInterface
      * Le chemin spécifié peut concerner un hôte distant (user@server:/path), auquel cas un appel SSH sera effectué.
      *
      * @param string $sPath chemin à tester, de la forme [user@server:]/path
-     * @return int l'une des constantes de Shell_PathStatusInterface
+     * @return int l'une des constantes de Shell_PathStatus
      * @throws RuntimeException en cas d'erreur shell
-     * @see Shell_PathStatusInterface
+     * @see Shell_PathStatus
      * @see _aFileStatus
      */
     public function getPathStatus ($sPath);

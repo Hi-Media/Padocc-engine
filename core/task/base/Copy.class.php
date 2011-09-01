@@ -54,7 +54,7 @@ class Task_Base_Copy extends Task
         parent::check();
         if (
                 preg_match('#\*|\?#', $this->_aAttributes['src']) === 0
-                && $this->_oShell->getPathStatus($this->_aAttributes['src']) === Shell_Interface::STATUS_DIR
+                && $this->_oShell->getPathStatus($this->_aAttributes['src']) === Shell_PathStatus::STATUS_DIR
         ) {
                 $this->_aAttributes['destdir'] .= '/' . substr(strrchr($this->_aAttributes['src'], '/'), 1);
                 $this->_aAttributes['src'] .= '/*';
@@ -76,7 +76,7 @@ class Task_Base_Copy extends Task
 
     public function backup ()
     {
-        if ($this->_oShell->getPathStatus($this->_aAttributes['destdir']) !== Shell_Interface::STATUS_NOT_EXISTS) {
+        if ($this->_oShell->getPathStatus($this->_aAttributes['destdir']) !== Shell_PathStatus::STATUS_NOT_EXISTS) {
             list($bIsRemote, $aMatches) = $this->_oShell->isRemotePath($this->_aAttributes['destdir']);
             $sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '') . $this->_sBackupPath . '/'
                 . pathinfo($aMatches[2], PATHINFO_BASENAME) . '.tar.gz';
