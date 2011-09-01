@@ -534,7 +534,7 @@ class ShellTest extends PHPUnit_Framework_TestCase {
      */
     public function testSyncLocalFileToLocalDir () {
         $aExpectedResult = array('Number of transferred files ( / total): 2 / 1774
-Total transferred file size ( / total): 0 / 61 Mio
+Total transferred file size ( / total): <1 / 61 Mio
 ');
         $aRawRsyncResult = explode("\n", 'Number of files: 1774
 Number of files transferred: 2
@@ -571,11 +571,89 @@ total size is 64093953  speedup is 1618.29');
      * @covers Shell_Adapter::sync
      * @covers Shell_Adapter::_resumeSyncResult
      */
+    public function testSyncLocalFileToLocalDirInKioUnit () {
+        $aExpectedResult = array('Number of transferred files ( / total): 2 / 1774
+Total transferred file size ( / total): <1 / 63 Kio
+');
+        $aRawRsyncResult = explode("\n", 'Number of files: 1774
+Number of files transferred: 2
+Total file size: 64093 bytes
+Total transferred file size: 178 bytes
+Literal data: 178 bytes
+Matched data: 0 bytes
+File list size: 39177
+File list generation time: 0.013 seconds
+File list transfer time: 0.000 seconds
+Total bytes sent: 39542
+Total bytes received: 64
+
+sent 39542 bytes  received 64 bytes  26404.00 bytes/sec
+total size is 64093953  speedup is 1618.29');
+
+        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+        $oMockShell->expects($this->at(0))->method('exec')
+            ->with($this->equalTo('mkdir -p "/destpath/to/my dir"'))
+            ->will($this->returnValue(array()));
+        $oMockShell->expects($this->at(1))->method('exec')
+            ->with($this->equalTo('rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/srcpath/to/my file" "/destpath/to/my dir"'))
+            ->will($this->returnValue($aRawRsyncResult));
+        $oMockShell->expects($this->exactly(2))->method('exec');
+
+        $aResult = $oMockShell->sync('/srcpath/to/my file', '/destpath/to/my dir');
+        $this->assertEquals(
+            array_map(function($s){return preg_replace('/\s/', '', $s);}, $aExpectedResult),
+            array_map(function($s){return preg_replace('/\s/', '', $s);}, $aResult)
+        );
+    }
+
+    /**
+     * @covers Shell_Adapter::sync
+     * @covers Shell_Adapter::_resumeSyncResult
+     */
+    public function testSyncLocalFileToLocalDirInOctetUnit () {
+        $aExpectedResult = array('Number of transferred files ( / total): 2 / 1774
+Total transferred file size ( / total): 178 / 640 o
+');
+        $aRawRsyncResult = explode("\n", 'Number of files: 1774
+Number of files transferred: 2
+Total file size: 640 bytes
+Total transferred file size: 178 bytes
+Literal data: 178 bytes
+Matched data: 0 bytes
+File list size: 39177
+File list generation time: 0.013 seconds
+File list transfer time: 0.000 seconds
+Total bytes sent: 39542
+Total bytes received: 64
+
+sent 39542 bytes  received 64 bytes  26404.00 bytes/sec
+total size is 64093953  speedup is 1618.29');
+
+        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+        $oMockShell->expects($this->at(0))->method('exec')
+            ->with($this->equalTo('mkdir -p "/destpath/to/my dir"'))
+            ->will($this->returnValue(array()));
+        $oMockShell->expects($this->at(1))->method('exec')
+            ->with($this->equalTo('rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/srcpath/to/my file" "/destpath/to/my dir"'))
+            ->will($this->returnValue($aRawRsyncResult));
+        $oMockShell->expects($this->exactly(2))->method('exec');
+
+        $aResult = $oMockShell->sync('/srcpath/to/my file', '/destpath/to/my dir');
+        $this->assertEquals(
+            array_map(function($s){return preg_replace('/\s/', '', $s);}, $aExpectedResult),
+            array_map(function($s){return preg_replace('/\s/', '', $s);}, $aResult)
+        );
+    }
+
+    /**
+     * @covers Shell_Adapter::sync
+     * @covers Shell_Adapter::_resumeSyncResult
+     */
     public function testSyncLocalFileTo2LocalDir () {
         $aExpectedResult = array('Number of transferred files ( / total): 2 / 1774
-Total transferred file size ( / total): 0 / 61 Mio
+Total transferred file size ( / total): <1 / 61 Mio
 ', 'Number of transferred files ( / total): 12 / 2774
-Total transferred file size ( / total): 0 / 61 Mio
+Total transferred file size ( / total): <1 / 61 Mio
 ');
         $aRawRsyncResult = explode("\n", 'Number of files: 1774
 Number of files transferred: 2
@@ -653,7 +731,7 @@ total size is 64093953  speedup is 1618.29');
      */
     public function testSyncLocalFilesToLocalDir () {
         $aExpectedResult = array('Number of transferred files ( / total): 2 / 1774
-Total transferred file size ( / total): 0 / 61 Mio
+Total transferred file size ( / total): <1 / 61 Mio
 ');
         $aRawRsyncResult = explode("\n", 'Number of files: 1774
 Number of files transferred: 2
@@ -692,7 +770,7 @@ total size is 64093953  speedup is 1618.29');
      */
     public function testSyncLocalFileToLocalDirWithAdditionalExclude () {
         $aExpectedResult = array('Number of transferred files ( / total): 2 / 1774
-Total transferred file size ( / total): 0 / 61 Mio
+Total transferred file size ( / total): <1 / 61 Mio
 ');
         $aRawRsyncResult = explode("\n", 'Number of files: 1774
 Number of files transferred: 2
@@ -731,7 +809,7 @@ total size is 64093953  speedup is 1618.29');
      */
     public function testSyncLocalFileToRemotesDir () {
         $aExpectedResult = array('Number of transferred files ( / total): 2 / 1774
-Total transferred file size ( / total): 0 / 61 Mio
+Total transferred file size ( / total): <1 / 61 Mio
 ');
         $aRawRsyncResult = explode("\n", 'Number of files: 1774
 Number of files transferred: 2
