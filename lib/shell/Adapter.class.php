@@ -227,7 +227,7 @@ class Shell_Adapter implements Shell_Interface
         }
 
         // Supprimer du cache de getPathStatus() :
-        foreach ($this->_aFileStatus as $sCachedPath => $iFoo) {
+        foreach (array_keys($this->_aFileStatus) as $sCachedPath) {
             if (substr($sCachedPath, 0, strlen($sPath)+1) === $sPath . '/') {
                 unset($this->_aFileStatus[$sCachedPath]);
             }

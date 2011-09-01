@@ -73,6 +73,7 @@
         <cvsexport repository=":extssh:@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
             destdir="aai@aai-01:/home/aai/deployment_test/dest_test_symlink/test_cvsexport1" />
         <link server="aai@aai-01" src="/home/aai/deployment_test/dest_test_symlink/test_link/link" target="/home/aai/deployment_test/dest_test_symlink/test_gitexport1" />
+        <http url="http://aai.twenga.com/push.php?server=${SERVER_AAI}&amp;app=deploy" />
     </env>
 
     <env

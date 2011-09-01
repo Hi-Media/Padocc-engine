@@ -340,22 +340,29 @@ abstract class Task
                     throw new DomainException($sMsg);
                 }
 
+                if (($iProperties & AttributeProperties::URL) > 0
+                    && preg_match('#^http://#i', $this->_aAttributes[$sAttribute]) === 0
+                ) {
+                    throw new DomainException("Bad URL: '" . $this->_aAttributes[$sAttribute] . "'");
+                }
+
                 if (preg_match('#[*?].*/#', $this->_aAttributes[$sAttribute]) !== 0
-                    && ($iProperties & AttributeProperties::DIRJOKER) == 0
+                    && ($iProperties & AttributeProperties::DIRJOKER) === 0
                 ) {
                     $sMsg = "'*' and '?' jokers are not authorized for directory in '$sAttribute' attribute!";
                     throw new DomainException($sMsg);
                 }
 
                 if (preg_match('#[*?](.*[^/])?$#', $this->_aAttributes[$sAttribute]) !== 0
-                    && ($iProperties & AttributeProperties::FILEJOKER) == 0
+                    && ($iProperties & AttributeProperties::FILEJOKER) === 0
+                    && ($iProperties & AttributeProperties::URL) === 0
                 ) {
                     $sMsg = "'*' and '?' jokers are not authorized for filename in '$sAttribute' attribute!";
                     throw new DomainException($sMsg);
                 }
 
                 if (preg_match('#\$\{[^}]*\}#', $this->_aAttributes[$sAttribute]) !== 0
-                    && ($iProperties & AttributeProperties::ALLOW_PARAMETER) == 0
+                    && ($iProperties & AttributeProperties::ALLOW_PARAMETER) === 0
                 ) {
                     $sMsg = "Parameters are not allowed in '$sAttribute' attribute! Value: '"
                             . $this->_aAttributes[$sAttribute] . "'";
