@@ -208,7 +208,7 @@ class Task_Base_Environment extends Task_Base_Target
             $this->_oLogger->log("Check " . $aMatches[1]);
             $this->_oLogger->indent();
 
-            $sCmd = "ls -t %s | grep -E '^[0-9]{14}_[0-9]{5}(_origin)?$'";
+            $sCmd = "if [ -d %1\$s ]; then ls -t %1\$s | grep -E '^[0-9]{14}_[0-9]{5}(_origin)?$'; fi";
             $aAllReleases = $this->_oShell->execSSH($sCmd, $sExpandedPath);
             $iNbReleases = count($aAllReleases);
             if ($iNbReleases === 0) {
