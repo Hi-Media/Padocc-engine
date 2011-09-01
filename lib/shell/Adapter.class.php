@@ -424,11 +424,26 @@ class Shell_Adapter implements Shell_Interface
 
             $aResult = array();
             foreach ($aAllStats as $aStats) {
+                if ($aStats['total file size'] < 1024) {
+                    $iUnit = 1;
+                    $sUnit = 'o';
+                } else if ($aStats['total file size'] < 1024*1024) {
+                    $iUnit = 1024;
+                    $sUnit = 'Kio';
+                } else {
+                    $iUnit = 1024*1024;
+                    $sUnit = 'Mio';
+                }
+
+                $sTransferred = round($aStats['total transferred file size']/$iUnit);
+                if ($sTransferred == 0 && $aStats['number of files transferred'] > 0) {
+                    $sTransferred = '<1';
+                }
+
                 $aResult[] = 'Number of transferred files ( / total): ' . $aStats['number of files transferred']
                            . ' / ' . $aStats['number of files'] . "\n"
                            . 'Total transferred file size ( / total): '
-                           . round($aStats['total transferred file size']/1024/1024)
-                           . ' / ' . round($aStats['total file size']/1024/1024) . " Mio\n";
+                           . $sTransferred . ' / ' . round($aStats['total file size']/$iUnit) . " $sUnit\n";
             }
         }
         return $aResult;
