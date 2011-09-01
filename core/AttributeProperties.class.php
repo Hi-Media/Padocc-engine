@@ -7,7 +7,7 @@
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
- * @see Task::$_aAttributeProperties()
+ * @see Task::$_aAttrProperties()
  */
 final class AttributeProperties
 {

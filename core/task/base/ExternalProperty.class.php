@@ -36,7 +36,7 @@ class Task_Base_ExternalProperty extends Task
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-        $this->_aAttributeProperties = array(
+        $this->_aAttrProperties = array(
             'name' => AttributeProperties::REQUIRED,
             'description' => AttributeProperties::REQUIRED
         );

@@ -30,7 +30,7 @@ class Task_Base_Link extends Task
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-        $this->_aAttributeProperties = array(
+        $this->_aAttrProperties = array(
             'src' => AttributeProperties::REQUIRED | AttributeProperties::FILE | AttributeProperties::DIR,
             'target' => AttributeProperties::FILE | AttributeProperties::DIR | AttributeProperties::REQUIRED,
             'server' => AttributeProperties::ALLOW_PARAMETER

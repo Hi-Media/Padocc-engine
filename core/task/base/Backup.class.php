@@ -30,7 +30,7 @@ class Task_Base_Backup extends Task
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-        $this->_aAttributeProperties = array(
+        $this->_aAttrProperties = array(
             'src' => AttributeProperties::SRC_PATH | AttributeProperties::FILEJOKER | AttributeProperties::REQUIRED,
             'destfile' => AttributeProperties::FILE | AttributeProperties::REQUIRED
         );

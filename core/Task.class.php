@@ -86,7 +86,7 @@ abstract class Task
      * @see check()
      * @see AttributeProperties
      */
-    protected $_aAttributeProperties;
+    protected $_aAttrProperties;
 
     /**
      * Chemin du répertoire backup dédié à la tâche.
@@ -158,7 +158,7 @@ abstract class Task
         $this->_sName = (strlen($this->_sCounter) === 0 ? '' : $this->_sCounter . '_') . get_class($this);
         $this->_sBackupPath = $sBackupPath . '/' . $this->_sName;
 
-        $this->_aAttributeProperties = array();
+        $this->_aAttrProperties = array();
         $this->_fetchAttributes();
     }
 
@@ -252,7 +252,7 @@ abstract class Task
     protected function _registerPaths ()
     {
         //$this->_oLogger->log("registerPaths");
-        foreach ($this->_aAttributeProperties as $sAttribute => $iProperties) {
+        foreach ($this->_aAttrProperties as $sAttribute => $iProperties) {
             if (
                 (($iProperties & AttributeProperties::DIR) > 0 || ($iProperties & AttributeProperties::FILE) > 0)
                 && isset($this->_aAttributes[$sAttribute])
@@ -278,15 +278,15 @@ abstract class Task
      */
     private function _normalizeAttributeProperties ()
     {
-        foreach ($this->_aAttributeProperties as $sAttribute => $iProperties) {
+        foreach ($this->_aAttrProperties as $sAttribute => $iProperties) {
             if (($iProperties & AttributeProperties::SRC_PATH) > 0) {
-                $this->_aAttributeProperties[$sAttribute] |= AttributeProperties::FILE | AttributeProperties::DIR;
+                $this->_aAttrProperties[$sAttribute] |= AttributeProperties::FILE | AttributeProperties::DIR;
             }
             if (($iProperties & AttributeProperties::FILEJOKER) > 0) {
-                $this->_aAttributeProperties[$sAttribute] |= AttributeProperties::FILE;
+                $this->_aAttrProperties[$sAttribute] |= AttributeProperties::FILE;
             }
             if (($iProperties & AttributeProperties::DIRJOKER) > 0) {
-                $this->_aAttributeProperties[$sAttribute] |= AttributeProperties::DIR;
+                $this->_aAttrProperties[$sAttribute] |= AttributeProperties::DIR;
             }
         }
     }
@@ -315,7 +315,7 @@ abstract class Task
         $this->_oLogger->log($sMsg);
         $this->_oLogger->indent();
 
-        $aAvailablesAttr = array_keys($this->_aAttributeProperties);
+        $aAvailablesAttr = array_keys($this->_aAttrProperties);
         $aUnknownAttributes = array_diff(array_keys($this->_aAttributes), $aAvailablesAttr);
         if (count($aUnknownAttributes) > 0) {
             throw new DomainException(
@@ -324,7 +324,7 @@ abstract class Task
             );
         }
 
-        foreach ($this->_aAttributeProperties as $sAttribute => $iProperties) {
+        foreach ($this->_aAttrProperties as $sAttribute => $iProperties) {
             if (empty($this->_aAttributes[$sAttribute]) && ($iProperties & AttributeProperties::REQUIRED) > 0) {
                 throw new UnexpectedValueException("'$sAttribute' attribute is required!");
             } else if ( ! empty($this->_aAttributes[$sAttribute])) {

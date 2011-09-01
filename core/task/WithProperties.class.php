@@ -26,7 +26,7 @@ abstract class Task_WithProperties extends Task
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-        $this->_aAttributeProperties = array(
+        $this->_aAttrProperties = array(
             'propertyinifile' => AttributeProperties::SRC_PATH,
             'propertyshellfile' => AttributeProperties::SRC_PATH,
             'loadtwengaservers' => AttributeProperties::BOOLEAN

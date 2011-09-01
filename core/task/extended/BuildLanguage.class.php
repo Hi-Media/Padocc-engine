@@ -30,7 +30,7 @@ class Task_Extended_BuildLanguage extends Task
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
-        $this->_aAttributeProperties = array(
+        $this->_aAttrProperties = array(
             'project' => AttributeProperties::REQUIRED,
             'destdir' => AttributeProperties::DIR | AttributeProperties::REQUIRED
                 | AttributeProperties::ALLOW_PARAMETER
