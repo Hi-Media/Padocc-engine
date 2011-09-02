@@ -35,6 +35,8 @@ class Task_Base_Sync extends Task
             'destdir' => AttributeProperties::DIR | AttributeProperties::REQUIRED
                 | AttributeProperties::ALLOW_PARAMETER,
             // TODO AttributeProperties::DIRJOKER abusif ici, mais à cause du multivalué :
+            'include' => AttributeProperties::FILEJOKER | AttributeProperties::DIRJOKER,
+            // TODO AttributeProperties::DIRJOKER abusif ici, mais à cause du multivalué :
             'exclude' => AttributeProperties::FILEJOKER | AttributeProperties::DIRJOKER,
         );
     }
@@ -68,12 +70,19 @@ class Task_Base_Sync extends Task
         $sMsg = "Synchronize '" . $this->_aAttributes['src'] . "' with '" . $this->_aAttributes['destdir'] . "'";
         $this->_oLogger->log($sMsg);
         $this->_oLogger->indent();
+
+        // include / exclude :
+        $aIncludedPaths = (empty($this->_aAttributes['include'])
+                          ? array()
+                          : explode(' ', $this->_aAttributes['include']));
         $aExcludedPaths = (empty($this->_aAttributes['exclude'])
                           ? array()
                           : explode(' ', $this->_aAttributes['exclude']));
+
         $aResults = $this->_oShell->sync(
             $this->_aAttributes['src'],
             $this->_processPath($this->_aAttributes['destdir']),
+            $aIncludedPaths,
             $aExcludedPaths
         );
         foreach ($aResults as $sResult) {
