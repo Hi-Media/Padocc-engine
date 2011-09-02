@@ -119,6 +119,61 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Sync::_centralExecute
      * @covers Task_Base_Sync::_postExecute
      */
+    public function testExecuteWithSrcDirAndInclude () {
+        $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
+        $oMockProperties->expects($this->any())->method('getProperty')
+            ->with($this->equalTo('with_symlinks'))
+            ->will($this->returnValue('false'));
+        $oMockProperties->expects($this->exactly(1))->method('getProperty');
+        $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
+
+        $oTaskCopy = Task_Base_Sync::getNewInstance(array(
+            'src' => '/path/to/srcdir',
+            'destdir' => '/path/to/destdir',
+            'include' => '*.js *.css'
+        ), $this->oMockProject, '', $this->oServiceContainer);
+        $oTaskCopy->setUp();
+        $oTaskCopy->execute();
+        $this->assertEquals(array(
+            'mkdir -p "/path/to/destdir/srcdir"',
+            'if ls -1 "/path/to/srcdir" | grep -q .; then rsync -axz --delete --include="*.js" --include="*.css" --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/path/to/srcdir/"* "/path/to/destdir/srcdir"; fi'
+        ), $this->aShellExecCmds);
+    }
+
+    /**
+     * @covers Task_Base_Sync::execute
+     * @covers Task_Base_Sync::_preExecute
+     * @covers Task_Base_Sync::_centralExecute
+     * @covers Task_Base_Sync::_postExecute
+     */
+    public function testExecuteWithSrcDirAndIncludeAndExclude () {
+        $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
+        $oMockProperties->expects($this->any())->method('getProperty')
+            ->with($this->equalTo('with_symlinks'))
+            ->will($this->returnValue('false'));
+        $oMockProperties->expects($this->exactly(1))->method('getProperty');
+        $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
+
+        $oTaskCopy = Task_Base_Sync::getNewInstance(array(
+            'src' => '/path/to/srcdir',
+            'destdir' => '/path/to/destdir',
+            'include' => '*.js *.css',
+            'exclude' => 'to_exclude.* config.php'
+        ), $this->oMockProject, '', $this->oServiceContainer);
+        $oTaskCopy->setUp();
+        $oTaskCopy->execute();
+        $this->assertEquals(array(
+            'mkdir -p "/path/to/destdir/srcdir"',
+            'if ls -1 "/path/to/srcdir" | grep -q .; then rsync -axz --delete --include="*.js" --include="*.css" --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --exclude="to_exclude.*" --exclude="config.php" --stats -e ssh "/path/to/srcdir/"* "/path/to/destdir/srcdir"; fi'
+        ), $this->aShellExecCmds);
+    }
+
+    /**
+     * @covers Task_Base_Sync::execute
+     * @covers Task_Base_Sync::_preExecute
+     * @covers Task_Base_Sync::_centralExecute
+     * @covers Task_Base_Sync::_postExecute
+     */
     public function testExecuteWithSrcDirAndSymLinks () {
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
         $oMockProperties->expects($this->at(0))->method('getProperty')
