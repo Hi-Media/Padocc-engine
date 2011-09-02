@@ -428,6 +428,23 @@ class ShellTest extends PHPUnit_Framework_TestCase {
     /**
      * @covers Shell_Adapter::copy
      */
+    public function testCopyRemoteFilesToLocalDir () {
+        $aExpectedResult = array('blabla');
+
+        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+        $oMockShell->expects($this->at(0))->method('exec')->with($this->equalTo('mkdir -p "/tmp"'));
+        $oMockShell->expects($this->at(1))->method('exec')
+            ->with($this->equalTo('scp -rpq "aai-01:/path/to/a"*".css" "/tmp"'))
+            ->will($this->returnValue($aExpectedResult));
+        $oMockShell->expects($this->exactly(2))->method('exec');
+
+        $aResult = $oMockShell->copy('aai-01:/path/to/a*.css', '/tmp');
+        $this->assertEquals($aExpectedResult, $aResult);
+    }
+
+    /**
+     * @covers Shell_Adapter::copy
+     */
     public function testCopyLocalFileToRemoteFile () {
         $aExpectedResult = array('blabla');
 
@@ -649,7 +666,7 @@ total size is 64093953  speedup is 1618.29');
      * @covers Shell_Adapter::sync
      * @covers Shell_Adapter::_resumeSyncResult
      */
-    public function testSyncLocalFileTo2LocalDir () {
+    public function testSyncLocalFileTo2LocalDirs () {
         $aExpectedResult = array('Number of transferred files ( / total): 2 / 1774
 Total transferred file size ( / total): <1 / 61 Mio
 ', 'Number of transferred files ( / total): 12 / 2774
@@ -796,7 +813,46 @@ total size is 64093953  speedup is 1618.29');
             ->will($this->returnValue($aRawRsyncResult));
         $oMockShell->expects($this->exactly(2))->method('exec');
 
-        $aResult = $oMockShell->sync('/srcpath/to/my file', '/destpath/to/my dir', array('toto', 'titi'));
+        $aResult = $oMockShell->sync('/srcpath/to/my file', '/destpath/to/my dir', array(), array('toto', 'titi', 'toto', '.bzr/'));
+        $this->assertEquals(
+            array_map(function($s){return preg_replace('/\s/', '', $s);}, $aExpectedResult),
+            array_map(function($s){return preg_replace('/\s/', '', $s);}, $aResult)
+        );
+    }
+
+    /**
+     * @covers Shell_Adapter::sync
+     * @covers Shell_Adapter::_resumeSyncResult
+     */
+    public function testSyncLocalFileToLocalDirWithSimpleInclude () {
+        $aExpectedResult = array('Number of transferred files ( / total): 2 / 1774
+Total transferred file size ( / total): <1 / 61 Mio
+');
+        $aRawRsyncResult = explode("\n", 'Number of files: 1774
+Number of files transferred: 2
+Total file size: 64093953 bytes
+Total transferred file size: 178 bytes
+Literal data: 178 bytes
+Matched data: 0 bytes
+File list size: 39177
+File list generation time: 0.013 seconds
+File list transfer time: 0.000 seconds
+Total bytes sent: 39542
+Total bytes received: 64
+
+sent 39542 bytes  received 64 bytes  26404.00 bytes/sec
+total size is 64093953  speedup is 1618.29');
+
+        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+        $oMockShell->expects($this->at(0))->method('exec')
+            ->with($this->equalTo('mkdir -p "/destpath/to/my dir"'))
+            ->will($this->returnValue(array()));
+        $oMockShell->expects($this->at(1))->method('exec')
+            ->with($this->equalTo('rsync -axz --delete --include="*.js" --include="*.css" --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --exclude="*" --stats -e ssh "/srcpath/to/my file" "/destpath/to/my dir"'))
+            ->will($this->returnValue($aRawRsyncResult));
+        $oMockShell->expects($this->exactly(2))->method('exec');
+
+        $aResult = $oMockShell->sync('/srcpath/to/my file', '/destpath/to/my dir', array('*.js', '*.css'), array('*'));
         $this->assertEquals(
             array_map(function($s){return preg_replace('/\s/', '', $s);}, $aExpectedResult),
             array_map(function($s){return preg_replace('/\s/', '', $s);}, $aResult)
@@ -863,7 +919,7 @@ total size is 64093953  speedup is 1618.29');
             ->will($this->returnValue(array()));
         $oMockShell->expects($this->exactly(2))->method('exec');
 
-        $oMockShell->sync('user@server:/srcpath/to/my dir', 'user@server:/destpath/to/my dir', array('smarty/*/wrt*', 'smarty/**/wrt*'));
+        $oMockShell->sync('user@server:/srcpath/to/my dir', 'user@server:/destpath/to/my dir', array(), array('smarty/*/wrt*', 'smarty/**/wrt*'));
     }
 
     /**
