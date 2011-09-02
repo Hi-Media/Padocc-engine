@@ -9,7 +9,6 @@
     >
         <externalproperty name="ref" description="Branch or tag to deploy" />
         <gitexport repository="git@git.twenga.com:feeds/ebay.git" ref="${ref}"
-            destdir="${SERVER_EBAY_ALL}:/home/prod/twenga/tools/ebay"
-            exclude="xml/* log/*" />
+            destdir="${SERVER_EBAY_ALL}:/home/prod/twenga/tools/ebay" />
     </env>
 </project>
