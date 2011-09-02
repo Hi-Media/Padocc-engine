@@ -298,6 +298,8 @@ class Shell_Adapter implements Shell_Interface
      *
      * @param string $sSrcPath, au format [[user@sername_or_ip:]/path
      * @param string|array $mDestPath, chaque destination au format [[user@sername_or_ip:]/path
+     * @param array $aIncludedPaths chemins à transmettre aux paramètres --include de la commande shell rsync.
+     * Il précéderons les paramètres --exclude.
      * @param array $aExcludedPaths chemins à transmettre aux paramètres --exclude de la commande shell rsync
      * @return array tableau indexé du flux de sortie shell des commandes rsync exécutées,
      * découpé par ligne et analysé par _resumeSyncResult()
@@ -306,7 +308,7 @@ class Shell_Adapter implements Shell_Interface
      * @throws RuntimeException car non implémenté quand un seul $mDestPath mais $sSrcPath et $mDestPath
      * pointent sur deux serveurs distants différents
      */
-    public function sync ($sSrcPath, $mDestPath, array $aExcludedPaths=array())
+    public function sync ($sSrcPath, $mDestPath, array $aIncludedPaths=array(), array $aExcludedPaths=array())
     {
         $aPaths = (is_array($mDestPath) ? $mDestPath : array($mDestPath));
 
@@ -326,11 +328,17 @@ class Shell_Adapter implements Shell_Interface
             $aAllResults = array_merge($aAllResults, $aResult);
         }
 
-        $aExcludedPaths = array_merge(self::$_aDefaultRsyncExclude, $aExcludedPaths);
-        $sAdditionalExclude = (count($aExcludedPaths) === 0
+        // Inclusions / exclusions :
+        $sIncludedPaths = (count($aIncludedPaths) === 0
+                              ? ''
+                              : '--include="' . implode('" --include="', array_unique($aIncludedPaths)) . '" ');
+        $aExcludedPaths = array_unique(array_merge(self::$_aDefaultRsyncExclude, $aExcludedPaths));
+        $sExcludedPaths = (count($aExcludedPaths) === 0
                               ? ''
                               : '--exclude="' . implode('" --exclude="', $aExcludedPaths) . '" ');
-        $sRsyncCmd = 'rsync -axz --delete ' . $sAdditionalExclude . '--stats -e ssh %1$s %2$s';
+
+        // Construction de la commande :
+        $sRsyncCmd = 'rsync -axz --delete ' . $sIncludedPaths . $sExcludedPaths . '--stats -e ssh %1$s %2$s';
         if (substr($sSrcPath, -2) === '/*') {
             $sRsyncCmd = 'if ls -1 "' . substr($aSrcMatches[2], 0, -2) . '" | grep -q .; then ' . $sRsyncCmd . '; fi';
         }
