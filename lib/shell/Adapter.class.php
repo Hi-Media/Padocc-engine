@@ -77,11 +77,11 @@ class Shell_Adapter implements Shell_Interface
      */
     public function execSSH ($sPatternCmd, $sParam)
     {
-        list($bIsRemote, $aMatches) = $this->isRemotePath($sParam);
-        $sCmd = sprintf($sPatternCmd, $this->escapePath($aMatches[2]));
+        list($bIsRemote, $sServer, $sRealPath) = $this->isRemotePath($sParam);
+        $sCmd = sprintf($sPatternCmd, $this->escapePath($sRealPath));
         //$sCmd = vsprintf($sPatternCmd, array_map(array(self, 'escapePath'), $mParams));
         if ($bIsRemote) {
-            $sCmd = 'ssh -T ' . $aMatches[1] . " /bin/bash <<EOF\n$sCmd\nEOF\n";
+            $sCmd = 'ssh -T ' . $sServer . " /bin/bash <<EOF\n$sCmd\nEOF\n";
         }
         return $this->exec($sCmd);
     }
@@ -118,25 +118,34 @@ class Shell_Adapter implements Shell_Interface
     }
 
     /**
-     * Retourne un couple dont la 1re valeur indique si le chemin spécifié commence par '[user@]servername_or_ip:'
-     * et la 2nde est un tableau indexé contenant le chemin initial, le serveur et le chemin dépourvu du serveur.
+     * Retourne un triplet dont la 1re valeur (bool) indique si le chemin spécifié commence par
+     * '[user@]servername_or_ip:', la 2e (string) est le serveur (ou chaîne vide si $sPath est local),
+     * et la 3e (string) est le chemin dépourvu de l'éventuel serveur.
      *
      * @param string $sPath chemin au format [[user@]servername_or_ip:]/path
-     * @return array couple dont la 1re valeur indique si le chemin spécifié commence par '[user@]servername_or_ip:'
-     * et la 2nde est un tableau indexé contenant le chemin initial, le serveur et le chemin dépourvu du serveur.
-     * @throws DomainException si syntaxe invalide
+     * @return array triplet dont la 1re valeur (bool) indique si le chemin spécifié commence par
+     * '[user@]servername_or_ip:', la 2e (string) est le serveur (ou chaîne vide si $sPath est local),
+     * et la 3e (string) est le chemin dépourvu de l'éventuel serveur.
+     * @throws DomainException si syntaxe invalide (s'il reste des paramètres non résolus par exemple)
      */
     public function isRemotePath ($sPath)
     {
+        // reste-t-il des paramètres non résolus :
         if (preg_match('/\$\{[^}]*\}/i', $sPath) === 1) {
             throw new DomainException("Invalid syntax: '$sPath'.");
         }
 
         $result = preg_match('/^((?:[a-z0-9_.-]+@)?[a-z0-9_.-]+):(.+)$/i', $sPath, $aMatches);
-        if ($result !== 1) {
-            $aMatches = array($sPath, '', $sPath);
+        $bIsRemotePath = ($result === 1);
+        if ($bIsRemotePath) {
+            $sServer = $aMatches[1];
+            $sRealPath = $aMatches[2];
+        } else {
+            $sServer = '';
+            $sRealPath = $sPath;
         }
-        return array($result === 1, $aMatches);
+
+        return array($bIsRemotePath, $sServer, $sRealPath);
     }
 
     /**
@@ -161,14 +170,14 @@ class Shell_Adapter implements Shell_Interface
         } else {
             $this->mkdir($sDestPath);
         }
-        list(, $aSrcMatches) = $this->isRemotePath($sSrcPath);
-        list(, $aDestMatches) = $this->isRemotePath($sDestPath);
+        list(, $sSrcServer, ) = $this->isRemotePath($sSrcPath);
+        list(, $sDestServer, $sDestRealPath) = $this->isRemotePath($sDestPath);
 
-        if ($aSrcMatches[1] != $aDestMatches[1]) {
+        if ($sSrcServer != $sDestServer) {
             $sCmd = 'scp -rpq ' . $this->escapePath($sSrcPath) . ' ' . $this->escapePath($sDestPath);
             return $this->exec($sCmd);
         } else {
-            $sCmd = 'cp -a %s ' . $this->escapePath($aDestMatches[2]);
+            $sCmd = 'cp -a %s ' . $this->escapePath($sDestRealPath);
             return $this->execSSH($sCmd, $sSrcPath);
         }
     }
@@ -184,12 +193,12 @@ class Shell_Adapter implements Shell_Interface
      */
     public function createLink ($sLinkPath, $sTargetPath)
     {
-        list(, $aLinkMatches) = $this->isRemotePath($sLinkPath);
-        list(, $aTargetMatches) = $this->isRemotePath($sTargetPath);
-        if ($aLinkMatches[1] != $aTargetMatches[1]) {
+        list(, $sLinkServer, ) = $this->isRemotePath($sLinkPath);
+        list(, $sTargetServer, $sTargetRealPath) = $this->isRemotePath($sTargetPath);
+        if ($sLinkServer != $sTargetServer) {
             throw new DomainException("Hosts must be equals. Link='$sLinkPath'. Target='$sTargetPath'.");
         }
-        return $this->execSSH('mkdir -p "$(dirname %1$s)" && ln -snf "' . $aTargetMatches[2] . '" %1$s', $sLinkPath);
+        return $this->execSSH('mkdir -p "$(dirname %1$s)" && ln -snf "' . $sTargetRealPath . '" %1$s', $sLinkPath);
     }
 
     /**
@@ -239,11 +248,11 @@ class Shell_Adapter implements Shell_Interface
 
     public function backup ($sSrcPath, $sBackupPath)
     {
-        list($bIsSrcRemote, $aSrcMatches) = $this->isRemotePath($sSrcPath);
-        list(, $aBackupMatches) = $this->isRemotePath($sBackupPath);
+        list($bIsSrcRemote, $sSrcServer, $sSrcRealPath) = $this->isRemotePath($sSrcPath);
+        list(, $sBackupServer, $sBackupRealPath) = $this->isRemotePath($sBackupPath);
 
-        if ($aSrcMatches[1] != $aBackupMatches[1]) {
-            $sTmpDir = ($bIsSrcRemote ? $aSrcMatches[1]. ':' : '') . '/tmp/' . uniqid('deployment_', true);
+        if ($sBackupServer != $sBackupServer) {
+            $sTmpDir = ($bIsSrcRemote ? $sBackupServer. ':' : '') . '/tmp/' . uniqid('deployment_', true);
             $sTmpPath = $sTmpDir . '/' . pathinfo($sBackupPath, PATHINFO_BASENAME);
             return array_merge(
                 $this->backup($sSrcPath, $sTmpPath),
@@ -252,16 +261,17 @@ class Shell_Adapter implements Shell_Interface
             );
         } else {
             $this->mkdir(pathinfo($sBackupPath, PATHINFO_DIRNAME));
-            $sSrcFile = pathinfo($aSrcMatches[2], PATHINFO_BASENAME);
+            $sSrcFile = pathinfo($sSrcRealPath, PATHINFO_BASENAME);
             $sFormat = 'cd %1$s; tar cfpz %2$s ./%3$s';
             if ($bIsSrcRemote) {
-                $sSrcDir = pathinfo($aSrcMatches[2], PATHINFO_DIRNAME);
+                $sSrcDir = pathinfo($sSrcRealPath, PATHINFO_DIRNAME);
                 $sFormat = 'ssh %4$s <<EOF' . "\n" . $sFormat . "\nEOF\n";
                 $sCmd = sprintf(
                     $sFormat,
                     $this->escapePath($sSrcDir),
-                    $this->escapePath($aBackupMatches[2]),
-                    $this->escapePath($sSrcFile), $aSrcMatches[1]
+                    $this->escapePath($sBackupRealPath),
+                    $this->escapePath($sSrcFile),
+                    $sBackupServer
                 );
             } else {
                 $sSrcDir = pathinfo($sSrcPath, PATHINFO_DIRNAME);
@@ -313,11 +323,11 @@ class Shell_Adapter implements Shell_Interface
         $aPaths = (is_array($mDestPath) ? $mDestPath : array($mDestPath));
 
         // Cas non gérés :
-        list($bIsSrcRemote, $aSrcMatches) = $this->isRemotePath($sSrcPath);
-        list($bIsDestRemote, $aDestMatches) = $this->isRemotePath(reset($aPaths));
+        list($bIsSrcRemote, $sSrcServer, $sSrcRealPath) = $this->isRemotePath($sSrcPath);
+        list($bIsDestRemote, $sDestServer, $sDestRealPath) = $this->isRemotePath(reset($aPaths));
         if (
             (count($aPaths) > 1 && $bIsSrcRemote)
-            || (count($aPaths) === 1 && $bIsSrcRemote && $bIsDestRemote && $aSrcMatches[1] != $aDestMatches[1])
+            || (count($aPaths) === 1 && $bIsSrcRemote && $bIsDestRemote && $sSrcServer != $sDestServer)
         ) {
             throw new RuntimeException('Not yet implemented!');
         }
@@ -340,11 +350,11 @@ class Shell_Adapter implements Shell_Interface
         // Construction de la commande :
         $sRsyncCmd = 'rsync -axz --delete ' . $sIncludedPaths . $sExcludedPaths . '--stats -e ssh %1$s %2$s';
         if (substr($sSrcPath, -2) === '/*') {
-            $sRsyncCmd = 'if ls -1 "' . substr($aSrcMatches[2], 0, -2) . '" | grep -q .; then ' . $sRsyncCmd . '; fi';
+            $sRsyncCmd = 'if ls -1 "' . substr($sSrcRealPath, 0, -2) . '" | grep -q .; then ' . $sRsyncCmd . '; fi';
         }
 
-        if (count($aPaths) === 1 && $bIsSrcRemote && $bIsDestRemote && $aSrcMatches[1] == $aDestMatches[1]) {
-            $sCmd = sprintf($sRsyncCmd, '%1$s', $this->escapePath($aDestMatches[2]));
+        if (count($aPaths) === 1 && $bIsSrcRemote && $bIsDestRemote && $sSrcServer == $sDestServer) {
+            $sCmd = sprintf($sRsyncCmd, '%1$s', $this->escapePath($sDestRealPath));
             $aRawResult = $this->execSSH($sCmd, $sSrcPath);
             $aResult = $this->_resumeSyncResult($aRawResult);
             $aAllResults = array_merge($aAllResults, $aResult);
