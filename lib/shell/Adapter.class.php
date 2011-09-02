@@ -251,8 +251,8 @@ class Shell_Adapter implements Shell_Interface
         list($bIsSrcRemote, $sSrcServer, $sSrcRealPath) = $this->isRemotePath($sSrcPath);
         list(, $sBackupServer, $sBackupRealPath) = $this->isRemotePath($sBackupPath);
 
-        if ($sBackupServer != $sBackupServer) {
-            $sTmpDir = ($bIsSrcRemote ? $sBackupServer. ':' : '') . '/tmp/' . uniqid('deployment_', true);
+        if ($sSrcServer != $sBackupServer) {
+            $sTmpDir = ($bIsSrcRemote ? $sSrcServer. ':' : '') . '/tmp/' . uniqid('deployment_', true);
             $sTmpPath = $sTmpDir . '/' . pathinfo($sBackupPath, PATHINFO_BASENAME);
             return array_merge(
                 $this->backup($sSrcPath, $sTmpPath),
@@ -271,7 +271,7 @@ class Shell_Adapter implements Shell_Interface
                     $this->escapePath($sSrcDir),
                     $this->escapePath($sBackupRealPath),
                     $this->escapePath($sSrcFile),
-                    $sBackupServer
+                    $sSrcServer
                 );
             } else {
                 $sSrcDir = pathinfo($sSrcPath, PATHINFO_DIRNAME);
