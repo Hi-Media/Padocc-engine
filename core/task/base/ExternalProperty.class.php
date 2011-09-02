@@ -59,8 +59,4 @@ class Task_Base_ExternalProperty extends Task
         $this->_oProperties->setProperty($this->_aAttributes['name'], $sValue);
         $this->_oLogger->unindent();
     }
-
-    public function backup ()
-    {
-    }
 }

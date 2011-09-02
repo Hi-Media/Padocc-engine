@@ -408,6 +408,4 @@ abstract class Task
         $this->_centralExecute();
         $this->_postExecute();
     }
-
-    public abstract function backup ();
 }

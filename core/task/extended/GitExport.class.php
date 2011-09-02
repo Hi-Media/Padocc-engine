@@ -102,8 +102,4 @@ class Task_Extended_GitExport extends Task
         $this->_oSyncTask->execute();
         $this->_oLogger->unindent();
     }
-
-    public function backup ()
-    {
-    }
 }
