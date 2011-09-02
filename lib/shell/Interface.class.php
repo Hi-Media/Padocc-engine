@@ -52,13 +52,15 @@ interface Shell_Interface
     public function getPathStatus ($sPath);
 
     /**
-     * Retourne un couple dont la 1re valeur indique si le chemin spécifié commence par '[user@]servername_or_ip:'
-     * et la 2nde est un tableau indexé contenant le chemin initial, le serveur et le chemin dépourvu du serveur.
+     * Retourne un triplet dont la 1re valeur (bool) indique si le chemin spécifié commence par
+     * '[user@]servername_or_ip:', la 2e (string) est le serveur (ou chaîne vide si $sPath est local),
+     * et la 3e (string) est le chemin dépourvu de l'éventuel serveur.
      *
      * @param string $sPath chemin au format [[user@]servername_or_ip:]/path
-     * @return array couple dont la 1re valeur indique si le chemin spécifié commence par '[user@]servername_or_ip:'
-     * et la 2nde est un tableau indexé contenant le chemin initial, le serveur et le chemin dépourvu du serveur.
-     * @throws DomainException si syntaxe invalide
+     * @return array triplet dont la 1re valeur (bool) indique si le chemin spécifié commence par
+     * '[user@]servername_or_ip:', la 2e (string) est le serveur (ou chaîne vide si $sPath est local),
+     * et la 3e (string) est le chemin dépourvu de l'éventuel serveur.
+     * @throws DomainException si syntaxe invalide (s'il reste des paramètres non résolus par exemple)
      */
     public function isRemotePath ($sPath);
 

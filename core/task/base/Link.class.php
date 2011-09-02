@@ -52,11 +52,11 @@ class Task_Base_Link extends Task
     {
         parent::check();
 
-        list($bIsSrcRemote, $aSrcMatches) = $this->_oShell->isRemotePath($this->_aAttributes['src']);
-        list($bIsDestRemote, $aDestMatches) = $this->_oShell->isRemotePath($this->_aAttributes['target']);
+        list($bIsSrcRemote, $sSrcServer, ) = $this->_oShell->isRemotePath($this->_aAttributes['src']);
+        list($bIsDestRemote, $sDestServer, ) = $this->_oShell->isRemotePath($this->_aAttributes['target']);
         if (
             ($bIsSrcRemote XOR $bIsDestRemote)
-            || ($bIsSrcRemote && $bIsDestRemote && $aSrcMatches[1] != $aDestMatches[1])
+            || ($bIsSrcRemote && $bIsDestRemote && $sSrcServer != $sDestServer)
         ) {
             $sMsg = 'Servers must be equals!' . ' Src=' . $this->_aAttributes['src']
                   . ' Target=' . $this->_aAttributes['target'];
@@ -100,9 +100,9 @@ class Task_Base_Link extends Task
 
         $aTargetPaths = $this->_processPath($sRawTargetPath);
         foreach ($aTargetPaths as $sTargetPath) {
-            list(, $aDestMatches) = $this->_oShell->isRemotePath($sTargetPath);
-            list(, $aSrcMatches) = $this->_oShell->isRemotePath($this->_aAttributes['src']);
-            $sSrc = $this->_processSimplePath($aDestMatches[1] . ':' . $aSrcMatches[2]);
+            list(, $sDestServer, ) = $this->_oShell->isRemotePath($sTargetPath);
+            list(, , $sSrcRealPath) = $this->_oShell->isRemotePath($this->_aAttributes['src']);
+            $sSrc = $this->_processSimplePath($sDestServer . ':' . $sSrcRealPath);
             $this->_oShell->createLink($sSrc, $sTargetPath);
         }
         $this->_oLogger->unindent();

@@ -106,9 +106,9 @@ class Task_Base_Environment extends Task_Base_Target
         foreach ($aPaths as $sPath) {
             $aExpandedPaths = $this->_expandPath($sPath);
             foreach ($aExpandedPaths as $sExpandedPath) {
-                list($bIsRemote, $aMatches) = $this->_oShell->isRemotePath($sExpandedPath);
-                if ($bIsRemote && strpos($aMatches[2], $sBaseSymLink) !== false) {
-                    $this->_aPathsToHandle[$aMatches[1]][] = $aMatches[2];
+                list($bIsRemote, $sServer, $sRealPath) = $this->_oShell->isRemotePath($sExpandedPath);
+                if ($bIsRemote && strpos($sRealPath, $sBaseSymLink) !== false) {
+                    $this->_aPathsToHandle[$sServer][] = $sRealPath;
                 }
             }
         }
@@ -130,9 +130,9 @@ class Task_Base_Environment extends Task_Base_Target
         $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
             if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_PathStatus::STATUS_DIR) {
-                list(, $aMatches) = $this->_oShell->isRemotePath($sExpandedPath);
+                list(, $sServer, ) = $this->_oShell->isRemotePath($sExpandedPath);
                 $sDir = $sExpandedPath . '/*';
-                $sOriginRelease = $aMatches[1] . ':' . $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
+                $sOriginRelease = $sServer . ':' . $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
                                 . '/' . $this->_oProperties->getProperty('execution_id') . '_origin';
                 $this->_oLogger->log("Backup '$sDir' to '$sOriginRelease'.");
                 $this->_oShell->sync($sDir, $sOriginRelease, array(), array('smarty/*/wrt*', 'smarty/**/wrt*'));
@@ -153,7 +153,7 @@ class Task_Base_Environment extends Task_Base_Target
         $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
             if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_PathStatus::STATUS_SYMLINKED_DIR) {
-                list(, $aMatches) = $this->_oShell->isRemotePath($sExpandedPath);
+                list(, , $sRealPath) = $this->_oShell->isRemotePath($sExpandedPath);
                 $sDir = $sExpandedPath . '/*';
                 $sTmpDest = $sExpandedPath . '_tmp';
                 $sMsg = "Remove symlink on '$sExpandedPath' base directory"
@@ -161,7 +161,7 @@ class Task_Base_Environment extends Task_Base_Target
                 $this->_oLogger->log($sMsg);
                 $this->_oShell->sync($sDir, $sTmpDest, array(), array('smarty/*/wrt*', 'smarty/**/wrt*'));
                 $this->_oShell->remove($sExpandedPath);
-                $this->_oShell->execSSH("mv %s '" . $aMatches[2] . "'", $sTmpDest);
+                $this->_oShell->execSSH("mv %s '" . $sRealPath . "'", $sTmpDest);
             }
         }
         $this->_oLogger->unindent();
@@ -177,9 +177,9 @@ class Task_Base_Environment extends Task_Base_Target
         $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
                          . '/' . $this->_oProperties->getProperty('execution_id');
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
-            list(, $aMatches) = $this->_oShell->isRemotePath($sExpandedPath);
+            list(, $sServer, ) = $this->_oShell->isRemotePath($sExpandedPath);
             $sDir = $sExpandedPath . '/*';
-            $sDest = $aMatches[1] . ':' . $sReleaseSymLink;
+            $sDest = $sServer . ':' . $sReleaseSymLink;
             if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_PathStatus::STATUS_SYMLINKED_DIR) {
                 $this->_oLogger->log("Initialize '$sDest' with previous deployment.");
                 $this->_oLogger->indent();
@@ -204,8 +204,8 @@ class Task_Base_Environment extends Task_Base_Target
         $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
         $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX;
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
-            list(, $aMatches) = $this->_oShell->isRemotePath($sExpandedPath);
-            $this->_oLogger->log("Check " . $aMatches[1]);
+            list(, $sServer, $sRealPath) = $this->_oShell->isRemotePath($sExpandedPath);
+            $this->_oLogger->log("Check " . $sServer);
             $this->_oLogger->indent();
 
             $sCmd = "if [ -d %1\$s ]; then ls -t %1\$s | grep -E '^[0-9]{14}_[0-9]{5}(_origin)?$'; fi";
@@ -226,7 +226,7 @@ class Task_Base_Environment extends Task_Base_Target
                     $sFirst = $sExpandedPath . '/' . array_shift($aReleasesToDelete);
                     $sCmd = 'rm -rf %s';
                     if (count($aReleasesToDelete) > 0) {
-                        $sCmd .= ' ' . $aMatches[2] . '/' . implode(' ' . $aMatches[2] . '/', $aReleasesToDelete);
+                        $sCmd .= ' ' . $sRealPath . '/' . implode(' ' . $sRealPath . '/', $aReleasesToDelete);
                     }
                     $this->_oShell->execSSH($sCmd, $sFirst);
                     $this->_oLogger->log($sMsg);

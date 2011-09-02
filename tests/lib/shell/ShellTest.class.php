@@ -26,28 +26,37 @@ class ShellTest extends PHPUnit_Framework_TestCase {
      * @covers Shell_Adapter::isRemotePath
      */
     public function testIsRemotePathWithEmptyPath () {
-        $this->assertEquals(array(false, array('', '', '')), $this->oShell->isRemotePath(''));
+        $this->assertEquals(array(false, '', ''), $this->oShell->isRemotePath(''));
     }
 
     /**
      * @covers Shell_Adapter::isRemotePath
      */
     public function testIsRemotePathWithLocalPath () {
-        $this->assertEquals(array(false, array('/path/to/my file', '', '/path/to/my file')), $this->oShell->isRemotePath('/path/to/my file'));
+        $this->assertEquals(
+            array(false, '', '/path/to/my file'),
+            $this->oShell->isRemotePath('/path/to/my file')
+        );
     }
 
     /**
      * @covers Shell_Adapter::isRemotePath
      */
     public function testIsRemotePathWithRemotePathWithoutLogin () {
-        $this->assertEquals(array(true, array('dv2:/path/to/my file', 'dv2', '/path/to/my file')), $this->oShell->isRemotePath('dv2:/path/to/my file'));
+        $this->assertEquals(
+            array(true, 'dv2', '/path/to/my file'),
+            $this->oShell->isRemotePath('dv2:/path/to/my file')
+        );
     }
 
     /**
      * @covers Shell_Adapter::isRemotePath
      */
     public function testIsRemotePathWithRemotePathWithLogin () {
-        $this->assertEquals(array(true, array('gaubry@dv2:/path/to/my file', 'gaubry@dv2', '/path/to/my file')), $this->oShell->isRemotePath('gaubry@dv2:/path/to/my file'));
+        $this->assertEquals(
+            array(true, 'gaubry@dv2', '/path/to/my file'),
+            $this->oShell->isRemotePath('gaubry@dv2:/path/to/my file')
+        );
     }
 
     /**
