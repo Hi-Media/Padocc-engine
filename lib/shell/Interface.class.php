@@ -112,8 +112,6 @@ interface Shell_Interface
      */
     public function remove ($sPath);
 
-    public function backup ($sSrcPath, $sBackupPath);
-
     /**
      * Crée le chemin spécifié s'il n'existe pas déjà, avec les droits éventuellement transmis dans tous les cas.
      *

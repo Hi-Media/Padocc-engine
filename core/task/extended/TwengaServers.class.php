@@ -76,8 +76,4 @@ class Task_Extended_TwengaServers extends Task
         $this->_oLogger->unindent();
         $this->_oLogger->unindent();
     }
-
-    public function backup ()
-    {
-    }
 }

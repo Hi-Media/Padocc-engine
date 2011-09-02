@@ -92,14 +92,4 @@ class Task_Extended_CVSExport extends Task
         $this->_oSyncTask->execute();
         $this->_oLogger->unindent();
     }
-
-    public function backup ()
-    {
-        /*if ($this->_oShell->getPathStatus($this->_aAttributes['destdir']) !== Shell_PathStatus::STATUS_NOT_EXISTS) {
-            list($bIsRemote, $aMatches) = $this->_oShell->isRemotePath($this->_aAttributes['destdir']);
-            $sBackupPath = ($bIsRemote ? $aMatches[1]. ':' : '') . $this->_sBackupPath . '/'
-                . pathinfo($aMatches[2], PATHINFO_BASENAME) . '.tar.gz';
-            $this->_oShell->backup($this->_aAttributes['destdir'], $sBackupPath);
-        }*/
-    }
 }

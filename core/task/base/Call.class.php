@@ -61,11 +61,6 @@ class Task_Base_Call extends Task_WithProperties
     protected function _centralExecute ()
     {
         parent::_centralExecute();
-        $this->_oBoundTask->backup();
         $this->_oBoundTask->execute();
-    }
-
-    public function backup ()
-    {
     }
 }

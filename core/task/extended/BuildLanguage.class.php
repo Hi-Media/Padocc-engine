@@ -105,8 +105,4 @@ class Task_Extended_BuildLanguage extends Task
         @unlink($sLanguagesPath);
         $this->_oLogger->unindent();
     }
-
-    public function backup ()
-    {
-    }
 }

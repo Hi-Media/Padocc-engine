@@ -50,8 +50,4 @@ class Task_Base_HTTP extends Task
 
         $this->_oLogger->unindent();
     }
-
-    public function backup ()
-    {
-    }
 }

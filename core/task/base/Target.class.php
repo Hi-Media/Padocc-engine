@@ -196,13 +196,8 @@ class Task_Base_Target extends Task_WithProperties
         parent::_centralExecute();
         $this->_oLogger->indent();
         foreach ($this->_aTasks as $oTask) {
-            $oTask->backup();
             $oTask->execute();
         }
         $this->_oLogger->unindent();
-    }
-
-    public function backup ()
-    {
     }
 }

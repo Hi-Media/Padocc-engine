@@ -49,8 +49,4 @@ class Task_Base_MkDir extends Task
         }
         $this->_oLogger->unindent();
     }
-
-    public function backup ()
-    {
-    }
 }

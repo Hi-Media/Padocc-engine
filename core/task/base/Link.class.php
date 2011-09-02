@@ -107,8 +107,4 @@ class Task_Base_Link extends Task
         }
         $this->_oLogger->unindent();
     }
-
-    public function backup ()
-    {
-    }
 }
