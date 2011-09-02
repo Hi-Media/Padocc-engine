@@ -46,6 +46,7 @@ class Task_Extended_GitExport extends Task
             'exclude' => AttributeProperties::FILEJOKER | AttributeProperties::DIRJOKER,
         );
 
+        // Valeur par défaut de l'attribut srcdir :
         if (empty($this->_aAttributes['srcdir'])) {
             $this->_aAttributes['srcdir'] =
                 DEPLOYMENT_REPOSITORIES_DIR . '/git/'
