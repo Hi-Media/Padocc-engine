@@ -109,10 +109,13 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase {
      */
     public function testExecuteWithSrcFile () {
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
-        $oMockProperties->expects($this->any())->method('getProperty')
+        $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
-        $oMockProperties->expects($this->exactly(1))->method('getProperty');
+        $oMockProperties->expects($this->at(1))->method('getProperty')
+            ->with($this->equalTo('with_symlinks'))
+            ->will($this->returnValue('false'));
+        $oMockProperties->expects($this->exactly(2))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
         $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/srcfile', 'destdir' => '/path/to/destdir'), $this->oMockProject, '', $this->oServiceContainer);
@@ -132,10 +135,13 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase {
      */
     public function testExecuteWithSrcDir () {
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
-        $oMockProperties->expects($this->any())->method('getProperty')
+        $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
-        $oMockProperties->expects($this->exactly(1))->method('getProperty');
+        $oMockProperties->expects($this->at(1))->method('getProperty')
+            ->with($this->equalTo('with_symlinks'))
+            ->will($this->returnValue('false'));
+        $oMockProperties->expects($this->exactly(2))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
         $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/srcdir', 'destdir' => '/path/to/destdir'), $this->oMockProject, '', $this->oServiceContainer);
@@ -155,10 +161,13 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase {
      */
     public function testExecuteWithSrcFileAndJoker () {
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
-        $oMockProperties->expects($this->any())->method('getProperty')
+        $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
-        $oMockProperties->expects($this->exactly(1))->method('getProperty');
+        $oMockProperties->expects($this->at(1))->method('getProperty')
+            ->with($this->equalTo('with_symlinks'))
+            ->will($this->returnValue('false'));
+        $oMockProperties->expects($this->exactly(2))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
         $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/src*file?', 'destdir' => '/path/to/destdir'), $this->oMockProject, '', $this->oServiceContainer);
@@ -188,7 +197,16 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase {
         $oMockProperties->expects($this->at(2))->method('getProperty')
             ->with($this->equalTo('execution_id'))
             ->will($this->returnValue('12345'));
-        $oMockProperties->expects($this->exactly(3))->method('getProperty');
+        $oMockProperties->expects($this->at(3))->method('getProperty')
+            ->with($this->equalTo('with_symlinks'))
+            ->will($this->returnValue('true'));
+        $oMockProperties->expects($this->at(4))->method('getProperty')
+            ->with($this->equalTo('base_dir'))
+            ->will($this->returnValue('/path/to/destdir'));
+        $oMockProperties->expects($this->at(5))->method('getProperty')
+            ->with($this->equalTo('execution_id'))
+            ->will($this->returnValue('12345'));
+        $oMockProperties->expects($this->exactly(6))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
         $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/srcdir', 'destdir' => 'user@server:/path/to/destdir'), $this->oMockProject, '', $this->oServiceContainer);
