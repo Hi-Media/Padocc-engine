@@ -38,7 +38,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
      */
     public function testExpandPathsWithSimpleString () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
 
         $class = new ReflectionClass($oMockTask);
         $method = $class->getMethod('_expandPath');
@@ -61,7 +61,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oMockProperties->expects($this->exactly(1))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, 'backup_path', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
 
         $class = new ReflectionClass($oMockTask);
         $method = $class->getMethod('_expandPath');
@@ -84,7 +84,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oMockProperties->expects($this->exactly(1))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, 'backup_path', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
 
         $class = new ReflectionClass($oMockTask);
         $method = $class->getMethod('_expandPath');
@@ -110,7 +110,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oMockProperties->expects($this->exactly(2))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, 'backup_path', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
 
         $class = new ReflectionClass($oMockTask);
         $method = $class->getMethod('_expandPath');
@@ -146,7 +146,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oMockProperties->expects($this->exactly(4))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, 'backup_path', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
 
         $class = new ReflectionClass($oMockTask);
         $method = $class->getMethod('_expandPath');
@@ -166,7 +166,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
      */
     public function testCheckEmptyNotThrowException () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
         $o = new ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('_aAttrProperties');
@@ -185,7 +185,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
      */
     public function testCheckThrowExceptionIfUnknownAttribute () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
         $o = new ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('_aAttrProperties');
@@ -205,7 +205,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
      */
     public function testCheckThrowExceptionIfRequiredAttribute () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
         $o = new ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('_aAttrProperties');
@@ -225,7 +225,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
      */
     public function testCheckRequiredAttribute () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
         $o = new ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('_aAttrProperties');
@@ -244,7 +244,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
      */
     public function testCheckFileAttribute () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
         $o = new ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('_aAttrProperties');
@@ -264,7 +264,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
      */
     public function testCheckDirAttribute () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
         $o = new ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('_aAttrProperties');
@@ -284,7 +284,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
      */
     public function testCheckThrowExceptionIfDirectoryJokerWithoutDirjokerAttribute () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
         $o = new ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('_aAttrProperties');
@@ -304,7 +304,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
      */
     public function testCheckDirectoryJokerWithDirjokerAttribute () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
         $o = new ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('_aAttrProperties');
@@ -323,7 +323,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
      */
     public function testCheckThrowExceptionIfFileJokerWithoutFilejokerAttribute () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
         $o = new ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('_aAttrProperties');
@@ -343,7 +343,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
      */
     public function testCheckThrowExceptionIfBadBooleanAttribute () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
         $o = new ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('_aAttrProperties');
@@ -363,7 +363,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
      */
     public function testCheckBooleanAttribute () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
         $o = new ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('_aAttrProperties');
@@ -386,7 +386,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
      */
     public function testCheckFileJokerWithFilejokerAttribute () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
         $o = new ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('_aAttrProperties');
@@ -405,7 +405,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
      */
     public function testCheckThrowExceptionIfParameterWithoutAllowparametersAttribute () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
         $o = new ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('_aAttrProperties');
@@ -425,7 +425,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
      */
     public function testCheckParameterWithAllowparametersAttribute () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
         $o = new ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('_aAttrProperties');
@@ -449,7 +449,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $this->oServiceContainer->setShellAdapter($oMockShell);
 
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
         $o = new ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('_aAttrProperties');
@@ -478,7 +478,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
     public function testGetNewInstanceThrowException () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
         $this->setExpectedException('RuntimeException');
-        Task::getNewInstance(array(), $oMockProject, '', $this->oServiceContainer);
+        Task::getNewInstance(array(), $oMockProject, $this->oServiceContainer);
     }
 
     /**
@@ -488,7 +488,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
      */
     public function testGetNewInstanceOk () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $oTaskCopy = Task_Base_Copy::getNewInstance(array('attr1' => 'v1', 'attr2' => 'v2'), $oMockProject, '', $this->oServiceContainer);
+        $oTaskCopy = Task_Base_Copy::getNewInstance(array('attr1' => 'v1', 'attr2' => 'v2'), $oMockProject, $this->oServiceContainer);
         $this->assertAttributeEquals(array('attr1' => 'v1', 'attr2' => 'v2'), '_aAttributes', $oTaskCopy);
     }
 
@@ -505,7 +505,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oMockProperties->expects($this->exactly(1))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
 
         $oClass = new ReflectionClass($oMockTask);
         $oMethod = $oClass->getMethod('_reroutePaths');
@@ -528,7 +528,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oMockProperties->expects($this->exactly(1))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
 
         $oClass = new ReflectionClass($oMockTask);
         $oMethod = $oClass->getMethod('_reroutePaths');
@@ -557,7 +557,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oMockProperties->expects($this->exactly(3))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
 
         $oClass = new ReflectionClass($oMockTask);
         $oMethod = $oClass->getMethod('_reroutePaths');
@@ -587,7 +587,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oMockProperties->expects($this->exactly(3))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
 
         $oClass = new ReflectionClass($oMockTask);
         $oMethod = $oClass->getMethod('_reroutePaths');
@@ -638,7 +638,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
         $oMockProperties->expects($this->exactly(3))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
         $oClass = new ReflectionClass($oMockTask);
         $oMethod = $oClass->getMethod('_reroutePaths');
         $oMethod->setAccessible(true);
@@ -651,7 +651,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
      */
     public function testRegisterPaths () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
         $oClass = new ReflectionClass($oMockTask);
 
         $oProperty = $oClass->getProperty('_aRegisteredPaths');
@@ -691,7 +691,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
      */
     public function testNormalizeAttributePropertiesWithAttrSrcPath () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
         $oClass = new ReflectionClass($oMockTask);
 
         $oProperty = $oClass->getProperty('_aAttrProperties');
@@ -721,7 +721,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
      */
     public function testNormalizeAttributePropertiesWithAttrFileJoker () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
         $oClass = new ReflectionClass($oMockTask);
 
         $oProperty = $oClass->getProperty('_aAttrProperties');
@@ -747,7 +747,7 @@ class TaskTest extends PHPUnit_Framework_TestCase {
      */
     public function testNormalizeAttributePropertiesWithAttrDirJoker () {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, '', $this->oServiceContainer));
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
         $oClass = new ReflectionClass($oMockTask);
 
         $oProperty = $oClass->getProperty('_aAttrProperties');

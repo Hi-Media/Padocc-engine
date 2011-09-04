@@ -67,7 +67,7 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Copy::check
      */
     public function testCheckWithSrcFile () {
-        $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/srcfile', 'destdir' => '/path/to/destdir'), $this->oMockProject, '', $this->oServiceContainer);
+        $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/srcfile', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oServiceContainer);
         $oTaskCopy->setUp();
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir',
@@ -80,7 +80,7 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Copy::check
      */
     public function testCheckWithSrcFileAndJoker () {
-        $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/src*file?', 'destdir' => '/path/to/destdir'), $this->oMockProject, '', $this->oServiceContainer);
+        $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/src*file?', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oServiceContainer);
         $oTaskCopy->setUp();
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir',
@@ -93,7 +93,7 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Copy::check
      */
     public function testCheckWithSrcDir () {
-        $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/srcdir', 'destdir' => '/path/to/destdir'), $this->oMockProject, '', $this->oServiceContainer);
+        $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/srcdir', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oServiceContainer);
         $oTaskCopy->setUp();
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir/srcdir',
@@ -118,7 +118,7 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase {
         $oMockProperties->expects($this->exactly(2))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/srcfile', 'destdir' => '/path/to/destdir'), $this->oMockProject, '', $this->oServiceContainer);
+        $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/srcfile', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oServiceContainer);
         $oTaskCopy->setUp();
         $oTaskCopy->execute();
         $this->assertEquals(array(
@@ -144,7 +144,7 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase {
         $oMockProperties->expects($this->exactly(2))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/srcdir', 'destdir' => '/path/to/destdir'), $this->oMockProject, '', $this->oServiceContainer);
+        $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/srcdir', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oServiceContainer);
         $oTaskCopy->setUp();
         $oTaskCopy->execute();
         $this->assertEquals(array(
@@ -170,7 +170,7 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase {
         $oMockProperties->expects($this->exactly(2))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/src*file?', 'destdir' => '/path/to/destdir'), $this->oMockProject, '', $this->oServiceContainer);
+        $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/src*file?', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oServiceContainer);
         $oTaskCopy->setUp();
         $oTaskCopy->execute();
         $this->assertEquals(array(
@@ -209,7 +209,7 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase {
         $oMockProperties->expects($this->exactly(6))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/srcdir', 'destdir' => 'user@server:/path/to/destdir'), $this->oMockProject, '', $this->oServiceContainer);
+        $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/srcdir', 'destdir' => 'user@server:/path/to/destdir'), $this->oMockProject, $this->oServiceContainer);
         $oTaskCopy->setUp();
         $oTaskCopy->execute();
         $this->assertEquals(array(

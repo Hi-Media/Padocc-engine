@@ -29,13 +29,12 @@ class Task_Base_ExternalProperty extends Task
      *
      * @param SimpleXMLElement $oTask Contenu XML de la tâche.
      * @param Task_Base_Project $oProject Super tâche projet.
-     * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath,
+    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject,
         ServiceContainer $oServiceContainer)
     {
-        parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
+        parent::__construct($oTask, $oProject, $oServiceContainer);
         $this->_aAttrProperties = array(
             'name' => AttributeProperties::REQUIRED,
             'description' => AttributeProperties::REQUIRED

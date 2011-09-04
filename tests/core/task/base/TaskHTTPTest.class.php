@@ -66,7 +66,7 @@ class TaskHTTPTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_HTTP::check
      */
     public function testCheckThrowExceptionIfBadURL () {
-        $oTaskHTTP = Task_Base_HTTP::getNewInstance(array('url' => 'htp://badurl'), $this->oMockProject, '', $this->oServiceContainer);
+        $oTaskHTTP = Task_Base_HTTP::getNewInstance(array('url' => 'htp://badurl'), $this->oMockProject, $this->oServiceContainer);
         $this->setExpectedException('DomainException');
         $oTaskHTTP->setUp();
     }
@@ -83,7 +83,7 @@ class TaskHTTPTest extends PHPUnit_Framework_TestCase {
 
         $sXML = '<http url="http://xxx" />';
         $oXML = new SimpleXMLElement($sXML);
-        $oTaskHTTP = $this->getMock('Task_Base_HTTP', array('_reroutePaths'), array($oXML, $this->oMockProject, '', $this->oServiceContainer));
+        $oTaskHTTP = $this->getMock('Task_Base_HTTP', array('_reroutePaths'), array($oXML, $this->oMockProject, $this->oServiceContainer));
         $oTaskHTTP->expects($this->any())->method('_reroutePaths')->will($this->returnArgument(0));
 
         $this->setExpectedException('RuntimeException');
@@ -100,7 +100,7 @@ class TaskHTTPTest extends PHPUnit_Framework_TestCase {
     public function testExecuteWithOneURL () {
         $sXML = '<http url="http://aai.twenga.com/push.php?server=www26&amp;app=web" />';
         $oXML = new SimpleXMLElement($sXML);
-        $oTaskHTTP = $this->getMock('Task_Base_HTTP', array('_reroutePaths'), array($oXML, $this->oMockProject, '', $this->oServiceContainer));
+        $oTaskHTTP = $this->getMock('Task_Base_HTTP', array('_reroutePaths'), array($oXML, $this->oMockProject, $this->oServiceContainer));
         $oTaskHTTP->expects($this->any())->method('_reroutePaths')->will($this->returnArgument(0));
 
         $oTaskHTTP->setUp();
@@ -126,7 +126,7 @@ class TaskHTTPTest extends PHPUnit_Framework_TestCase {
 
         $sXML = '<http url="http://aai.twenga.com/push.php?server=${servers}&amp;app=web" />';
         $oXML = new SimpleXMLElement($sXML);
-        $oTaskHTTP = $this->getMock('Task_Base_HTTP', array('_reroutePaths'), array($oXML, $this->oMockProject, '', $this->oServiceContainer));
+        $oTaskHTTP = $this->getMock('Task_Base_HTTP', array('_reroutePaths'), array($oXML, $this->oMockProject, $this->oServiceContainer));
         $oTaskHTTP->expects($this->any())->method('_reroutePaths')->will($this->returnArgument(0));
 
         $oTaskHTTP->setUp();

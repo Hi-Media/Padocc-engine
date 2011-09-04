@@ -70,11 +70,10 @@ class Task_Base_Project extends Task_WithProperties
      */
     public function __construct ($sProjectName, $sEnvName, $sExecutionID, ServiceContainer $oServiceContainer)
     {
-        $sBackupPath = DEPLOYMENT_BACKUP_DIR . '/' . $sExecutionID;
         $oProject = self::getProject($sProjectName);
         $this->sEnvName = $sEnvName;
 
-        parent::__construct($oProject, $this, $sBackupPath, $oServiceContainer);
+        parent::__construct($oProject, $this, $oServiceContainer);
         $this->_aAttrProperties = array_merge(
             $this->_aAttrProperties,
             array('name' => AttributeProperties::REQUIRED)
@@ -85,10 +84,7 @@ class Task_Base_Project extends Task_WithProperties
         if (count($aTargets) !== 1) {
             throw new UnexpectedValueException("Environment '$sEnvName' not found or not unique in this project!");
         }
-        $this->_oBoundTask = new Task_Base_Environment(
-            $aTargets[0], $this->_oProject,
-            $sBackupPath, $this->_oServiceContainer
-        );
+        $this->_oBoundTask = new Task_Base_Environment($aTargets[0], $this->_oProject, $this->_oServiceContainer);
     }
 
     public function check()

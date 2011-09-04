@@ -15,10 +15,9 @@ abstract class Task
     const RELEASES_DIRECTORY_SUFFIX = '_releases';
 
     /**
-     * Compteur d'instances pour s'y retrouver dans les backups des tâches.
+     * Compteur d'instances pour mieux s'y retrouver dans les logs des tâches.
      * @var Numbering_Interface
      * @see $sName
-     * @see $sBackupPath
      */
     protected $_oNumbering;
 
@@ -89,16 +88,6 @@ abstract class Task
     protected $_aAttrProperties;
 
     /**
-     * Chemin du répertoire backup dédié à la tâche.
-     * De la forme : '[base]/[index]_[name]',
-     *    où 'base' est fourni au constructeur,
-     *    où 'index' est l'ordre d'exécution de la tâche
-     *    et où 'name' est le nom de la classe de la tâche.
-     * @var string
-     */
-    protected $_sBackupPath;
-
-    /**
      * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
      *
      * @return string nom du tag XML correspondant à cette tâche dans les config projet.
@@ -115,12 +104,11 @@ abstract class Task
      *
      * @param array $aAttributes Tableau associatif listant des attributs et leur valeur.
      * @param Task_Base_Project $oProject Super tâche projet.
-     * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      * @return Task
      * @throws RuntimeException si appelée directement sur Task.
      */
-    public static function getNewInstance (array $aAttributes, Task_Base_Project $oProject, $sBackupPath,
+    public static function getNewInstance (array $aAttributes, Task_Base_Project $oProject,
         ServiceContainer $oServiceContainer)
     {
         $sAttributes = '';
@@ -130,7 +118,7 @@ abstract class Task
         $sXML = '<' . static::getTagName() . $sAttributes . ' />';
 
         $oXML = new SimpleXMLElement($sXML);
-        return new static($oXML, $oProject, $sBackupPath, $oServiceContainer);
+        return new static($oXML, $oProject, $oServiceContainer);
     }
 
     /**
@@ -138,10 +126,9 @@ abstract class Task
      *
      * @param SimpleXMLElement $oTask Contenu XML de la tâche.
      * @param Task_Base_Project $oProject Super tâche projet.
-     * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oXMLTask, Task_Base_Project $oProject, $sBackupPath,
+    public function __construct (SimpleXMLElement $oXMLTask, Task_Base_Project $oProject,
         ServiceContainer $oServiceContainer)
     {
         $this->_oXMLTask = $oXMLTask;
@@ -156,7 +143,6 @@ abstract class Task
         $sCounter = $this->_oNumbering->getNextCounterValue();
         $this->_sCounter = $sCounter;
         $this->_sName = (strlen($this->_sCounter) === 0 ? '' : $this->_sCounter . '_') . get_class($this);
-        $this->_sBackupPath = $sBackupPath . '/' . $this->_sName;
 
         $this->_aAttrProperties = array();
         $this->_fetchAttributes();

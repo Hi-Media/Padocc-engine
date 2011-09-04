@@ -70,7 +70,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
         $oTask = Task_Base_Link::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
             'target' => 'user@server2:/path/to/destdir'
-        ), $this->oMockProject, '', $this->oServiceContainer);
+        ), $this->oMockProject, $this->oServiceContainer);
         $this->setExpectedException('DomainException');
         $oTask->setUp();
     }
@@ -83,7 +83,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
         $oTask = Task_Base_Link::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
             'target' => '/path/to/destdir'
-        ), $this->oMockProject, '', $this->oServiceContainer);
+        ), $this->oMockProject, $this->oServiceContainer);
         $this->setExpectedException('DomainException');
         $oTask->setUp();
     }
@@ -96,7 +96,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
         $oTask = Task_Base_Link::getNewInstance(array(
             'src' => '/path/to/link',
             'target' => 'user@server1:/path/to/destdir'
-        ), $this->oMockProject, '', $this->oServiceContainer);
+        ), $this->oMockProject, $this->oServiceContainer);
         $this->setExpectedException('DomainException');
         $oTask->setUp();
     }
@@ -110,7 +110,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
             'src' => 'user@server1:/path/to/link',
             'target' => '/path/to/destdir',
             'server' => 'user@server2'
-        ), $this->oMockProject, '', $this->oServiceContainer);
+        ), $this->oMockProject, $this->oServiceContainer);
         $this->setExpectedException('DomainException');
         $oTask->setUp();
     }
@@ -124,7 +124,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
             'src' => '/path/to/link',
             'target' => 'user@server1:/path/to/destdir',
             'server' => 'user@server2'
-        ), $this->oMockProject, '', $this->oServiceContainer);
+        ), $this->oMockProject, $this->oServiceContainer);
         $this->setExpectedException('DomainException');
         $oTask->setUp();
     }
@@ -138,7 +138,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
             'src' => 'user@server1:/path/to/link',
             'target' => 'user@server2:/path/to/destdir',
             'server' => 'user@server3'
-        ), $this->oMockProject, '', $this->oServiceContainer);
+        ), $this->oMockProject, $this->oServiceContainer);
         $this->setExpectedException('DomainException');
         $oTask->setUp();
     }
@@ -152,7 +152,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
             'src' => 'user@server1:/path/to/link',
             'target' => 'user@server1:/path/to/destdir',
             'server' => 'user@server2'
-        ), $this->oMockProject, '', $this->oServiceContainer);
+        ), $this->oMockProject, $this->oServiceContainer);
         $this->setExpectedException('DomainException');
         $oTask->setUp();
     }
@@ -162,7 +162,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Link::check
      */
     public function testCheckWithoutAttrServerAndServers () {
-        $oTask = Task_Base_Link::getNewInstance(array('src' => '/path/to/link', 'target' => '/path/to/destdir'), $this->oMockProject, '', $this->oServiceContainer);
+        $oTask = Task_Base_Link::getNewInstance(array('src' => '/path/to/link', 'target' => '/path/to/destdir'), $this->oMockProject, $this->oServiceContainer);
         $oTask->setUp();
         $this->assertAttributeEquals(array(
             'src' => '/path/to/link',
@@ -179,7 +179,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
             'src' => '/path/to/link',
             'target' => '/path/to/destdir',
             'server' => 'user@server'
-        ), $this->oMockProject, '', $this->oServiceContainer);
+        ), $this->oMockProject, $this->oServiceContainer);
         $oTask->setUp();
         $this->assertAttributeEquals(array(
             'src' => '/path/to/link',
@@ -193,7 +193,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Link::check
      */
     public function testCheckWithoutAttrServerButServers () {
-        $oTask = Task_Base_Link::getNewInstance(array('src' => 'user@server:/path/to/link', 'target' => 'user@server:/path/to/destdir'), $this->oMockProject, '', $this->oServiceContainer);
+        $oTask = Task_Base_Link::getNewInstance(array('src' => 'user@server:/path/to/link', 'target' => 'user@server:/path/to/destdir'), $this->oMockProject, $this->oServiceContainer);
         $oTask->setUp();
         $this->assertAttributeEquals(array(
             'src' => 'user@server:/path/to/link',
@@ -221,7 +221,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
         $oTask = Task_Base_Link::getNewInstance(array(
             'src' => 'user@server:/path/to/link',
             'target' => 'user@server:/path/to/destdir'
-        ), $this->oMockProject, '', $this->oServiceContainer);
+        ), $this->oMockProject, $this->oServiceContainer);
         $oTask->setUp();
         $oTask->execute();
         $this->assertEquals(array(
@@ -241,7 +241,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
         $oTask = Task_Base_Link::getNewInstance(array(
             'src' => 'user@server:/path/to/srcdir',
             'target' => 'user@server:/path/to/destdir'
-        ), $this->oMockProject, '', $this->oServiceContainer);
+        ), $this->oMockProject, $this->oServiceContainer);
         $oTask->setUp();
         $this->setExpectedException('RuntimeException');
         $oTask->execute();
@@ -265,7 +265,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
             'src' => '/path/to/link',
             'target' => '/path/to/destdir',
             'server' => 'user@server'
-        ), $this->oMockProject, '', $this->oServiceContainer);
+        ), $this->oMockProject, $this->oServiceContainer);
         $oTask->setUp();
         $oTask->execute();
         $this->assertEquals(array(
@@ -308,7 +308,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
             'src' => '/path/to/destdir/link',
             'target' => '/path/to/destdir/subdir',
             'server' => 'user@server'
-        ), $this->oMockProject, '', $this->oServiceContainer);
+        ), $this->oMockProject, $this->oServiceContainer);
         $oTask->setUp();
         $oTask->execute();
         $this->assertEquals(array(
@@ -350,7 +350,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
         $oTask = Task_Base_Link::getNewInstance(array(
             'src' => 'user@server:/path/to/destdir/link',
             'target' => 'user@server:/path/to/destdir/subdir'
-        ), $this->oMockProject, '', $this->oServiceContainer);
+        ), $this->oMockProject, $this->oServiceContainer);
         $oTask->setUp();
         $oTask->execute();
         $this->assertEquals(array(

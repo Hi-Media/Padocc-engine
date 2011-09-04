@@ -65,7 +65,7 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Sync::check
      */
     public function testCheckWithSrcFile () {
-        $oTaskCopy = Task_Base_Sync::getNewInstance(array('src' => '/path/to/srcfile', 'destdir' => '/path/to/destdir'), $this->oMockProject, '', $this->oServiceContainer);
+        $oTaskCopy = Task_Base_Sync::getNewInstance(array('src' => '/path/to/srcfile', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oServiceContainer);
         $oTaskCopy->setUp();
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir',
@@ -78,7 +78,7 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Sync::check
      */
     public function testCheckWithSrcDir () {
-        $oTaskCopy = Task_Base_Sync::getNewInstance(array('src' => '/path/to/srcdir', 'destdir' => '/path/to/destdir'), $this->oMockProject, '', $this->oServiceContainer);
+        $oTaskCopy = Task_Base_Sync::getNewInstance(array('src' => '/path/to/srcdir', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oServiceContainer);
         $oTaskCopy->setUp();
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir/srcdir',
@@ -104,7 +104,7 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase {
             'src' => '/path/to/srcdir',
             'destdir' => '/path/to/destdir',
             'exclude' => 'to_exclude.* config.php'
-        ), $this->oMockProject, '', $this->oServiceContainer);
+        ), $this->oMockProject, $this->oServiceContainer);
         $oTaskCopy->setUp();
         $oTaskCopy->execute();
         $this->assertEquals(array(
@@ -131,7 +131,7 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase {
             'src' => '/path/to/srcdir',
             'destdir' => '/path/to/destdir',
             'include' => '*.js *.css'
-        ), $this->oMockProject, '', $this->oServiceContainer);
+        ), $this->oMockProject, $this->oServiceContainer);
         $oTaskCopy->setUp();
         $oTaskCopy->execute();
         $this->assertEquals(array(
@@ -159,7 +159,7 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase {
             'destdir' => '/path/to/destdir',
             'include' => '*.js *.css',
             'exclude' => 'to_exclude.* config.php'
-        ), $this->oMockProject, '', $this->oServiceContainer);
+        ), $this->oMockProject, $this->oServiceContainer);
         $oTaskCopy->setUp();
         $oTaskCopy->execute();
         $this->assertEquals(array(
@@ -191,7 +191,7 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase {
         $oTaskCopy = Task_Base_Sync::getNewInstance(array(
             'src' => '/path/to/srcdir',
             'destdir' => 'user@server:/path/to/destdir'
-        ), $this->oMockProject, '', $this->oServiceContainer);
+        ), $this->oMockProject, $this->oServiceContainer);
         $oTaskCopy->setUp();
         $oTaskCopy->execute();
         $this->assertEquals(array(

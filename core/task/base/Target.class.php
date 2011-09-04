@@ -48,21 +48,19 @@ class Task_Base_Target extends Task_WithProperties
      *
      * @param SimpleXMLElement $oTask Contenu XML de la tâche.
      * @param Task_Base_Project $oProject Super tâche projet.
-     * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath,
+    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject,
         ServiceContainer $oServiceContainer)
     {
-        parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
+        parent::__construct($oTask, $oProject, $oServiceContainer);
         $this->_aAttrProperties = array_merge(
             $this->_aAttrProperties,
             array('name' => AttributeProperties::REQUIRED)
         );
 
         $this->_oNumbering->addCounterDivision();
-        // $sBackupPath et non $this->_sBackupPath, pour les sous-tâches :
-        $this->_aTasks = $this->_getTaskInstances($oTask, $this->_oProject, $sBackupPath);
+        $this->_aTasks = $this->_getTaskInstances($oTask, $this->_oProject);
         $this->_oNumbering->removeCounterDivision();
     }
 
@@ -108,12 +106,11 @@ class Task_Base_Target extends Task_WithProperties
      *
      * @param SimpleXMLElement $oTarget
      * @param Task_Base_Project $oProject
-     * @param string $sBackupPath
      * @return array liste d'instances de type Task
      * @throws Exception si tag XML inconnu.
      * @see Task
      */
-    private function _getTaskInstances (SimpleXMLElement $oTarget, Task_Base_Project $oProject, $sBackupPath)
+    private function _getTaskInstances (SimpleXMLElement $oTarget, Task_Base_Project $oProject)
     {
         $this->_oLogger->log('Initialize tasks');
         $aAvailableTasks = self::_getAvailableTasks();
@@ -138,8 +135,7 @@ class Task_Base_Target extends Task_WithProperties
             if ( ! isset($aAvailableTasks[$sTag])) {
                 throw new UnexpectedValueException("Unkown task tag: '$sTag'!");
             } else {
-                $aTaskInstances[] = new $aAvailableTasks[$sTag]($oTask, $oProject, $sBackupPath,
-                                                                $this->_oServiceContainer);
+                $aTaskInstances[] = new $aAvailableTasks[$sTag]($oTask, $oProject, $this->_oServiceContainer);
             }
         }
 

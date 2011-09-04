@@ -64,7 +64,7 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_MkDir::check
      */
     public function testCheckWithoutMode () {
-        $oTask = Task_Base_MkDir::getNewInstance(array('destdir' => '/path/to/destdir'), $this->oMockProject, '', $this->oServiceContainer);
+        $oTask = Task_Base_MkDir::getNewInstance(array('destdir' => '/path/to/destdir'), $this->oMockProject, $this->oServiceContainer);
         $oTask->setUp();
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir'
@@ -76,7 +76,7 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_MkDir::check
      */
     public function testCheckWithMode () {
-        $oTask = Task_Base_MkDir::getNewInstance(array('destdir' => '/path/to/destdir', 'mode' => '755'), $this->oMockProject, '', $this->oServiceContainer);
+        $oTask = Task_Base_MkDir::getNewInstance(array('destdir' => '/path/to/destdir', 'mode' => '755'), $this->oMockProject, $this->oServiceContainer);
         $oTask->setUp();
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir',
@@ -98,7 +98,7 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
         $oMockProperties->expects($this->exactly(1))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTask = Task_Base_MkDir::getNewInstance(array('destdir' => '/path/to/destdir'), $this->oMockProject, '', $this->oServiceContainer);
+        $oTask = Task_Base_MkDir::getNewInstance(array('destdir' => '/path/to/destdir'), $this->oMockProject, $this->oServiceContainer);
         $oTask->setUp();
         $oTask->execute();
         $this->assertEquals(array(
@@ -120,7 +120,7 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
         $oMockProperties->expects($this->exactly(1))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTask = Task_Base_MkDir::getNewInstance(array('destdir' => '/path/to/destdir', 'mode' => '755'), $this->oMockProject, '', $this->oServiceContainer);
+        $oTask = Task_Base_MkDir::getNewInstance(array('destdir' => '/path/to/destdir', 'mode' => '755'), $this->oMockProject, $this->oServiceContainer);
         $oTask->setUp();
         $oTask->execute();
         $this->assertEquals(array('mkdir -p "/path/to/destdir" && chmod 755 "/path/to/destdir"'), $this->aShellExecCmds);
@@ -146,7 +146,7 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
         $oMockProperties->expects($this->exactly(3))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTask = Task_Base_MkDir::getNewInstance(array('destdir' => 'user@server:/path/to/destdir/subdir', 'mode' => '755'), $this->oMockProject, '', $this->oServiceContainer);
+        $oTask = Task_Base_MkDir::getNewInstance(array('destdir' => 'user@server:/path/to/destdir/subdir', 'mode' => '755'), $this->oMockProject, $this->oServiceContainer);
         $oTask->setUp();
         $oTask->execute();
         $this->assertEquals(array(
