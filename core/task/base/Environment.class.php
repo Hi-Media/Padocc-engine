@@ -26,13 +26,12 @@ class Task_Base_Environment extends Task_Base_Target
      *
      * @param SimpleXMLElement $oTask Contenu XML de la tâche.
      * @param Task_Base_Project $oProject Super tâche projet.
-     * @param string $sBackupPath répertoire hôte pour le backup de la tâche.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject, $sBackupPath,
+    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject,
         ServiceContainer $oServiceContainer)
     {
-        parent::__construct($oTask, $oProject, $sBackupPath, $oServiceContainer);
+        parent::__construct($oTask, $oProject, $oServiceContainer);
         $this->_aAttrProperties = array_merge(
             $this->_aAttrProperties,
             array(
@@ -61,7 +60,8 @@ class Task_Base_Environment extends Task_Base_Target
                     'target' => $sReleaseSymLink,
                     'server' => '${SERVERS_CONCERNED_WITH_BASE_DIR}'
                 ),
-                $oProject, $sBackupPath, $oServiceContainer
+                $oProject,
+                $oServiceContainer
             );
             $this->_oNumbering->removeCounterDivision();
         }
