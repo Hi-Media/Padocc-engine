@@ -57,7 +57,7 @@ class Deployment
 
     public function getProjectsEnvsList ()
     {
-        $aAllProjectsName = Task_Base_Project::getAllProjectsName();
+        $aAllProjectsName = Task_Base_Project::getAllProjectsName(DEPLOYMENT_RESOURCES_DIR);
         $aTargetsByProject = array();
         if ( ! empty($aAllProjectsName)) {
             foreach ($aAllProjectsName as $sProjectName) {

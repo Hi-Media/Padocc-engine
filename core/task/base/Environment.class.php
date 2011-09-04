@@ -198,7 +198,7 @@ class Task_Base_Environment extends Task_Base_Target
 
     private function removeOldestReleases ()
     {
-        $this->_oLogger->log('Remove too old releases');
+        $this->_oLogger->log('Remove too old releases:');
         $this->_oLogger->indent();
         $this->_oProperties->setProperty('with_symlinks', 'false');
         $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
