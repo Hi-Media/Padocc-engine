@@ -169,7 +169,7 @@ class Task_Base_Environment extends Task_Base_Target
 
     private function initNewRelease ()
     {
-        $this->_oLogger->log('Initialize with content of previous deployment');
+        $this->_oLogger->log('Initialize with content of previous release');
         $this->_oLogger->indent();
         $this->_oProperties->setProperty('with_symlinks', 'false');
         $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
@@ -181,7 +181,7 @@ class Task_Base_Environment extends Task_Base_Target
             $sDir = $sExpandedPath . '/*';
             $sDest = $sServer . ':' . $sReleaseSymLink;
             if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_PathStatus::STATUS_SYMLINKED_DIR) {
-                $this->_oLogger->log("Initialize '$sDest' with previous deployment.");
+                $this->_oLogger->log("Initialize '$sDest' with previous release.");
                 $this->_oLogger->indent();
                 $aResults = $this->_oShell->sync($sDir, $sDest, array(), array('smarty/*/wrt*', 'smarty/**/wrt*'));
                 foreach ($aResults as $sResult) {
@@ -189,7 +189,7 @@ class Task_Base_Environment extends Task_Base_Target
                 }
                 $this->_oLogger->unindent();
             } else {
-                $this->_oLogger->log("No previous deployment to initialize '$sDest'.");
+                $this->_oLogger->log("No previous release to initialize '$sDest'.");
             }
         }
         $this->_oProperties->setProperty('with_symlinks', 'true');
@@ -277,7 +277,7 @@ class Task_Base_Environment extends Task_Base_Target
             $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
             $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
                              . '/' . $this->_oProperties->getProperty('execution_id');
-            $sMsg = "Change target of base directory's symbolic link to new deployment: '$sReleaseSymLink'";
+            $sMsg = "Change target of base directory's symbolic link to new release: '$sReleaseSymLink'";
             $this->_oLogger->indent();
             $this->_oLogger->log($sMsg);
             $this->_oLogger->unindent();
