@@ -72,10 +72,12 @@ class TaskHTTPTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @covers Task_Base_HTTP::__construct
-     * @covers Task_Base_HTTP::check
+     * @covers Task_Base_HTTP::execute
+     * @covers Task_Base_HTTP::_preExecute
+     * @covers Task_Base_HTTP::_centralExecute
+     * @covers Task_Base_HTTP::_postExecute
      */
-    public function testCheckThrowExceptionIfCURLReturnErrorMsg () {
+    public function testExecuteThrowExceptionIfCURLReturnErrorMsg () {
         $oLogger = $this->oServiceContainer->getLogAdapter();
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($oLogger));
         $oMockShell->expects($this->any())->method('exec')->will($this->returnValue(array('[ERROR] blabla')));
