@@ -8,40 +8,59 @@
 class Task_Base_Project extends Task_WithProperties
 {
 
-    public static function getAllProjectsName ()
+    /**
+     * Retourne la liste des projets dont le fichier de déploiement XML se trouve dans le chemin spécifié.
+     * La liste est triée par ordre alphabétique.
+     *
+     * @param string $sRessourcesPath chemin hébergeant des configurations de déploiement au format XML
+     * @return array la liste des projets dont le fichier de déploiement XML se trouve dans le chemin spécifié.
+     * @throws UnexpectedValueException si chemin non trouvé
+     */
+    public static function getAllProjectsName ($sRessourcesPath)
     {
-        $aProjectName = array();
-        if ($handle = opendir(DEPLOYMENT_RESOURCES_DIR)) {
-            while ($file = readdir($handle)) {
+        $aProjectNames = array();
+        $rHandle = @opendir($sRessourcesPath);
+        if ($rHandle === false) {
+            throw new UnexpectedValueException("Resource path not found: '$sRessourcesPath'.");
+        } else {
+            while ($file = readdir($rHandle)) {
                 clearstatcache();
-                $sProjectFilename = DEPLOYMENT_RESOURCES_DIR.'/'.$file;
-                if (substr($file, strlen($file)-3, 3) == "xml" && is_file($sProjectFilename)) {
-                    $oProject = new SimpleXMLElement($sProjectFilename, NULL, true);
+                $sProjectPath = $sRessourcesPath . '/' . $file;
+                if (substr($file, strlen($file)-4, 4) == '.xml' && is_file($sProjectPath)) {
+                    try {
+                        $oProject = new SimpleXMLElement($sProjectPath, NULL, true);
+                    } catch (Exception $oException) {
+                        throw new RuntimeException("Bad project definition: '$sProjectPath'", 1, $oException);
+                    }
                     if (isset($oProject['name'])) {
-                        $aProjectName[] = (string)$oProject['name'];
+                        $aProjectNames[] = (string)$oProject['name'];
                     }
                 }
             }
-            closedir($handle);
+            closedir($rHandle);
         }
-
-        return $aProjectName;
+        sort($aProjectNames);
+        return $aProjectNames;
     }
 
     /**
-     * Retourne une instance SimpleXML du projet spécifié.
+     * Retourne une instance SimpleXMLElement du projet spécifié.
      *
-     * @param string $sProjectName nom du projet à charger
+     * @param string $sProjectPath chemin menant au fichier de configuration XML du projet
      * @throws UnexpectedValueException si fichier XML du projet non trouvé
-     * @return SimpleXMLElement isntance du projet spécifié
+     * @return SimpleXMLElement instance du projet spécifié
      */
-    public static function getProject ($sProjectName)
+    public static function getSXEProject ($sProjectPath)
     {
-        $sProjectFilename = DEPLOYMENT_RESOURCES_DIR . '/' . $sProjectName . '.xml';
-        if ( ! file_exists($sProjectFilename)) {
-            throw new UnexpectedValueException("Project definition not found: '$sProjectFilename'!");
+        if ( ! file_exists($sProjectPath)) {
+            throw new UnexpectedValueException("Project definition not found: '$sProjectPath'!");
         }
-        return new SimpleXMLElement($sProjectFilename, NULL, true);
+        try {
+            $oSXE = new SimpleXMLElement($sProjectPath, NULL, true);
+        } catch (Exception $oException) {
+            throw new RuntimeException("Bad project definition: '$sProjectPath'", 1, $oException);
+        }
+        return $oSXE;
     }
 
     /**
@@ -70,7 +89,7 @@ class Task_Base_Project extends Task_WithProperties
      */
     public function __construct ($sProjectName, $sEnvName, $sExecutionID, ServiceContainer $oServiceContainer)
     {
-        $oProject = self::getProject($sProjectName);
+        $oProject = self::getSXEProject(DEPLOYMENT_RESOURCES_DIR . '/' . $sProjectName . '.xml');
         $this->sEnvName = $sEnvName;
 
         parent::__construct($oProject, $this, $oServiceContainer);
