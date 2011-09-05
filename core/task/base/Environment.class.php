@@ -205,7 +205,7 @@ class Task_Base_Environment extends Task_Base_Target
         $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX;
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
             list(, $sServer, $sRealPath) = $this->_oShell->isRemotePath($sExpandedPath);
-            $this->_oLogger->log("Check " . $sServer);
+            $this->_oLogger->log("Check " . $sServer . ':');
             $this->_oLogger->indent();
 
             $sCmd = "if [ -d %1\$s ]; then ls -t %1\$s | grep -E '^[0-9]{14}_[0-9]{5}(_origin)?$'; fi";
@@ -221,7 +221,7 @@ class Task_Base_Environment extends Task_Base_Target
                 $this->_oLogger->log($sMsg);
                 if ($bIsQuotaExceeded) {
                     $aReleasesToDelete = array_slice($aAllReleases, self::$_iDefaultMaxNbReleases);
-                    $sMsg = 'Release' . (count($aReleasesToDelete) > 1 ? 's' : '') . ' deleted: '
+                    $sMsg = 'Release' . (count($aReleasesToDelete) > 1 ? 's' : '') . ' deleted (the oldest): '
                           . implode(', ', $aReleasesToDelete) . '.';
                     $sFirst = $sExpandedPath . '/' . array_shift($aReleasesToDelete);
                     $sCmd = 'rm -rf %s';
