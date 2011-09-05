@@ -115,8 +115,12 @@ class Task_Base_Environment extends Task_Base_Target
 
         //$this->_oLogger->log(print_r($this->_aPathsToHandle, true));
         $aServersWithSymlinks = array_keys($this->_aPathsToHandle);
-        sort($aServersWithSymlinks);
-        $sMsg = "Servers concerned with base directory: '" . implode("', '", $aServersWithSymlinks) . "'.";
+        if (count($aServersWithSymlinks) > 0) {
+            sort($aServersWithSymlinks);
+            $sMsg = "Servers concerned with base directory: '" . implode("', '", $aServersWithSymlinks) . "'.";
+        } else {
+            $sMsg = 'No server concerned with base directory.';
+        }
         $this->_oLogger->log($sMsg);
         $this->_oProperties->setProperty('servers_concerned_with_base_dir', implode(' ', $aServersWithSymlinks));
     }
@@ -209,41 +213,45 @@ class Task_Base_Environment extends Task_Base_Target
     {
         $this->_oLogger->log('Remove too old releases:');
         $this->_oLogger->indent();
-        $this->_oProperties->setProperty('with_symlinks', 'false');
-        $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
-        $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX;
-        foreach ($this->_expandPath($sPath) as $sExpandedPath) {
-            list(, $sServer, $sRealPath) = $this->_oShell->isRemotePath($sExpandedPath);
-            $this->_oLogger->log("Check " . $sServer . ':');
-            $this->_oLogger->indent();
+        if ($this->_oProperties->getProperty('servers_concerned_with_base_dir') == '') {
+            $this->_oLogger->log('No release found.');
+        } else {
+            $this->_oProperties->setProperty('with_symlinks', 'false');
+            $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
+            $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX;
+            foreach ($this->_expandPath($sPath) as $sExpandedPath) {
+                list(, $sServer, $sRealPath) = $this->_oShell->isRemotePath($sExpandedPath);
+                $this->_oLogger->log("Check " . $sServer . ':');
+                $this->_oLogger->indent();
 
-            $sCmd = "if [ -d %1\$s ]; then ls -t %1\$s | grep -E '^[0-9]{14}_[0-9]{5}(_origin)?$'; fi";
-            $aAllReleases = $this->_oShell->execSSH($sCmd, $sExpandedPath);
-            $iNbReleases = count($aAllReleases);
-            if ($iNbReleases === 0) {
-                $this->_oLogger->log('No release found.');
-            } else {
-                $bIsQuotaExceeded = ($iNbReleases > self::$_iDefaultMaxNbReleases);
-                $sMsg = $iNbReleases . ' release' . ($iNbReleases > 1 ? 's' : '') . ' found: quota '
-                      . ($bIsQuotaExceeded ? 'exceeded' : 'not reached')
-                      . ' (' . self::$_iDefaultMaxNbReleases . ' backups max).';
-                $this->_oLogger->log($sMsg);
-                if ($bIsQuotaExceeded) {
-                    $aReleasesToDelete = array_slice($aAllReleases, self::$_iDefaultMaxNbReleases);
-                    $sMsg = 'Release' . (count($aReleasesToDelete) > 1 ? 's' : '') . ' deleted (the oldest): '
-                          . implode(', ', $aReleasesToDelete) . '.';
-                    $sFirst = $sExpandedPath . '/' . array_shift($aReleasesToDelete);
-                    $sCmd = 'rm -rf %s';
-                    if (count($aReleasesToDelete) > 0) {
-                        $sCmd .= ' ' . $sRealPath . '/' . implode(' ' . $sRealPath . '/', $aReleasesToDelete);
-                    }
-                    $this->_oShell->execSSH($sCmd, $sFirst);
+                $sCmd = "if [ -d %1\$s ]; then ls -t %1\$s | grep -E '^[0-9]{14}_[0-9]{5}(_origin)?$'; fi";
+                $aAllReleases = $this->_oShell->execSSH($sCmd, $sExpandedPath);
+                $iNbReleases = count($aAllReleases);
+                if ($iNbReleases === 0) {
+                    $this->_oLogger->log('No release found.');
+                } else {
+                    $bIsQuotaExceeded = ($iNbReleases > self::$_iDefaultMaxNbReleases);
+                    $sMsg = $iNbReleases . ' release' . ($iNbReleases > 1 ? 's' : '') . ' found: quota '
+                          . ($bIsQuotaExceeded ? 'exceeded' : 'not reached')
+                          . ' (' . self::$_iDefaultMaxNbReleases . ' backups max).';
                     $this->_oLogger->log($sMsg);
+                    if ($bIsQuotaExceeded) {
+                        $aReleasesToDelete = array_slice($aAllReleases, self::$_iDefaultMaxNbReleases);
+                        $sMsg = 'Release' . (count($aReleasesToDelete) > 1 ? 's' : '') . ' deleted (the oldest): '
+                              . implode(', ', $aReleasesToDelete) . '.';
+                        $sFirst = $sExpandedPath . '/' . array_shift($aReleasesToDelete);
+                        $sCmd = 'rm -rf %s';
+                        if (count($aReleasesToDelete) > 0) {
+                            $sCmd .= ' ' . $sRealPath . '/' . implode(' ' . $sRealPath . '/', $aReleasesToDelete);
+                        }
+                        $this->_oShell->execSSH($sCmd, $sFirst);
+                        $this->_oLogger->log($sMsg);
+                    }
                 }
+                $this->_oLogger->unindent();
             }
-            $this->_oLogger->unindent();
+            $this->_oProperties->setProperty('with_symlinks', 'true');
         }
-        $this->_oProperties->setProperty('with_symlinks', 'true');
         $this->_oLogger->unindent();
     }
 
@@ -279,14 +287,18 @@ class Task_Base_Environment extends Task_Base_Target
     {
         if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
             $this->_oLogger->indent();
-            $this->_oProperties->setProperty('with_symlinks', 'false');
-            $this->_oLinkTask->execute();
-            $this->_oProperties->setProperty('with_symlinks', 'true');
+            if ($this->_oProperties->getProperty('servers_concerned_with_base_dir') == '') {
+                $sMsg = 'No release found.';
+            } else {
+                $this->_oProperties->setProperty('with_symlinks', 'false');
+                $this->_oLinkTask->execute();
+                $this->_oProperties->setProperty('with_symlinks', 'true');
 
-            $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
-            $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
-                             . '/' . $this->_oProperties->getProperty('execution_id');
-            $sMsg = "Change target of base directory's symbolic link to new release: '$sReleaseSymLink'";
+                $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
+                $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
+                                 . '/' . $this->_oProperties->getProperty('execution_id');
+                $sMsg = "Change target of base directory's symbolic link to new release: '$sReleaseSymLink'";
+            }
             $this->_oLogger->indent();
             $this->_oLogger->log($sMsg);
             $this->_oLogger->unindent();
