@@ -5,7 +5,8 @@
  * @package Tests
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
-class TaskLinkTest extends PHPUnit_Framework_TestCase {
+class TaskLinkTest extends PHPUnit_Framework_TestCase
+{
 
     /**
      * Collection de services.
@@ -21,11 +22,13 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
 
     private $aShellExecCmds;
 
-    public function shellExecCallback ($sCmd) {
+    public function shellExecCallback ($sCmd)
+    {
         $this->aShellExecCmds[] = $sCmd;
     }
 
-    public function setUp () {
+    public function setUp ()
+    {
         $oBaseLogger = new Logger_Adapter(Logger_Interface::WARNING);
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
 
@@ -57,7 +60,8 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
         $this->oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
     }
 
-    public function tearDown() {
+    public function tearDown()
+    {
         $this->oServiceContainer = NULL;
         $this->oMockProject = NULL;
     }
@@ -66,7 +70,8 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Link::__construct
      * @covers Task_Base_Link::check
      */
-    public function testCheckWithoutAttrServerThrowExceptionIfServersNotEquals1 () {
+    public function testCheck_WithoutAttrServerThrowExceptionIfServersNotEquals1 ()
+    {
         $oTask = Task_Base_Link::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
             'target' => 'user@server2:/path/to/destdir'
@@ -79,7 +84,8 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Link::__construct
      * @covers Task_Base_Link::check
      */
-    public function testCheckWithoutAttrServerThrowExceptionIfServersNotEquals2 () {
+    public function testCheck_WithoutAttrServerThrowExceptionIfServersNotEquals2 ()
+    {
         $oTask = Task_Base_Link::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
             'target' => '/path/to/destdir'
@@ -92,7 +98,8 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Link::__construct
      * @covers Task_Base_Link::check
      */
-    public function testCheckWithoutAttrServerThrowExceptionIfServersNotEquals3 () {
+    public function testCheck_WithoutAttrServerThrowExceptionIfServersNotEquals3 ()
+    {
         $oTask = Task_Base_Link::getNewInstance(array(
             'src' => '/path/to/link',
             'target' => 'user@server1:/path/to/destdir'
@@ -105,7 +112,8 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Link::__construct
      * @covers Task_Base_Link::check
      */
-    public function testCheckWithAttrServerThrowExceptionIfServersNotEquals1 () {
+    public function testCheck_WithAttrServerThrowExceptionIfServersNotEquals1 ()
+    {
         $oTask = Task_Base_Link::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
             'target' => '/path/to/destdir',
@@ -119,7 +127,8 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Link::__construct
      * @covers Task_Base_Link::check
      */
-    public function testCheckWithAttrServerThrowExceptionIfServersNotEquals2 () {
+    public function testCheck_WithAttrServerThrowExceptionIfServersNotEquals2 ()
+    {
         $oTask = Task_Base_Link::getNewInstance(array(
             'src' => '/path/to/link',
             'target' => 'user@server1:/path/to/destdir',
@@ -133,7 +142,8 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Link::__construct
      * @covers Task_Base_Link::check
      */
-    public function testCheckWithAttrServerThrowExceptionIfServersNotEquals3 () {
+    public function testCheck_WithAttrServerThrowExceptionIfServersNotEquals3 ()
+    {
         $oTask = Task_Base_Link::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
             'target' => 'user@server2:/path/to/destdir',
@@ -147,7 +157,8 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Link::__construct
      * @covers Task_Base_Link::check
      */
-    public function testCheckWithAttrServerThrowExceptionIfTwoOtherServers () {
+    public function testCheck_WithAttrServerThrowExceptionIfTwoOtherServers ()
+    {
         $oTask = Task_Base_Link::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
             'target' => 'user@server1:/path/to/destdir',
@@ -161,7 +172,8 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Link::__construct
      * @covers Task_Base_Link::check
      */
-    public function testCheckWithoutAttrServerAndServers () {
+    public function testCheck_WithoutAttrServerAndServers ()
+    {
         $oTask = Task_Base_Link::getNewInstance(array('src' => '/path/to/link', 'target' => '/path/to/destdir'), $this->oMockProject, $this->oServiceContainer);
         $oTask->setUp();
         $this->assertAttributeEquals(array(
@@ -174,7 +186,8 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Link::__construct
      * @covers Task_Base_Link::check
      */
-    public function testCheckWithAttrServer () {
+    public function testCheck_WithAttrServer ()
+    {
         $oTask = Task_Base_Link::getNewInstance(array(
             'src' => '/path/to/link',
             'target' => '/path/to/destdir',
@@ -192,7 +205,8 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Link::__construct
      * @covers Task_Base_Link::check
      */
-    public function testCheckWithoutAttrServerButServers () {
+    public function testCheck_WithoutAttrServerButServers ()
+    {
         $oTask = Task_Base_Link::getNewInstance(array('src' => 'user@server:/path/to/link', 'target' => 'user@server:/path/to/destdir'), $this->oMockProject, $this->oServiceContainer);
         $oTask->setUp();
         $this->assertAttributeEquals(array(
@@ -207,7 +221,8 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Link::_centralExecute
      * @covers Task_Base_Link::_postExecute
      */
-    public function testExecuteWithoutAttrServer () {
+    public function testExecute_WithoutAttrServer ()
+    {
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
@@ -237,7 +252,8 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Link::_centralExecute
      * @covers Task_Base_Link::_postExecute
      */
-    public function testExecuteWithoutAttrServerThrowExceptionIfBadSrc () {
+    public function testExecute_WithoutAttrServerThrowExceptionIfBadSrc ()
+    {
         $oTask = Task_Base_Link::getNewInstance(array(
             'src' => 'user@server:/path/to/srcdir',
             'target' => 'user@server:/path/to/destdir'
@@ -253,7 +269,8 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Link::_centralExecute
      * @covers Task_Base_Link::_postExecute
      */
-    public function testExecuteWithAttrServer () {
+    public function testExecute_WithAttrServer ()
+    {
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
         $oMockProperties->expects($this->any())->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
@@ -281,7 +298,8 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Link::_centralExecute
      * @covers Task_Base_Link::_postExecute
      */
-    public function testExecuteWithAttrServerAndSymlink () {
+    public function testExecute_WithAttrServerAndSymlink ()
+    {
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
@@ -324,7 +342,8 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_Link::_centralExecute
      * @covers Task_Base_Link::_postExecute
      */
-    public function testExecuteWithoutAttrServerWithSymlink () {
+    public function testExecute_WithoutAttrServerWithSymlink ()
+    {
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))

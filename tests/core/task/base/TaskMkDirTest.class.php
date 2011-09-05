@@ -5,7 +5,8 @@
  * @package Tests
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
-class TaskMkDirTest extends PHPUnit_Framework_TestCase {
+class TaskMkDirTest extends PHPUnit_Framework_TestCase
+{
 
     /**
      * Collection de services.
@@ -21,11 +22,13 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
 
     private $aShellExecCmds;
 
-    public function shellExecCallback ($sCmd) {
+    public function shellExecCallback ($sCmd)
+    {
         $this->aShellExecCmds[] = $sCmd;
     }
 
-    public function setUp () {
+    public function setUp ()
+    {
         $oBaseLogger = new Logger_Adapter(Logger_Interface::WARNING);
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
 
@@ -54,7 +57,8 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
         $this->oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
     }
 
-    public function tearDown() {
+    public function tearDown()
+    {
         $this->oServiceContainer = NULL;
         $this->oMockProject = NULL;
     }
@@ -63,7 +67,8 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_MkDir::__construct
      * @covers Task_Base_MkDir::check
      */
-    public function testCheckWithoutMode () {
+    public function testCheck_WithoutMode ()
+    {
         $oTask = Task_Base_MkDir::getNewInstance(array('destdir' => '/path/to/destdir'), $this->oMockProject, $this->oServiceContainer);
         $oTask->setUp();
         $this->assertAttributeEquals(array(
@@ -75,7 +80,8 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_MkDir::__construct
      * @covers Task_Base_MkDir::check
      */
-    public function testCheckWithMode () {
+    public function testCheck_WithMode ()
+    {
         $oTask = Task_Base_MkDir::getNewInstance(array('destdir' => '/path/to/destdir', 'mode' => '755'), $this->oMockProject, $this->oServiceContainer);
         $oTask->setUp();
         $this->assertAttributeEquals(array(
@@ -90,7 +96,8 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_MkDir::_centralExecute
      * @covers Task_Base_MkDir::_postExecute
      */
-    public function testExecuteWithoutMode () {
+    public function testExecute_WithoutMode ()
+    {
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
         $oMockProperties->expects($this->any())->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
@@ -112,7 +119,8 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_MkDir::_centralExecute
      * @covers Task_Base_MkDir::_postExecute
      */
-    public function testExecuteWithMode () {
+    public function testExecute_WithMode ()
+    {
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
         $oMockProperties->expects($this->any())->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
@@ -132,7 +140,8 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_MkDir::_centralExecute
      * @covers Task_Base_MkDir::_postExecute
      */
-    public function testExecuteWithModeAndSymLinks () {
+    public function testExecute_WithModeAndSymLinks ()
+    {
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
@@ -155,5 +164,4 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase {
                 . 'EOF' . "\n"
         ), $this->aShellExecCmds);
     }
-
 }

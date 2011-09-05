@@ -5,7 +5,8 @@
  * @package Tests
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
-class TaskProjectTest extends PHPUnit_Framework_TestCase {
+class TaskProjectTest extends PHPUnit_Framework_TestCase
+{
 
     /**
      * Collection de services.
@@ -21,11 +22,13 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase {
 
     private $aShellExecCmds;
 
-    public function shellExecCallback ($sCmd) {
+    public function shellExecCallback ($sCmd)
+    {
         $this->aShellExecCmds[] = $sCmd;
     }
 
-    public function setUp () {
+    public function setUp ()
+    {
         $oBaseLogger = new Logger_Adapter(Logger_Interface::WARNING);
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
 
@@ -54,7 +57,8 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase {
         //$this->oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
     }
 
-    public function tearDown() {
+    public function tearDown()
+    {
         $this->oServiceContainer = NULL;
         //$this->oMockProject = NULL;
     }
@@ -62,7 +66,8 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase {
     /**
      * @covers Task_Base_Project::getAllProjectsName
      */
-    public function testGetAllProjectsNameThrowExceptionIfNotFound () {
+    public function testGetAllProjectsName_ThrowExceptionIfNotFound ()
+    {
         $this->setExpectedException('UnexpectedValueException');
         Task_Base_Project::getAllProjectsName(__DIR__ . '/not_found');
     }
@@ -70,7 +75,8 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase {
     /**
      * @covers Task_Base_Project::getAllProjectsName
      */
-    public function testGetAllProjectsNameThrowExceptionIfBadXml () {
+    public function testGetAllProjectsName_ThrowExceptionIfBadXml ()
+    {
         $this->setExpectedException('UnexpectedValueException');
         Task_Base_Project::getAllProjectsName(__DIR__ . '/resources/2');
     }
@@ -78,7 +84,8 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase {
     /**
      * @covers Task_Base_Project::getAllProjectsName
      */
-    public function testGetAllProjectsName () {
+    public function testGetAllProjectsName ()
+    {
         $aProjectNames = Task_Base_Project::getAllProjectsName(__DIR__ . '/resources/1');
         $this->assertEquals($aProjectNames, array('ebay', 'ptpn', 'rts'));
     }
@@ -94,7 +101,8 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase {
     /**
      * @covers Task_Base_Project::getSXEProject
      */
-    public function testGetSXEProjectThrowExceptionIfBadXML () {
+    public function testGetSXEProject_ThrowExceptionIfBadXML ()
+    {
         $this->setExpectedException('RuntimeException');
         Task_Base_Project::getSXEProject(__DIR__ . '/resources/2/bad_xml.xml');
     }
@@ -102,7 +110,8 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase {
     /**
      * @covers Task_Base_Project::getSXEProject
      */
-    public function testGetSXEProject () {
+    public function testGetSXEProject ()
+    {
         $oSXE = Task_Base_Project::getSXEProject(__DIR__ . '/resources/1/ebay.xml');
         $this->assertEquals($oSXE, new SimpleXMLElement(__DIR__ . '/resources/1/ebay.xml', NULL, true));
     }
@@ -110,7 +119,8 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase {
     /**
      * @covers Task_Base_Project::__construct
      */
-    public function testNewThrowExceptionIfProjectNotFound () {
+    public function testNew_ThrowExceptionIfProjectNotFound ()
+    {
         $this->setExpectedException('UnexpectedValueException');
         $oTask = new Task_Base_Project('/path/not found', 'myEnv', 'anExecutionID', $this->oServiceContainer);
     }
@@ -118,7 +128,8 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase {
     /**
      * @covers Task_Base_Project::__construct
      */
-    public function testNewThrowExceptionIfBadXML () {
+    public function testNew_ThrowExceptionIfBadXML ()
+    {
         $sTmpPath = tempnam('/tmp', 'deploy_unittest_');
         $sContent = 'bla bla';
         file_put_contents($sTmpPath, $sContent);
@@ -134,7 +145,8 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase {
     /**
      * @covers Task_Base_Project::__construct
      */
-    public function testNewThrowExceptionIfEnvNotFound () {
+    public function testNew_ThrowExceptionIfEnvNotFound ()
+    {
         $sTmpPath = tempnam('/tmp', 'deploy_unittest_');
         $sContent = <<<EOT
 <?xml version="1.0" encoding="UTF-8"?>
@@ -154,7 +166,8 @@ EOT;
     /**
      * @covers Task_Base_Project::__construct
      */
-    public function testNewThrowExceptionIfMultipleEnv () {
+    public function testNew_ThrowExceptionIfMultipleEnv ()
+    {
         $sTmpPath = tempnam('/tmp', 'deploy_unittest_');
         $sContent = <<<EOT
 <?xml version="1.0" encoding="UTF-8"?>
@@ -177,7 +190,8 @@ EOT;
      * @covers Task_Base_Project::__construct
      * @covers Task_Base_Project::check
      */
-    public function testCheck () {
+    public function testCheck ()
+    {
         $sTmpPath = tempnam('/tmp', 'deploy_unittest_');
         $sContent = <<<EOT
 <?xml version="1.0" encoding="UTF-8"?>
