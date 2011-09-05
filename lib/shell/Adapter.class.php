@@ -315,26 +315,21 @@ class Shell_Adapter implements Shell_Interface
      * découpé par ligne et analysé par _resumeSyncResult()
      * @throws RuntimeException en cas d'erreur shell
      * @throws RuntimeException car non implémenté quand plusieurs $mDestPath et $sSrcPath est distant
-     * @throws RuntimeException car non implémenté quand un seul $mDestPath mais $sSrcPath et $mDestPath
-     * pointent sur deux serveurs distants différents
      */
     public function sync ($sSrcPath, $mDestPath, array $aIncludedPaths=array(), array $aExcludedPaths=array())
     {
-        $aPaths = (is_array($mDestPath) ? $mDestPath : array($mDestPath));
+        $aDestPaths = (is_array($mDestPath) ? $mDestPath : array($mDestPath));
 
         // Cas non gérés :
         list($bIsSrcRemote, $sSrcServer, $sSrcRealPath) = $this->isRemotePath($sSrcPath);
-        list($bIsDestRemote, $sDestServer, $sDestRealPath) = $this->isRemotePath(reset($aPaths));
-        if (
-            (count($aPaths) > 1 && $bIsSrcRemote)
-            || (count($aPaths) === 1 && $bIsSrcRemote && $bIsDestRemote && $sSrcServer != $sDestServer)
-        ) {
+        list($bIsDestRemote, $sDestServer, $sDestRealPath) = $this->isRemotePath(reset($aDestPaths));
+        if (count($aDestPaths) > 1 && $bIsSrcRemote) {
             throw new RuntimeException('Not yet implemented!');
         }
 
         $aAllResults = array();
-        for ($i=0; $i<count($aPaths); $i++) {
-            $aResult = $this->mkdir($aPaths[$i]);
+        for ($i=0; $i<count($aDestPaths); $i++) {
+            $aResult = $this->mkdir($aDestPaths[$i]);
             $aAllResults = array_merge($aAllResults, $aResult);
         }
 
@@ -353,17 +348,18 @@ class Shell_Adapter implements Shell_Interface
             $sRsyncCmd = 'if ls -1 "' . substr($sSrcRealPath, 0, -2) . '" | grep -q .; then ' . $sRsyncCmd . '; fi';
         }
 
-        if (count($aPaths) === 1 && $bIsSrcRemote && $bIsDestRemote && $sSrcServer == $sDestServer) {
-            $sCmd = sprintf($sRsyncCmd, '%1$s', $this->escapePath($sDestRealPath));
+        if (count($aDestPaths) === 1 && $bIsSrcRemote && $bIsDestRemote) {
+            $sDestPath = ($sSrcServer == $sDestServer ? $sDestRealPath : reset($aDestPaths));
+            $sCmd = sprintf($sRsyncCmd, '%1$s', $this->escapePath($sDestPath));
             $aRawResult = $this->execSSH($sCmd, $sSrcPath);
             $aResult = $this->_resumeSyncResult($aRawResult);
             $aAllResults = array_merge($aAllResults, $aResult);
 
         } else {
-            for ($i=0; $i<count($aPaths); $i++) {
+            for ($i=0; $i<count($aDestPaths); $i++) {
                 $aCmds = array();
-                for ($j=$i; $j<count($aPaths) && $j<$i+DEPLOYMENT_RSYNC_MAX_NB_PROCESSES; $j++) {
-                    $aCmds[] = sprintf($sRsyncCmd, $this->escapePath($sSrcPath), $this->escapePath($aPaths[$j]));
+                for ($j=$i; $j<count($aDestPaths) && $j<$i+DEPLOYMENT_RSYNC_MAX_NB_PROCESSES; $j++) {
+                    $aCmds[] = sprintf($sRsyncCmd, $this->escapePath($sSrcPath), $this->escapePath($aDestPaths[$j]));
                 }
 
                 $i = $j-1;
