@@ -69,17 +69,16 @@ class PropertiesTest extends PHPUnit_Framework_TestCase {
         $sTmpPath = tempnam('/tmp', 'deploy_unittest_');
         chmod($sTmpPath, 0222);
 
+        $this->setExpectedException('RuntimeException');
         try {
             $oProperties->loadConfigIniFile($sTmpPath);
         } catch (RuntimeException $oException) {
             unlink($sTmpPath);
-            return;
+            throw $oException;
         } catch (Exception $oException) {
             unlink($sTmpPath);
-            throw $oException;
         }
         @unlink($sTmpPath);
-        $this->fail('Expected exception UnexpectedValueException');
     }
 
     /**
