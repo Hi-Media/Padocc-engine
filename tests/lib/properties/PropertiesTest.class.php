@@ -5,18 +5,21 @@
  * @package Tests
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
-class PropertiesTest extends PHPUnit_Framework_TestCase {
+class PropertiesTest extends PHPUnit_Framework_TestCase
+{
 
     private $oLogger;
     private $oShell;
 
-    public function setUp () {
+    public function setUp ()
+    {
         $oRawLogger = new Logger_Adapter(Logger_Interface::WARNING);
         $this->oLogger = new Logger_IndentedDecorator($oRawLogger, '----');
         $this->oShell = new Shell_Adapter($this->oLogger);
     }
 
-    public function tearDown() {
+    public function tearDown()
+    {
         $this->oLogger = NULL;
         $this->oShell = NULL;
     }
@@ -24,7 +27,8 @@ class PropertiesTest extends PHPUnit_Framework_TestCase {
     /**
      * @covers Properties_Adapter::getProperty
      */
-    public function testGetPropertyThrowExceptionIfUnknownProperty () {
+    public function testGetProperty_ThrowExceptionIfUnknownProperty ()
+    {
         $oProperties = new Properties_Adapter($this->oShell);
         $this->setExpectedException('UnexpectedValueException');
         $oProperties->getProperty('not_exists');
@@ -34,7 +38,8 @@ class PropertiesTest extends PHPUnit_Framework_TestCase {
      * @covers Properties_Adapter::getProperty
      * @covers Properties_Adapter::setProperty
      */
-    public function testGetPropertyIfPropertyExists () {
+    public function testGetProperty_IfPropertyExists ()
+    {
         $oProperties = new Properties_Adapter($this->oShell);
         $sValue = $oProperties->setProperty('A_PRoperty', 'A value')->getProperty('a_PropERTY');
         $this->assertEquals('A value', $sValue);
@@ -44,7 +49,8 @@ class PropertiesTest extends PHPUnit_Framework_TestCase {
      * @covers Properties_Adapter::getProperty
      * @covers Properties_Adapter::setProperty
      */
-    public function testGetPropertyWith2SetProperty () {
+    public function testGetProperty_With2SetProperty ()
+    {
         $oProperties = new Properties_Adapter($this->oShell);
         $sValue = $oProperties->setProperty('A_PRoperty', 'A value')
             ->setProperty('A_PRoperty', 'A new value')
@@ -55,7 +61,8 @@ class PropertiesTest extends PHPUnit_Framework_TestCase {
     /**
      * @covers Properties_Adapter::loadConfigIniFile
      */
-    public function testLoadConfigIniFileThrowExceptionIfFileNotExists () {
+    public function testLoadConfigIniFile_ThrowExceptionIfFileNotExists ()
+    {
         $oProperties = new Properties_Adapter($this->oShell);
         $this->setExpectedException('UnexpectedValueException');
         $oProperties->loadConfigIniFile('/file/not/exists.ini');
@@ -64,7 +71,8 @@ class PropertiesTest extends PHPUnit_Framework_TestCase {
     /**
      * @covers Properties_Adapter::loadConfigIniFile
      */
-    public function testLoadConfigIniFileThrowExceptionIfParseFailed () {
+    public function testLoadConfigIniFile_ThrowExceptionIfParseFailed ()
+    {
         $oProperties = new Properties_Adapter($this->oShell);
         $sTmpPath = tempnam('/tmp', 'deploy_unittest_');
         chmod($sTmpPath, 0222);
@@ -84,7 +92,8 @@ class PropertiesTest extends PHPUnit_Framework_TestCase {
     /**
      * @covers Properties_Adapter::loadConfigIniFile
      */
-    public function testLoadConfigIniFileWithValues () {
+    public function testLoadConfigIniFile_WithValues ()
+    {
         $oProperties = new Properties_Adapter($this->oShell);
 
         $sTmpPath = tempnam('/tmp', 'deploy_unittest_');
@@ -109,7 +118,8 @@ EOT;
     /**
      * @covers Properties_Adapter::loadConfigShellFile
      */
-    public function testLoadConfigShellFileThrowExceptionIfFileNotExists () {
+    public function testLoadConfigShellFile_ThrowExceptionIfFileNotExists ()
+    {
         $oProperties = new Properties_Adapter($this->oShell);
         $this->setExpectedException('UnexpectedValueException');
         $oProperties->loadConfigShellFile('/file/not/exists.ini');
@@ -118,7 +128,8 @@ EOT;
     /**
      * @covers Properties_Adapter::loadConfigShellFile
      */
-    public function testLoadConfigShellFileWithSimpleValues () {
+    public function testLoadConfigShellFile_WithSimpleValues ()
+    {
         $oProperties = new Properties_Adapter($this->oShell);
 
         $sTmpPath = tempnam('/tmp', 'deploy_unittest_');
@@ -139,7 +150,8 @@ EOT;
     /**
      * @covers Properties_Adapter::loadConfigShellFile
      */
-    public function testLoadConfigShellFileWithRecursiveValues () {
+    public function testLoadConfigShellFile_WithRecursiveValues ()
+    {
         $oProperties = new Properties_Adapter($this->oShell);
 
         $sTmpPath = tempnam('/tmp', 'deploy_unittest_');

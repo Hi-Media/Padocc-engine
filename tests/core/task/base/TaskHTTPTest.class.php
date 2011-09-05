@@ -5,7 +5,8 @@
  * @package Tests
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
-class TaskHTTPTest extends PHPUnit_Framework_TestCase {
+class TaskHTTPTest extends PHPUnit_Framework_TestCase
+{
 
     /**
      * Collection de services.
@@ -21,11 +22,13 @@ class TaskHTTPTest extends PHPUnit_Framework_TestCase {
 
     private $aShellExecCmds;
 
-    public function shellExecCallback ($sCmd) {
+    public function shellExecCallback ($sCmd)
+    {
         $this->aShellExecCmds[] = $sCmd;
     }
 
-    public function setUp () {
+    public function setUp ()
+    {
         $oBaseLogger = new Logger_Adapter(Logger_Interface::WARNING);
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
 
@@ -56,7 +59,8 @@ class TaskHTTPTest extends PHPUnit_Framework_TestCase {
         $this->oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
     }
 
-    public function tearDown() {
+    public function tearDown()
+    {
         $this->oServiceContainer = NULL;
         $this->oMockProject = NULL;
     }
@@ -65,7 +69,8 @@ class TaskHTTPTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_HTTP::__construct
      * @covers Task_Base_HTTP::check
      */
-    public function testCheckThrowExceptionIfBadURL () {
+    public function testCheck_ThrowExceptionIfBadURL ()
+    {
         $oTaskHTTP = Task_Base_HTTP::getNewInstance(array('url' => 'htp://badurl'), $this->oMockProject, $this->oServiceContainer);
         $this->setExpectedException('DomainException');
         $oTaskHTTP->setUp();
@@ -77,7 +82,8 @@ class TaskHTTPTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_HTTP::_centralExecute
      * @covers Task_Base_HTTP::_postExecute
      */
-    public function testExecuteThrowExceptionIfCURLReturnErrorMsg () {
+    public function testExecute_ThrowExceptionIfCURLReturnErrorMsg ()
+    {
         $oLogger = $this->oServiceContainer->getLogAdapter();
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($oLogger));
         $oMockShell->expects($this->any())->method('exec')->will($this->returnValue(array('[ERROR] blabla')));
@@ -99,7 +105,8 @@ class TaskHTTPTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_HTTP::_centralExecute
      * @covers Task_Base_HTTP::_postExecute
      */
-    public function testExecuteWithOneURL () {
+    public function testExecute_WithOneURL ()
+    {
         $sXML = '<http url="http://aai.twenga.com/push.php?server=www26&amp;app=web" />';
         $oXML = new SimpleXMLElement($sXML);
         $oTaskHTTP = $this->getMock('Task_Base_HTTP', array('_reroutePaths'), array($oXML, $this->oMockProject, $this->oServiceContainer));
@@ -118,7 +125,8 @@ class TaskHTTPTest extends PHPUnit_Framework_TestCase {
      * @covers Task_Base_HTTP::_centralExecute
      * @covers Task_Base_HTTP::_postExecute
      */
-    public function testExecuteWithMultiURL () {
+    public function testExecute_WithMultiURL ()
+    {
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('servers'))

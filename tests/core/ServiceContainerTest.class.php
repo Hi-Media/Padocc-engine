@@ -5,7 +5,8 @@
  * @package Tests
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
-class ServiceContainerTest extends PHPUnit_Framework_TestCase {
+class ServiceContainerTest extends PHPUnit_Framework_TestCase
+{
 
     /**
      * Collection de services.
@@ -13,11 +14,13 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
      */
     private $oServiceContainer;
 
-    public function setUp () {
+    public function setUp ()
+    {
         $this->oServiceContainer = new ServiceContainer();
     }
 
-    public function tearDown() {
+    public function tearDown()
+    {
         $this->oServiceContainer = NULL;
     }
 
@@ -25,7 +28,8 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
      * @covers ServiceContainer::setLogAdapter
      * @covers ServiceContainer::getLogAdapter
      */
-    public function testSetLogAdapter () {
+    public function testSetLogAdapter ()
+    {
         $oBaseLogger = new Logger_Adapter(Logger_Interface::WARNING);
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
         $o = $this->oServiceContainer->setLogAdapter($oLogger)->getLogAdapter();
@@ -36,7 +40,8 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
      * @covers ServiceContainer::setPropertiesAdapter
      * @covers ServiceContainer::getPropertiesAdapter
      */
-    public function testSetPropertyAdapter () {
+    public function testSetPropertyAdapter ()
+    {
         $oBaseLogger = new Logger_Adapter(Logger_Interface::WARNING);
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
         $oShell = new Shell_Adapter($oLogger);
@@ -50,7 +55,8 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
      * @covers ServiceContainer::setNumberingAdapter
      * @covers ServiceContainer::getNumberingAdapter
      */
-    public function testSetNumberingAdapter () {
+    public function testSetNumberingAdapter ()
+    {
         $oNumbering = new Numbering_Adapter();
         $o = $this->oServiceContainer->setNumberingAdapter($oNumbering)->getNumberingAdapter();
         $this->assertEquals($oNumbering, $o);
@@ -60,7 +66,8 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase {
      * @covers ServiceContainer::setShellAdapter
      * @covers ServiceContainer::getShellAdapter
      */
-    public function testSetShellAdapter () {
+    public function testSetShellAdapter ()
+    {
         $oBaseLogger = new Logger_Adapter(Logger_Interface::WARNING);
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
         $oShell = new Shell_Adapter($oLogger);

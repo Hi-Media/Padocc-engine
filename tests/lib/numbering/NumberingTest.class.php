@@ -5,24 +5,28 @@
  * @package Tests
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
-class NumberingTest extends PHPUnit_Framework_TestCase {
+class NumberingTest extends PHPUnit_Framework_TestCase
+{
 
     const SEPARATOR = '#';
 
     private $oNumbering;
 
-    public function setUp () {
+    public function setUp ()
+    {
         $this->_oNumbering = new Numbering_Adapter(self::SEPARATOR);
     }
 
-    public function tearDown() {
+    public function tearDown()
+    {
         $this->_oNumbering = NULL;
     }
 
     /**
      * @covers Numbering_Adapter::getNextCounterValue
      */
-    public function testGetNextCounterValueAtFirstCall () {
+    public function testGetNextCounterValue_AtFirstCall ()
+    {
         $sCounterValue = $this->_oNumbering->getNextCounterValue();
         $this->assertEquals('1', $sCounterValue);
     }
@@ -31,7 +35,8 @@ class NumberingTest extends PHPUnit_Framework_TestCase {
      * @covers Numbering_Adapter::addCounterDivision
      * @covers Numbering_Adapter::getNextCounterValue
      */
-    public function testGetNextCounterValueAfterAddCounterDivision () {
+    public function testGetNextCounterValue_AfterAddCounterDivision ()
+    {
         $sCounterValue = $this->_oNumbering->addCounterDivision()->getNextCounterValue();
         $this->assertEquals('0' . self::SEPARATOR . '1', $sCounterValue);
     }
@@ -41,7 +46,8 @@ class NumberingTest extends PHPUnit_Framework_TestCase {
      * @covers Numbering_Adapter::getNextCounterValue
      * @covers Numbering_Adapter::removeCounterDivision
      */
-    public function testGetNextCounterValueAfterAddAndRemoveCounterDivision () {
+    public function testGetNextCounterValue_AfterAddAndRemoveCounterDivision ()
+    {
         $sCounterValue = $this->_oNumbering->addCounterDivision()->removeCounterDivision()->getNextCounterValue();
         $this->assertEquals('1', $sCounterValue);
     }
@@ -50,7 +56,8 @@ class NumberingTest extends PHPUnit_Framework_TestCase {
      * @covers Numbering_Adapter::getNextCounterValue
      * @covers Numbering_Adapter::removeCounterDivision
      */
-    public function testGetNextCounterValueAfterRemoveCounterDivision () {
+    public function testGetNextCounterValue_AfterRemoveCounterDivision ()
+    {
         $sCounterValue = $this->_oNumbering->removeCounterDivision()->getNextCounterValue();
         $this->assertEquals('1', $sCounterValue);
     }
@@ -60,7 +67,8 @@ class NumberingTest extends PHPUnit_Framework_TestCase {
      * @covers Numbering_Adapter::getNextCounterValue
      * @covers Numbering_Adapter::removeCounterDivision
      */
-    public function testGetNextCounterValueAfterMultipleCalls1 () {
+    public function testGetNextCounterValue_AfterMultipleCalls1 ()
+    {
         $this->_oNumbering->getNextCounterValue(); // 1
         $this->_oNumbering
             ->addCounterDivision()   // 1.0
@@ -79,7 +87,8 @@ class NumberingTest extends PHPUnit_Framework_TestCase {
      * @covers Numbering_Adapter::getNextCounterValue
      * @covers Numbering_Adapter::removeCounterDivision
      */
-    public function testGetNextCounterValueAfterMultipleCalls2 () {
+    public function testGetNextCounterValue_AfterMultipleCalls2 ()
+    {
         $this->_oNumbering->getNextCounterValue(); // 1
         $this->_oNumbering
             ->addCounterDivision()   // 1.0

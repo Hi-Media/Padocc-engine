@@ -5,12 +5,14 @@
  * @package Tests
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
-class LoggerTest extends PHPUnit_Framework_TestCase {
+class LoggerTest extends PHPUnit_Framework_TestCase
+{
 
     /**
      * @covers Logger_Adapter::log
      */
-    public function testLogWithGreaterLevelError () {
+    public function testLog_WithGreaterLevelError ()
+    {
         $oLogger = new Logger_Adapter(Logger_Interface::WARNING);
         ob_start();
         $oLogger->log('A message...', Logger_Interface::ERROR);
@@ -22,7 +24,8 @@ class LoggerTest extends PHPUnit_Framework_TestCase {
     /**
      * @covers Logger_Adapter::log
      */
-    public function testLogWithEqualLevelError () {
+    public function testLog_WithEqualLevelError ()
+    {
         $oLogger = new Logger_Adapter(Logger_Interface::WARNING);
         ob_start();
         $oLogger->log('A message...', Logger_Interface::WARNING);
@@ -34,7 +37,8 @@ class LoggerTest extends PHPUnit_Framework_TestCase {
     /**
      * @covers Logger_Adapter::log
      */
-    public function testLogWithLowerLevelError () {
+    public function testLog_WithLowerLevelError ()
+    {
         $oLogger = new Logger_Adapter(Logger_Interface::WARNING);
         ob_start();
         $oLogger->log('A message...', Logger_Interface::INFO);
