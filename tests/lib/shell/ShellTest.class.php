@@ -934,16 +934,27 @@ total size is 64093953  speedup is 1618.29');
     /**
      * @covers Shell_Adapter::sync
      */
-    public function testSyncRemoteDirToRemoteDirWithDifferentHostThrowException () {
-        $this->setExpectedException('RuntimeException');
-        $this->oShell->sync('user@server1:/srcpath/to/my dir', 'server2:/destpath/to/my dir');
+    public function testSyncRemoteDirToRemoteDirWithDifferentHost () {
+        //$this->setExpectedException('RuntimeException', 'Not yet implemented!');
+        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+        $oMockShell->expects($this->at(0))->method('exec')
+            ->with($this->equalTo('ssh -T server2 /bin/bash <<EOF' . "\n"
+                . 'mkdir -p "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
+            ->will($this->returnValue(array()));
+        $oMockShell->expects($this->at(1))->method('exec')
+            ->with($this->equalTo('ssh -T user@server1 /bin/bash <<EOF' . "\n"
+                . 'rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/srcpath/to/my dir" "server2:/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
+            ->will($this->returnValue(array()));
+        $oMockShell->expects($this->exactly(2))->method('exec');
+
+        $oMockShell->sync('user@server1:/srcpath/to/my dir', 'server2:/destpath/to/my dir');
     }
 
     /**
      * @covers Shell_Adapter::sync
      */
     public function testSyncRemoteDirToLocalDirsThrowException () {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('RuntimeException', 'Not yet implemented!');
         $this->oShell->sync('user@server1:/srcpath/to/my dir', array('/destpath/to/my dir1', '/destpath/to/my dir2'));
     }
 
