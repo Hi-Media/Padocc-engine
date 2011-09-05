@@ -15,6 +15,7 @@ class Task_Base_Project extends Task_WithProperties
      * @param string $sRessourcesPath chemin hébergeant des configurations de déploiement au format XML
      * @return array la liste des projets dont le fichier de déploiement XML se trouve dans le chemin spécifié.
      * @throws UnexpectedValueException si chemin non trouvé
+     * @throws UnexpectedValueException si fichier XML mal formaté
      */
     public static function getAllProjectsName ($sRessourcesPath)
     {
@@ -30,7 +31,7 @@ class Task_Base_Project extends Task_WithProperties
                     try {
                         $oProject = new SimpleXMLElement($sProjectPath, NULL, true);
                     } catch (Exception $oException) {
-                        throw new RuntimeException("Bad project definition: '$sProjectPath'", 1, $oException);
+                        throw new UnexpectedValueException("Bad project definition: '$sProjectPath'", 1, $oException);
                     }
                     if (isset($oProject['name'])) {
                         $aProjectNames[] = (string)$oProject['name'];
@@ -48,6 +49,7 @@ class Task_Base_Project extends Task_WithProperties
      *
      * @param string $sProjectPath chemin menant au fichier de configuration XML du projet
      * @throws UnexpectedValueException si fichier XML du projet non trouvé
+     * @throws UnexpectedValueException si fichier XML du projet mal formaté
      * @return SimpleXMLElement instance du projet spécifié
      */
     public static function getSXEProject ($sProjectPath)
@@ -58,7 +60,7 @@ class Task_Base_Project extends Task_WithProperties
         try {
             $oSXE = new SimpleXMLElement($sProjectPath, NULL, true);
         } catch (Exception $oException) {
-            throw new RuntimeException("Bad project definition: '$sProjectPath'", 1, $oException);
+            throw new UnexpectedValueException("Bad project definition: '$sProjectPath'", 1, $oException);
         }
         return $oSXE;
     }
@@ -86,13 +88,15 @@ class Task_Base_Project extends Task_WithProperties
      * @param string $sEnvName Environnement sélectionné.
      * @param string $sExecutionID Identifiant d'exécution.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
+     * @throws UnexpectedValueException si fichier XML du projet non trouvé
+     * @throws UnexpectedValueException si environnement non trouvé ou non unique
      */
-    public function __construct ($sProjectName, $sEnvName, $sExecutionID, ServiceContainer $oServiceContainer)
+    public function __construct ($sProjectPath, $sEnvName, $sExecutionID, ServiceContainer $oServiceContainer)
     {
-        $oProject = self::getSXEProject(DEPLOYMENT_RESOURCES_DIR . '/' . $sProjectName . '.xml');
+        $oSXEProject = self::getSXEProject($sProjectPath);
         $this->sEnvName = $sEnvName;
 
-        parent::__construct($oProject, $this, $oServiceContainer);
+        parent::__construct($oSXEProject, $this, $oServiceContainer);
         $this->_aAttrProperties = array_merge(
             $this->_aAttrProperties,
             array('name' => AttributeProperties::REQUIRED)

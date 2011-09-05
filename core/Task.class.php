@@ -101,6 +101,7 @@ abstract class Task
     /**
      * Surcharge du constructeur, dont le premier paramètre est passé d'une instance de SimpleXMLElement à
      * un tableau associatif attribut => valeur.
+     * Ne peut être utilisé pour créer une instance de Task_Base_Project.
      *
      * @param array $aAttributes Tableau associatif listant des attributs et leur valeur.
      * @param Task_Base_Project $oProject Super tâche projet.
