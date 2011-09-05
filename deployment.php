@@ -11,6 +11,11 @@
 // rm -rf /home/gaubry/deployment_backup/* && rm -rf /home/gaubry/test/dest/*
 // rm -rf /home/gaubry/deployment_backup/* && rm -rf /home/gaubry/deployment_test/*
 
+// Exemple de script backup préalable :
+/*
+servers="batch112 ..."; for server in $servers; do ssh $server cp -a /home/prod/twenga/tools/photo_crawler /tmp/photo_crawler.BAK; echo $server OK; done
+ */
+
 // PHPUnit : aller dans /tests, puis : phpunit
 // http://gaubry.dev.twenga.com/deployment/report/index.html
 
