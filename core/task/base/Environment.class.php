@@ -123,13 +123,15 @@ class Task_Base_Environment extends Task_Base_Target
 
     private function makeTransitionToSymlinks ()
     {
-        $this->_oLogger->log('If needed, make transition to symlinks');
+        $this->_oLogger->log('If needed, make transition to symlinks:');
         $this->_oLogger->indent();
         $this->_oProperties->setProperty('with_symlinks', 'false');
         $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
         $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
+        $bTransitionMade = false;
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
             if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_PathStatus::STATUS_DIR) {
+                $bTransitionMade = true;
                 list(, $sServer, ) = $this->_oShell->isRemotePath($sExpandedPath);
                 $sDir = $sExpandedPath . '/*';
                 $sOriginRelease = $sServer . ':' . $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
@@ -140,19 +142,23 @@ class Task_Base_Environment extends Task_Base_Target
                 $this->_oShell->createLink($sExpandedPath, $sOriginRelease);
             }
         }
-
+        if ( ! $bTransitionMade) {
+            $this->_oLogger->log('No transition.');
+        }
         $this->_oProperties->setProperty('with_symlinks', 'true');
         $this->_oLogger->unindent();
     }
 
     private function makeTransitionFromSymlinks ()
     {
-        $this->_oLogger->log('If needed, make transition from symlinks');
+        $this->_oLogger->log('If needed, make transition from symlinks:');
         $this->_oLogger->indent();
         $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
         $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
+        $bTransitionMade = false;
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
             if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_PathStatus::STATUS_SYMLINKED_DIR) {
+                $bTransitionMade = true;
                 list(, , $sRealPath) = $this->_oShell->isRemotePath($sExpandedPath);
                 $sDir = $sExpandedPath . '/*';
                 $sTmpDest = $sExpandedPath . '_tmp';
@@ -164,12 +170,15 @@ class Task_Base_Environment extends Task_Base_Target
                 $this->_oShell->execSSH("mv %s '" . $sRealPath . "'", $sTmpDest);
             }
         }
+        if ( ! $bTransitionMade) {
+            $this->_oLogger->log('No transition.');
+        }
         $this->_oLogger->unindent();
     }
 
     private function initNewRelease ()
     {
-        $this->_oLogger->log('Initialize with content of previous release');
+        $this->_oLogger->log('Initialize with content of previous release:');
         $this->_oLogger->indent();
         $this->_oProperties->setProperty('with_symlinks', 'false');
         $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
