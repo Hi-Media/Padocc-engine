@@ -116,9 +116,11 @@ class Properties_Adapter implements Properties_Interface
         if ( ! file_exists($sConfigShellPath)) {
             throw new UnexpectedValueException("Property file '$sConfigShellPath' not found!");
         }
-        $sConfigIniPath = DEPLOYMENT_RESOURCES_DIR . strrchr($sConfigShellPath, '/') . '.ini';
+        $sConfigIniPath = tempnam('/tmp', 'deploy_configshell2ini_');
         $sCmd = DEPLOYMENT_BASH_PATH . ' ' . __DIR__ . "/cfg2ini.inc.sh '$sConfigShellPath' '$sConfigIniPath'";
         $this->_oShell->exec($sCmd);
-        return $this->loadConfigIniFile($sConfigIniPath);
+        $this->loadConfigIniFile($sConfigIniPath);
+        unlink($sConfigIniPath);
+        return $this;
     }
 }

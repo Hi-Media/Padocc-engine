@@ -10,10 +10,10 @@ INI_PATH="$2"
 
 . $CFG_PATH
 
-DEFINES=`grep -E "^[a-zA-Z0-9_]+=(\"|\'|\$)" "$CFG_PATH" | sed -r s/^\([a-zA-Z0-9_]+\).*/\\\\1/ | tr '\n' ' '`
+DEFINES=`grep -E "^[a-zA-Z0-9_]+=(\"|\'|\$)" "$CFG_PATH" | sed -r s/^\([a-zA-Z0-9_]+\).*/\\\\1/ | tr '\n\r' ' '`
 echo "; INI file auto generated from $CFG_PATH" >$INI_PATH
 echo "; $(date +'%Y-%m-%d %H:%M:%S')" >>$INI_PATH
 for DEFINE in $DEFINES; do
-    echo -n "$DEFINE = " >>$INI_PATH
-    eval "echo \\\"\$$DEFINE\\\"" >>$INI_PATH
+    VALUE=$(eval echo \$$DEFINE | tr -d '\n\r')
+    echo $DEFINE = \"${VALUE}\" >>$INI_PATH
 done

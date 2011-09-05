@@ -66,7 +66,7 @@ class PropertiesTest extends PHPUnit_Framework_TestCase {
      */
     public function testLoadConfigIniFileThrowExceptionIfParseFailed () {
         $oProperties = new Properties_Adapter($this->oShell);
-        $sTmpPath = tempnam(DEPLOYMENT_RESOURCES_DIR, 'unittest_');
+        $sTmpPath = tempnam('/tmp', 'deploy_unittest_');
         chmod($sTmpPath, 0222);
 
         try {
@@ -88,7 +88,7 @@ class PropertiesTest extends PHPUnit_Framework_TestCase {
     public function testLoadConfigIniFileWithValues () {
         $oProperties = new Properties_Adapter($this->oShell);
 
-        $sTmpPath = tempnam(DEPLOYMENT_RESOURCES_DIR, 'unittest_');
+        $sTmpPath = tempnam('/tmp', 'deploy_unittest_');
         $sContent = <<<EOT
 key1=value1
 KEY_2 = vAlUE 2
@@ -119,10 +119,10 @@ EOT;
     /**
      * @covers Properties_Adapter::loadConfigShellFile
      */
-   /* public function testLoadConfigShellFileWithSimpleValues () {
+    public function testLoadConfigShellFileWithSimpleValues () {
         $oProperties = new Properties_Adapter($this->oShell);
 
-        $sTmpPath = tempnam(DEPLOYMENT_RESOURCES_DIR, 'unittest_');
+        $sTmpPath = tempnam('/tmp', 'deploy_unittest_');
         $sContent = <<<EOT
 key1="value1"
 KEY_2="vAlUE 2"
@@ -131,20 +131,19 @@ EOT;
         file_put_contents($sTmpPath, $sContent);
         $oProperties->loadConfigShellFile($sTmpPath);
         unlink($sTmpPath);
-        unlink($sTmpPath . '.ini');
 
         $this->assertEquals('value1', $oProperties->getProperty('key1'));
         $this->assertEquals('vAlUE 2', $oProperties->getProperty('key_2'));
         $this->assertEquals('val\'ue 3', $oProperties->getProperty('key3'));
-    }*/
+    }
 
     /**
      * @covers Properties_Adapter::loadConfigShellFile
      */
-    /*public function testLoadConfigShellFileWithRecursiveValues () {
+    public function testLoadConfigShellFileWithRecursiveValues () {
         $oProperties = new Properties_Adapter($this->oShell);
 
-        $sTmpPath = tempnam(DEPLOYMENT_RESOURCES_DIR, 'unittest_');
+        $sTmpPath = tempnam('/tmp', 'deploy_unittest_');
         $sContent = <<<EOT
 k1="v10 v11 v12"
 k2="v20 v21"
@@ -155,9 +154,8 @@ EOT;
         file_put_contents($sTmpPath, $sContent);
         $oProperties->loadConfigShellFile($sTmpPath);
         unlink($sTmpPath);
-        unlink($sTmpPath . '.ini');
 
         $this->assertEquals('v10 v11 v12', $oProperties->getProperty('k1'));
         $this->assertEquals('v10 v11 v12 v20 v21 v3 v5', $oProperties->getProperty('k5'));
-    }*/
+    }
 }
