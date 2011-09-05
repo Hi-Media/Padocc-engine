@@ -44,7 +44,8 @@ class Deployment
 
         $this->_setExternalProperties($aExternalProperties);
 
-        $oProject = new Task_Base_Project($sProjectName, $sEnvName, $sExecutionID, $this->_oServiceContainer);
+        $sProjectPath = DEPLOYMENT_RESOURCES_DIR . '/' . $sProjectName . '.xml';
+        $oProject = new Task_Base_Project($sProjectPath, $sEnvName, $sExecutionID, $this->_oServiceContainer);
         $this->_oLogger->log('Check tasks:');
         $this->_oLogger->indent();
         $oProject->setUp();
