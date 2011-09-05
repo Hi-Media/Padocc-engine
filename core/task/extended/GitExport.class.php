@@ -42,6 +42,7 @@ class Task_Extended_GitExport extends Task
             'destdir' => AttributeProperties::DIR | AttributeProperties::REQUIRED
                 | AttributeProperties::ALLOW_PARAMETER,
             // TODO AttributeProperties::DIRJOKER abusif ici, mais à cause du multivalué :
+            'include' => AttributeProperties::FILEJOKER | AttributeProperties::DIRJOKER,
             'exclude' => AttributeProperties::FILEJOKER | AttributeProperties::DIRJOKER,
         );
 
@@ -61,6 +62,9 @@ class Task_Extended_GitExport extends Task
             'src' => $sSrcDir,
             'destdir' => $this->_aAttributes['destdir'],
         );
+        if ( ! empty($this->_aAttributes['include'])) {
+            $aSyncAttributes['include'] = $this->_aAttributes['include'];
+        }
         if ( ! empty($this->_aAttributes['exclude'])) {
             $aSyncAttributes['exclude'] = $this->_aAttributes['exclude'];
         }
