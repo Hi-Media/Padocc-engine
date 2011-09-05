@@ -72,7 +72,7 @@ class TaskHTTPTest extends PHPUnit_Framework_TestCase
     public function testCheck_ThrowExceptionIfBadURL ()
     {
         $oTaskHTTP = Task_Base_HTTP::getNewInstance(array('url' => 'htp://badurl'), $this->oMockProject, $this->oServiceContainer);
-        $this->setExpectedException('DomainException');
+        $this->setExpectedException('DomainException', "Bad URL: 'htp://badurl'");
         $oTaskHTTP->setUp();
     }
 
@@ -94,7 +94,7 @@ class TaskHTTPTest extends PHPUnit_Framework_TestCase
         $oTaskHTTP = $this->getMock('Task_Base_HTTP', array('_reroutePaths'), array($oXML, $this->oMockProject, $this->oServiceContainer));
         $oTaskHTTP->expects($this->any())->method('_reroutePaths')->will($this->returnArgument(0));
 
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('RuntimeException', '[ERROR] blabla');
         $oTaskHTTP->setUp();
         $oTaskHTTP->execute();
     }
