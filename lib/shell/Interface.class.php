@@ -129,13 +129,13 @@ interface Shell_Interface
      *
      * @param string $sSrcPath, au format [[user@sername_or_ip:]/path
      * @param string|array $mDestPath, chaque destination au format [[user@sername_or_ip:]/path
+     * @param array $aIncludedPaths chemins à transmettre aux paramètres --include de la commande shell rsync.
+     * Il précéderons les paramètres --exclude.
      * @param array $aExcludedPaths chemins à transmettre aux paramètres --exclude de la commande shell rsync
      * @return array tableau indexé du flux de sortie shell des commandes rsync exécutées,
      * découpé par ligne et analysé par _resumeSyncResult()
      * @throws RuntimeException en cas d'erreur shell
      * @throws RuntimeException car non implémenté quand plusieurs $mDestPath et $sSrcPath est distant
-     * @throws RuntimeException car non implémenté quand un seul $mDestPath mais $sSrcPath et $mDestPath
-     * pointent sur deux serveurs distants différents
      */
-    public function sync ($sSrcPath, $mDestPath, array $aExcludedPaths=array());
+    public function sync ($sSrcPath, $mDestPath, array $aIncludedPaths=array(), array $aExcludedPaths=array());
 }
