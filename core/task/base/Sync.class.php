@@ -54,11 +54,12 @@ class Task_Base_Sync extends Task
     public function check ()
     {
         parent::check();
-        if (preg_match('#\*|\?#', $this->_aAttributes['src']) === 0) {
-            if ($this->_oShell->getPathStatus($this->_aAttributes['src']) === Shell_PathStatus::STATUS_DIR) {
-                $this->_aAttributes['destdir'] .= '/' . substr(strrchr($this->_aAttributes['src'], '/'), 1);
-                $this->_aAttributes['src'] .= '/*';
-            }
+        if (
+                preg_match('#\*|\?|/$#', $this->_aAttributes['src']) === 0
+                && $this->_oShell->getPathStatus($this->_aAttributes['src']) === Shell_PathStatus::STATUS_DIR
+        ) {
+            $this->_aAttributes['destdir'] .= '/' . substr(strrchr($this->_aAttributes['src'], '/'), 1);
+            $this->_aAttributes['src'] .= '/';
         }
     }
 

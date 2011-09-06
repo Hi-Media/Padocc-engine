@@ -74,7 +74,7 @@ class Task_Base_Link extends Task
         parent::_centralExecute();
         $this->_oLogger->indent();
 
-        // La source doit être un lien ou ne pas exister :
+        // La source doit être un lien symbolique ou ne pas exister :
         $sPath = $this->_aAttributes['src'];
         if ( ! empty($this->_aAttributes['server'])) {
             $sPath = $this->_aAttributes['server'] . ':' . $sPath;
@@ -82,12 +82,12 @@ class Task_Base_Link extends Task
         $aValidSources = array(
             Shell_PathStatus::STATUS_NOT_EXISTS,
             Shell_PathStatus::STATUS_SYMLINKED_FILE,
-            Shell_PathStatus::STATUS_SYMLINKED_DIR
+            Shell_PathStatus::STATUS_SYMLINKED_DIR,
+            Shell_PathStatus::STATUS_BROKEN_SYMLINK
         );
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
             if ( ! in_array($this->_oShell->getPathStatus($sExpandedPath), $aValidSources)) {
-                $sMsg = 'Source attribute must be a directoy symlink or a file symlink'
-                      . " or not exist: '" . $sExpandedPath . "'";
+                $sMsg = "Source attribute must be a symlink or not exist: '" . $sExpandedPath . "'";
                 throw new RuntimeException($sMsg);
             }
         }

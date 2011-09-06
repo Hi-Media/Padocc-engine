@@ -290,7 +290,7 @@ class TaskTest extends PHPUnit_Framework_TestCase
         $oProperty->setValue($oMockTask, array('srcdir' => '\path\to/foo/'));
 
         $oMockTask->setUp();
-        $this->assertAttributeEquals(array('srcdir' => '/path/to/foo'), '_aAttributes', $oMockTask);
+        $this->assertAttributeEquals(array('srcdir' => '/path/to/foo/'), '_aAttributes', $oMockTask);
     }
 
     /**

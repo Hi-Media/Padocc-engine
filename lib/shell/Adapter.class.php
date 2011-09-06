@@ -91,6 +91,7 @@ class Shell_Adapter implements Shell_Interface
      * inexistant, un fichier, un répertoire, un lien symbolique sur fichier ou encore un lien symbolique sur
      * répertoire.
      *
+     * Les éventuels slash terminaux sont supprimés.
      * Si le statut est différent de inexistant, l'appel est mis en cache.
      * Un appel à remove() s'efforce de maintenir cohérent ce cache.
      *
@@ -104,6 +105,9 @@ class Shell_Adapter implements Shell_Interface
      */
     public function getPathStatus ($sPath)
     {
+        if (substr($sPath, -1) === '/') {
+            $sPath = substr($sPath, 0, -1);
+        }
         if (isset($this->_aFileStatus[$sPath])) {
             $iStatus = $this->_aFileStatus[$sPath];
         } else {

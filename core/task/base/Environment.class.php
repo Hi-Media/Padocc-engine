@@ -137,7 +137,7 @@ class Task_Base_Environment extends Task_Base_Target
             if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_PathStatus::STATUS_DIR) {
                 $bTransitionMade = true;
                 list(, $sServer, ) = $this->_oShell->isRemotePath($sExpandedPath);
-                $sDir = $sExpandedPath . '/*';
+                $sDir = $sExpandedPath . '/';
                 $sOriginRelease = $sServer . ':' . $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
                                 . '/' . $this->_oProperties->getProperty('execution_id') . '_origin';
                 $this->_oLogger->log("Backup '$sDir' to '$sOriginRelease'.");
@@ -164,7 +164,7 @@ class Task_Base_Environment extends Task_Base_Target
             if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_PathStatus::STATUS_SYMLINKED_DIR) {
                 $bTransitionMade = true;
                 list(, , $sRealPath) = $this->_oShell->isRemotePath($sExpandedPath);
-                $sDir = $sExpandedPath . '/*';
+                $sDir = $sExpandedPath . '/';
                 $sTmpDest = $sExpandedPath . '_tmp';
                 $sMsg = "Remove symlink on '$sExpandedPath' base directory"
                       . " and initialize it with last release's content.";
@@ -191,7 +191,7 @@ class Task_Base_Environment extends Task_Base_Target
                          . '/' . $this->_oProperties->getProperty('execution_id');
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
             list(, $sServer, ) = $this->_oShell->isRemotePath($sExpandedPath);
-            $sDir = $sExpandedPath . '/*';
+            $sDir = $sExpandedPath . '/';
             $sDest = $sServer . ':' . $sReleaseSymLink;
             if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_PathStatus::STATUS_SYMLINKED_DIR) {
                 $this->_oLogger->log("Initialize '$sDest' with previous release.");
@@ -224,7 +224,8 @@ class Task_Base_Environment extends Task_Base_Target
                 $this->_oLogger->log("Check " . $sServer . ':');
                 $this->_oLogger->indent();
 
-                $sCmd = "if [ -d %1\$s ]; then ls -t %1\$s | grep -E '^[0-9]{14}_[0-9]{5}(_origin)?$'; fi";
+                $sCmd = "if [ -d %1\$s ] && ls -1 %1\$s | grep -qE '^[0-9]{14}_[0-9]{5}(_origin)?$'; "
+                      . "then ls -t %1\$s | grep -E '^[0-9]{14}_[0-9]{5}(_origin)?$'; fi";
                 $aAllReleases = $this->_oShell->execSSH($sCmd, $sExpandedPath);
                 $iNbReleases = count($aAllReleases);
                 if ($iNbReleases === 0) {
