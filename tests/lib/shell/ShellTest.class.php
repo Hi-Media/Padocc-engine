@@ -69,7 +69,7 @@ class ShellTest extends PHPUnit_Framework_TestCase
      */
     public function testIsRemotePath_ThrowExceptionWithParameter ()
     {
-        $this->setExpectedException('DomainException');
+        $this->setExpectedException('DomainException', "Invalid syntax: '\${sdg}'.");
         $this->oShell->isRemotePath('${sdg}');
     }
 
@@ -156,8 +156,8 @@ class ShellTest extends PHPUnit_Framework_TestCase
     {
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->exactly(1))->method('exec');
-        $oMockShell->expects($this->at(0))->method('exec')->will($this->throwException(new RuntimeException()));
-        $this->setExpectedException('RuntimeException');
+        $oMockShell->expects($this->at(0))->method('exec')->will($this->throwException(new RuntimeException('aborted!')));
+        $this->setExpectedException('RuntimeException', 'aborted!');
         $oMockShell->execSSH('foo', 'bar');
     }
 
@@ -219,8 +219,8 @@ class ShellTest extends PHPUnit_Framework_TestCase
     {
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->exactly(1))->method('exec');
-        $oMockShell->expects($this->at(0))->method('exec')->will($this->throwException(new RuntimeException()));
-        $this->setExpectedException('RuntimeException');
+        $oMockShell->expects($this->at(0))->method('exec')->will($this->throwException(new RuntimeException('aborted!')));
+        $this->setExpectedException('RuntimeException', 'aborted!');
         $oMockShell->mkdir('foo');
     }
 
@@ -289,8 +289,8 @@ class ShellTest extends PHPUnit_Framework_TestCase
     {
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->exactly(1))->method('exec');
-        $oMockShell->expects($this->at(0))->method('exec')->will($this->throwException(new RuntimeException()));
-        $this->setExpectedException('RuntimeException');
+        $oMockShell->expects($this->at(0))->method('exec')->will($this->throwException(new RuntimeException('aborted!')));
+        $this->setExpectedException('RuntimeException', 'aborted!');
         $oMockShell->remove('foo/bar');
     }
 
@@ -300,7 +300,7 @@ class ShellTest extends PHPUnit_Framework_TestCase
     public function testRemove_ThrowExceptionWhenTooShortPath ()
     {
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
-        $this->setExpectedException('DomainException');
+        $this->setExpectedException('DomainException', "Illegal path: 'foo'");
         $oMockShell->remove('foo');
     }
 
@@ -378,8 +378,8 @@ class ShellTest extends PHPUnit_Framework_TestCase
     {
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->exactly(1))->method('exec');
-        $oMockShell->expects($this->at(0))->method('exec')->will($this->throwException(new RuntimeException()));
-        $this->setExpectedException('RuntimeException');
+        $oMockShell->expects($this->at(0))->method('exec')->will($this->throwException(new RuntimeException('aborted!')));
+        $this->setExpectedException('RuntimeException', 'aborted!');
         $oMockShell->copy('foo', 'bar', false);
     }
 
@@ -498,8 +498,8 @@ class ShellTest extends PHPUnit_Framework_TestCase
     {
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->exactly(1))->method('exec');
-        $oMockShell->expects($this->at(0))->method('exec')->will($this->throwException(new RuntimeException()));
-        $this->setExpectedException('RuntimeException');
+        $oMockShell->expects($this->at(0))->method('exec')->will($this->throwException(new RuntimeException('aborted!')));
+        $this->setExpectedException('RuntimeException', 'aborted!');
         $oMockShell->getPathStatus('foo');
     }
 
@@ -574,8 +574,8 @@ class ShellTest extends PHPUnit_Framework_TestCase
     {
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->exactly(1))->method('exec');
-        $oMockShell->expects($this->at(0))->method('exec')->will($this->throwException(new RuntimeException()));
-        $this->setExpectedException('RuntimeException');
+        $oMockShell->expects($this->at(0))->method('exec')->will($this->throwException(new RuntimeException('aborted!')));
+        $this->setExpectedException('RuntimeException', 'aborted!');
         $oMockShell->sync('foo', 'bar');
     }
 
@@ -971,7 +971,6 @@ total size is 64093953  speedup is 1618.29');
      */
     public function testSync_RemoteDirToRemoteDirWithDifferentHost ()
     {
-        //$this->setExpectedException('RuntimeException', 'Not yet implemented!');
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
             ->with($this->equalTo('ssh -T server2 /bin/bash <<EOF' . "\n"
@@ -1001,8 +1000,8 @@ total size is 64093953  speedup is 1618.29');
     {
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->exactly(1))->method('exec');
-        $oMockShell->expects($this->at(0))->method('exec')->will($this->throwException(new RuntimeException()));
-        $this->setExpectedException('RuntimeException');
+        $oMockShell->expects($this->at(0))->method('exec')->will($this->throwException(new RuntimeException('aborted!')));
+        $this->setExpectedException('RuntimeException', 'aborted!');
         $oMockShell->createLink('foo', 'bar');
     }
 
@@ -1011,7 +1010,10 @@ total size is 64093953  speedup is 1618.29');
      */
     public function testCreateLink_ThrowExceptionWhenDifferentHosts1 ()
     {
-        $this->setExpectedException('DomainException');
+        $this->setExpectedException(
+            'DomainException',
+            "Hosts must be equals. Link='/foo'. Target='server:/bar'."
+        );
         $this->oShell->createLink('/foo', 'server:/bar');
     }
 
@@ -1020,7 +1022,10 @@ total size is 64093953  speedup is 1618.29');
      */
     public function testCreateLink_ThrowExceptionWhenDifferentHosts2 ()
     {
-        $this->setExpectedException('DomainException');
+        $this->setExpectedException(
+            'DomainException',
+            "Hosts must be equals. Link='user@server:/foo'. Target='/bar'."
+        );
         $this->oShell->createLink('user@server:/foo', '/bar');
     }
 
@@ -1029,7 +1034,10 @@ total size is 64093953  speedup is 1618.29');
      */
     public function testCreateLink_ThrowExceptionWhenDifferentHosts3 ()
     {
-        $this->setExpectedException('DomainException');
+        $this->setExpectedException(
+            'DomainException',
+            "Hosts must be equals. Link='server1:/foo'. Target='server2:/bar'."
+        );
         $this->oShell->createLink('server1:/foo', 'server2:/bar');
     }
 

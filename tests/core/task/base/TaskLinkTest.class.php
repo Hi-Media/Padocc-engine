@@ -76,7 +76,10 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
             'src' => 'user@server1:/path/to/link',
             'target' => 'user@server2:/path/to/destdir'
         ), $this->oMockProject, $this->oServiceContainer);
-        $this->setExpectedException('DomainException');
+        $this->setExpectedException(
+            'DomainException',
+            'Servers must be equals! Src=user@server1:/path/to/link Target=user@server2:/path/to/destdir'
+        );
         $oTask->setUp();
     }
 
@@ -90,7 +93,10 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
             'src' => 'user@server1:/path/to/link',
             'target' => '/path/to/destdir'
         ), $this->oMockProject, $this->oServiceContainer);
-        $this->setExpectedException('DomainException');
+        $this->setExpectedException(
+            'DomainException',
+            'Servers must be equals! Src=user@server1:/path/to/link Target=/path/to/destdir'
+        );
         $oTask->setUp();
     }
 
@@ -104,7 +110,10 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
             'src' => '/path/to/link',
             'target' => 'user@server1:/path/to/destdir'
         ), $this->oMockProject, $this->oServiceContainer);
-        $this->setExpectedException('DomainException');
+        $this->setExpectedException(
+            'DomainException',
+            'Servers must be equals! Src=/path/to/link Target=user@server1:/path/to/destdir'
+        );
         $oTask->setUp();
     }
 
@@ -119,7 +128,10 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
             'target' => '/path/to/destdir',
             'server' => 'user@server2'
         ), $this->oMockProject, $this->oServiceContainer);
-        $this->setExpectedException('DomainException');
+        $this->setExpectedException(
+            'DomainException',
+            'Servers must be equals! Src=user@server1:/path/to/link Target=/path/to/destdir'
+        );
         $oTask->setUp();
     }
 
@@ -134,7 +146,10 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
             'target' => 'user@server1:/path/to/destdir',
             'server' => 'user@server2'
         ), $this->oMockProject, $this->oServiceContainer);
-        $this->setExpectedException('DomainException');
+        $this->setExpectedException(
+            'DomainException',
+            'Servers must be equals! Src=/path/to/link Target=user@server1:/path/to/destdir'
+        );
         $oTask->setUp();
     }
 
@@ -149,7 +164,10 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
             'target' => 'user@server2:/path/to/destdir',
             'server' => 'user@server3'
         ), $this->oMockProject, $this->oServiceContainer);
-        $this->setExpectedException('DomainException');
+        $this->setExpectedException(
+            'DomainException',
+            'Servers must be equals! Src=user@server1:/path/to/link Target=user@server2:/path/to/destdir'
+        );
         $oTask->setUp();
     }
 
@@ -164,7 +182,11 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
             'target' => 'user@server1:/path/to/destdir',
             'server' => 'user@server2'
         ), $this->oMockProject, $this->oServiceContainer);
-        $this->setExpectedException('DomainException');
+        $this->setExpectedException(
+            'DomainException',
+            'Multiple server declaration! Server=user@server2 '
+                . 'Src=user@server1:/path/to/link Target=user@server1:/path/to/destdir'
+        );
         $oTask->setUp();
     }
 
@@ -259,7 +281,11 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
             'target' => 'user@server:/path/to/destdir'
         ), $this->oMockProject, $this->oServiceContainer);
         $oTask->setUp();
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException(
+            'RuntimeException',
+            'Source attribute must be a directoy symlink or a file symlink or not exist: '
+                . "'user@server:/path/to/srcdir'"
+        );
         $oTask->execute();
     }
 

@@ -68,7 +68,10 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase
      */
     public function testGetAllProjectsName_ThrowExceptionIfNotFound ()
     {
-        $this->setExpectedException('UnexpectedValueException');
+        $this->setExpectedException(
+            'UnexpectedValueException',
+            "Resource path not found: '/home/gaubry/deployment/tests/core/task/base/not_found'."
+        );
         Task_Base_Project::getAllProjectsName(__DIR__ . '/not_found');
     }
 
@@ -77,7 +80,10 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase
      */
     public function testGetAllProjectsName_ThrowExceptionIfBadXml ()
     {
-        $this->setExpectedException('UnexpectedValueException');
+        $this->setExpectedException(
+            'UnexpectedValueException',
+            "Bad project definition: '/home/gaubry/deployment/tests/core/task/base/resources/2/bad_xml.xml'"
+        );
         Task_Base_Project::getAllProjectsName(__DIR__ . '/resources/2');
     }
 
@@ -94,7 +100,10 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase
      * @covers Task_Base_Project::getSXEProject
      */
     public function testGetSXEProjectThrowExceptionIfNotFound () {
-        $this->setExpectedException('UnexpectedValueException');
+        $this->setExpectedException(
+            'UnexpectedValueException',
+            "Project definition not found: '/home/gaubry/deployment/tests/core/task/base/not_found'!"
+        );
         Task_Base_Project::getSXEProject(__DIR__ . '/not_found');
     }
 
@@ -103,7 +112,10 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase
      */
     public function testGetSXEProject_ThrowExceptionIfBadXML ()
     {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException(
+            'RuntimeException',
+            "Bad project definition: '/home/gaubry/deployment/tests/core/task/base/resources/2/bad_xml.xml'"
+        );
         Task_Base_Project::getSXEProject(__DIR__ . '/resources/2/bad_xml.xml');
     }
 
@@ -121,7 +133,10 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase
      */
     public function testNew_ThrowExceptionIfProjectNotFound ()
     {
-        $this->setExpectedException('UnexpectedValueException');
+        $this->setExpectedException(
+            'UnexpectedValueException',
+            "Project definition not found: '/path/not found'!"
+        );
         $oTask = new Task_Base_Project('/path/not found', 'myEnv', 'anExecutionID', $this->oServiceContainer);
     }
 
@@ -133,7 +148,10 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase
         $sTmpPath = tempnam('/tmp', 'deploy_unittest_');
         $sContent = 'bla bla';
         file_put_contents($sTmpPath, $sContent);
-        $this->setExpectedException('UnexpectedValueException');
+        $this->setExpectedException(
+            'UnexpectedValueException',
+            "Bad project definition: '/tmp/deploy_unittest_"
+        );
         try {
             $oTask = new Task_Base_Project($sTmpPath, 'myEnv', 'anExecutionID', $this->oServiceContainer);
         } catch (UnexpectedValueException $oException) {
@@ -154,7 +172,10 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase
 </project>
 EOT;
         file_put_contents($sTmpPath, $sContent);
-        $this->setExpectedException('UnexpectedValueException');
+        $this->setExpectedException(
+            'UnexpectedValueException',
+            "Environment 'myEnv' not found or not unique in this project!"
+        );
         try {
             $oTask = new Task_Base_Project($sTmpPath, 'myEnv', 'anExecutionID', $this->oServiceContainer);
         } catch (UnexpectedValueException $oException) {
@@ -177,7 +198,10 @@ EOT;
 </project>
 EOT;
         file_put_contents($sTmpPath, $sContent);
-        $this->setExpectedException('UnexpectedValueException');
+        $this->setExpectedException(
+            'UnexpectedValueException',
+            "Environment 'myEnv' not found or not unique in this project!"
+        );
         try {
             $oTask = new Task_Base_Project($sTmpPath, 'myEnv', 'anExecutionID', $this->oServiceContainer);
         } catch (UnexpectedValueException $oException) {

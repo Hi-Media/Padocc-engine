@@ -206,7 +206,7 @@ class TaskTest extends PHPUnit_Framework_TestCase
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockTask, array('foo' => 'bar'));
 
-        $this->setExpectedException('DomainException');
+        $this->setExpectedException('DomainException', 'Available attributes: ');
         $oMockTask->setUp();
     }
 
@@ -227,7 +227,7 @@ class TaskTest extends PHPUnit_Framework_TestCase
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockTask, array());
 
-        $this->setExpectedException('UnexpectedValueException');
+        $this->setExpectedException('UnexpectedValueException', "'srcdir' attribute is required!");
         $oMockTask->setUp();
     }
 
@@ -310,7 +310,10 @@ class TaskTest extends PHPUnit_Framework_TestCase
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockTask, array('srcdir' => '/foo*XXX/'));
 
-        $this->setExpectedException('DomainException');
+        $this->setExpectedException(
+            'DomainException',
+            "'*' and '?' jokers are not authorized for directory in 'srcdir' attribute!"
+        );
         $oMockTask->setUp();
     }
 
@@ -351,7 +354,10 @@ class TaskTest extends PHPUnit_Framework_TestCase
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockTask, array('srcfile' => '/foo/*'));
 
-        $this->setExpectedException('DomainException');
+        $this->setExpectedException(
+            'DomainException',
+            "'*' and '?' jokers are not authorized for filename in 'srcfile' attribute!"
+        );
         $oMockTask->setUp();
     }
 
@@ -372,7 +378,10 @@ class TaskTest extends PHPUnit_Framework_TestCase
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockTask, array('b' => 'not a boolean'));
 
-        $this->setExpectedException('DomainException');
+        $this->setExpectedException(
+            'DomainException',
+            "Value of 'b' attribute is restricted to 'true' or 'false'. Value: 'not a boolean'!"
+        );
         $oMockTask->setUp();
     }
 
@@ -437,7 +446,10 @@ class TaskTest extends PHPUnit_Framework_TestCase
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockTask, array('src' => '${foo}:/bar/'));
 
-        $this->setExpectedException('DomainException');
+        $this->setExpectedException(
+            'DomainException',
+            "Parameters are not allowed in 'src' attribute! Value: '\${foo}:/bar/'"
+        );
         $oMockTask->setUp();
     }
 
@@ -483,7 +495,10 @@ class TaskTest extends PHPUnit_Framework_TestCase
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockTask, array('src' => 'foo'));
 
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException(
+            'RuntimeException',
+            "File or directory 'foo' not found!"
+        );
         $oMockTask->setUp();
     }
 
@@ -492,7 +507,7 @@ class TaskTest extends PHPUnit_Framework_TestCase
      */
     public function testGetTagName_ThrowException ()
     {
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('RuntimeException', 'Not implemented at this level!');
         Task::getTagName();
     }
 
@@ -502,7 +517,7 @@ class TaskTest extends PHPUnit_Framework_TestCase
     public function testGetNewInstance_ThrowException ()
     {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('RuntimeException', 'Not implemented at this level!');
         Task::getNewInstance(array(), $oMockProject, $this->oServiceContainer);
     }
 

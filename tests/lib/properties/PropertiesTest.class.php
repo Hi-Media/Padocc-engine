@@ -30,7 +30,7 @@ class PropertiesTest extends PHPUnit_Framework_TestCase
     public function testGetProperty_ThrowExceptionIfUnknownProperty ()
     {
         $oProperties = new Properties_Adapter($this->oShell);
-        $this->setExpectedException('UnexpectedValueException');
+        $this->setExpectedException('UnexpectedValueException', "Unknown property 'not_exists'!");
         $oProperties->getProperty('not_exists');
     }
 
@@ -64,7 +64,7 @@ class PropertiesTest extends PHPUnit_Framework_TestCase
     public function testLoadConfigIniFile_ThrowExceptionIfFileNotExists ()
     {
         $oProperties = new Properties_Adapter($this->oShell);
-        $this->setExpectedException('UnexpectedValueException');
+        $this->setExpectedException('UnexpectedValueException', "Property file '/file/not/exists.ini' not found!");
         $oProperties->loadConfigIniFile('/file/not/exists.ini');
     }
 
@@ -77,7 +77,7 @@ class PropertiesTest extends PHPUnit_Framework_TestCase
         $sTmpPath = tempnam('/tmp', 'deploy_unittest_');
         chmod($sTmpPath, 0222);
 
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException('RuntimeException', "Load property file '/tmp/deploy_unittest_");
         try {
             $oProperties->loadConfigIniFile($sTmpPath);
         } catch (RuntimeException $oException) {
@@ -121,7 +121,7 @@ EOT;
     public function testLoadConfigShellFile_ThrowExceptionIfFileNotExists ()
     {
         $oProperties = new Properties_Adapter($this->oShell);
-        $this->setExpectedException('UnexpectedValueException');
+        $this->setExpectedException('UnexpectedValueException', "Property file '/file/not/exists.ini' not found!");
         $oProperties->loadConfigShellFile('/file/not/exists.ini');
     }
 
