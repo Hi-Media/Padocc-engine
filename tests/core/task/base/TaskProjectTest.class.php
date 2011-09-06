@@ -70,7 +70,7 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             'UnexpectedValueException',
-            "Resource path not found: '/home/gaubry/deployment/tests/core/task/base/not_found'."
+            "Resource path not found: '"
         );
         Task_Base_Project::getAllProjectsName(__DIR__ . '/not_found');
     }
@@ -82,7 +82,7 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             'UnexpectedValueException',
-            "Bad project definition: '/home/gaubry/deployment/tests/core/task/base/resources/2/bad_xml.xml'"
+            "Bad project definition: '"
         );
         Task_Base_Project::getAllProjectsName(__DIR__ . '/resources/2');
     }
@@ -102,7 +102,7 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase
     public function testGetSXEProjectThrowExceptionIfNotFound () {
         $this->setExpectedException(
             'UnexpectedValueException',
-            "Project definition not found: '/home/gaubry/deployment/tests/core/task/base/not_found'!"
+            "Project definition not found: '"
         );
         Task_Base_Project::getSXEProject(__DIR__ . '/not_found');
     }
@@ -114,7 +114,7 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             'RuntimeException',
-            "Bad project definition: '/home/gaubry/deployment/tests/core/task/base/resources/2/bad_xml.xml'"
+            "Bad project definition: '"
         );
         Task_Base_Project::getSXEProject(__DIR__ . '/resources/2/bad_xml.xml');
     }
