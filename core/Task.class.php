@@ -80,7 +80,9 @@ abstract class Task
      * Liste des propriétés des attributs déclarés de la tâche.
      *
      * Structure : array('attribute' => iValue, ...)
-     * Où iValue vaut 0 ou une combinaison de bits au sens |, à partir des constantes de la classe AttributeProperties.
+     * Où iValue vaut 0 ou une combinaison de bits au sens |,
+     * à partir des constantes de la classe AttributeProperties.
+     *
      * @var array
      * @see check()
      * @see AttributeProperties

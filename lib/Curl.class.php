@@ -16,7 +16,7 @@ class Curl
      * @see disguiseCurl()
      */
     public static $aUserAgents = array(
-        'FireFox3' => 'Mozilla/5.0 (Windows; U; Windows NT 6.0; fr; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3 (.NET CLR 3.5.30729)',
+        'FireFox3' => 'Mozilla/5.0 (Windows; U; Windows NT 6.1; de; rv:1.9.2.8) Gecko/20100722 Firefox 3.6.8',
         'GoogleBot' => 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
         'IE7' => 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)',
         'Netscape' => 'Mozilla/4.8 [en] (Windows NT 6.0; U)',
