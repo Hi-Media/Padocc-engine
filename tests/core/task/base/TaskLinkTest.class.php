@@ -283,8 +283,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
         $oTask->setUp();
         $this->setExpectedException(
             'RuntimeException',
-            'Source attribute must be a directoy symlink or a file symlink or not exist: '
-                . "'user@server:/path/to/srcdir'"
+            "Source attribute must be a symlink or not exist: 'user@server:/path/to/srcdir'"
         );
         $oTask->execute();
     }

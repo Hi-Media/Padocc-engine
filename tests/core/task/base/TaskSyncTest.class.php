@@ -82,12 +82,40 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase
      * @covers Task_Base_Sync::__construct
      * @covers Task_Base_Sync::check
      */
-    public function testCheck_WithSrcDir ()
+    public function testCheck_WithSrcDirWithoutLeadingSlash ()
     {
         $oTaskCopy = Task_Base_Sync::getNewInstance(array('src' => '/path/to/srcdir', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oServiceContainer);
         $oTaskCopy->setUp();
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir/srcdir',
+            'src' => '/path/to/srcdir/'
+        ), '_aAttributes', $oTaskCopy);
+    }
+
+    /**
+     * @covers Task_Base_Sync::__construct
+     * @covers Task_Base_Sync::check
+     */
+    public function testCheck_WithSrcDirWithLeadingSlash ()
+    {
+        $oTaskCopy = Task_Base_Sync::getNewInstance(array('src' => '/path/to/srcdir/', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oServiceContainer);
+        $oTaskCopy->setUp();
+        $this->assertAttributeEquals(array(
+            'destdir' => '/path/to/destdir',
+            'src' => '/path/to/srcdir/'
+        ), '_aAttributes', $oTaskCopy);
+    }
+
+    /**
+     * @covers Task_Base_Sync::__construct
+     * @covers Task_Base_Sync::check
+     */
+    public function testCheck_WithSrcDirWithLeadingPattern ()
+    {
+        $oTaskCopy = Task_Base_Sync::getNewInstance(array('src' => '/path/to/srcdir/*', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oServiceContainer);
+        $oTaskCopy->setUp();
+        $this->assertAttributeEquals(array(
+            'destdir' => '/path/to/destdir',
             'src' => '/path/to/srcdir/*'
         ), '_aAttributes', $oTaskCopy);
     }
@@ -116,7 +144,7 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase
         $oTaskCopy->execute();
         $this->assertEquals(array(
             'mkdir -p "/path/to/destdir/srcdir"',
-            'if ls -1 "/path/to/srcdir" | grep -q .; then rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --exclude="to_exclude.*" --exclude="config.php" --stats -e ssh "/path/to/srcdir/"* "/path/to/destdir/srcdir"; fi'
+            'rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --exclude="to_exclude.*" --exclude="config.php" --stats -e ssh "/path/to/srcdir/" "/path/to/destdir/srcdir"'
         ), $this->aShellExecCmds);
     }
 
@@ -144,7 +172,7 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase
         $oTaskCopy->execute();
         $this->assertEquals(array(
             'mkdir -p "/path/to/destdir/srcdir"',
-            'if ls -1 "/path/to/srcdir" | grep -q .; then rsync -axz --delete --include="*.js" --include="*.css" --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/path/to/srcdir/"* "/path/to/destdir/srcdir"; fi'
+            'rsync -axz --delete --include="*.js" --include="*.css" --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/path/to/srcdir/" "/path/to/destdir/srcdir"'
         ), $this->aShellExecCmds);
     }
 
@@ -173,7 +201,7 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase
         $oTaskCopy->execute();
         $this->assertEquals(array(
             'mkdir -p "/path/to/destdir/srcdir"',
-            'if ls -1 "/path/to/srcdir" | grep -q .; then rsync -axz --delete --include="*.js" --include="*.css" --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --exclude="to_exclude.*" --exclude="config.php" --stats -e ssh "/path/to/srcdir/"* "/path/to/destdir/srcdir"; fi'
+            'rsync -axz --delete --include="*.js" --include="*.css" --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --exclude="to_exclude.*" --exclude="config.php" --stats -e ssh "/path/to/srcdir/" "/path/to/destdir/srcdir"'
         ), $this->aShellExecCmds);
     }
 
@@ -208,7 +236,7 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase
             'ssh -T user@server /bin/bash <<EOF' . "\n"
                 . 'mkdir -p "/path/to/destdir_releases/12345/srcdir"' . "\n"
                 . 'EOF' . "\n",
-            'if ls -1 "/path/to/srcdir" | grep -q .; then rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/path/to/srcdir/"* "user@server:/path/to/destdir_releases/12345/srcdir"; fi'
+            'rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/path/to/srcdir/" "user@server:/path/to/destdir_releases/12345/srcdir"'
         ), $this->aShellExecCmds);
     }
 }

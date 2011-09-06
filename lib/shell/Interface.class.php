@@ -38,6 +38,7 @@ interface Shell_Interface
      * inexistant, un fichier, un répertoire, un lien symbolique sur fichier ou encore un lien symbolique sur
      * répertoire.
      *
+     * Les éventuels slash terminaux sont supprimés.
      * Si le statut est différent de inexistant, l'appel est mis en cache.
      * Un appel à remove() s'efforce de maintenir cohérent ce cache.
      *

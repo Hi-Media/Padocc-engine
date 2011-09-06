@@ -24,7 +24,8 @@ final class AttributeProperties
     const DIR = 2;
 
     /**
-     * Propriété d'attribut : autorise l'utilisation des jokers shell ? et * pour les répertoires.
+     * Propriété d'attribut : autorise l'utilisation des jokers shell ? et * pour les répertoires
+     * (implique AttributeProperties::DIR).
      * @var int
      */
     const DIRJOKER = 4;
@@ -36,7 +37,8 @@ final class AttributeProperties
     const FILE = 8;
 
     /**
-     * Propriété d'attribut : autorise l'utilisation des jokers shell ? et * pour les fichiers.
+     * Propriété d'attribut : autorise l'utilisation des jokers shell ? et * pour les fichiers
+     * (implique AttributeProperties::FILE).
      * @var int
      */
     const FILEJOKER = 16;
@@ -48,7 +50,8 @@ final class AttributeProperties
     const REQUIRED = 32;
 
     /**
-     * Propriété d'attribut : l'attribut est un fichier ou un répertoire source et doit donc exister.
+     * Propriété d'attribut : l'attribut est un fichier ou un répertoire source et doit donc exister
+     * (implique AttributeProperties::FILE et AttributeProperties::DIR).
      * @var int
      */
     const SRC_PATH = 64;

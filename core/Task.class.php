@@ -356,11 +356,6 @@ abstract class Task
                     throw new DomainException($sMsg);
                 }
 
-                // Suppression de l'éventuel slash terminal :
-                if (($iProperties & AttributeProperties::DIR) > 0) {
-                    $this->_aAttributes[$sAttribute] = preg_replace('#/$#', '', $this->_aAttributes[$sAttribute]);
-                }
-
                 // Vérification de présence de la source si chemin sans joker :
                 if (
                         ($iProperties & AttributeProperties::SRC_PATH) > 0

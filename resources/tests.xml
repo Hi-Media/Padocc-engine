@@ -119,12 +119,14 @@
             destdir="aai@aai-01:/home/aai/deployment_test/dest_test_b2c"
             include="/v3/ /v3/** /v4/ /v4/**"
             exclude="*" />
-        <sync src="prod@fs3:/home/prod/twenga_files/merchant_logos"
+        <sync src="prod@fs3:/home/prod/twenga_files/merchant_logos/"
             destdir="aai@aai-01:/home/aai/deployment_test/dest_test_b2c/img/sites"
-            include="*.png" />
-        <sync src="prod@fs3:/home/prod/twenga_files/brand_logos"
+            include="*.png"
+            exclude="*" />
+        <sync src="prod@fs3:/home/prod/twenga_files/brand_logos/"
             destdir="aai@aai-01:/home/aai/deployment_test/dest_test_b2c/img/brands"
-            include="*.png" />
+            include="*.png"
+            exclude="*" />
     </target>
 
     <env

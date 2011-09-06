@@ -98,9 +98,31 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase
      * @covers Task_Base_Copy::__construct
      * @covers Task_Base_Copy::check
      */
-    public function testCheck_WithSrcDir ()
+    public function testCheck_WithSrcDirWithoutLeadingSlash ()
     {
-        $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/srcdir', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oServiceContainer);
+        $oTaskCopy = Task_Base_Copy::getNewInstance(
+            array('src' => '/path/to/srcdir', 'destdir' => '/path/to/destdir'),
+            $this->oMockProject,
+            $this->oServiceContainer
+        );
+        $oTaskCopy->setUp();
+        $this->assertAttributeEquals(array(
+            'destdir' => '/path/to/destdir/srcdir',
+            'src' => '/path/to/srcdir/*'
+        ), '_aAttributes', $oTaskCopy);
+    }
+
+    /**
+     * @covers Task_Base_Copy::__construct
+     * @covers Task_Base_Copy::check
+     */
+    public function testCheck_WithSrcDirWithLeadingSlash ()
+    {
+        $oTaskCopy = Task_Base_Copy::getNewInstance(
+            array('src' => '/path/to/srcdir/', 'destdir' => '/path/to/destdir'),
+            $this->oMockProject,
+            $this->oServiceContainer
+        );
         $oTaskCopy->setUp();
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir/srcdir',
