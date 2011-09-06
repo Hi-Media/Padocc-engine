@@ -47,7 +47,8 @@ class Task_Extended_Combine extends Task
 
         $this->_oLogger->log('Combine');
 
-        $sSrcPath = $this->_aAttributes['server'] . ':' . $this->_aAttributes['cssbasedir'] . '/' . $this->_aAttributes['cssfile'];
+        $sSrcPath = $this->_aAttributes['server'] . ':' . $this->_aAttributes['cssbasedir']
+                  . '/' . $this->_aAttributes['cssfile'];
         $this->_oShell->copy($sSrcPath, '/tmp');
 
         $this->_oLogger->unindent();

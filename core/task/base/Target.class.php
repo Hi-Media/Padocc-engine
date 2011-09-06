@@ -20,8 +20,16 @@ class Task_Base_Target extends Task_WithProperties
         return 'target';
     }
 
-    // {"rts":["dev","qa","pre-prod"],"tests":["tests_gitexport","tests_languages","all_tests"],"wtpn":["prod"],"ptpn":["prod"]}
-    // {"rts":{"dev":[],"qa":[],"pre-prod":[]},"tests":{"tests_gitexport":{"rts_ref":"Branch or tag to deploy"},"tests_languages":{"t1":"Branch","t2":"or tag","t3":"or tag"},"all_tests":[]},"wtpn":{"prod":[]},"ptpn":{"prod":[]}}
+    /* Structure :
+     * {
+     * 		"rts":{"dev":[],"qa":[],"pre-prod":[]},
+     * 		"tests":{
+     * 			"tests_gitexport":{"rts_ref":"Branch or tag to deploy"},
+     * 			"tests_languages":{"t1":"Branch","t2":"or tag","t3":"or tag"},
+     * 			"all_tests":[]},
+     * 		"ptpn":{"prod":[]}
+     * }
+     */
     public static function getAvailableTargetsList ($sProjectName)
     {
         $oXMLProject = Task_Base_Project::getSXEProject(DEPLOYMENT_RESOURCES_DIR . '/' . $sProjectName . '.xml');
