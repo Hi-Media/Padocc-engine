@@ -123,7 +123,7 @@ interface Shell_Interface
      * @return array tableau indexé du flux de sortie shell découpé par ligne
      * @throws RuntimeException en cas d'erreur shell
      */
-    public function mkdir ($sPath);
+    public function mkdir ($sPath, $sMode='');
 
     /**
      * Synchronise une source avec une ou plusieurs destinations.
