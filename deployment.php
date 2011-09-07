@@ -11,6 +11,7 @@
 // tail -fn 500 /tmp/deployment.php.xxx.error.log
 // rm -rf /home/gaubry/deployment_backup/* && rm -rf /home/gaubry/test/dest/*
 // rm -rf /home/gaubry/deployment_backup/* && rm -rf /home/gaubry/deployment_test/*
+// chmod +x /home/gaubry/deployment/lib/minifier/jsmin/jsmin
 
 // Exemple de script backup préalable :
 /*
@@ -73,6 +74,11 @@ chmod 777 deployment/resources -R
  * 			-Compression-Tools.aspx
  * 		http://scoop.simplyexcited.co.uk/2009/11/24/yui-compressor-vs-google-closure-compiler-for-javascript
  * 			-compression/
+ *
+ * 		Version C :
+ * 		wget http://www.crockford.com/javascript/jsmin.c
+ * 		cc jsmin.c -o jsmin
+
 */
 
 /*
