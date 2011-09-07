@@ -358,10 +358,10 @@ abstract class Task
                     throw new DomainException($sMsg);
                 }
 
-                // Vérification de présence de la source si chemin sans joker :
+                // Vérification de présence de la source si chemin sans joker ni paramètre :
                 if (
                         ($iProperties & AttributeProperties::SRC_PATH) > 0
-                        && preg_match('#\*|\?#', $this->_aAttributes[$sAttribute]) === 0
+                        && preg_match('#\*|\?|\$\{[^}]*\}#', $this->_aAttributes[$sAttribute]) === 0
                         && $this->_oShell->getPathStatus($this->_aAttributes[$sAttribute])
                             === Shell_PathStatus::STATUS_NOT_EXISTS
                 ) {

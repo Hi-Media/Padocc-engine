@@ -128,10 +128,26 @@ class Task_Base_Project extends Task_WithProperties
         $this->_oBoundTask->setUp();
     }
 
+    protected function _preExecute ()
+    {
+        parent::_preExecute();
+        $this->_oLogger->indent();
+        $this->_oShell->mkdir($this->_oProperties->getProperty('tmp_path'));
+        $this->_oLogger->unindent();
+    }
+
     protected function _centralExecute ()
     {
         parent::_centralExecute();
         $this->_oBoundTask->execute();
+    }
+
+    protected function _postExecute()
+    {
+        $this->_oLogger->indent();
+        $this->_oShell->remove($this->_oProperties->getProperty('tmp_path'));
+        $this->_oLogger->unindent();
+        parent::_postExecute();
     }
 
     public function getSXE ()

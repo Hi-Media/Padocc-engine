@@ -30,7 +30,8 @@ class Task_Base_Sync extends Task
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);
         $this->_aAttrProperties = array(
-            'src' => AttributeProperties::SRC_PATH | AttributeProperties::FILEJOKER | AttributeProperties::REQUIRED,
+            'src' => AttributeProperties::SRC_PATH | AttributeProperties::FILEJOKER | AttributeProperties::REQUIRED
+                | AttributeProperties::ALLOW_PARAMETER,
             'destdir' => AttributeProperties::DIR | AttributeProperties::REQUIRED
                 | AttributeProperties::ALLOW_PARAMETER,
             // TODO AttributeProperties::DIRJOKER abusif ici, mais à cause du multivalué :
@@ -80,7 +81,7 @@ class Task_Base_Sync extends Task
                           : explode(' ', $this->_aAttributes['exclude']));
 
         $aResults = $this->_oShell->sync(
-            $this->_aAttributes['src'],
+            $this->_processSimplePath($this->_aAttributes['src']),
             $this->_processPath($this->_aAttributes['destdir']),
             $aIncludedPaths,
             $aExcludedPaths

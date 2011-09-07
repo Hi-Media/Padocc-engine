@@ -5,7 +5,6 @@
         <!-- loadtwengaservers="true" -->
 <project
         name="tests"
-        propertyinifile="/home/gaubry/deployment/resources/tests_property_file.ini"
 >
     <target name="tests_copy">
         <copy src="/home/gaubry/deployment_test/src/test_copy/a.txt" destdir="/home/gaubry/deployment_test/dest/test_copy1" />
@@ -113,7 +112,7 @@
         <call target="static_content" />
     </env>
 
-    <target name="static_content">
+    <target name="static_content_OLD">
         <externalproperty name="ref" description="Branch or tag to deploy" />
         <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${ref}"
             srcsubdir="/v3"
@@ -129,6 +128,26 @@
             destdir="aai@aai-01:/home/aai/deployment_test/dest_test_b2c/img/brands"
             include="*.png"
             exclude="*" />
+    </target>
+
+    <target name="static_content">
+        <externalproperty name="ref" description="Branch or tag to deploy" />
+        <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${REF}"
+            srcsubdir="/v3"
+            destdir="${TMP_PATH}/web" />
+        <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${REF}"
+            srcsubdir="/v4"
+            destdir="${TMP_PATH}/webv4" />
+        <sync src="prod@fs3:/home/prod/twenga_files/merchant_logos/"
+            destdir="${TMP_PATH}/img/sites"
+            include="*.png"
+            exclude="*" />
+        <sync src="prod@fs3:/home/prod/twenga_files/brand_logos/"
+            destdir="${TMP_PATH}/img/brands"
+            include="*.png"
+            exclude="*" />
+        <sync src="${TMP_PATH}/"
+            destdir="aai@aai-01:/home/aai/deployment_test/dest_test_b2c" />
     </target>
 
     <env
