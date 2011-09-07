@@ -224,10 +224,15 @@ class Task_Base_Environment extends Task_Base_Target
                 $this->_oLogger->log("Check " . $sServer . ':');
                 $this->_oLogger->indent();
 
-                $sCmd = "if [ -d %1\$s ] && ls -1 %1\$s | grep -qE '^[0-9]{14}_[0-9]{5}(_origin)?$'; "
-                      . "then ls -t %1\$s | grep -E '^[0-9]{14}_[0-9]{5}(_origin)?$'; fi";
+                // Récupération et tri (de la + jeune à la + vieille) des releases existentes :
+                $sPattern = '^[0-9]{14}_[0-9]{5}(_origin)?$';
+                $sCmd = "if [ -d %1\$s ] && ls -1 %1\$s | grep -qE '$sPattern'; "
+                      . "then ls -1 %1\$s | grep -E '$sPattern'; fi";
                 $aAllReleases = $this->_oShell->execSSH($sCmd, $sExpandedPath);
+                sort($aAllReleases);
+                $aAllReleases = array_reverse($aAllReleases);
                 $iNbReleases = count($aAllReleases);
+
                 if ($iNbReleases === 0) {
                     $this->_oLogger->log('No release found.');
                 } else {
