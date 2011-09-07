@@ -38,7 +38,8 @@ class Task_Extended_TwengaServers extends Task
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);
         $this->_aAttrProperties = array();
-        $this->_sTmpDir = '/tmp/' . $this->_oProperties->getProperty('execution_id') . '_' . self::getTagName();
+        $this->_sTmpDir = DEPLOYMENT_TMP_PATH . '/'
+                        . $this->_oProperties->getProperty('execution_id') . '_' . self::getTagName();
 
         // Création de la tâche de synchronisation sous-jacente :
         $this->_oNumbering->addCounterDivision();

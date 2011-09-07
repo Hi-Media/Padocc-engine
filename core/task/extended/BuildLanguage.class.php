@@ -42,7 +42,10 @@ class Task_Extended_BuildLanguage extends Task
         $this->_oLogger->indent();
 
         $this->_oLogger->log('Generate language archive');
-        $sLanguagesPath = tempnam('/tmp', $this->_oProperties->getProperty('execution_id') . '_languages_');
+        $sLanguagesPath = tempnam(
+            DEPLOYMENT_TMP_PATH,
+            $this->_oProperties->getProperty('execution_id') . '_languages_'
+        );
         $fh = fopen($sLanguagesPath, 'w');
         $aCurlParameters = array(
             'url' => 'https://admin.twenga.com/translation_tool/build_language_files.php?project=rts',
