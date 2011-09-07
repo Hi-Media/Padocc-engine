@@ -116,9 +116,11 @@
     <target name="static_content">
         <externalproperty name="ref" description="Branch or tag to deploy" />
         <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${ref}"
-            destdir="aai@aai-01:/home/aai/deployment_test/dest_test_b2c"
-            include="/v3/ /v3/** /v4/ /v4/**"
-            exclude="*" />
+            srcsubdir="/v3"
+            destdir="aai@aai-01:/home/aai/deployment_test/dest_test_b2c/web" />
+        <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${ref}"
+            srcsubdir="/v4"
+            destdir="aai@aai-01:/home/aai/deployment_test/dest_test_b2c/webv4" />
         <sync src="prod@fs3:/home/prod/twenga_files/merchant_logos/"
             destdir="aai@aai-01:/home/aai/deployment_test/dest_test_b2c/img/sites"
             include="*.png"

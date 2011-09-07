@@ -46,8 +46,7 @@ class Task_Extended_TwengaServers extends Task
             array(
                 'repository' => 'git@git.twenga.com:aa/server_config.git',
                 'ref' => 'master',
-                'destdir' => $this->_sTmpDir,
-                'exclude' => ''
+                'destdir' => $this->_sTmpDir
             ),
             $oProject,
             $oServiceContainer
