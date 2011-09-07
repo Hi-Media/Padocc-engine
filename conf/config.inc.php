@@ -10,6 +10,7 @@ define('DEPLOYMENT_RESOURCES_DIR', DEPLOYMENT_ROOT_DIR . '/resources');
 define('DEPLOYMENT_REPOSITORIES_DIR', '$HOME/deployment_repositories');
 define('DEPLOYMENT_DEBUG_MODE', 1);	// 1 ou 0
 define('DEPLOYMENT_BASH_PATH', '/bin/bash');
+define('DEPLOYMENT_JSMIN_BIN_PATH', DEPLOYMENT_LIB_DIR . '/minifier/jsmin/jsmin');
 
 /**
  * Chemin du répertoire temporaire système utilisable par l'application.
