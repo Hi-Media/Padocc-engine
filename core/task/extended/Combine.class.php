@@ -49,7 +49,7 @@ class Task_Extended_Combine extends Task
 
         $sSrcPath = $this->_aAttributes['server'] . ':' . $this->_aAttributes['cssbasedir']
                   . '/' . $this->_aAttributes['cssfile'];
-        $this->_oShell->copy($sSrcPath, '/tmp');
+        $this->_oShell->copy($sSrcPath, DEPLOYMENT_TMP_PATH);
 
         $this->_oLogger->unindent();
     }
