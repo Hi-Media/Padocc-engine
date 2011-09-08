@@ -10,7 +10,5 @@
 interface Minifier_Interface
 {
 
-    public function minifyJS (array $aSrcPaths, $sDestPath);
-
-    public function minifyCSS (array $aSrcPaths, $sDestPath);
+    public function minify (array $aSrcPaths, $sDestPath);
 }
