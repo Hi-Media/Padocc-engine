@@ -37,9 +37,9 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase
         $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
-        //$oShell = new Shell_Adapter($oLogger);
         $oClass = new ReflectionClass('Shell_Adapter');
         $oProperty = $oClass->getProperty('_aFileStatus');
+
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockShell, array(
             '/path/to/srcdir' => 2,

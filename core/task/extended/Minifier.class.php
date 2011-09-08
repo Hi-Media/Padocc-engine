@@ -36,15 +36,12 @@ class Task_Extended_Minifier extends Task
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);
         $this->_aAttrProperties = array(
-            //'server' => 0,
-            //'cssbasedir' => AttributeProperties::DIR,
-            //'cssfile' => AttributeProperties::FILE | AttributeProperties::ALLOW_PARAMETER,
-            //'jsbasedir' => AttributeProperties::DIR,
-            'srcfile' => AttributeProperties::FILE | AttributeProperties::ALLOW_PARAMETER,
+            'srcfile' => AttributeProperties::FILEJOKER | AttributeProperties::ALLOW_PARAMETER,
             'destfile' => AttributeProperties::FILE | AttributeProperties::ALLOW_PARAMETER
         );
 
-        $this->_oMinifier = new Minifier_JSMinAdapter(DEPLOYMENT_JSMIN_BIN_PATH, $this->_oShell);
+        //$this->_oMinifier = new Minifier_JSMinAdapter(DEPLOYMENT_JSMIN_BIN_PATH, $this->_oShell);
+        $this->_oMinifier = Minifier_Factory::getInstance(Minifier_Factory::TYPE_JSMIN, $this->_oShell);
     }
 
     protected function _centralExecute ()
@@ -56,7 +53,7 @@ class Task_Extended_Minifier extends Task
 
         $aSrcPaths = $this->_processPath($this->_aAttributes['srcfile']);
         $sDestPaths = $this->_processSimplePath($this->_aAttributes['destfile']);
-        $this->_oMinifier->minifyJS($aSrcPaths, $sDestPaths);
+        $this->_oMinifier->minify($aSrcPaths, $sDestPaths);
 
         $this->_oLogger->unindent();
     }

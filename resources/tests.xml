@@ -147,6 +147,9 @@
             include="*.png"
             exclude="*" /> -->
         <minify srcfile="${TMP_PATH}/webv4/js/account.js" destfile="${TMP_PATH}/minify_result.js" />
+        <minify srcfile="${TMP_PATH}/webv4/js/*.js" destfile="${TMP_PATH}/minify_resultN.js" />
+        <minify srcfile="${TMP_PATH}/webv4/css/account.css" destfile="${TMP_PATH}/minify_account.css" />
+        <minify srcfile="${TMP_PATH}/webv4/css/*.css" destfile="${TMP_PATH}/minify_N.css" />
         <sync src="${TMP_PATH}/"
             destdir="aai@aai-01:/home/aai/deployment_test/dest_test_b2c" />
     </target>
