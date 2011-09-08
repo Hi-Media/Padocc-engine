@@ -13,13 +13,14 @@ class Minifier_JSMinAdapter implements Minifier_Interface
     /**
      * Shell adapter.
      * @var Shell_Interface
-     * @see loadConfigShellFile()
+     * @see _minifyJS()
      */
     private $_oShell;
 
     /**
      * Chemin du binaire JSMin
      * @var string
+     * @see _minifyJS()
      */
     private $_sBinPath;
 
@@ -35,6 +36,17 @@ class Minifier_JSMinAdapter implements Minifier_Interface
         $this->_oShell = $oShell;
     }
 
+    /**
+     * Minifie la liste de fichiers JS ou CSS spécifiée et enregistre le résultat dans $sDestPath.
+     *
+     * @param array $aSrcPaths liste de fichiers se finissant tous par '.js', ou tous par '.css'
+     * @param string $sDestPath chemin/fichier dans lequel enregistrer le résultat du minify
+     * @return Minifier_Interface $this
+     * @throws BadMethodCallException si $aSrcPaths vide
+     * @throws UnexpectedValueException si les sources n'ont pas toutes la même extension de fichier
+     * @throws UnexpectedValueException si la destination est un CSS quand les sources sont des JS ou inversement
+     * @throws DomainException si des fichiers ne se terminent ni par '.js', ni par '.css'
+     */
     public function minify (array $aSrcPaths, $sDestPath)
     {
         if (count($aSrcPaths) === 0) {
@@ -66,13 +78,21 @@ class Minifier_JSMinAdapter implements Minifier_Interface
                 break;
 
             default:
-                throw new DomainException("All specified paths must finish either by '.js' or '.css'!");
+                $sMsg = "All specified paths must finish either by '.js' or '.css': '$sFirstExtension'!";
+                throw new DomainException($sMsg);
                 break;
         }
 
         return $this;
     }
 
+    /**
+     * Minifie la liste des fichiers JS spécifiée et enregistre le résultat dans $sDestPath.
+     *
+     * @param array $aSrcPaths liste de fichiers se finissant tous par '.js'
+     * @param string $sDestPath chemin/fichier dans lequel enregistrer le résultat du minify
+     * @throws RuntimeException en cas d'erreur shell
+     */
     protected function _minifyJS (array $aSrcPaths, $sDestPath)
     {
         $sCmd = 'cat';
@@ -83,6 +103,12 @@ class Minifier_JSMinAdapter implements Minifier_Interface
         $this->_oShell->exec($sCmd);
     }
 
+    /**
+     * Minifie la liste des fichiers CSS spécifiée et enregistre le résultat dans $sDestPath.
+     *
+     * @param array $aSrcPaths liste de fichiers se finissant tous par '.css'
+     * @param string $sDestPath chemin/fichier dans lequel enregistrer le résultat du minify
+     */
     protected function _minifyCSS (array $aSrcPaths, $sDestPath)
     {
         $sContent = $this->_getContent($aSrcPaths);
@@ -141,6 +167,13 @@ class Minifier_JSMinAdapter implements Minifier_Interface
         return $sHash;
     }*/
 
+    /**
+     * Retourne la concaténation du contenu des fichiers spécifiés.
+     *
+     * @param array $aSrcPaths liste de chemins dont on veut concaténer le contenu
+     * @return string la concaténation du contenu des fichiers spécifiés.
+     * @see _minifyCSS()
+     */
     private function _getContent (array $aSrcPaths)
     {
         $aExpandedPaths = array();

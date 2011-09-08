@@ -277,7 +277,7 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
             $this->oServiceContainer->getShellAdapter()
         );
 
-        $this->setExpectedException('DomainException', "All specified paths must finish either by '.js' or '.css'!");
+        $this->setExpectedException('DomainException', "All specified paths must finish either by '.js' or '.css'");
         $oJSminAdapter->minify(array('/path/a.a'), '/dest/path/b.a');
     }
 

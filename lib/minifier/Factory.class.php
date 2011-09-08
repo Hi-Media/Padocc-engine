@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Compresser les fichiers JS et CSS.
+ * Factory de Minifier_Interface.
  *
  * @category TwengaDeploy
  * @package Lib
@@ -9,8 +9,21 @@
  */
 class Minifier_Factory
 {
+    /**
+     * Pour indiquer que l'on souhaite construire une instance de Minifier_JSMinAdapter.
+     * @var int
+     * @see getInstance()
+     */
     const TYPE_JSMIN = 1;
 
+    /**
+     * Retourne une instance de Minifier_Interface selon le $iType spécifié.
+     *
+     * @param int $iType type d'instance désiré
+     * @param Shell_Interface $oShell
+     * @throws BadMethodCallException si type inconnu.
+     * @return Minifier_Interface une instance de Minifier_Interface selon le $iType spécifié.
+     */
     public static function getInstance ($iType, Shell_Interface $oShell)
     {
         switch ($iType) {
@@ -26,7 +39,7 @@ class Minifier_Factory
     }
 
     /**
-     * Simple factory.
+     * Simple factory, non instanciable.
      */
     private function __construct()
     {
