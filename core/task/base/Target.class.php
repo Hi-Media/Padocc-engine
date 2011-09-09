@@ -167,7 +167,7 @@ class Task_Base_Target extends Task_WithProperties
 
         if ( ! empty($this->_aAttributes['mailto'])) {
             $aSplittedValues = preg_split(
-                AttributeProperties::$sMultiValuedSeparator,
+                AttributeProperties::$sMultiValuedSep,
                 trim($this->_aAttributes['mailto']),
                 -1,
                 PREG_SPLIT_NO_EMPTY
