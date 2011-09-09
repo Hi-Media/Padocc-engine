@@ -137,7 +137,7 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase
             'UnexpectedValueException',
             "Project definition not found: '/path/not found'!"
         );
-        $oTask = new Task_Base_Project('/path/not found', 'myEnv', 'anExecutionID', $this->oServiceContainer);
+        $oTask = new Task_Base_Project('/path/not found', 'myEnv', $this->oServiceContainer);
     }
 
     /**
@@ -153,7 +153,7 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase
             "Bad project definition: '" . DEPLOYMENT_TMP_PATH . "/deploy_unittest_"
         );
         try {
-            $oTask = new Task_Base_Project($sTmpPath, 'myEnv', 'anExecutionID', $this->oServiceContainer);
+            $oTask = new Task_Base_Project($sTmpPath, 'myEnv', $this->oServiceContainer);
         } catch (UnexpectedValueException $oException) {
             unlink($sTmpPath);
             throw $oException;
@@ -177,7 +177,7 @@ EOT;
             "Environment 'myEnv' not found or not unique in this project!"
         );
         try {
-            $oTask = new Task_Base_Project($sTmpPath, 'myEnv', 'anExecutionID', $this->oServiceContainer);
+            $oTask = new Task_Base_Project($sTmpPath, 'myEnv', $this->oServiceContainer);
         } catch (UnexpectedValueException $oException) {
             unlink($sTmpPath);
             throw $oException;
@@ -203,7 +203,7 @@ EOT;
             "Environment 'myEnv' not found or not unique in this project!"
         );
         try {
-            $oTask = new Task_Base_Project($sTmpPath, 'myEnv', 'anExecutionID', $this->oServiceContainer);
+            $oTask = new Task_Base_Project($sTmpPath, 'myEnv', $this->oServiceContainer);
         } catch (UnexpectedValueException $oException) {
             unlink($sTmpPath);
             throw $oException;
@@ -224,7 +224,7 @@ EOT;
 </project>
 EOT;
         file_put_contents($sTmpPath, $sContent);
-        $oProject = new Task_Base_Project($sTmpPath, 'myEnv', 'anExecutionID', $this->oServiceContainer);
+        $oProject = new Task_Base_Project($sTmpPath, 'myEnv', $this->oServiceContainer);
         /*$oProject = $this->getMock(
             'Task_Base_Project',
             array('_loadProperties'),

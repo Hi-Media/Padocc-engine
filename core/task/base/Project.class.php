@@ -91,7 +91,7 @@ class Task_Base_Project extends Task_WithProperties
      * @throws UnexpectedValueException si fichier XML du projet non trouvé
      * @throws UnexpectedValueException si environnement non trouvé ou non unique
      */
-    public function __construct ($sProjectPath, $sEnvName, $sExecutionID, ServiceContainer $oServiceContainer)
+    public function __construct ($sProjectPath, $sEnvName, ServiceContainer $oServiceContainer)
     {
         $oSXEProject = self::getSXEProject($sProjectPath);
         $this->sEnvName = $sEnvName;
