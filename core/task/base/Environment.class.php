@@ -36,7 +36,7 @@ class Task_Base_Environment extends Task_Base_Target
             $this->_aAttrProperties,
             array(
                 'name' => AttributeProperties::REQUIRED,
-                'mailto' => 0,
+                'mailto' => AttributeProperties::EMAIL | AttributeProperties::MULTI_VALUED,
                 'withsymlinks' => AttributeProperties::BOOLEAN,
                 'basedir' => AttributeProperties::DIR | AttributeProperties::REQUIRED
             )

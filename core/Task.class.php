@@ -28,6 +28,13 @@ abstract class Task
     protected $_oServiceContainer;
 
     /**
+     * Instance de AttributeProperties.
+     * @var AttributeProperties
+     * @see check()
+     */
+    protected $oAttrProperties;
+
+    /**
      * Adaptater shell.
      * @var Shell_Interface
      */
@@ -142,6 +149,8 @@ abstract class Task
         $this->_oLogger = $this->_oServiceContainer->getLogAdapter();
         $this->_oProperties = $this->_oServiceContainer->getPropertiesAdapter();
         $this->_oNumbering = $this->_oServiceContainer->getNumberingAdapter();
+
+        $this->_oAttrProperties = new AttributeProperties($this->_oServiceContainer);
 
         $sCounter = $this->_oNumbering->getNextCounterValue();
         $this->_sCounter = $sCounter;
@@ -259,28 +268,6 @@ abstract class Task
     }
 
     /**
-     * Normalise les propriétés des attributs des tâches XML.
-     * Par exemple si c'est un AttributeProperties::FILEJOKER, alors c'est forcément aussi
-     * un AttributeProperties::FILE.
-     *
-     * @see aAttributeProperties
-     */
-    private function _normalizeAttributeProperties ()
-    {
-        foreach ($this->_aAttrProperties as $sAttribute => $iProperties) {
-            if (($iProperties & AttributeProperties::SRC_PATH) > 0) {
-                $this->_aAttrProperties[$sAttribute] |= AttributeProperties::FILE | AttributeProperties::DIR;
-            }
-            if (($iProperties & AttributeProperties::FILEJOKER) > 0) {
-                $this->_aAttrProperties[$sAttribute] |= AttributeProperties::FILE;
-            }
-            if (($iProperties & AttributeProperties::DIRJOKER) > 0) {
-                $this->_aAttrProperties[$sAttribute] |= AttributeProperties::DIR;
-            }
-        }
-    }
-
-    /**
      * Vérifie au moyen de tests basiques que la tâche peut être exécutée.
      * Lance une exception si tel n'est pas le cas.
      *
@@ -288,88 +275,19 @@ abstract class Task
      * doit permettre de remonter au plus tôt tout dysfonctionnement.
      * Appelé avant la méthode execute().
      *
-     * Pour futur check email : http://atranchant.developpez.com/code/validation/
-     *
      * @throws UnexpectedValueException en cas d'attribut ou fichier manquant
-     * @throws DomainException en cas de valeur non permise
+     * @throws DomainException en cas d'attribut non permis
      * @see self::$aAttributeProperties
      */
     protected function check ()
     {
-        $this->_normalizeAttributeProperties();
         $sMsg = "Check '" . $this->_sName . "' task";
         if ( ! empty($this->_aAttributes['name'])) {
             $sMsg .= ': \'' . $this->_aAttributes['name'] . '\'';
         }
         $this->_oLogger->log($sMsg);
         $this->_oLogger->indent();
-
-        $aAvailablesAttr = array_keys($this->_aAttrProperties);
-        $aUnknownAttributes = array_diff(array_keys($this->_aAttributes), $aAvailablesAttr);
-        if (count($aUnknownAttributes) > 0) {
-            throw new DomainException(
-                "Available attributes: " . print_r($aAvailablesAttr, true)
-                . " => Unknown attribute(s): " . print_r($aUnknownAttributes, true)
-            );
-        }
-
-        foreach ($this->_aAttrProperties as $sAttribute => $iProperties) {
-            if (empty($this->_aAttributes[$sAttribute]) && ($iProperties & AttributeProperties::REQUIRED) > 0) {
-                throw new UnexpectedValueException("'$sAttribute' attribute is required!");
-            } else if ( ! empty($this->_aAttributes[$sAttribute])) {
-                if (($iProperties & AttributeProperties::DIR) > 0 || ($iProperties & AttributeProperties::FILE) > 0) {
-                    $this->_aAttributes[$sAttribute] = str_replace('\\', '/', $this->_aAttributes[$sAttribute]);
-                }
-
-                if (($iProperties & AttributeProperties::BOOLEAN) > 0
-                    && ! in_array($this->_aAttributes[$sAttribute], array('true', 'false'))
-                ) {
-                    $sMsg = "Value of '$sAttribute' attribute is restricted to 'true' or 'false'. Value: '"
-                            . $this->_aAttributes[$sAttribute] . "'!";
-                    throw new DomainException($sMsg);
-                }
-
-                if (($iProperties & AttributeProperties::URL) > 0
-                    && preg_match('#^http://#i', $this->_aAttributes[$sAttribute]) === 0
-                ) {
-                    throw new DomainException("Bad URL: '" . $this->_aAttributes[$sAttribute] . "'");
-                }
-
-                if (preg_match('#[*?].*/#', $this->_aAttributes[$sAttribute]) !== 0
-                    && ($iProperties & AttributeProperties::DIRJOKER) === 0
-                ) {
-                    $sMsg = "'*' and '?' jokers are not authorized for directory in '$sAttribute' attribute!";
-                    throw new DomainException($sMsg);
-                }
-
-                if (preg_match('#[*?](.*[^/])?$#', $this->_aAttributes[$sAttribute]) !== 0
-                    && ($iProperties & AttributeProperties::FILEJOKER) === 0
-                    && ($iProperties & AttributeProperties::URL) === 0
-                ) {
-                    $sMsg = "'*' and '?' jokers are not authorized for filename in '$sAttribute' attribute!";
-                    throw new DomainException($sMsg);
-                }
-
-                if (preg_match('#\$\{[^}]*\}#', $this->_aAttributes[$sAttribute]) !== 0
-                    && ($iProperties & AttributeProperties::ALLOW_PARAMETER) === 0
-                ) {
-                    $sMsg = "Parameters are not allowed in '$sAttribute' attribute! Value: '"
-                            . $this->_aAttributes[$sAttribute] . "'";
-                    throw new DomainException($sMsg);
-                }
-
-                // Vérification de présence de la source si chemin sans joker ni paramètre :
-                if (
-                        ($iProperties & AttributeProperties::SRC_PATH) > 0
-                        && preg_match('#\*|\?|\$\{[^}]*\}#', $this->_aAttributes[$sAttribute]) === 0
-                        && $this->_oShell->getPathStatus($this->_aAttributes[$sAttribute])
-                            === Shell_PathStatus::STATUS_NOT_EXISTS
-                ) {
-                    $sMsg = "File or directory '" . $this->_aAttributes[$sAttribute] . "' not found!";
-                    throw new UnexpectedValueException($sMsg);
-                }
-            }
-        }
+        $this->_oAttrProperties->checkAttributes($this->_aAttrProperties, $this->_aAttributes);
         $this->_oLogger->unindent();
     }
 
