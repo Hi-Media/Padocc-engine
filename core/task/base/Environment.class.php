@@ -228,14 +228,13 @@ class Task_Base_Environment extends Task_Base_Target
             $this->_oLogger->log('No release found.');
         } else {
             $bIsQuotaExceeded = ($iNbReleases > self::$_iDefaultMaxNbReleases);
-            $sMsg = $iNbReleases . ' release' . ($iNbReleases > 1 ? 's' : '') . ' found: quota '
+            $sMsg = $iNbReleases . ' release(s) found: quota '
                   . ($bIsQuotaExceeded ? 'exceeded' : 'not reached')
                   . ' (' . self::$_iDefaultMaxNbReleases . ' backups max).';
             $this->_oLogger->log($sMsg);
             if ($bIsQuotaExceeded) {
                 $aReleasesToDelete = array_slice($aAllReleases, self::$_iDefaultMaxNbReleases);
-                $sMsg = 'Release' . (count($aReleasesToDelete) > 1 ? 's' : '') . ' deleted (the oldest): '
-                      . implode(', ', $aReleasesToDelete) . '.';
+                $sMsg = 'Release(s) deleted (the oldest): ' . implode(', ', $aReleasesToDelete) . '.';
                 $sFirst = $sExpandedPath . '/' . array_shift($aReleasesToDelete);
                 $sCmd = 'rm -rf %s';
                 if (count($aReleasesToDelete) > 0) {
