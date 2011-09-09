@@ -166,12 +166,13 @@ class Task_Base_Target extends Task_WithProperties
         parent::check();
 
         if ( ! empty($this->_aAttributes['mailto'])) {
-            $this->_aAttributes['mailto'] = str_replace(
-                array(';', ','),
-                array(' ', ' '),
-                trim($this->_aAttributes['mailto'])
+            $aSplittedValues = preg_split(
+                AttributeProperties::$sMultiValuedPatternSeparator,
+                trim($this->_aAttributes['mailto']),
+                -1,
+                PREG_SPLIT_NO_EMPTY
             );
-            $this->_aAttributes['mailto'] = preg_replace('/\s{2,}/', ' ', $this->_aAttributes['mailto']);
+            $this->_aAttributes['mailto'] = implode(' ', $aSplittedValues);
         }
     }
 

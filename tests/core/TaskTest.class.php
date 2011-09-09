@@ -171,6 +171,7 @@ class TaskTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
      */
     public function testCheck_EmptyNotThrowException ()
     {
@@ -191,6 +192,8 @@ class TaskTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_checkUnknownAttributes
      */
     public function testCheck_ThrowExceptionIfUnknownAttribute ()
     {
@@ -212,6 +215,8 @@ class TaskTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_checkAttribute
      */
     public function testCheck_ThrowExceptionIfRequiredAttribute ()
     {
@@ -233,6 +238,9 @@ class TaskTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_checkAttribute
+     * @covers AttributeProperties::_checkUnknownAttributes
      */
     public function testCheck_RequiredAttribute ()
     {
@@ -253,6 +261,10 @@ class TaskTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_checkAttribute
+     * @covers AttributeProperties::_formatAttribute
+     * @covers AttributeProperties::_checkUnknownAttributes
      */
     public function testCheck_FileAttribute ()
     {
@@ -274,6 +286,10 @@ class TaskTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_checkAttribute
+     * @covers AttributeProperties::_formatAttribute
+     * @covers AttributeProperties::_checkUnknownAttributes
      */
     public function testCheck_DirAttribute ()
     {
@@ -295,6 +311,8 @@ class TaskTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_checkAttribute
      */
     public function testCheck_ThrowExceptionIfDirectoryJokerWithoutDirjokerAttribute ()
     {
@@ -319,6 +337,8 @@ class TaskTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_checkAttribute
      */
     public function testCheck_DirectoryJokerWithDirjokerAttribute ()
     {
@@ -339,6 +359,8 @@ class TaskTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_checkAttribute
      */
     public function testCheck_ThrowExceptionIfFileJokerWithoutFilejokerAttribute ()
     {
@@ -363,6 +385,165 @@ class TaskTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_checkAttribute
+     */
+    public function testCheck_ThrowExceptionIfBadURLAttribute ()
+    {
+        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
+        $o = new ReflectionClass($oMockTask);
+
+        $oProperty = $o->getProperty('_aAttrProperties');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array('b' => AttributeProperties::URL));
+
+        $oProperty = $o->getProperty('_aAttributes');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array('b' => 'htp://badurl'));
+
+        $this->setExpectedException('DomainException', "Bad URL: 'htp://badurl'");
+        $oMockTask->setUp();
+    }
+
+    /**
+     * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_checkAttribute
+     */
+    public function testCheck_WithURLAttribute ()
+    {
+        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
+        $o = new ReflectionClass($oMockTask);
+
+        $oProperty = $o->getProperty('_aAttrProperties');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array('b' => AttributeProperties::URL));
+
+        $oProperty = $o->getProperty('_aAttributes');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array('b' => 'http://url/?a=b#c'));
+
+        $oMockTask->setUp();
+    }
+
+    /**
+     * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_checkAttribute
+     */
+    public function testCheck_ThrowExceptionIfBadEmailAttribute ()
+    {
+        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
+        $o = new ReflectionClass($oMockTask);
+
+        $oProperty = $o->getProperty('_aAttrProperties');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array('b' => AttributeProperties::EMAIL));
+
+        $oProperty = $o->getProperty('_aAttributes');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array('b' => 'toto.titi@xyz'));
+
+        $this->setExpectedException('DomainException', "Email invalid: 'toto.titi@xyz'");
+        $oMockTask->setUp();
+    }
+
+    /**
+     * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_checkAttribute
+     */
+    public function testCheck_ThrowExceptionIfGoodEmailsWithoutMultiAttribute ()
+    {
+        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
+        $o = new ReflectionClass($oMockTask);
+
+        $oProperty = $o->getProperty('_aAttrProperties');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array('b' => AttributeProperties::EMAIL));
+
+        $oProperty = $o->getProperty('_aAttributes');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array('b' => 'toto.titi@xyz.fr, aa.bb@xyz.fr'));
+
+        $this->setExpectedException('DomainException', "Email invalid: 'toto.titi@xyz.fr, aa.bb@xyz.fr'");
+        $oMockTask->setUp();
+    }
+
+    /**
+     * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_checkAttribute
+     */
+    public function testCheck_WithOnly1GoodEmailWithMultiAttribute ()
+    {
+        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
+        $o = new ReflectionClass($oMockTask);
+
+        $oProperty = $o->getProperty('_aAttrProperties');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array('b' => AttributeProperties::EMAIL | AttributeProperties::MULTI_VALUED));
+
+        $oProperty = $o->getProperty('_aAttributes');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array('b' => 'toto.titi@xyz.fr'));
+
+        $oMockTask->setUp();
+    }
+
+    /**
+     * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_checkAttribute
+     */
+    public function testCheck_WithGoodEmailsWithMultiAttribute ()
+    {
+        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
+        $o = new ReflectionClass($oMockTask);
+
+        $oProperty = $o->getProperty('_aAttrProperties');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array('b' => AttributeProperties::EMAIL | AttributeProperties::MULTI_VALUED));
+
+        $oProperty = $o->getProperty('_aAttributes');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array('b' => 'toto.titi@xyz.fr ,  aa.bb@xyz.fr'));
+
+        $oMockTask->setUp();
+    }
+
+    /**
+     * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_checkAttribute
+     */
+    public function testCheck_WithEmailAttribute ()
+    {
+        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
+        $o = new ReflectionClass($oMockTask);
+
+        $oProperty = $o->getProperty('_aAttrProperties');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array('b' => AttributeProperties::EMAIL));
+
+        $oProperty = $o->getProperty('_aAttributes');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array('b' => 'toto.titi@xyz.fr'));
+
+        $oMockTask->setUp();
+    }
+
+    /**
+     * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_checkAttribute
      */
     public function testCheck_ThrowExceptionIfBadBooleanAttribute ()
     {
@@ -387,6 +568,9 @@ class TaskTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_checkAttribute
+     * @covers AttributeProperties::_checkUnknownAttributes
      */
     public function testCheck_BooleanAttribute ()
     {
@@ -404,13 +588,15 @@ class TaskTest extends PHPUnit_Framework_TestCase
         $oProperty = $o->getProperty('_aAttributes');
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockTask, array('b_true' => 'true'));
-        $oProperty->setValue($oMockTask, array('b_false' => 'true'));
+        $oProperty->setValue($oMockTask, array('b_false' => 'false'));
 
         $oMockTask->setUp();
     }
 
     /**
      * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_checkAttribute
      */
     public function testCheck_FileJokerWithFilejokerAttribute ()
     {
@@ -431,6 +617,8 @@ class TaskTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_checkAttribute
      */
     public function testCheck_ThrowExceptionIfParameterWithoutAllowparametersAttribute ()
     {
@@ -455,6 +643,8 @@ class TaskTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_checkAttribute
      */
     public function testCheck_ParameterWithAllowparametersAttribute ()
     {
@@ -475,6 +665,7 @@ class TaskTest extends PHPUnit_Framework_TestCase
 
     /**
      * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
      */
     public function testCheck_ParameterThrowExceptionWithSrcpathAttribute ()
     {
@@ -734,87 +925,96 @@ class TaskTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Task::_normalizeAttributeProperties
+     * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_normalizeAttributeProperties
      */
-    public function testNormalizeAttributeProperties_WithAttrSrcPath ()
+    public function testCheck_NormalizeAttributeProperties_WithAttrSrcPath ()
     {
-        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
-        $oClass = new ReflectionClass($oMockTask);
-
-        $oProperty = $oClass->getProperty('_aAttrProperties');
-        $oProperty->setAccessible(true);
-        $oProperty->setValue($oMockTask, array(
+        $aAttrProperties = array(
             'srcpath1' => AttributeProperties::SRC_PATH,
             'srcpath2' => AttributeProperties::SRC_PATH | AttributeProperties::DIR,
             'srcpath3' => AttributeProperties::SRC_PATH | AttributeProperties::FILE,
             'srcpath4' => AttributeProperties::SRC_PATH | AttributeProperties::DIR | AttributeProperties::FILE,
             'other' => 0
-        ));
-
-        $oMethod = $oClass->getMethod('_normalizeAttributeProperties');
-        $oMethod->setAccessible(true);
-        $oMethod->invokeArgs($oMockTask, array());
-        $this->assertAttributeEquals(array(
+        );
+        $aExpected = array(
             'srcpath1' => AttributeProperties::SRC_PATH | AttributeProperties::DIR | AttributeProperties::FILE,
             'srcpath2' => AttributeProperties::SRC_PATH | AttributeProperties::DIR | AttributeProperties::FILE,
             'srcpath3' => AttributeProperties::SRC_PATH | AttributeProperties::DIR | AttributeProperties::FILE,
             'srcpath4' => AttributeProperties::SRC_PATH | AttributeProperties::DIR | AttributeProperties::FILE,
             'other' => 0
-        ), '_aAttrProperties', $oMockTask);
-    }
+        );
 
-    /**
-     * @covers Task::_normalizeAttributeProperties
-     */
-    public function testNormalizeAttributeProperties_WithAttrFileJoker ()
-    {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
         $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
         $oClass = new ReflectionClass($oMockTask);
 
         $oProperty = $oClass->getProperty('_aAttrProperties');
         $oProperty->setAccessible(true);
-        $oProperty->setValue($oMockTask, array(
+        $oProperty->setValue($oMockTask, $aAttrProperties);
+
+        $oMockTask->setUp();
+        $this->assertAttributeEquals($aExpected, '_aAttrProperties', $oMockTask);
+    }
+
+    /**
+     * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_normalizeAttributeProperties
+     */
+    public function testCheck_NormalizeAttributeProperties_WithAttrFileJoker ()
+    {
+        $aAttrProperties = array(
             'srcpath1' => AttributeProperties::FILEJOKER,
             'srcpath2' => AttributeProperties::FILEJOKER | AttributeProperties::FILE,
             'other' => 0
-        ));
-
-        $oMethod = $oClass->getMethod('_normalizeAttributeProperties');
-        $oMethod->setAccessible(true);
-        $oMethod->invokeArgs($oMockTask, array());
-        $this->assertAttributeEquals(array(
+        );
+        $aExpected = array(
             'srcpath1' => AttributeProperties::FILEJOKER | AttributeProperties::FILE,
             'srcpath2' => AttributeProperties::FILEJOKER | AttributeProperties::FILE,
             'other' => 0
-        ), '_aAttrProperties', $oMockTask);
-    }
+        );
 
-    /**
-     * @covers Task::_normalizeAttributeProperties
-     */
-    public function testNormalizeAttributeProperties_WithAttrDirJoker ()
-    {
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
         $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
         $oClass = new ReflectionClass($oMockTask);
 
         $oProperty = $oClass->getProperty('_aAttrProperties');
         $oProperty->setAccessible(true);
-        $oProperty->setValue($oMockTask, array(
+        $oProperty->setValue($oMockTask, $aAttrProperties);
+
+        $oMockTask->setUp();
+        $this->assertAttributeEquals($aExpected, '_aAttrProperties', $oMockTask);
+    }
+
+    /**
+     * @covers Task::check
+     * @covers AttributeProperties::checkAttributes
+     * @covers AttributeProperties::_normalizeAttributeProperties
+     */
+    public function testCheck_NormalizeAttributeProperties_WithAttrDirJoker ()
+    {
+        $aAttrProperties = array(
             'srcpath1' => AttributeProperties::DIRJOKER,
             'srcpath2' => AttributeProperties::DIRJOKER | AttributeProperties::DIR,
             'other' => 0
-        ));
-
-        $oMethod = $oClass->getMethod('_normalizeAttributeProperties');
-        $oMethod->setAccessible(true);
-        $oMethod->invokeArgs($oMockTask, array());
-        $this->assertAttributeEquals(array(
+        );
+        $aExpected = array(
             'srcpath1' => AttributeProperties::DIRJOKER | AttributeProperties::DIR,
             'srcpath2' => AttributeProperties::DIRJOKER | AttributeProperties::DIR,
             'other' => 0
-        ), '_aAttrProperties', $oMockTask);
+        );
+
+        $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
+        $oMockTask = $this->getMockForAbstractClass('Task', array(new SimpleXMLElement('<foo />'), $oMockProject, $this->oServiceContainer));
+        $oClass = new ReflectionClass($oMockTask);
+
+        $oProperty = $oClass->getProperty('_aAttrProperties');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, $aAttrProperties);
+
+        $oMockTask->setUp();
+        $this->assertAttributeEquals($aExpected, '_aAttrProperties', $oMockTask);
     }
 }
