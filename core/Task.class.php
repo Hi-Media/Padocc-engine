@@ -32,7 +32,7 @@ abstract class Task
      * @var AttributeProperties
      * @see check()
      */
-    protected $oAttrProperties;
+    protected $_oAttrProperties;
 
     /**
      * Adaptater shell.

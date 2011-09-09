@@ -86,7 +86,7 @@ class AttributeProperties
      * @var string
      * @see checkAttributes()
      */
-    public static $sMultiValuedPatternSeparator = '/\s*,\s*/';
+    public static $sMultiValuedSeparator = '/\s*,\s*/';
 
     /**
      * Glue pour concaténer les différentes valeurs d'un attribut doté de la propriété MULTI_VALUED.
@@ -175,7 +175,7 @@ class AttributeProperties
             if (isset($aValues[$sName])) {
                 if (($iProperties & self::MULTI_VALUED) > 0) {
                     $aSplittedValues = preg_split(
-                        self::$sMultiValuedPatternSeparator,
+                        self::$sMultiValuedSeparator,
                         $aValues[$sName],
                         -1,
                         PREG_SPLIT_NO_EMPTY
