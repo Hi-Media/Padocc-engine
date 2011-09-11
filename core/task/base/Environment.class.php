@@ -1,6 +1,20 @@
 <?php
 
 /**
+ * Sous-division d'une tâche projet, décrit ce qu'est un déploiement pour un environnement donné.
+ *
+ * Liste des attributs :
+ * - 'name', obligatoire, précise la valeur à fournir lors d'un déploiement (par ex. 'qa', 'prod', ...).
+ * - 'mailto', optionnel, permet d'ajouter des destinataires (séparés par ',') au mail de fin de déploiement.
+ * - 'basedir', obligatoire, est le répertoire racine de déploiement sur le(s) serveur(s) cible(s).
+ *      Par exemple : basedir="/home/httpd/my_app".
+ * - 'withsymlinks', optionnel, "true" ou "false" (défaut), précise si l'on souhaite utiliser la technique
+ *      des liens symboliques lors des déploiements ou non. XXX
+ *
+ * Dérive Task_WithProperties et supporte donc les attributs 'loadtwengaservers', 'propertyshellfile'
+ * et 'propertyinifile'.
+ *
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
@@ -100,7 +114,6 @@ class Task_Base_Environment extends Task_Base_Target
     {
         $this->_aPathsToHandle = array();
         $aPaths = array_keys(self::$_aRegisteredPaths);
-        //$this->_oLogger->log(print_r($aPaths, true));
 
         $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
         foreach ($aPaths as $sPath) {
@@ -113,7 +126,6 @@ class Task_Base_Environment extends Task_Base_Target
             }
         }
 
-        //$this->_oLogger->log(print_r($this->_aPathsToHandle, true));
         $aServersWithSymlinks = array_keys($this->_aPathsToHandle);
         if (count($aServersWithSymlinks) > 0) {
             sort($aServersWithSymlinks);
@@ -269,6 +281,9 @@ class Task_Base_Environment extends Task_Base_Target
         $this->_oLogger->unindent();
     }
 
+    /**
+     * Prépare la tâche avant exécution : vérifications basiques, analyse des serveurs concernés...
+     */
     public function setUp ()
     {
         if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
@@ -282,6 +297,12 @@ class Task_Base_Environment extends Task_Base_Target
         }
     }
 
+    /**
+     * Phase de pré-traitements de l'exécution de la tâche.
+     * Elle devrait systématiquement commencer par "parent::_preExecute();".
+     * Appelé par _execute().
+     * @see execute()
+     */
     protected function _preExecute ()
     {
         parent::_preExecute();
@@ -297,6 +318,12 @@ class Task_Base_Environment extends Task_Base_Target
         $this->_oLogger->unindent();
     }
 
+    /**
+     * Phase de post-traitements de l'exécution de la tâche.
+     * Elle devrait systématiquement finir par "parent::_postExecute();".
+     * Appelé par _execute().
+     * @see execute()
+     */
     protected function _postExecute()
     {
         if ($this->_oProperties->getProperty('with_symlinks') === 'true') {

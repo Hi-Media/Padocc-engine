@@ -1,6 +1,19 @@
 <?php
 
 /**
+ * Couche permettant aux tâches l'implémentant d'importer des propriétés issues de fichiers de configuration INI,
+ * de fichiers de configuration shell ou encore de la liste des groupes de serveurs Twenga.
+ * Ces propriétés seront ensuite accessibles via $this->_oProperties, instance de Properties_Interface.
+ *
+ * Par exemple, si la tâche 'mytask' dérive Task_WithProperties, alors trois attributs optionnels et cumulables
+ * lui sont ajoutés : 'loadtwengaservers', 'propertyshellfile' et 'propertyinifile'.
+ * Les voici illustrés dans l'ordre dans lequel ils sont traités si présents au sein de la même tâche :
+ *      - <mytask loadtwengaservers="true" /> chargera la liste des groupes de serveurs Twenga
+ *      - <mytask propertyshellfile="/path/to/shell_file.cfg" /> chargera le fichier de configuration shell
+ *      - <mytask propertyinifile="/path/to/config.ini" /> chargera le fichier .INI
+ *
+ * Voir Task_Extended_TwengaServers et Properties_Interface pour plus de détails.
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
@@ -26,9 +39,9 @@ abstract class Task_WithProperties extends Task
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);
         $this->_aAttrProperties = array(
-            'propertyinifile' => AttributeProperties::SRC_PATH,
+            'loadtwengaservers' => AttributeProperties::BOOLEAN,
             'propertyshellfile' => AttributeProperties::SRC_PATH,
-            'loadtwengaservers' => AttributeProperties::BOOLEAN
+            'propertyinifile' => AttributeProperties::SRC_PATH
         );
 
         // Création de la tâche de chargement des listes de serveurs Twenga sous-jacente :
@@ -43,6 +56,10 @@ abstract class Task_WithProperties extends Task
         }
     }
 
+    /**
+     * Lors de l'exécution de la taĉhe, charge les propriétés des éventuels fichiers de configuration INI,
+     * fichiers de configuration shell ou encore la liste des groupes de serveurs Twenga.
+     */
     private function _loadProperties ()
     {
         if ( ! empty($this->_aAttributes['loadtwengaservers']) && $this->_aAttributes['loadtwengaservers'] == 'true') {
@@ -60,6 +77,9 @@ abstract class Task_WithProperties extends Task
         }
     }
 
+    /**
+     * Prépare la tâche avant exécution : vérifications basiques, analyse des serveurs concernés...
+     */
     public function setUp ()
     {
         parent::setUp();
@@ -70,6 +90,12 @@ abstract class Task_WithProperties extends Task
         }
     }
 
+    /**
+     * Phase de pré-traitements de l'exécution de la tâche.
+     * Elle devrait systématiquement commencer par "parent::_preExecute();".
+     * Appelé par _execute().
+     * @see execute()
+     */
     protected function _preExecute ()
     {
         parent::_preExecute();
