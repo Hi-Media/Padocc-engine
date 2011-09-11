@@ -1,6 +1,10 @@
 <?php
 
 /**
+ *
+ * Dérive Task_WithProperties et supporte donc les attributs 'loadtwengaservers', 'propertyshellfile'
+ * et 'propertyinifile'.
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
@@ -176,6 +180,9 @@ class Task_Base_Target extends Task_WithProperties
         }
     }
 
+    /**
+     * Prépare la tâche avant exécution : vérifications basiques, analyse des serveurs concernés...
+     */
     public function setUp ()
     {
         parent::setUp();
@@ -186,6 +193,12 @@ class Task_Base_Target extends Task_WithProperties
         $this->_oLogger->unindent();
     }
 
+    /**
+     * Phase de pré-traitements de l'exécution de la tâche.
+     * Elle devrait systématiquement commencer par "parent::_preExecute();".
+     * Appelé par _execute().
+     * @see execute()
+     */
     protected function _preExecute ()
     {
         parent::_preExecute();
@@ -196,6 +209,12 @@ class Task_Base_Target extends Task_WithProperties
         }
     }
 
+    /**
+     * Phase de traitements centraux de l'exécution de la tâche.
+     * Elle devrait systématiquement commencer par "parent::_centralExecute();".
+     * Appelé par _execute().
+     * @see execute()
+     */
     protected function _centralExecute ()
     {
         parent::_centralExecute();

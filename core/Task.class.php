@@ -224,7 +224,12 @@ abstract class Task
         return $aPaths;
     }
 
-    //private static $aPreparedEnv = array();
+    /**
+     * Reroute de façon transparente tous les chemins système inclus ou égal à la valeur de l'attribut
+     * basedir, défini par la tâche environnement Task_Base_Environment, dans le répertoire de releases XXX
+     * XXX
+     * @param array $aPaths
+     */
     protected function _reroutePaths ($aPaths)
     {
         if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
@@ -245,8 +250,19 @@ abstract class Task
         return $aPaths;
     }
 
+    /**
+     * Centralisation de tous les chemins systèmes définis dans l'une ou l'autre des tâches.
+     * Dédoublonnés et triés par ordre alphabétique.
+     * Structure : array((string)path => true, ...)
+     * @var array
+     * @see _registerPaths()
+     */
     protected static $_aRegisteredPaths = array();
 
+    /**
+     * Collecte les chemins système définis dans les attributs de la tâche,
+     * et les centralise au niveau de la classe pour analyse ultérieure.
+     */
     protected function _registerPaths ()
     {
         //$this->_oLogger->log("registerPaths");
@@ -261,6 +277,9 @@ abstract class Task
         ksort(self::$_aRegisteredPaths);
     }
 
+    /**
+     * Prépare la tâche avant exécution : vérifications basiques, analyse des serveurs concernés...
+     */
     public function setUp ()
     {
         $this->check();
@@ -291,19 +310,51 @@ abstract class Task
         $this->_oLogger->unindent();
     }
 
+    /**
+     * Phase de pré-traitements de l'exécution de la tâche.
+     * Elle devrait systématiquement commencer par "parent::_preExecute();".
+     * Appelé par _execute().
+     * @see execute()
+     */
     protected function _preExecute ()
     {
         $this->_oLogger->log("Execute '" . $this->_sName . "' task");
     }
 
+    /**
+     * Phase de traitements centraux de l'exécution de la tâche.
+     * Elle devrait systématiquement commencer par "parent::_centralExecute();".
+     * Appelé par _execute().
+     * @see execute()
+     */
     protected function _centralExecute ()
     {
     }
 
+    /**
+     * Phase de post-traitements de l'exécution de la tâche.
+     * Elle devrait systématiquement finir par "parent::_postExecute();".
+     * Appelé par _execute().
+     * @see execute()
+     */
     protected function _postExecute ()
     {
     }
 
+    /**
+     * Exécute la tâche en trois phases : pré-traitements, traitements centraux et post-traitements.
+     * Si l'on a la classe F fille de la tâche P, alors on peut s'attendre à :
+     *      P::_preExecute()
+     *      F::_preExecute()
+     *      P::_centralExecute()
+     *      F::_centralExecute()
+     *      F::_postExecute()
+     *      P::_postExecute()
+     *
+     * @see _preExecute()
+     * @see _centralExecute()
+     * @see _postExecute()
+     */
     public function execute ()
     {
         $this->_preExecute();

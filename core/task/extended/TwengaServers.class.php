@@ -55,6 +55,9 @@ class Task_Extended_TwengaServers extends Task
         $this->_oNumbering->removeCounterDivision();
     }
 
+    /**
+     * Prépare la tâche avant exécution : vérifications basiques, analyse des serveurs concernés...
+     */
     public function setUp ()
     {
         parent::setUp();
@@ -63,6 +66,12 @@ class Task_Extended_TwengaServers extends Task
         $this->_oLogger->unindent();
     }
 
+    /**
+     * Phase de traitements centraux de l'exécution de la tâche.
+     * Elle devrait systématiquement commencer par "parent::_centralExecute();".
+     * Appelé par _execute().
+     * @see execute()
+     */
     protected function _centralExecute ()
     {
         parent::_centralExecute();
