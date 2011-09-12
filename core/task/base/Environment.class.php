@@ -140,7 +140,6 @@ class Task_Base_Environment extends Task_Base_Target
     {
         $this->_oLogger->log('If needed, make transition to symlinks:');
         $this->_oLogger->indent();
-        $this->_oProperties->setProperty('with_symlinks', 'false');
         $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
         $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
         $bTransitionMade = false;
@@ -160,7 +159,6 @@ class Task_Base_Environment extends Task_Base_Target
         if ( ! $bTransitionMade) {
             $this->_oLogger->log('No transition.');
         }
-        $this->_oProperties->setProperty('with_symlinks', 'true');
         $this->_oLogger->unindent();
     }
 
@@ -195,7 +193,6 @@ class Task_Base_Environment extends Task_Base_Target
     {
         $this->_oLogger->log('Initialize with content of previous release:');
         $this->_oLogger->indent();
-        $this->_oProperties->setProperty('with_symlinks', 'false');
         $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
         $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
         $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
@@ -216,7 +213,6 @@ class Task_Base_Environment extends Task_Base_Target
                 $this->_oLogger->log("No previous release to initialize '$sDest'.");
             }
         }
-        $this->_oProperties->setProperty('with_symlinks', 'true');
         $this->_oLogger->unindent();
     }
 
@@ -265,7 +261,6 @@ class Task_Base_Environment extends Task_Base_Target
         if ($this->_oProperties->getProperty('servers_concerned_with_base_dir') == '') {
             $this->_oLogger->log('No release found.');
         } else {
-            $this->_oProperties->setProperty('with_symlinks', 'false');
             $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
             $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX;
             foreach ($this->_expandPath($sPath) as $sExpandedPath) {
@@ -275,7 +270,6 @@ class Task_Base_Environment extends Task_Base_Target
                 $this->_removeOldestReleasesInOneDirectory($sExpandedPath);
                 $this->_oLogger->unindent();
             }
-            $this->_oProperties->setProperty('with_symlinks', 'true');
         }
         $this->_oLogger->unindent();
     }
@@ -308,9 +302,11 @@ class Task_Base_Environment extends Task_Base_Target
         $this->_oLogger->indent();
         $this->_analyzeRegisteredPaths();
         if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
+            $this->_oProperties->setProperty('with_symlinks', 'false');
             $this->_makeTransitionToSymlinks();
             $this->_initNewRelease();
             $this->_removeOldestReleases();
+            $this->_oProperties->setProperty('with_symlinks', 'true');
         } else {
             $this->_makeTransitionFromSymlinks();
         }
