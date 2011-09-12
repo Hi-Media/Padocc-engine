@@ -130,16 +130,10 @@ class Shell_Adapter implements Shell_Interface
      * @return array triplet dont la 1re valeur (bool) indique si le chemin spécifié commence par
      * '[user@]servername_or_ip:', la 2e (string) est le serveur (ou chaîne vide si $sPath est local),
      * et la 3e (string) est le chemin dépourvu de l'éventuel serveur.
-     * @throws DomainException si syntaxe invalide (s'il reste des paramètres non résolus par exemple)
      */
     public function isRemotePath ($sPath)
     {
-        // reste-t-il des paramètres non résolus :
-        if (preg_match('/\$\{[^}]*\}/i', $sPath) === 1) {
-            throw new DomainException("Invalid syntax: '$sPath'.");
-        }
-
-        $result = preg_match('/^((?:[a-z0-9_.-]+@)?[a-z0-9_.-]+):(.+)$/i', $sPath, $aMatches);
+        $result = preg_match('/^((?:[^@]+@)?[^:]+):(.+)$/i', $sPath, $aMatches);
         $bIsRemotePath = ($result === 1);
         if ($bIsRemotePath) {
             $sServer = $aMatches[1];

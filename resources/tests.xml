@@ -64,13 +64,13 @@
     >
         <externalproperty name="ref" description="Branch or tag to deploy" />
         <gitexport repository="git@git.twenga.com:rts/rts.git" ref="${REF}"
-            destdir="aai@aai-01:/home/aai/deployment_test/dest_test_symlink/test_gitexport1"
+            destdir="aai@aai-01:${BASEDIR}/test_gitexport1"
             exclude="site_hr_upload config*" />
-        <mkdir destdir="aai@aai-01:/home/aai/deployment_test/dest_test_symlink/test_gitexport1/cache/smarty/cache" mode="777" />
-        <mkdir destdir="aai@aai-01:/home/aai/deployment_test/dest_test_symlink/test_gitexport1/cache/smarty/templates_c" />
+        <mkdir destdir="aai@aai-01:${BASEDIR}/test_gitexport1/cache/smarty/cache" mode="777" />
+        <mkdir destdir="aai@aai-01:${BASEDIR}/test_gitexport1/cache/smarty/templates_c" />
         <cvsexport repository=":extssh:@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
-            destdir="aai@aai-01:/home/aai/deployment_test/dest_test_symlink/test_cvsexport1" />
-        <link server="aai@aai-01" src="/home/aai/deployment_test/dest_test_symlink/test_link/link" target="/home/aai/deployment_test/dest_test_symlink/test_gitexport1" />
+            destdir="aai@aai-01:${BASEDIR}/test_cvsexport1" />
+        <link server="aai@aai-01" src="${BASEDIR}/test_link/link" target="${BASEDIR}/test_gitexport1" />
         <http url="http://aai.twenga.com/push.php?server=${SERVER_AAI}&amp;app=deploy" />
     </env>
 
@@ -115,16 +115,16 @@
         <externalproperty name="ref" description="Branch or tag to deploy" />
         <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${ref}"
             srcsubdir="/v3"
-            destdir="aai@aai-01:/home/aai/deployment_test/dest_test_b2c/web" />
+            destdir="aai@aai-01:${BASEDIR}/web" />
         <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${ref}"
             srcsubdir="/v4"
-            destdir="aai@aai-01:/home/aai/deployment_test/dest_test_b2c/webv4" />
+            destdir="aai@aai-01:${BASEDIR}/webv4" />
         <sync src="prod@fs3:/home/prod/twenga_files/merchant_logos/"
-            destdir="aai@aai-01:/home/aai/deployment_test/dest_test_b2c/img/sites"
+            destdir="aai@aai-01:${BASEDIR}/img/sites"
             include="*.png"
             exclude="*" />
         <sync src="prod@fs3:/home/prod/twenga_files/brand_logos/"
-            destdir="aai@aai-01:/home/aai/deployment_test/dest_test_b2c/img/brands"
+            destdir="aai@aai-01:${BASEDIR}/img/brands"
             include="*.png"
             exclude="*" />
     </target>
@@ -149,8 +149,7 @@
         <minify srcfile="${TMP_PATH}/webv4/js/*.js" destfile="${TMP_PATH}/minify_resultN.js" />
         <minify srcfile="${TMP_PATH}/webv4/css/account.css" destfile="${TMP_PATH}/minify_account.css" />
         <minify srcfile="${TMP_PATH}/webv4/css/*.css" destfile="${TMP_PATH}/minify_N.css" />
-        <sync src="${TMP_PATH}/"
-            destdir="aai@aai-01:/home/aai/deployment_test/dest_test_b2c" />
+        <sync src="${TMP_PATH}/" destdir="aai@aai-01:${BASEDIR}" />
     </target>
 
     <env
