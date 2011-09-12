@@ -6,14 +6,18 @@
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
 
-// /usr/bin/php -q ~/deployment/deployment.php tests tests_gitexport v4.12.0 `date +'%Y%m%d%H%M%S'` /tmp/deployment.php.xxx.error.log
+// /usr/bin/php -q ~/deployment/deployment.php tests tests_gitexport v4.12.0 `date +'%Y%m%d%H%M%S'` \
+//		/tmp/deployment.php.xxx.error.log
 // tail -fn 500 /tmp/deployment.php.xxx.error.log
 // rm -rf /home/gaubry/deployment_backup/* && rm -rf /home/gaubry/test/dest/*
 // rm -rf /home/gaubry/deployment_backup/* && rm -rf /home/gaubry/deployment_test/*
+// chmod +x /home/gaubry/deployment/lib/minifier/jsmin/jsmin
 
 // Exemple de script backup préalable :
 /*
-servers="batch112 ..."; for server in $servers; do ssh $server cp -a /home/prod/twenga/tools/photo_crawler /tmp/photo_crawler.BAK; echo $server OK; done
+servers="batch112 ..."; for server in $servers; do
+    ssh $server cp -a /home/prod/twenga/tools/photo_crawler /tmp/photo_crawler.BAK; echo $server OK;
+done
  */
 
 // PHPUnit : aller dans /tests, puis : phpunit
@@ -52,10 +56,10 @@ chmod 777 deployment/resources -R
 // TODO lib cURL : see curl_setopt_array
 // TODO AAI bien gérer qd second ajout (projet, env) refusé.
 // TODO multi rsync n'effectue pas les mkdir en parallèle
-// TODO pas de gestion robuste des erreurs qd appel direct (par AAI) de deployment.php. ex: php /home/aai/deployment/deployment.php --getProjectsEnvsList
+// TODO pas de gestion robuste des erreurs qd appel direct (par AAI) de deployment.php.
+//		ex: php /home/aai/deployment/deployment.php --getProjectsEnvsList
 // TODO valeur par défaut pour les attributs ?
 // TODO connecteur YUI : http://git.twenga.com/distribution/wtpn/blobs/master/scripts/js_minifier.php
-// TODO Task::_expandPath() => ajouter un paramètre pour signifier qu'il ne doit pas y avoir plus d'une valeur générée ?
 // TODO tableau dashboard du nb de déploiement par semaine/projet/env et succès
 // TODO tableau new deployment de l'état des env pour le projet en cours, ou tous les projets
 // TODO tester getPathStatus() avec host distant
@@ -66,8 +70,15 @@ chmod 777 deployment/resources -R
 /* Combine :
  * 		http://java-applets.org/jsmin-vs-yui-compressor.html
  * 		http://www.electrictoolbox.com/minify-javascript-css-yui-compressor/
- * 		http://www.bloggingdeveloper.com/post/Closure-Compiler-vs-YUI-Compressor-Comparing-the-Javascript-Compression-Tools.aspx
- * 		http://scoop.simplyexcited.co.uk/2009/11/24/yui-compressor-vs-google-closure-compiler-for-javascript-compression/
+ * 		http://www.bloggingdeveloper.com/post/Closure-Compiler-vs-YUI-Compressor-Comparing-the-Javascript
+ * 			-Compression-Tools.aspx
+ * 		http://scoop.simplyexcited.co.uk/2009/11/24/yui-compressor-vs-google-closure-compiler-for-javascript
+ * 			-compression/
+ *
+ * 		Version C :
+ * 		wget http://www.crockford.com/javascript/jsmin.c
+ * 		cc jsmin.c -o jsmin
+
 */
 
 /*

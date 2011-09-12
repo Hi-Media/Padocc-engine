@@ -1,6 +1,10 @@
 <?php
 
 /**
+ *
+ * Dérive Task_WithProperties et supporte donc les attributs XML 'loadtwengaservers', 'propertyshellfile'
+ * et 'propertyinifile'.
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
@@ -91,7 +95,7 @@ class Task_Base_Project extends Task_WithProperties
      * @throws UnexpectedValueException si fichier XML du projet non trouvé
      * @throws UnexpectedValueException si environnement non trouvé ou non unique
      */
-    public function __construct ($sProjectPath, $sEnvName, $sExecutionID, ServiceContainer $oServiceContainer)
+    public function __construct ($sProjectPath, $sEnvName, ServiceContainer $oServiceContainer)
     {
         $oSXEProject = self::getSXEProject($sProjectPath);
         $this->sEnvName = $sEnvName;
@@ -122,16 +126,35 @@ class Task_Base_Project extends Task_WithProperties
         $this->_oLogger->unindent();
     }
 
+    /**
+     * Prépare la tâche avant exécution : vérifications basiques, analyse des serveurs concernés...
+     */
     public function setUp ()
     {
         parent::setUp();
         $this->_oBoundTask->setUp();
     }
 
+    protected function _preExecute ()
+    {
+        parent::_preExecute();
+        $this->_oLogger->indent();
+        $this->_oShell->mkdir($this->_oProperties->getProperty('tmpdir'));
+        $this->_oLogger->unindent();
+    }
+
     protected function _centralExecute ()
     {
         parent::_centralExecute();
         $this->_oBoundTask->execute();
+    }
+
+    protected function _postExecute()
+    {
+        $this->_oLogger->indent();
+        $this->_oShell->remove($this->_oProperties->getProperty('tmpdir'));
+        $this->_oLogger->unindent();
+        parent::_postExecute();
     }
 
     public function getSXE ()

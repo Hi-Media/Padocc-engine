@@ -51,8 +51,12 @@ class Task_Base_Copy extends Task
         // TODO si *|? alors s'assurer qu'il en existe ?
         // TODO droit seulement à \w et / et ' ' ?
         parent::check();
+
+        // Suppression de l'éventuel slash terminal :
+        $this->_aAttributes['src'] = preg_replace('#/$#', '', $this->_aAttributes['src']);
+
         if (
-                preg_match('#\*|\?#', $this->_aAttributes['src']) === 0
+                preg_match('/\*|\?/', $this->_aAttributes['src']) === 0
                 && $this->_oShell->getPathStatus($this->_aAttributes['src']) === Shell_PathStatus::STATUS_DIR
         ) {
                 $this->_aAttributes['destdir'] .= '/' . substr(strrchr($this->_aAttributes['src'], '/'), 1);
@@ -60,6 +64,12 @@ class Task_Base_Copy extends Task
         }
     }
 
+    /**
+     * Phase de traitements centraux de l'exécution de la tâche.
+     * Elle devrait systématiquement commencer par "parent::_centralExecute();".
+     * Appelé par _execute().
+     * @see execute()
+     */
     protected function _centralExecute ()
     {
         parent::_centralExecute();

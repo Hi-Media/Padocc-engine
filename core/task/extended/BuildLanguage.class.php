@@ -36,13 +36,22 @@ class Task_Extended_BuildLanguage extends Task
         );
     }
 
+    /**
+     * Phase de traitements centraux de l'exécution de la tâche.
+     * Elle devrait systématiquement commencer par "parent::_centralExecute();".
+     * Appelé par _execute().
+     * @see execute()
+     */
     protected function _centralExecute ()
     {
         parent::_centralExecute();
         $this->_oLogger->indent();
 
         $this->_oLogger->log('Generate language archive');
-        $sLanguagesPath = tempnam('/tmp', $this->_oProperties->getProperty('execution_id') . '_languages_');
+        $sLanguagesPath = tempnam(
+            DEPLOYMENT_TMP_DIR,
+            $this->_oProperties->getProperty('execution_id') . '_languages_'
+        );
         $fh = fopen($sLanguagesPath, 'w');
         $aCurlParameters = array(
             'url' => 'https://admin.twenga.com/translation_tool/build_language_files.php?project=rts',

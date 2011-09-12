@@ -5,7 +5,6 @@
         <!-- loadtwengaservers="true" -->
 <project
         name="tests"
-        propertyinifile="/home/gaubry/deployment/resources/tests_property_file.ini"
 >
     <target name="tests_copy">
         <copy src="/home/gaubry/deployment_test/src/test_copy/a.txt" destdir="/home/gaubry/deployment_test/dest/test_copy1" />
@@ -58,21 +57,21 @@
     <!-- withsymlinks="/home/aai/deployment_test/dest_test_symlink" -->
     <env
             name="tests_symlinks"
-            propertyinifile="/home/gaubry/deployment/resources/tests_env_property_file.ini"
             mailto="geoff.abury@gmail.com, geoffroy.aubry@twenga.com"
             withsymlinks="true"
             loadtwengaservers="true"
             basedir="/home/aai/deployment_test/dest_test_symlink"
     >
-        <externalproperty name="rts_ref" description="Branch or tag to deploy" />
-        <gitexport repository="git@git.twenga.com:rts/rts.git" ref="${rts_ref}"
-            destdir="aai@aai-01:/home/aai/deployment_test/dest_test_symlink/test_gitexport1"
+        <property name="servers" value="aai@aai-01" />
+        <externalproperty name="ref" description="Branch or tag to deploy" />
+        <gitexport repository="git@git.twenga.com:rts/rts.git" ref="${REF}"
+            destdir="${SERVERS}:${BASEDIR}/test_gitexport1"
             exclude="site_hr_upload config*" />
-        <mkdir destdir="aai@aai-01:/home/aai/deployment_test/dest_test_symlink/test_gitexport1/cache/smarty/cache" mode="777" />
-        <mkdir destdir="aai@aai-01:/home/aai/deployment_test/dest_test_symlink/test_gitexport1/cache/smarty/templates_c" />
+        <mkdir destdir="${SERVERS}:${BASEDIR}/test_gitexport1/cache/smarty/cache" mode="777" />
+        <mkdir destdir="${SERVERS}:${BASEDIR}/test_gitexport1/cache/smarty/templates_c" />
         <cvsexport repository=":extssh:@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
-            destdir="aai@aai-01:/home/aai/deployment_test/dest_test_symlink/test_cvsexport1" />
-        <link server="aai@aai-01" src="/home/aai/deployment_test/dest_test_symlink/test_link/link" target="/home/aai/deployment_test/dest_test_symlink/test_gitexport1" />
+            destdir="${SERVERS}:${BASEDIR}/test_cvsexport1" />
+        <link server="${SERVERS}" src="${BASEDIR}/test_link/link" target="${BASEDIR}/test_gitexport1" />
         <http url="http://aai.twenga.com/push.php?server=${SERVER_AAI}&amp;app=deploy" />
     </env>
 
@@ -110,21 +109,49 @@
             loadtwengaservers="true"
             basedir="/home/aai/deployment_test/dest_test_b2c"
     >
+        <property name="servers" value="aai@aai-01" />
         <call target="static_content" />
     </env>
 
-    <target name="static_content">
+    <target name="static_content_OLD">
         <externalproperty name="ref" description="Branch or tag to deploy" />
         <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${ref}"
-            destdir="aai@aai-01:/home/aai/deployment_test/dest_test_b2c"
-            include="/v3/ /v3/** /v4/ /v4/**"
+            srcsubdir="/v3"
+            destdir="aai@aai-01:${BASEDIR}/web" />
+        <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${ref}"
+            srcsubdir="/v4"
+            destdir="aai@aai-01:${BASEDIR}/webv4" />
+        <sync src="prod@fs3:/home/prod/twenga_files/merchant_logos/"
+            destdir="aai@aai-01:${BASEDIR}/img/sites"
+            include="*.png"
             exclude="*" />
-        <sync src="prod@fs3:/home/prod/twenga_files/merchant_logos"
-            destdir="aai@aai-01:/home/aai/deployment_test/dest_test_b2c/img/sites"
-            include="*.png" />
-        <sync src="prod@fs3:/home/prod/twenga_files/brand_logos"
-            destdir="aai@aai-01:/home/aai/deployment_test/dest_test_b2c/img/brands"
-            include="*.png" />
+        <sync src="prod@fs3:/home/prod/twenga_files/brand_logos/"
+            destdir="aai@aai-01:${BASEDIR}/img/brands"
+            include="*.png"
+            exclude="*" />
+    </target>
+
+    <target name="static_content">
+        <externalproperty name="ref" description="Branch or tag to deploy" />
+        <!-- <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${REF}"
+            srcsubdir="/v3"
+            destdir="${TMPDIR}/web" /> -->
+        <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${REF}"
+            srcsubdir="/v4"
+            destdir="${TMPDIR}/webv4" />
+        <!-- <sync src="prod@fs3:/home/prod/twenga_files/merchant_logos/"
+            destdir="${TMPDIR}/img/sites"
+            include="*.png"
+            exclude="*" />
+        <sync src="prod@fs3:/home/prod/twenga_files/brand_logos/"
+            destdir="${TMPDIR}/img/brands"
+            include="*.png"
+            exclude="*" /> -->
+        <minify srcfile="${TMPDIR}/webv4/js/account.js" destfile="${TMPDIR}/minify_result.js" />
+        <minify srcfile="${TMPDIR}/webv4/js/*.js" destfile="${TMPDIR}/minify_resultN.js" />
+        <minify srcfile="${TMPDIR}/webv4/css/account.css" destfile="${TMPDIR}/minify_account.css" />
+        <minify srcfile="${TMPDIR}/webv4/css/*.css" destfile="${TMPDIR}/minify_N.css" />
+        <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" />
     </target>
 
     <env

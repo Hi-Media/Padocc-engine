@@ -91,6 +91,7 @@ class Shell_Adapter implements Shell_Interface
      * inexistant, un fichier, un répertoire, un lien symbolique sur fichier ou encore un lien symbolique sur
      * répertoire.
      *
+     * Les éventuels slash terminaux sont supprimés.
      * Si le statut est différent de inexistant, l'appel est mis en cache.
      * Un appel à remove() s'efforce de maintenir cohérent ce cache.
      *
@@ -104,6 +105,9 @@ class Shell_Adapter implements Shell_Interface
      */
     public function getPathStatus ($sPath)
     {
+        if (substr($sPath, -1) === '/') {
+            $sPath = substr($sPath, 0, -1);
+        }
         if (isset($this->_aFileStatus[$sPath])) {
             $iStatus = $this->_aFileStatus[$sPath];
         } else {
@@ -126,16 +130,10 @@ class Shell_Adapter implements Shell_Interface
      * @return array triplet dont la 1re valeur (bool) indique si le chemin spécifié commence par
      * '[user@]servername_or_ip:', la 2e (string) est le serveur (ou chaîne vide si $sPath est local),
      * et la 3e (string) est le chemin dépourvu de l'éventuel serveur.
-     * @throws DomainException si syntaxe invalide (s'il reste des paramètres non résolus par exemple)
      */
     public function isRemotePath ($sPath)
     {
-        // reste-t-il des paramètres non résolus :
-        if (preg_match('/\$\{[^}]*\}/i', $sPath) === 1) {
-            throw new DomainException("Invalid syntax: '$sPath'.");
-        }
-
-        $result = preg_match('/^((?:[a-z0-9_.-]+@)?[a-z0-9_.-]+):(.+)$/i', $sPath, $aMatches);
+        $result = preg_match('/^((?:[^@]+@)?[^:]+):(.+)$/i', $sPath, $aMatches);
         $bIsRemotePath = ($result === 1);
         if ($bIsRemotePath) {
             $sServer = $aMatches[1];
@@ -252,7 +250,8 @@ class Shell_Adapter implements Shell_Interface
         list(, $sBackupServer, $sBackupRealPath) = $this->isRemotePath($sBackupPath);
 
         if ($sSrcServer != $sBackupServer) {
-            $sTmpDir = ($bIsSrcRemote ? $sSrcServer. ':' : '') . '/tmp/' . uniqid('deployment_', true);
+            $sTmpDir = ($bIsSrcRemote ? $sSrcServer. ':' : '') . DEPLOYMENT_TMP_DIR . '/'
+                     . uniqid('deployment_', true);
             $sTmpPath = $sTmpDir . '/' . pathinfo($sBackupPath, PATHINFO_BASENAME);
             return array_merge(
                 $this->backup($sSrcPath, $sTmpPath),

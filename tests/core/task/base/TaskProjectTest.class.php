@@ -137,7 +137,7 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase
             'UnexpectedValueException',
             "Project definition not found: '/path/not found'!"
         );
-        $oTask = new Task_Base_Project('/path/not found', 'myEnv', 'anExecutionID', $this->oServiceContainer);
+        $oTask = new Task_Base_Project('/path/not found', 'myEnv', $this->oServiceContainer);
     }
 
     /**
@@ -145,15 +145,15 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase
      */
     public function testNew_ThrowExceptionIfBadXML ()
     {
-        $sTmpPath = tempnam('/tmp', 'deploy_unittest_');
+        $sTmpPath = tempnam(DEPLOYMENT_TMP_DIR, 'deploy_unittest_');
         $sContent = 'bla bla';
         file_put_contents($sTmpPath, $sContent);
         $this->setExpectedException(
             'UnexpectedValueException',
-            "Bad project definition: '/tmp/deploy_unittest_"
+            "Bad project definition: '" . DEPLOYMENT_TMP_DIR . "/deploy_unittest_"
         );
         try {
-            $oTask = new Task_Base_Project($sTmpPath, 'myEnv', 'anExecutionID', $this->oServiceContainer);
+            $oTask = new Task_Base_Project($sTmpPath, 'myEnv', $this->oServiceContainer);
         } catch (UnexpectedValueException $oException) {
             unlink($sTmpPath);
             throw $oException;
@@ -165,7 +165,7 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase
      */
     public function testNew_ThrowExceptionIfEnvNotFound ()
     {
-        $sTmpPath = tempnam('/tmp', 'deploy_unittest_');
+        $sTmpPath = tempnam(DEPLOYMENT_TMP_DIR, 'deploy_unittest_');
         $sContent = <<<EOT
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="tests">
@@ -177,7 +177,7 @@ EOT;
             "Environment 'myEnv' not found or not unique in this project!"
         );
         try {
-            $oTask = new Task_Base_Project($sTmpPath, 'myEnv', 'anExecutionID', $this->oServiceContainer);
+            $oTask = new Task_Base_Project($sTmpPath, 'myEnv', $this->oServiceContainer);
         } catch (UnexpectedValueException $oException) {
             unlink($sTmpPath);
             throw $oException;
@@ -189,7 +189,7 @@ EOT;
      */
     public function testNew_ThrowExceptionIfMultipleEnv ()
     {
-        $sTmpPath = tempnam('/tmp', 'deploy_unittest_');
+        $sTmpPath = tempnam(DEPLOYMENT_TMP_DIR, 'deploy_unittest_');
         $sContent = <<<EOT
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="tests">
@@ -203,7 +203,7 @@ EOT;
             "Environment 'myEnv' not found or not unique in this project!"
         );
         try {
-            $oTask = new Task_Base_Project($sTmpPath, 'myEnv', 'anExecutionID', $this->oServiceContainer);
+            $oTask = new Task_Base_Project($sTmpPath, 'myEnv', $this->oServiceContainer);
         } catch (UnexpectedValueException $oException) {
             unlink($sTmpPath);
             throw $oException;
@@ -216,7 +216,7 @@ EOT;
      */
     public function testCheck ()
     {
-        $sTmpPath = tempnam('/tmp', 'deploy_unittest_');
+        $sTmpPath = tempnam(DEPLOYMENT_TMP_DIR, 'deploy_unittest_');
         $sContent = <<<EOT
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="tests" propertyinifile="/path/to/file">
@@ -224,7 +224,7 @@ EOT;
 </project>
 EOT;
         file_put_contents($sTmpPath, $sContent);
-        $oProject = new Task_Base_Project($sTmpPath, 'myEnv', 'anExecutionID', $this->oServiceContainer);
+        $oProject = new Task_Base_Project($sTmpPath, 'myEnv', $this->oServiceContainer);
         /*$oProject = $this->getMock(
             'Task_Base_Project',
             array('_loadProperties'),
