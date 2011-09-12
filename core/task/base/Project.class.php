@@ -139,7 +139,7 @@ class Task_Base_Project extends Task_WithProperties
     {
         parent::_preExecute();
         $this->_oLogger->indent();
-        $this->_oShell->mkdir($this->_oProperties->getProperty('tmp_path'));
+        $this->_oShell->mkdir($this->_oProperties->getProperty('tmpdir'));
         $this->_oLogger->unindent();
     }
 
@@ -152,7 +152,7 @@ class Task_Base_Project extends Task_WithProperties
     protected function _postExecute()
     {
         $this->_oLogger->indent();
-        $this->_oShell->remove($this->_oProperties->getProperty('tmp_path'));
+        $this->_oShell->remove($this->_oProperties->getProperty('tmpdir'));
         $this->_oLogger->unindent();
         parent::_postExecute();
     }

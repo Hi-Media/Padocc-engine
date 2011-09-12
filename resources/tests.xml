@@ -133,23 +133,23 @@
         <externalproperty name="ref" description="Branch or tag to deploy" />
         <!-- <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${REF}"
             srcsubdir="/v3"
-            destdir="${TMP_PATH}/web" /> -->
+            destdir="${TMPDIR}/web" /> -->
         <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${REF}"
             srcsubdir="/v4"
-            destdir="${TMP_PATH}/webv4" />
+            destdir="${TMPDIR}/webv4" />
         <!-- <sync src="prod@fs3:/home/prod/twenga_files/merchant_logos/"
-            destdir="${TMP_PATH}/img/sites"
+            destdir="${TMPDIR}/img/sites"
             include="*.png"
             exclude="*" />
         <sync src="prod@fs3:/home/prod/twenga_files/brand_logos/"
-            destdir="${TMP_PATH}/img/brands"
+            destdir="${TMPDIR}/img/brands"
             include="*.png"
             exclude="*" /> -->
-        <minify srcfile="${TMP_PATH}/webv4/js/account.js" destfile="${TMP_PATH}/minify_result.js" />
-        <minify srcfile="${TMP_PATH}/webv4/js/*.js" destfile="${TMP_PATH}/minify_resultN.js" />
-        <minify srcfile="${TMP_PATH}/webv4/css/account.css" destfile="${TMP_PATH}/minify_account.css" />
-        <minify srcfile="${TMP_PATH}/webv4/css/*.css" destfile="${TMP_PATH}/minify_N.css" />
-        <sync src="${TMP_PATH}/" destdir="aai@aai-01:${BASEDIR}" />
+        <minify srcfile="${TMPDIR}/webv4/js/account.js" destfile="${TMPDIR}/minify_result.js" />
+        <minify srcfile="${TMPDIR}/webv4/js/*.js" destfile="${TMPDIR}/minify_resultN.js" />
+        <minify srcfile="${TMPDIR}/webv4/css/account.css" destfile="${TMPDIR}/minify_account.css" />
+        <minify srcfile="${TMPDIR}/webv4/css/*.css" destfile="${TMPDIR}/minify_N.css" />
+        <sync src="${TMPDIR}/" destdir="aai@aai-01:${BASEDIR}" />
     </target>
 
     <env

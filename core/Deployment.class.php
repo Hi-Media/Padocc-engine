@@ -41,7 +41,7 @@ class Deployment
         $oProperties->setProperty('project_name', $sProjectName);
         $oProperties->setProperty('environment_name', $sEnvName);
         $oProperties->setProperty('execution_id', $sExecutionID);
-        $oProperties->setProperty('tmp_path', DEPLOYMENT_TMP_DIR . '/deploy_' . $sExecutionID);
+        $oProperties->setProperty('tmpdir', DEPLOYMENT_TMP_DIR . '/deploy_' . $sExecutionID);
 
         $this->_setExternalProperties($aExternalProperties);
 
