@@ -510,13 +510,13 @@ class ShellTest extends PHPUnit_Framework_TestCase
 
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
-            ->with($this->equalTo('mkdir -p "' . DEPLOYMENT_TMP_PATH . '"'));
+            ->with($this->equalTo('mkdir -p "' . DEPLOYMENT_TMP_DIR . '"'));
         $oMockShell->expects($this->at(1))->method('exec')
-            ->with($this->equalTo('scp -rpq "aai-01:/path/to/a"*".css" "' . DEPLOYMENT_TMP_PATH . '"'))
+            ->with($this->equalTo('scp -rpq "aai-01:/path/to/a"*".css" "' . DEPLOYMENT_TMP_DIR . '"'))
             ->will($this->returnValue($aExpectedResult));
         $oMockShell->expects($this->exactly(2))->method('exec');
 
-        $aResult = $oMockShell->copy('aai-01:/path/to/a*.css', DEPLOYMENT_TMP_PATH);
+        $aResult = $oMockShell->copy('aai-01:/path/to/a*.css', DEPLOYMENT_TMP_DIR);
         $this->assertEquals($aExpectedResult, $aResult);
     }
 

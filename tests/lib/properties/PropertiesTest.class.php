@@ -74,12 +74,12 @@ class PropertiesTest extends PHPUnit_Framework_TestCase
     public function testLoadConfigIniFile_ThrowExceptionIfParseFailed ()
     {
         $oProperties = new Properties_Adapter($this->oShell);
-        $sTmpPath = tempnam(DEPLOYMENT_TMP_PATH, 'deploy_unittest_');
+        $sTmpPath = tempnam(DEPLOYMENT_TMP_DIR, 'deploy_unittest_');
         chmod($sTmpPath, 0222);
 
         $this->setExpectedException(
             'RuntimeException',
-            "Load property file '" . DEPLOYMENT_TMP_PATH . "/deploy_unittest_"
+            "Load property file '" . DEPLOYMENT_TMP_DIR . "/deploy_unittest_"
         );
         try {
             $oProperties->loadConfigIniFile($sTmpPath);
@@ -99,7 +99,7 @@ class PropertiesTest extends PHPUnit_Framework_TestCase
     {
         $oProperties = new Properties_Adapter($this->oShell);
 
-        $sTmpPath = tempnam(DEPLOYMENT_TMP_PATH, 'deploy_unittest_');
+        $sTmpPath = tempnam(DEPLOYMENT_TMP_DIR, 'deploy_unittest_');
         $sContent = <<<EOT
 key1=value1
 KEY_2 = vAlUE 2
@@ -135,7 +135,7 @@ EOT;
     {
         $oProperties = new Properties_Adapter($this->oShell);
 
-        $sTmpPath = tempnam(DEPLOYMENT_TMP_PATH, 'deploy_unittest_');
+        $sTmpPath = tempnam(DEPLOYMENT_TMP_DIR, 'deploy_unittest_');
         $sContent = <<<EOT
 key1="value1"
 KEY_2="vAlUE 2"
@@ -157,7 +157,7 @@ EOT;
     {
         $oProperties = new Properties_Adapter($this->oShell);
 
-        $sTmpPath = tempnam(DEPLOYMENT_TMP_PATH, 'deploy_unittest_');
+        $sTmpPath = tempnam(DEPLOYMENT_TMP_DIR, 'deploy_unittest_');
         $sContent = <<<EOT
 k1="v10 v11 v12"
 k2="v20 v21"
