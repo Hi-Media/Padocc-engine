@@ -49,7 +49,7 @@ class Task_Extended_BuildLanguage extends Task
 
         $this->_oLogger->log('Generate language archive');
         $sLanguagesPath = tempnam(
-            DEPLOYMENT_TMP_PATH,
+            DEPLOYMENT_TMP_DIR,
             $this->_oProperties->getProperty('execution_id') . '_languages_'
         );
         $fh = fopen($sLanguagesPath, 'w');

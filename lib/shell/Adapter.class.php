@@ -250,7 +250,7 @@ class Shell_Adapter implements Shell_Interface
         list(, $sBackupServer, $sBackupRealPath) = $this->isRemotePath($sBackupPath);
 
         if ($sSrcServer != $sBackupServer) {
-            $sTmpDir = ($bIsSrcRemote ? $sSrcServer. ':' : '') . DEPLOYMENT_TMP_PATH . '/'
+            $sTmpDir = ($bIsSrcRemote ? $sSrcServer. ':' : '') . DEPLOYMENT_TMP_DIR . '/'
                      . uniqid('deployment_', true);
             $sTmpPath = $sTmpDir . '/' . pathinfo($sBackupPath, PATHINFO_BASENAME);
             return array_merge(

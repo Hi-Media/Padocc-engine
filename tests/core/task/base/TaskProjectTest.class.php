@@ -145,12 +145,12 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase
      */
     public function testNew_ThrowExceptionIfBadXML ()
     {
-        $sTmpPath = tempnam(DEPLOYMENT_TMP_PATH, 'deploy_unittest_');
+        $sTmpPath = tempnam(DEPLOYMENT_TMP_DIR, 'deploy_unittest_');
         $sContent = 'bla bla';
         file_put_contents($sTmpPath, $sContent);
         $this->setExpectedException(
             'UnexpectedValueException',
-            "Bad project definition: '" . DEPLOYMENT_TMP_PATH . "/deploy_unittest_"
+            "Bad project definition: '" . DEPLOYMENT_TMP_DIR . "/deploy_unittest_"
         );
         try {
             $oTask = new Task_Base_Project($sTmpPath, 'myEnv', $this->oServiceContainer);
@@ -165,7 +165,7 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase
      */
     public function testNew_ThrowExceptionIfEnvNotFound ()
     {
-        $sTmpPath = tempnam(DEPLOYMENT_TMP_PATH, 'deploy_unittest_');
+        $sTmpPath = tempnam(DEPLOYMENT_TMP_DIR, 'deploy_unittest_');
         $sContent = <<<EOT
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="tests">
@@ -189,7 +189,7 @@ EOT;
      */
     public function testNew_ThrowExceptionIfMultipleEnv ()
     {
-        $sTmpPath = tempnam(DEPLOYMENT_TMP_PATH, 'deploy_unittest_');
+        $sTmpPath = tempnam(DEPLOYMENT_TMP_DIR, 'deploy_unittest_');
         $sContent = <<<EOT
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="tests">
@@ -216,7 +216,7 @@ EOT;
      */
     public function testCheck ()
     {
-        $sTmpPath = tempnam(DEPLOYMENT_TMP_PATH, 'deploy_unittest_');
+        $sTmpPath = tempnam(DEPLOYMENT_TMP_DIR, 'deploy_unittest_');
         $sContent = <<<EOT
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="tests" propertyinifile="/path/to/file">

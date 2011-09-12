@@ -16,7 +16,7 @@ define('DEPLOYMENT_JSMIN_BIN_PATH', DEPLOYMENT_LIB_DIR . '/minifier/jsmin/jsmin'
  * Chemin du répertoire temporaire système utilisable par l'application.
  * @var string
  */
-define('DEPLOYMENT_TMP_PATH', '/tmp');
+define('DEPLOYMENT_TMP_DIR', '/tmp');
 
 define('DEPLOYMENT_RSYNC_MAX_NB_PROCESSES', 3);
 define('DEPLOYMENT_SYMLINK_MAX_NB_RELEASES', 20);

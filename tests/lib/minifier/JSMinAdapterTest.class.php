@@ -212,7 +212,7 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
         $method = new ReflectionMethod('Minifier_JSMinAdapter', '_minifyCSS');
         $method->setAccessible(true);
 
-        $sTmpPath = tempnam(DEPLOYMENT_TMP_PATH, 'deploy_unittest_');
+        $sTmpPath = tempnam(DEPLOYMENT_TMP_DIR, 'deploy_unittest_');
         $method->invokeArgs($oJSminAdapter, array(array(__DIR__ . '/resources/a.css'), $sTmpPath));
         $sContent = file_get_contents($sTmpPath);
         unlink($sTmpPath);
