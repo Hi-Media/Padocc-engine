@@ -57,14 +57,14 @@ class Task_Base_Environment extends Task_Base_Target
 
         // Positionnement des 2 propriétés basedir et withsymlinks :
         $sBaseDir = (empty($this->_aAttributes['basedir']) ? '[check() will failed]' : $this->_aAttributes['basedir']);
-        $this->_oProperties->setProperty('base_dir', $sBaseDir);
+        $this->_oProperties->setProperty('basedir', $sBaseDir);
         $sWithSymlinks = (empty($this->_aAttributes['withsymlinks']) ? 'false' : $this->_aAttributes['withsymlinks']);
         $this->_oProperties->setProperty('with_symlinks', $sWithSymlinks);
 
         // Création de switch de symlink sous-jacente :
         if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
             $this->_oNumbering->addCounterDivision();
-            $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
+            $sBaseSymLink = $this->_oProperties->getProperty('basedir');
             $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
                              . '/' . $this->_oProperties->getProperty('execution_id');
             $this->_oLinkTask = Task_Base_Link::getNewInstance(
@@ -114,7 +114,7 @@ class Task_Base_Environment extends Task_Base_Target
         $this->_aPathsToHandle = array();
         $aPaths = array_keys(self::$_aRegisteredPaths);
 
-        $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
+        $sBaseSymLink = $this->_oProperties->getProperty('basedir');
         foreach ($aPaths as $sPath) {
             $aExpandedPaths = $this->_expandPath($sPath);
             foreach ($aExpandedPaths as $sExpandedPath) {
@@ -140,7 +140,7 @@ class Task_Base_Environment extends Task_Base_Target
     {
         $this->_oLogger->log('If needed, make transition to symlinks:');
         $this->_oLogger->indent();
-        $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
+        $sBaseSymLink = $this->_oProperties->getProperty('basedir');
         $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
         $bTransitionMade = false;
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
@@ -166,7 +166,7 @@ class Task_Base_Environment extends Task_Base_Target
     {
         $this->_oLogger->log('If needed, make transition from symlinks:');
         $this->_oLogger->indent();
-        $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
+        $sBaseSymLink = $this->_oProperties->getProperty('basedir');
         $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
         $bTransitionMade = false;
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
@@ -193,7 +193,7 @@ class Task_Base_Environment extends Task_Base_Target
     {
         $this->_oLogger->log('Initialize with content of previous release:');
         $this->_oLogger->indent();
-        $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
+        $sBaseSymLink = $this->_oProperties->getProperty('basedir');
         $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
         $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
                          . '/' . $this->_oProperties->getProperty('execution_id');
@@ -261,7 +261,7 @@ class Task_Base_Environment extends Task_Base_Target
         if ($this->_oProperties->getProperty('servers_concerned_with_base_dir') == '') {
             $this->_oLogger->log('No release found.');
         } else {
-            $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
+            $sBaseSymLink = $this->_oProperties->getProperty('basedir');
             $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX;
             foreach ($this->_expandPath($sPath) as $sExpandedPath) {
                 list(, $sServer, ) = $this->_oShell->isRemotePath($sExpandedPath);
@@ -330,7 +330,7 @@ class Task_Base_Environment extends Task_Base_Target
                 $this->_oLinkTask->execute();
                 $this->_oProperties->setProperty('with_symlinks', 'true');
 
-                $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
+                $sBaseSymLink = $this->_oProperties->getProperty('basedir');
                 $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
                                  . '/' . $this->_oProperties->getProperty('execution_id');
                 $sMsg = "Change target of base directory's symbolic link to new release: '$sReleaseSymLink'";

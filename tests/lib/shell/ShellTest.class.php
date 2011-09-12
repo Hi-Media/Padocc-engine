@@ -67,10 +67,56 @@ class ShellTest extends PHPUnit_Framework_TestCase
     /**
      * @covers Shell_Adapter::isRemotePath
      */
-    public function testIsRemotePath_ThrowExceptionWithParameter ()
+    public function testIsRemotePath_WithParameterInUser ()
     {
-        $this->setExpectedException('DomainException', "Invalid syntax: '\${sdg}'.");
-        $this->oShell->isRemotePath('${sdg}');
+        $this->assertEquals(
+            array(true, '${P}@dv2', '/path/to/my file'),
+            $this->oShell->isRemotePath('${P}@dv2:/path/to/my file')
+        );
+    }
+
+    /**
+     * @covers Shell_Adapter::isRemotePath
+     */
+    public function testIsRemotePath_WithParameterInServerWithUser ()
+    {
+        $this->assertEquals(
+            array(true, 'user@${P}', '/path/to/my file'),
+            $this->oShell->isRemotePath('user@${P}:/path/to/my file')
+        );
+    }
+
+    /**
+     * @covers Shell_Adapter::isRemotePath
+     */
+    public function testIsRemotePath_WithParameterInServerWithoutUser ()
+    {
+        $this->assertEquals(
+            array(true, '${P}', '/path/to/my file'),
+            $this->oShell->isRemotePath('${P}:/path/to/my file')
+        );
+    }
+
+    /**
+     * @covers Shell_Adapter::isRemotePath
+     */
+    public function testIsRemotePath_WithParameterInPathWithServer ()
+    {
+        $this->assertEquals(
+            array(true, '${P}', '/path/${Q}/my file'),
+            $this->oShell->isRemotePath('${P}:/path/${Q}/my file')
+        );
+    }
+
+    /**
+     * @covers Shell_Adapter::isRemotePath
+     */
+    public function testIsRemotePath_WithParameterInPathWithoutServer ()
+    {
+        $this->assertEquals(
+            array(false, '', '/path/${P}/my file'),
+            $this->oShell->isRemotePath('/path/${P}/my file')
+        );
     }
 
     /**

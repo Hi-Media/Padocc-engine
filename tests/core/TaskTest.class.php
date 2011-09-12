@@ -784,7 +784,7 @@ class TaskTest extends PHPUnit_Framework_TestCase
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('true'));
         $oMockProperties->expects($this->at(1))->method('getProperty')
-            ->with($this->equalTo('base_dir'))
+            ->with($this->equalTo('basedir'))
             ->will($this->returnValue('/path/to/base_dir'));
         $oMockProperties->expects($this->at(2))->method('getProperty')
             ->with($this->equalTo('execution_id'))
@@ -815,7 +815,7 @@ class TaskTest extends PHPUnit_Framework_TestCase
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('true'));
         $oMockProperties->expects($this->at(1))->method('getProperty')
-            ->with($this->equalTo('base_dir'))
+            ->with($this->equalTo('basedir'))
             ->will($this->returnValue($sBaseDir));
         $oMockProperties->expects($this->at(2))->method('getProperty')
             ->with($this->equalTo('execution_id'))
@@ -867,7 +867,7 @@ class TaskTest extends PHPUnit_Framework_TestCase
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('true'));
         $oMockProperties->expects($this->at(1))->method('getProperty')
-            ->with($this->equalTo('base_dir'))
+            ->with($this->equalTo('basedir'))
             ->will($this->returnValue($sBaseDir));
         $oMockProperties->expects($this->at(2))->method('getProperty')
             ->with($this->equalTo('execution_id'))

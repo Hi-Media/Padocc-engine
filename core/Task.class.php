@@ -234,7 +234,7 @@ abstract class Task
     protected function _reroutePaths ($aPaths)
     {
         if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
-            $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
+            $sBaseSymLink = $this->_oProperties->getProperty('basedir');
             $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX . '/'
                              . $this->_oProperties->getProperty('execution_id');
             for ($i=0, $iMax=count($aPaths); $i<$iMax; $i++) {

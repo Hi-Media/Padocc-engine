@@ -30,8 +30,10 @@ class Task_Base_Link extends Task
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);
         $this->_aAttrProperties = array(
-            'src' => AttributeProperties::REQUIRED | AttributeProperties::FILE | AttributeProperties::DIR,
-            'target' => AttributeProperties::FILE | AttributeProperties::DIR | AttributeProperties::REQUIRED,
+            'src' => AttributeProperties::REQUIRED | AttributeProperties::FILE | AttributeProperties::DIR
+                | AttributeProperties::ALLOW_PARAMETER,
+            'target' => AttributeProperties::FILE | AttributeProperties::DIR | AttributeProperties::REQUIRED
+                | AttributeProperties::ALLOW_PARAMETER,
             'server' => AttributeProperties::ALLOW_PARAMETER
         );
     }
