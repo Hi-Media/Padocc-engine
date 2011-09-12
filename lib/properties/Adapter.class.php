@@ -2,6 +2,7 @@
 
 /**
  * Gestionnaire de propriétés (table de hashage).
+ *
  * Le nom des propriétés est insensible à la casse.
  * Sait charger les fichiers de configuration PHP au format INI.
  * Sait également charger les fichiers de configuration shell (qui acceptent la factorisation) au format suivant :

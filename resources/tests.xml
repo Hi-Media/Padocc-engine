@@ -62,8 +62,8 @@
             loadtwengaservers="true"
             basedir="/home/aai/deployment_test/dest_test_symlink"
     >
-        <externalproperty name="rts_ref" description="Branch or tag to deploy" />
-        <gitexport repository="git@git.twenga.com:rts/rts.git" ref="${rts_ref}"
+        <externalproperty name="ref" description="Branch or tag to deploy" />
+        <gitexport repository="git@git.twenga.com:rts/rts.git" ref="${REF}"
             destdir="aai@aai-01:/home/aai/deployment_test/dest_test_symlink/test_gitexport1"
             exclude="site_hr_upload config*" />
         <mkdir destdir="aai@aai-01:/home/aai/deployment_test/dest_test_symlink/test_gitexport1/cache/smarty/cache" mode="777" />
