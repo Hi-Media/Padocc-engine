@@ -2,7 +2,7 @@
 
 /**
  *
- * Dérive Task_WithProperties et supporte donc les attributs 'loadtwengaservers', 'propertyshellfile'
+ * Dérive Task_WithProperties et supporte donc les attributs XML 'loadtwengaservers', 'propertyshellfile'
  * et 'propertyinifile'.
  *
  * @category TwengaDeploy

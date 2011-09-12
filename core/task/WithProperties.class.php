@@ -5,12 +5,14 @@
  * de fichiers de configuration shell ou encore de la liste des groupes de serveurs Twenga.
  * Ces propriétés seront ensuite accessibles via $this->_oProperties, instance de Properties_Interface.
  *
- * Par exemple, si la tâche 'mytask' dérive Task_WithProperties, alors trois attributs optionnels et cumulables
- * lui sont ajoutés : 'loadtwengaservers', 'propertyshellfile' et 'propertyinifile'.
+ * Toute tâche dérivant Task_WithProperties se voit ainsi dotée de trois attributs XML optionnels et
+ * cumulables : 'loadtwengaservers', 'propertyshellfile' et 'propertyinifile'.
  * Les voici illustrés dans l'ordre dans lequel ils sont traités si présents au sein de la même tâche :
- *      - <mytask loadtwengaservers="true" /> chargera la liste des groupes de serveurs Twenga
- *      - <mytask propertyshellfile="/path/to/shell_file.cfg" /> chargera le fichier de configuration shell
- *      - <mytask propertyinifile="/path/to/config.ini" /> chargera le fichier .INI
+ * - 'loadtwengaservers', "true" ou "false" (défaut), chargera la liste des groupes de serveurs Twenga
+ * - 'propertyshellfile', chemin système, par ex. "/path/to/shell_file.cfg", importera en tant que propriétés
+ * 		les variables du fichier de configuration shell
+ * - 'propertyinifile', chemin système, par ex. "/path/to/config.ini", importera en tant que propriétés
+ * 		les variables du fichier .INI
  *
  * Voir Task_Extended_TwengaServers et Properties_Interface pour plus de détails.
  *

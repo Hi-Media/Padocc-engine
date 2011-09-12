@@ -225,9 +225,10 @@ abstract class Task
     }
 
     /**
-     * Reroute de façon transparente tous les chemins système inclus ou égal à la valeur de l'attribut
-     * basedir, défini par la tâche environnement Task_Base_Environment, dans le répertoire de releases XXX
-     * XXX
+     * Reroute de façon transparente tous les chemins système inclus ou égal à la valeur de la propriété 'basedir'
+     * dans le répertoire de releases nommé de la valeur de 'basedir'
+     * avec le suffixe self::RELEASES_DIRECTORY_SUFFIX.
+     *
      * @param array $aPaths
      */
     protected function _reroutePaths ($aPaths)

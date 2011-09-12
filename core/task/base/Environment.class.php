@@ -3,17 +3,16 @@
 /**
  * Sous-division d'une tâche projet, décrit ce qu'est un déploiement pour un environnement donné.
  *
- * Liste des attributs :
+ * Liste des attributs XML :
  * - 'name', obligatoire, précise la valeur à fournir lors d'un déploiement (par ex. 'qa', 'prod', ...).
  * - 'mailto', optionnel, permet d'ajouter des destinataires (séparés par ',') au mail de fin de déploiement.
  * - 'basedir', obligatoire, est le répertoire racine de déploiement sur le(s) serveur(s) cible(s).
  *      Par exemple : basedir="/home/httpd/my_app".
  * - 'withsymlinks', optionnel, "true" ou "false" (défaut), précise si l'on souhaite utiliser la technique
- *      des liens symboliques lors des déploiements ou non. XXX
+ *      des liens symboliques lors des déploiements ou non.
  *
- * Dérive Task_WithProperties et supporte donc les attributs 'loadtwengaservers', 'propertyshellfile'
+ * Dérive Task_WithProperties et supporte donc les attributs XML 'loadtwengaservers', 'propertyshellfile'
  * et 'propertyinifile'.
- *
  *
  * @category TwengaDeploy
  * @package Core
@@ -241,7 +240,7 @@ class Task_Base_Environment extends Task_Base_Target
         } else {
             $bIsQuotaExceeded = ($iNbReleases > self::$_iDefaultMaxNbReleases);
             $sMsg = $iNbReleases . ' release(s) found: quota '
-                  . ($bIsQuotaExceeded ? 'exceeded' : 'not reached')
+                  . ($bIsQuotaExceeded ? 'exceeded' : 'not exceeded')
                   . ' (' . self::$_iDefaultMaxNbReleases . ' backups max).';
             $this->_oLogger->log($sMsg);
             if ($bIsQuotaExceeded) {
