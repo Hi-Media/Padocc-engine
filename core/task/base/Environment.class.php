@@ -56,7 +56,7 @@ class Task_Base_Environment extends Task_Base_Target
         );
 
         // Positionnement des 2 propriétés basedir et withsymlinks :
-        $sBaseDir = (empty($this->_aAttributes['basedir']) ? '[check() will failed]' : $this->_aAttributes['basedir']);
+        $sBaseDir = (empty($this->_aAttributes['basedir']) ? '[setUp() will failed]' : $this->_aAttributes['basedir']);
         $this->_oProperties->setProperty('basedir', $sBaseDir);
         $sWithSymlinks = (empty($this->_aAttributes['withsymlinks']) ? 'false' : $this->_aAttributes['withsymlinks']);
         $this->_oProperties->setProperty('with_symlinks', $sWithSymlinks);
@@ -300,6 +300,17 @@ class Task_Base_Environment extends Task_Base_Target
     {
         parent::_preExecute();
         $this->_oLogger->indent();
+
+        // Exécute tout de suite toutes les tâches Task_Base_Property ou Task_Base_ExternalProperty qui
+        // suivent directement :
+        $oTask = reset($this->_aTasks);
+        while (($oTask instanceof Task_Base_Property) || ($oTask instanceof Task_Base_ExternalProperty)) {
+            $oTask->execute();
+            array_shift($this->_aTasks);
+            $oTask = reset($this->_aTasks);
+        }
+
+        // Déduit les serveurs concernés par ce déploiement et prépare le terrain :
         $this->_analyzeRegisteredPaths();
         if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
             $this->_oProperties->setProperty('with_symlinks', 'false');
