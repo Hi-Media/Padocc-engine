@@ -49,14 +49,16 @@ class Task_Extended_CVSExport extends Task
                 . $this->_oProperties->getProperty('project_name') . '_'
                 . $this->_oProperties->getProperty('environment_name') . '_'
                 . $this->_sCounter;
+        } else {
+            $this->_aAttributes['srcdir'] =
+                preg_replace('#/$#', '', $this->_aAttributes['srcdir']);
         }
 
         // Création de la tâche de synchronisation sous-jacente :
         $this->_oNumbering->addCounterDivision();
-        $sSrcDir = preg_replace('#/$#', '', $this->_aAttributes['srcdir']) . '/' . $this->_aAttributes['module'] . '/*';
         $this->_oSyncTask = Task_Base_Sync::getNewInstance(
             array(
-                'src' => $sSrcDir,
+                'src' => $this->_aAttributes['srcdir'] . '/' . $this->_aAttributes['module'] . '/',
                 'destdir' => $this->_aAttributes['destdir']
             ),
             $oProject,
@@ -65,14 +67,31 @@ class Task_Extended_CVSExport extends Task
         $this->_oNumbering->removeCounterDivision();
     }
 
+    /**
+     * Prépare la tâche avant exécution : vérifications basiques, analyse des serveurs concernés...
+     */
     public function setUp ()
     {
         parent::setUp();
         $this->_oLogger->indent();
-        $this->_oSyncTask->setUp();
+        try {
+            $this->_oSyncTask->setUp();
+        } catch (UnexpectedValueException $oException) {
+            if ($oException->getMessage() !== "File or directory '" . $this->_aAttributes['srcdir']
+                                            . '/' . $this->_aAttributes['module'] . '/' . "' not found!") {
+                throw $oException;
+            }
+        }
+
         $this->_oLogger->unindent();
     }
 
+    /**
+     * Phase de traitements centraux de l'exécution de la tâche.
+     * Elle devrait systématiquement commencer par "parent::_centralExecute();".
+     * Appelé par _execute().
+     * @see execute()
+     */
     protected function _centralExecute ()
     {
         parent::_centralExecute();

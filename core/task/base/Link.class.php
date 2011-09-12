@@ -30,8 +30,10 @@ class Task_Base_Link extends Task
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);
         $this->_aAttrProperties = array(
-            'src' => AttributeProperties::REQUIRED | AttributeProperties::FILE | AttributeProperties::DIR,
-            'target' => AttributeProperties::FILE | AttributeProperties::DIR | AttributeProperties::REQUIRED,
+            'src' => AttributeProperties::REQUIRED | AttributeProperties::FILE | AttributeProperties::DIR
+                | AttributeProperties::ALLOW_PARAMETER,
+            'target' => AttributeProperties::FILE | AttributeProperties::DIR | AttributeProperties::REQUIRED
+                | AttributeProperties::ALLOW_PARAMETER,
             'server' => AttributeProperties::ALLOW_PARAMETER
         );
     }
@@ -69,12 +71,18 @@ class Task_Base_Link extends Task
         }
     }
 
+    /**
+     * Phase de traitements centraux de l'exécution de la tâche.
+     * Elle devrait systématiquement commencer par "parent::_centralExecute();".
+     * Appelé par _execute().
+     * @see execute()
+     */
     protected function _centralExecute ()
     {
         parent::_centralExecute();
         $this->_oLogger->indent();
 
-        // La source doit être un lien ou ne pas exister :
+        // La source doit être un lien symbolique ou ne pas exister :
         $sPath = $this->_aAttributes['src'];
         if ( ! empty($this->_aAttributes['server'])) {
             $sPath = $this->_aAttributes['server'] . ':' . $sPath;
@@ -82,12 +90,12 @@ class Task_Base_Link extends Task
         $aValidSources = array(
             Shell_PathStatus::STATUS_NOT_EXISTS,
             Shell_PathStatus::STATUS_SYMLINKED_FILE,
-            Shell_PathStatus::STATUS_SYMLINKED_DIR
+            Shell_PathStatus::STATUS_SYMLINKED_DIR,
+            Shell_PathStatus::STATUS_BROKEN_SYMLINK
         );
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
             if ( ! in_array($this->_oShell->getPathStatus($sExpandedPath), $aValidSources)) {
-                $sMsg = 'Source attribute must be a directoy symlink or a file symlink'
-                      . " or not exist: '" . $sExpandedPath . "'";
+                $sMsg = "Source attribute must be a symlink or not exist: '" . $sExpandedPath . "'";
                 throw new RuntimeException($sMsg);
             }
         }

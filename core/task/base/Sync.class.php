@@ -30,7 +30,8 @@ class Task_Base_Sync extends Task
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);
         $this->_aAttrProperties = array(
-            'src' => AttributeProperties::SRC_PATH | AttributeProperties::FILEJOKER | AttributeProperties::REQUIRED,
+            'src' => AttributeProperties::SRC_PATH | AttributeProperties::FILEJOKER | AttributeProperties::REQUIRED
+                | AttributeProperties::ALLOW_PARAMETER,
             'destdir' => AttributeProperties::DIR | AttributeProperties::REQUIRED
                 | AttributeProperties::ALLOW_PARAMETER,
             // TODO AttributeProperties::DIRJOKER abusif ici, mais à cause du multivalué :
@@ -54,14 +55,21 @@ class Task_Base_Sync extends Task
     public function check ()
     {
         parent::check();
-        if (preg_match('#\*|\?#', $this->_aAttributes['src']) === 0) {
-            if ($this->_oShell->getPathStatus($this->_aAttributes['src']) === Shell_PathStatus::STATUS_DIR) {
-                $this->_aAttributes['destdir'] .= '/' . substr(strrchr($this->_aAttributes['src'], '/'), 1);
-                $this->_aAttributes['src'] .= '/*';
-            }
+        if (
+                preg_match('#\*|\?|/$#', $this->_aAttributes['src']) === 0
+                && $this->_oShell->getPathStatus($this->_aAttributes['src']) === Shell_PathStatus::STATUS_DIR
+        ) {
+            $this->_aAttributes['destdir'] .= '/' . substr(strrchr($this->_aAttributes['src'], '/'), 1);
+            $this->_aAttributes['src'] .= '/';
         }
     }
 
+    /**
+     * Phase de traitements centraux de l'exécution de la tâche.
+     * Elle devrait systématiquement commencer par "parent::_centralExecute();".
+     * Appelé par _execute().
+     * @see execute()
+     */
     protected function _centralExecute ()
     {
         parent::_centralExecute();
@@ -79,7 +87,7 @@ class Task_Base_Sync extends Task
                           : explode(' ', $this->_aAttributes['exclude']));
 
         $aResults = $this->_oShell->sync(
-            $this->_aAttributes['src'],
+            $this->_processSimplePath($this->_aAttributes['src']),
             $this->_processPath($this->_aAttributes['destdir']),
             $aIncludedPaths,
             $aExcludedPaths

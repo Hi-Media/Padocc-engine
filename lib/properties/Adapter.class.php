@@ -2,6 +2,7 @@
 
 /**
  * Gestionnaire de propriétés (table de hashage).
+ *
  * Le nom des propriétés est insensible à la casse.
  * Sait charger les fichiers de configuration PHP au format INI.
  * Sait également charger les fichiers de configuration shell (qui acceptent la factorisation) au format suivant :
@@ -116,7 +117,7 @@ class Properties_Adapter implements Properties_Interface
         if ( ! file_exists($sConfigShellPath)) {
             throw new UnexpectedValueException("Property file '$sConfigShellPath' not found!");
         }
-        $sConfigIniPath = tempnam('/tmp', 'deploy_configshell2ini_');
+        $sConfigIniPath = tempnam(DEPLOYMENT_TMP_DIR, 'deploy_configshell2ini_');
         $sCmd = DEPLOYMENT_BASH_PATH . ' ' . __DIR__ . "/cfg2ini.inc.sh '$sConfigShellPath' '$sConfigIniPath'";
         $this->_oShell->exec($sCmd);
         $this->loadConfigIniFile($sConfigIniPath);

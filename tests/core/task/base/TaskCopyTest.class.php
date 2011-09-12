@@ -37,9 +37,9 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase
         $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
-        //$oShell = new Shell_Adapter($oLogger);
         $oClass = new ReflectionClass('Shell_Adapter');
         $oProperty = $oClass->getProperty('_aFileStatus');
+
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockShell, array(
             '/path/to/srcdir' => 2,
@@ -98,9 +98,31 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase
      * @covers Task_Base_Copy::__construct
      * @covers Task_Base_Copy::check
      */
-    public function testCheck_WithSrcDir ()
+    public function testCheck_WithSrcDirWithoutLeadingSlash ()
     {
-        $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/srcdir', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oServiceContainer);
+        $oTaskCopy = Task_Base_Copy::getNewInstance(
+            array('src' => '/path/to/srcdir', 'destdir' => '/path/to/destdir'),
+            $this->oMockProject,
+            $this->oServiceContainer
+        );
+        $oTaskCopy->setUp();
+        $this->assertAttributeEquals(array(
+            'destdir' => '/path/to/destdir/srcdir',
+            'src' => '/path/to/srcdir/*'
+        ), '_aAttributes', $oTaskCopy);
+    }
+
+    /**
+     * @covers Task_Base_Copy::__construct
+     * @covers Task_Base_Copy::check
+     */
+    public function testCheck_WithSrcDirWithLeadingSlash ()
+    {
+        $oTaskCopy = Task_Base_Copy::getNewInstance(
+            array('src' => '/path/to/srcdir/', 'destdir' => '/path/to/destdir'),
+            $this->oMockProject,
+            $this->oServiceContainer
+        );
         $oTaskCopy->setUp();
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir/srcdir',
@@ -202,7 +224,7 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('true'));
         $oMockProperties->expects($this->at(1))->method('getProperty')
-            ->with($this->equalTo('base_dir'))
+            ->with($this->equalTo('basedir'))
             ->will($this->returnValue('/path/to/destdir'));
         $oMockProperties->expects($this->at(2))->method('getProperty')
             ->with($this->equalTo('execution_id'))
@@ -211,7 +233,7 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('true'));
         $oMockProperties->expects($this->at(4))->method('getProperty')
-            ->with($this->equalTo('base_dir'))
+            ->with($this->equalTo('basedir'))
             ->will($this->returnValue('/path/to/destdir'));
         $oMockProperties->expects($this->at(5))->method('getProperty')
             ->with($this->equalTo('execution_id'))

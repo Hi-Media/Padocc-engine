@@ -29,6 +29,12 @@ final class Shell_PathStatus
     const STATUS_DIR = 2;
 
     /**
+     * Le chemin est un lien symbolique cassé.
+     * @var int
+     */
+    const STATUS_BROKEN_SYMLINK = 10;
+
+    /**
      * Le chemin est un lien symbolique pointant sur un fichier.
      * @var int
      */

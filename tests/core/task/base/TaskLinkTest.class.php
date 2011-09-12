@@ -283,8 +283,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
         $oTask->setUp();
         $this->setExpectedException(
             'RuntimeException',
-            'Source attribute must be a directoy symlink or a file symlink or not exist: '
-                . "'user@server:/path/to/srcdir'"
+            "Source attribute must be a symlink or not exist: 'user@server:/path/to/srcdir'"
         );
         $oTask->execute();
     }
@@ -331,7 +330,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('true'));
         $oMockProperties->expects($this->at(1))->method('getProperty')
-            ->with($this->equalTo('base_dir'))
+            ->with($this->equalTo('basedir'))
             ->will($this->returnValue('/path/to/destdir'));
         $oMockProperties->expects($this->at(2))->method('getProperty')
             ->with($this->equalTo('execution_id'))
@@ -340,7 +339,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('true'));
         $oMockProperties->expects($this->at(4))->method('getProperty')
-            ->with($this->equalTo('base_dir'))
+            ->with($this->equalTo('basedir'))
             ->will($this->returnValue('/path/to/destdir'));
         $oMockProperties->expects($this->at(5))->method('getProperty')
             ->with($this->equalTo('execution_id'))
@@ -375,7 +374,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('true'));
         $oMockProperties->expects($this->at(1))->method('getProperty')
-            ->with($this->equalTo('base_dir'))
+            ->with($this->equalTo('basedir'))
             ->will($this->returnValue('/path/to/destdir'));
         $oMockProperties->expects($this->at(2))->method('getProperty')
             ->with($this->equalTo('execution_id'))
@@ -384,7 +383,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('true'));
         $oMockProperties->expects($this->at(4))->method('getProperty')
-            ->with($this->equalTo('base_dir'))
+            ->with($this->equalTo('basedir'))
             ->will($this->returnValue('/path/to/destdir'));
         $oMockProperties->expects($this->at(5))->method('getProperty')
             ->with($this->equalTo('execution_id'))

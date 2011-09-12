@@ -1,6 +1,19 @@
 <?php
 
 /**
+ * Sous-division d'une tâche projet, décrit ce qu'est un déploiement pour un environnement donné.
+ *
+ * Liste des attributs XML :
+ * - 'name', obligatoire, précise la valeur à fournir lors d'un déploiement (par ex. 'qa', 'prod', ...).
+ * - 'mailto', optionnel, permet d'ajouter des destinataires (séparés par ',') au mail de fin de déploiement.
+ * - 'basedir', obligatoire, est le répertoire racine de déploiement sur le(s) serveur(s) cible(s).
+ *      Par exemple : basedir="/home/httpd/my_app".
+ * - 'withsymlinks', optionnel, "true" ou "false" (défaut), précise si l'on souhaite utiliser la technique
+ *      des liens symboliques lors des déploiements ou non.
+ *
+ * Dérive Task_WithProperties et supporte donc les attributs XML 'loadtwengaservers', 'propertyshellfile'
+ * et 'propertyinifile'.
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
@@ -36,22 +49,22 @@ class Task_Base_Environment extends Task_Base_Target
             $this->_aAttrProperties,
             array(
                 'name' => AttributeProperties::REQUIRED,
-                'mailto' => 0,
+                'mailto' => AttributeProperties::EMAIL | AttributeProperties::MULTI_VALUED,
                 'withsymlinks' => AttributeProperties::BOOLEAN,
                 'basedir' => AttributeProperties::DIR | AttributeProperties::REQUIRED
             )
         );
 
         // Positionnement des 2 propriétés basedir et withsymlinks :
-        $sBaseDir = (empty($this->_aAttributes['basedir']) ? '[check() will failed]' : $this->_aAttributes['basedir']);
-        $this->_oProperties->setProperty('base_dir', $sBaseDir);
+        $sBaseDir = (empty($this->_aAttributes['basedir']) ? '[setUp() will failed]' : $this->_aAttributes['basedir']);
+        $this->_oProperties->setProperty('basedir', $sBaseDir);
         $sWithSymlinks = (empty($this->_aAttributes['withsymlinks']) ? 'false' : $this->_aAttributes['withsymlinks']);
         $this->_oProperties->setProperty('with_symlinks', $sWithSymlinks);
 
         // Création de switch de symlink sous-jacente :
         if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
             $this->_oNumbering->addCounterDivision();
-            $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
+            $sBaseSymLink = $this->_oProperties->getProperty('basedir');
             $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
                              . '/' . $this->_oProperties->getProperty('execution_id');
             $this->_oLinkTask = Task_Base_Link::getNewInstance(
@@ -96,13 +109,12 @@ class Task_Base_Environment extends Task_Base_Target
 
     private $_aPathsToHandle;
 
-    private function analyzeRegisteredPaths ()
+    private function _analyzeRegisteredPaths ()
     {
         $this->_aPathsToHandle = array();
         $aPaths = array_keys(self::$_aRegisteredPaths);
-        //$this->_oLogger->log(print_r($aPaths, true));
 
-        $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
+        $sBaseSymLink = $this->_oProperties->getProperty('basedir');
         foreach ($aPaths as $sPath) {
             $aExpandedPaths = $this->_expandPath($sPath);
             foreach ($aExpandedPaths as $sExpandedPath) {
@@ -113,7 +125,6 @@ class Task_Base_Environment extends Task_Base_Target
             }
         }
 
-        //$this->_oLogger->log(print_r($this->_aPathsToHandle, true));
         $aServersWithSymlinks = array_keys($this->_aPathsToHandle);
         if (count($aServersWithSymlinks) > 0) {
             sort($aServersWithSymlinks);
@@ -125,19 +136,18 @@ class Task_Base_Environment extends Task_Base_Target
         $this->_oProperties->setProperty('servers_concerned_with_base_dir', implode(' ', $aServersWithSymlinks));
     }
 
-    private function makeTransitionToSymlinks ()
+    private function _makeTransitionToSymlinks ()
     {
         $this->_oLogger->log('If needed, make transition to symlinks:');
         $this->_oLogger->indent();
-        $this->_oProperties->setProperty('with_symlinks', 'false');
-        $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
+        $sBaseSymLink = $this->_oProperties->getProperty('basedir');
         $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
         $bTransitionMade = false;
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
             if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_PathStatus::STATUS_DIR) {
                 $bTransitionMade = true;
                 list(, $sServer, ) = $this->_oShell->isRemotePath($sExpandedPath);
-                $sDir = $sExpandedPath . '/*';
+                $sDir = $sExpandedPath . '/';
                 $sOriginRelease = $sServer . ':' . $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
                                 . '/' . $this->_oProperties->getProperty('execution_id') . '_origin';
                 $this->_oLogger->log("Backup '$sDir' to '$sOriginRelease'.");
@@ -149,22 +159,21 @@ class Task_Base_Environment extends Task_Base_Target
         if ( ! $bTransitionMade) {
             $this->_oLogger->log('No transition.');
         }
-        $this->_oProperties->setProperty('with_symlinks', 'true');
         $this->_oLogger->unindent();
     }
 
-    private function makeTransitionFromSymlinks ()
+    private function _makeTransitionFromSymlinks ()
     {
         $this->_oLogger->log('If needed, make transition from symlinks:');
         $this->_oLogger->indent();
-        $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
+        $sBaseSymLink = $this->_oProperties->getProperty('basedir');
         $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
         $bTransitionMade = false;
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
             if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_PathStatus::STATUS_SYMLINKED_DIR) {
                 $bTransitionMade = true;
                 list(, , $sRealPath) = $this->_oShell->isRemotePath($sExpandedPath);
-                $sDir = $sExpandedPath . '/*';
+                $sDir = $sExpandedPath . '/';
                 $sTmpDest = $sExpandedPath . '_tmp';
                 $sMsg = "Remove symlink on '$sExpandedPath' base directory"
                       . " and initialize it with last release's content.";
@@ -180,18 +189,17 @@ class Task_Base_Environment extends Task_Base_Target
         $this->_oLogger->unindent();
     }
 
-    private function initNewRelease ()
+    private function _initNewRelease ()
     {
         $this->_oLogger->log('Initialize with content of previous release:');
         $this->_oLogger->indent();
-        $this->_oProperties->setProperty('with_symlinks', 'false');
-        $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
+        $sBaseSymLink = $this->_oProperties->getProperty('basedir');
         $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
         $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
                          . '/' . $this->_oProperties->getProperty('execution_id');
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
             list(, $sServer, ) = $this->_oShell->isRemotePath($sExpandedPath);
-            $sDir = $sExpandedPath . '/*';
+            $sDir = $sExpandedPath . '/';
             $sDest = $sServer . ':' . $sReleaseSymLink;
             if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_PathStatus::STATUS_SYMLINKED_DIR) {
                 $this->_oLogger->log("Initialize '$sDest' with previous release.");
@@ -205,56 +213,70 @@ class Task_Base_Environment extends Task_Base_Target
                 $this->_oLogger->log("No previous release to initialize '$sDest'.");
             }
         }
-        $this->_oProperties->setProperty('with_symlinks', 'true');
         $this->_oLogger->unindent();
     }
 
-    private function removeOldestReleases ()
+    // Récupération et tri (de la + jeune à la + vieille) des releases existentes pour un répertoire :
+    private function _getAllReleases ($sExpandedPath)
+    {
+        $sPattern = '^[0-9]{14}_[0-9]{5}(_origin)?$';
+        $sCmd = "if [ -d %1\$s ] && ls -1 %1\$s | grep -qE '$sPattern'; "
+              . "then ls -1 %1\$s | grep -E '$sPattern'; fi";
+        $aAllReleases = $this->_oShell->execSSH($sCmd, $sExpandedPath);
+        sort($aAllReleases);
+        return array_reverse($aAllReleases);
+    }
+
+    private function _removeOldestReleasesInOneDirectory ($sExpandedPath)
+    {
+        $aAllReleases = $this->_getAllReleases($sExpandedPath);
+        $iNbReleases = count($aAllReleases);
+        if ($iNbReleases === 0) {
+            $this->_oLogger->log('No release found.');
+        } else {
+            $bIsQuotaExceeded = ($iNbReleases > self::$_iDefaultMaxNbReleases);
+            $sMsg = $iNbReleases . ' release(s) found: quota '
+                  . ($bIsQuotaExceeded ? 'exceeded' : 'not exceeded')
+                  . ' (' . self::$_iDefaultMaxNbReleases . ' backups max).';
+            $this->_oLogger->log($sMsg);
+            if ($bIsQuotaExceeded) {
+                $aReleasesToDelete = array_slice($aAllReleases, self::$_iDefaultMaxNbReleases);
+                $sMsg = 'Release(s) deleted (the oldest): ' . implode(', ', $aReleasesToDelete) . '.';
+                $sFirst = $sExpandedPath . '/' . array_shift($aReleasesToDelete);
+                $sCmd = 'rm -rf %s';
+                if (count($aReleasesToDelete) > 0) {
+                    list(, , $sRealPath) = $this->_oShell->isRemotePath($sExpandedPath);
+                    $sCmd .= ' ' . $sRealPath . '/' . implode(' ' . $sRealPath . '/', $aReleasesToDelete);
+                }
+                $this->_oShell->execSSH($sCmd, $sFirst);
+                $this->_oLogger->log($sMsg);
+            }
+        }
+    }
+
+    private function _removeOldestReleases ()
     {
         $this->_oLogger->log('Remove too old releases:');
         $this->_oLogger->indent();
         if ($this->_oProperties->getProperty('servers_concerned_with_base_dir') == '') {
             $this->_oLogger->log('No release found.');
         } else {
-            $this->_oProperties->setProperty('with_symlinks', 'false');
-            $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
+            $sBaseSymLink = $this->_oProperties->getProperty('basedir');
             $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX;
             foreach ($this->_expandPath($sPath) as $sExpandedPath) {
-                list(, $sServer, $sRealPath) = $this->_oShell->isRemotePath($sExpandedPath);
+                list(, $sServer, ) = $this->_oShell->isRemotePath($sExpandedPath);
                 $this->_oLogger->log("Check " . $sServer . ':');
                 $this->_oLogger->indent();
-
-                $sCmd = "if [ -d %1\$s ]; then ls -t %1\$s | grep -E '^[0-9]{14}_[0-9]{5}(_origin)?$'; fi";
-                $aAllReleases = $this->_oShell->execSSH($sCmd, $sExpandedPath);
-                $iNbReleases = count($aAllReleases);
-                if ($iNbReleases === 0) {
-                    $this->_oLogger->log('No release found.');
-                } else {
-                    $bIsQuotaExceeded = ($iNbReleases > self::$_iDefaultMaxNbReleases);
-                    $sMsg = $iNbReleases . ' release' . ($iNbReleases > 1 ? 's' : '') . ' found: quota '
-                          . ($bIsQuotaExceeded ? 'exceeded' : 'not reached')
-                          . ' (' . self::$_iDefaultMaxNbReleases . ' backups max).';
-                    $this->_oLogger->log($sMsg);
-                    if ($bIsQuotaExceeded) {
-                        $aReleasesToDelete = array_slice($aAllReleases, self::$_iDefaultMaxNbReleases);
-                        $sMsg = 'Release' . (count($aReleasesToDelete) > 1 ? 's' : '') . ' deleted (the oldest): '
-                              . implode(', ', $aReleasesToDelete) . '.';
-                        $sFirst = $sExpandedPath . '/' . array_shift($aReleasesToDelete);
-                        $sCmd = 'rm -rf %s';
-                        if (count($aReleasesToDelete) > 0) {
-                            $sCmd .= ' ' . $sRealPath . '/' . implode(' ' . $sRealPath . '/', $aReleasesToDelete);
-                        }
-                        $this->_oShell->execSSH($sCmd, $sFirst);
-                        $this->_oLogger->log($sMsg);
-                    }
-                }
+                $this->_removeOldestReleasesInOneDirectory($sExpandedPath);
                 $this->_oLogger->unindent();
             }
-            $this->_oProperties->setProperty('with_symlinks', 'true');
         }
         $this->_oLogger->unindent();
     }
 
+    /**
+     * Prépare la tâche avant exécution : vérifications basiques, analyse des serveurs concernés...
+     */
     public function setUp ()
     {
         if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
@@ -268,21 +290,46 @@ class Task_Base_Environment extends Task_Base_Target
         }
     }
 
+    /**
+     * Phase de pré-traitements de l'exécution de la tâche.
+     * Elle devrait systématiquement commencer par "parent::_preExecute();".
+     * Appelé par _execute().
+     * @see execute()
+     */
     protected function _preExecute ()
     {
         parent::_preExecute();
         $this->_oLogger->indent();
-        $this->analyzeRegisteredPaths();
+
+        // Exécute tout de suite toutes les tâches Task_Base_Property ou Task_Base_ExternalProperty qui
+        // suivent directement :
+        $oTask = reset($this->_aTasks);
+        while (($oTask instanceof Task_Base_Property) || ($oTask instanceof Task_Base_ExternalProperty)) {
+            $oTask->execute();
+            array_shift($this->_aTasks);
+            $oTask = reset($this->_aTasks);
+        }
+
+        // Déduit les serveurs concernés par ce déploiement et prépare le terrain :
+        $this->_analyzeRegisteredPaths();
         if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
-            $this->makeTransitionToSymlinks();
-            $this->initNewRelease();
-            $this->removeOldestReleases();
+            $this->_oProperties->setProperty('with_symlinks', 'false');
+            $this->_makeTransitionToSymlinks();
+            $this->_initNewRelease();
+            $this->_removeOldestReleases();
+            $this->_oProperties->setProperty('with_symlinks', 'true');
         } else {
-            $this->makeTransitionFromSymlinks();
+            $this->_makeTransitionFromSymlinks();
         }
         $this->_oLogger->unindent();
     }
 
+    /**
+     * Phase de post-traitements de l'exécution de la tâche.
+     * Elle devrait systématiquement finir par "parent::_postExecute();".
+     * Appelé par _execute().
+     * @see execute()
+     */
     protected function _postExecute()
     {
         if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
@@ -294,7 +341,7 @@ class Task_Base_Environment extends Task_Base_Target
                 $this->_oLinkTask->execute();
                 $this->_oProperties->setProperty('with_symlinks', 'true');
 
-                $sBaseSymLink = $this->_oProperties->getProperty('base_dir');
+                $sBaseSymLink = $this->_oProperties->getProperty('basedir');
                 $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
                                  . '/' . $this->_oProperties->getProperty('execution_id');
                 $sMsg = "Change target of base directory's symbolic link to new release: '$sReleaseSymLink'";

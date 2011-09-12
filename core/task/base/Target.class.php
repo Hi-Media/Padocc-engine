@@ -1,6 +1,10 @@
 <?php
 
 /**
+ *
+ * Dérive Task_WithProperties et supporte donc les attributs XML 'loadtwengaservers', 'propertyshellfile'
+ * et 'propertyinifile'.
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
@@ -20,8 +24,16 @@ class Task_Base_Target extends Task_WithProperties
         return 'target';
     }
 
-    // {"rts":["dev","qa","pre-prod"],"tests":["tests_gitexport","tests_languages","all_tests"],"wtpn":["prod"],"ptpn":["prod"]}
-    // {"rts":{"dev":[],"qa":[],"pre-prod":[]},"tests":{"tests_gitexport":{"rts_ref":"Branch or tag to deploy"},"tests_languages":{"t1":"Branch","t2":"or tag","t3":"or tag"},"all_tests":[]},"wtpn":{"prod":[]},"ptpn":{"prod":[]}}
+    /* Structure :
+     * {
+     * 		"rts":{"dev":[],"qa":[],"pre-prod":[]},
+     * 		"tests":{
+     * 			"tests_gitexport":{"rts_ref":"Branch or tag to deploy"},
+     * 			"tests_languages":{"t1":"Branch","t2":"or tag","t3":"or tag"},
+     * 			"all_tests":[]},
+     * 		"ptpn":{"prod":[]}
+     * }
+     */
     public static function getAvailableTargetsList ($sProjectName)
     {
         $oXMLProject = Task_Base_Project::getSXEProject(DEPLOYMENT_RESOURCES_DIR . '/' . $sProjectName . '.xml');
@@ -158,15 +170,19 @@ class Task_Base_Target extends Task_WithProperties
         parent::check();
 
         if ( ! empty($this->_aAttributes['mailto'])) {
-            $this->_aAttributes['mailto'] = str_replace(
-                array(';', ','),
-                array(' ', ' '),
-                trim($this->_aAttributes['mailto'])
+            $aSplittedValues = preg_split(
+                AttributeProperties::$sMultiValuedSep,
+                trim($this->_aAttributes['mailto']),
+                -1,
+                PREG_SPLIT_NO_EMPTY
             );
-            $this->_aAttributes['mailto'] = preg_replace('/\s{2,}/', ' ', $this->_aAttributes['mailto']);
+            $this->_aAttributes['mailto'] = implode(' ', $aSplittedValues);
         }
     }
 
+    /**
+     * Prépare la tâche avant exécution : vérifications basiques, analyse des serveurs concernés...
+     */
     public function setUp ()
     {
         parent::setUp();
@@ -177,6 +193,12 @@ class Task_Base_Target extends Task_WithProperties
         $this->_oLogger->unindent();
     }
 
+    /**
+     * Phase de pré-traitements de l'exécution de la tâche.
+     * Elle devrait systématiquement commencer par "parent::_preExecute();".
+     * Appelé par _execute().
+     * @see execute()
+     */
     protected function _preExecute ()
     {
         parent::_preExecute();
@@ -187,6 +209,12 @@ class Task_Base_Target extends Task_WithProperties
         }
     }
 
+    /**
+     * Phase de traitements centraux de l'exécution de la tâche.
+     * Elle devrait systématiquement commencer par "parent::_centralExecute();".
+     * Appelé par _execute().
+     * @see execute()
+     */
     protected function _centralExecute ()
     {
         parent::_centralExecute();

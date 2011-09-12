@@ -1,22 +1,18 @@
 <?php
 
 /**
- *
- * Dérive Task_WithProperties et supporte donc les attributs XML 'loadtwengaservers', 'propertyshellfile'
- * et 'propertyinifile'.
- *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
-class Task_Base_Call extends Task_WithProperties
+class Task_Extended_Minifier extends Task
 {
 
     /**
-     * Tâche appelée.
-     * @var Task_Base_Target
+     * Instance Minifier_Interface.
+     * @var Minifier_Interface
      */
-    private $_oBoundTask;
+    private $_oMinifier;
 
     /**
      * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
@@ -25,7 +21,7 @@ class Task_Base_Call extends Task_WithProperties
      */
     public static function getTagName ()
     {
-        return 'call';
+        return 'minify';
     }
 
     /**
@@ -39,27 +35,13 @@ class Task_Base_Call extends Task_WithProperties
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);
-        $this->_aAttrProperties = array_merge(
-            $this->_aAttrProperties,
-            array('target' => AttributeProperties::REQUIRED)
+        $this->_aAttrProperties = array(
+            'srcfile' => AttributeProperties::FILEJOKER | AttributeProperties::ALLOW_PARAMETER,
+            'destfile' => AttributeProperties::FILE | AttributeProperties::ALLOW_PARAMETER
         );
 
-        // Crée une instance de la tâche target appelée :
-        $aTargets = $this->_oProject->getSXE()->xpath("target[@name='" . $this->_aAttributes['target'] . "']");
-        if (count($aTargets) !== 1) {
-            $sMsg = "Target '" . $this->_aAttributes['target'] . "' not found or not unique in this project!";
-            throw new UnexpectedValueException($sMsg);
-        }
-        $this->_oBoundTask = new Task_Base_Target($aTargets[0], $this->_oProject, $this->_oServiceContainer);
-    }
-
-    /**
-     * Prépare la tâche avant exécution : vérifications basiques, analyse des serveurs concernés...
-     */
-    public function setUp ()
-    {
-        parent::setUp();
-        $this->_oBoundTask->setUp();
+        //$this->_oMinifier = new Minifier_JSMinAdapter(DEPLOYMENT_JSMIN_BIN_PATH, $this->_oShell);
+        $this->_oMinifier = Minifier_Factory::getInstance(Minifier_Factory::TYPE_JSMIN, $this->_oShell);
     }
 
     /**
@@ -71,6 +53,14 @@ class Task_Base_Call extends Task_WithProperties
     protected function _centralExecute ()
     {
         parent::_centralExecute();
-        $this->_oBoundTask->execute();
+        $this->_oLogger->indent();
+
+        $this->_oLogger->log('Minify');
+
+        $aSrcPaths = $this->_processPath($this->_aAttributes['srcfile']);
+        $sDestPaths = $this->_processSimplePath($this->_aAttributes['destfile']);
+        $this->_oMinifier->minify($aSrcPaths, $sDestPaths);
+
+        $this->_oLogger->unindent();
     }
 }

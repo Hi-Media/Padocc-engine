@@ -38,7 +38,8 @@ class Task_Extended_TwengaServers extends Task
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);
         $this->_aAttrProperties = array();
-        $this->_sTmpDir = '/tmp/' . $this->_oProperties->getProperty('execution_id') . '_' . self::getTagName();
+        $this->_sTmpDir = DEPLOYMENT_TMP_DIR . '/'
+                        . $this->_oProperties->getProperty('execution_id') . '_' . self::getTagName();
 
         // Création de la tâche de synchronisation sous-jacente :
         $this->_oNumbering->addCounterDivision();
@@ -46,8 +47,7 @@ class Task_Extended_TwengaServers extends Task
             array(
                 'repository' => 'git@git.twenga.com:aa/server_config.git',
                 'ref' => 'master',
-                'destdir' => $this->_sTmpDir,
-                'exclude' => ''
+                'destdir' => $this->_sTmpDir
             ),
             $oProject,
             $oServiceContainer
@@ -55,6 +55,9 @@ class Task_Extended_TwengaServers extends Task
         $this->_oNumbering->removeCounterDivision();
     }
 
+    /**
+     * Prépare la tâche avant exécution : vérifications basiques, analyse des serveurs concernés...
+     */
     public function setUp ()
     {
         parent::setUp();
@@ -63,6 +66,12 @@ class Task_Extended_TwengaServers extends Task
         $this->_oLogger->unindent();
     }
 
+    /**
+     * Phase de traitements centraux de l'exécution de la tâche.
+     * Elle devrait systématiquement commencer par "parent::_centralExecute();".
+     * Appelé par _execute().
+     * @see execute()
+     */
     protected function _centralExecute ()
     {
         parent::_centralExecute();
