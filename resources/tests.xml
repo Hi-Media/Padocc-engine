@@ -62,15 +62,16 @@
             loadtwengaservers="true"
             basedir="/home/aai/deployment_test/dest_test_symlink"
     >
+        <property name="servers" value="aai@aai-01" />
         <externalproperty name="ref" description="Branch or tag to deploy" />
         <gitexport repository="git@git.twenga.com:rts/rts.git" ref="${REF}"
-            destdir="aai@aai-01:${BASEDIR}/test_gitexport1"
+            destdir="${SERVERS}:${BASEDIR}/test_gitexport1"
             exclude="site_hr_upload config*" />
-        <mkdir destdir="aai@aai-01:${BASEDIR}/test_gitexport1/cache/smarty/cache" mode="777" />
-        <mkdir destdir="aai@aai-01:${BASEDIR}/test_gitexport1/cache/smarty/templates_c" />
+        <mkdir destdir="${SERVERS}:${BASEDIR}/test_gitexport1/cache/smarty/cache" mode="777" />
+        <mkdir destdir="${SERVERS}:${BASEDIR}/test_gitexport1/cache/smarty/templates_c" />
         <cvsexport repository=":extssh:@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
-            destdir="aai@aai-01:${BASEDIR}/test_cvsexport1" />
-        <link server="aai@aai-01" src="${BASEDIR}/test_link/link" target="${BASEDIR}/test_gitexport1" />
+            destdir="${SERVERS}:${BASEDIR}/test_cvsexport1" />
+        <link server="${SERVERS}" src="${BASEDIR}/test_link/link" target="${BASEDIR}/test_gitexport1" />
         <http url="http://aai.twenga.com/push.php?server=${SERVER_AAI}&amp;app=deploy" />
     </env>
 
@@ -108,6 +109,7 @@
             loadtwengaservers="true"
             basedir="/home/aai/deployment_test/dest_test_b2c"
     >
+        <property name="servers" value="aai@aai-01" />
         <call target="static_content" />
     </env>
 
@@ -149,7 +151,7 @@
         <minify srcfile="${TMPDIR}/webv4/js/*.js" destfile="${TMPDIR}/minify_resultN.js" />
         <minify srcfile="${TMPDIR}/webv4/css/account.css" destfile="${TMPDIR}/minify_account.css" />
         <minify srcfile="${TMPDIR}/webv4/css/*.css" destfile="${TMPDIR}/minify_N.css" />
-        <sync src="${TMPDIR}/" destdir="aai@aai-01:${BASEDIR}" />
+        <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" />
     </target>
 
     <env
