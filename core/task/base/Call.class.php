@@ -45,12 +45,14 @@ class Task_Base_Call extends Task_WithProperties
         );
 
         // Crée une instance de la tâche target appelée :
-        $aTargets = $this->_oProject->getSXE()->xpath("target[@name='" . $this->_aAttributes['target'] . "']");
-        if (count($aTargets) !== 1) {
-            $sMsg = "Target '" . $this->_aAttributes['target'] . "' not found or not unique in this project!";
-            throw new UnexpectedValueException($sMsg);
+        if ( ! empty($this->_aAttributes['target'])) {
+            $aTargets = $this->_oProject->getSXE()->xpath("target[@name='" . $this->_aAttributes['target'] . "']");
+            if (count($aTargets) !== 1) {
+                $sMsg = "Target '" . $this->_aAttributes['target'] . "' not found or not unique in this project!";
+                throw new UnexpectedValueException($sMsg);
+            }
+            $this->_oBoundTask = new Task_Base_Target($aTargets[0], $this->_oProject, $this->_oServiceContainer);
         }
-        $this->_oBoundTask = new Task_Base_Target($aTargets[0], $this->_oProject, $this->_oServiceContainer);
     }
 
     /**
