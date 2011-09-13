@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="ebay">
     <env
+        name="qa"
+        mailto="devaa@twenga.com, francois.pasini@twenga.com, herve.gouchet@twenga.com, laurent.macret@twenga.com"
+        withsymlinks="true"
+        loadtwengaservers="true"
+        basedir="/home/prod/twenga/tools/ebay_qa"
+    >
+        <externalproperty name="ref" description="Branch or tag to deploy" />
+        <call target="content" />
+    </env>
+
+    <env
         name="prod"
         mailto="devaa@twenga.com, francois.pasini@twenga.com, herve.gouchet@twenga.com, laurent.macret@twenga.com"
         withsymlinks="true"
@@ -8,7 +19,11 @@
         basedir="/home/prod/twenga/tools/ebay"
     >
         <externalproperty name="ref" description="Branch or tag to deploy" />
-        <gitexport repository="git@git.twenga.com:feeds/ebay.git" ref="${ref}"
-            destdir="${SERVER_EBAY_ALL}:/home/prod/twenga/tools/ebay" />
+        <call target="content" />
     </env>
+
+    <target name="content">
+        <gitexport repository="git@git.twenga.com:feeds/ebay.git" ref="${REF}"
+            destdir="${SERVER_EBAY_ALL}:${BASEDIR}" />
+    </target>
 </project>
