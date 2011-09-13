@@ -7,18 +7,11 @@
  */
 class TaskProjectTest extends PHPUnit_Framework_TestCase
 {
-
     /**
      * Collection de services.
      * @var ServiceContainer
      */
     private $oServiceContainer;
-
-    /**
-     * Project.
-     * @var Task_Base_Project
-     */
-    //private $oMockProject;
 
     private $aShellExecCmds;
 
@@ -53,14 +46,11 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase
             ->setPropertiesAdapter($oProperties)
             ->setShellAdapter($oMockShell)
             ->setNumberingAdapter($oNumbering);
-
-        //$this->oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
     }
 
     public function tearDown()
     {
         $this->oServiceContainer = NULL;
-        //$this->oMockProject = NULL;
     }
 
     /**
@@ -99,7 +89,7 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase
     /**
      * @covers Task_Base_Project::getSXEProject
      */
-    public function testGetSXEProjectThrowExceptionIfNotFound () {
+    public function testGetSXEProject_ThrowExceptionIfNotFound () {
         $this->setExpectedException(
             'UnexpectedValueException',
             "Project definition not found: '"
@@ -113,7 +103,7 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase
     public function testGetSXEProject_ThrowExceptionIfBadXML ()
     {
         $this->setExpectedException(
-            'RuntimeException',
+            'UnexpectedValueException',
             "Bad project definition: '"
         );
         Task_Base_Project::getSXEProject(__DIR__ . '/resources/2/bad_xml.xml');
