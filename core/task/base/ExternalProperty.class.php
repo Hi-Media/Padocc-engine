@@ -67,15 +67,15 @@ class Task_Base_ExternalProperty extends Task
     {
         parent::_centralExecute();
         $this->_oLogger->indent();
-        $sMsg = "Set external property '" . $this->_aAttributes['name'] . "' (description: '"
-              . $this->_aAttributes['description'] . "')";
-        $this->_oLogger->log($sMsg);
         try {
             $sValue = $this->_oProperties->getProperty(self::EXTERNAL_PROPERTY_PREFIX . $this->_iNumber);
         } catch (UnexpectedValueException $oException) {
             $sMsg = "Property '" . $this->_aAttributes['name'] . "' undefined!";
             throw new UnexpectedValueException($sMsg, 1, $oException);
         }
+        $sMsg = "Set external property '" . $this->_aAttributes['name'] . "' (description: '"
+              . $this->_aAttributes['description'] . "') to '$sValue'.";
+        $this->_oLogger->log($sMsg);
         $this->_oProperties->setProperty($this->_aAttributes['name'], $sValue);
         $this->_oLogger->unindent();
     }
