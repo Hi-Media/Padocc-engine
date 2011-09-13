@@ -38,6 +38,25 @@
     </env>
 
     <env
+        name="prod46"
+        mailto="devaa@twenga.com, qateam@twenga.com, devrts@twenga.com"
+        withsymlinks="true"
+        loadtwengaservers="true"
+        basedir="/home/httpd/extranet.twenga.com"
+    >
+        <externalproperty name="ref" description="Branch or tag to deploy" />
+        <gitexport repository="git@git.twenga.com:rts/rts.git" ref="${ref}"
+            destdir="www46:/home/httpd/extranet.twenga.com" exclude="config.*" />
+        <gitexport repository="git@git.twenga.com:fwt/fwt.git" ref="rts"
+            destdir="www46:/home/httpd/extranet.twenga.com/fwt" exclude="config.*" />
+        <mkdir destdir="www46:/home/httpd/extranet.twenga.com/cache/smarty/cache" mode="777" />
+        <mkdir destdir="www46:/home/httpd/extranet.twenga.com/cache/smarty/templates_c" mode="777" />
+        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
+            destdir="www46:/home/httpd/twenga-common" />
+        <buildlanguage project="rts" destdir="www46:/home/httpd/extranet.twenga.com/languages" />
+    </env>
+
+    <env
         name="prod"
         mailto="devaa@twenga.com, qateam@twenga.com, devrts@twenga.com"
         withsymlinks="true"
