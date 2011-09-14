@@ -53,7 +53,8 @@ class Task_Extended_Minifier extends Task
         parent::_centralExecute();
         $this->_oLogger->indent();
 
-        $this->_oLogger->log('Minify');
+        $sMsg = "Minify '" . $this->_aAttributes['srcfile'] . "' into '" . $this->_aAttributes['destfile'] . "'.";
+        $this->_oLogger->log($sMsg);
 
         $aSrcPaths = $this->_processPath($this->_aAttributes['srcfile']);
         $sDestPaths = $this->_processSimplePath($this->_aAttributes['destfile']);
