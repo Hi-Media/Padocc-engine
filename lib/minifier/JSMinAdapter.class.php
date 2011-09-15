@@ -95,11 +95,12 @@ class Minifier_JSMinAdapter implements Minifier_Interface
      */
     protected function _minifyJS (array $aSrcPaths, $sDestPath)
     {
+        $sHeader = $this->_getHeader($aSrcPaths);
         $sCmd = 'cat';
         foreach ($aSrcPaths as $sSrcPath) {
             $sCmd .= ' ' . $this->_oShell->escapePath($sSrcPath);
         }
-        $sCmd .= " | $this->_sBinPath >'" . $sDestPath . "'";
+        $sCmd .= " | $this->_sBinPath >'$sDestPath' && sed --in-place '1i$sHeader' '$sDestPath'";
         $this->_oShell->exec($sCmd);
     }
 
@@ -108,70 +109,87 @@ class Minifier_JSMinAdapter implements Minifier_Interface
      *
      * @param array $aSrcPaths liste de fichiers se finissant tous par '.css'
      * @param string $sDestPath chemin/fichier dans lequel enregistrer le résultat du minify
+     * @throws RuntimeException si l'un des fichiers est introuvable
      */
     protected function _minifyCSS (array $aSrcPaths, $sDestPath)
     {
         $sContent = $this->_getContent($aSrcPaths);
 
-        // remove comments
+        // remove comments:
         $sContent = preg_replace('#/\*[^*]*\*+([^/][^*]*\*+)*/#', '', $sContent);
 
         // remove tabs, spaces, newlines, etc.
         $sContent = str_replace(array("\r" , "\n" , "\t"), '', $sContent);
         $sContent = str_replace(array('    ' , '   ' , '  '), ' ', $sContent);
 
+        $sContent = $this->_getHeader($aSrcPaths) . $sContent;
         file_put_contents($sDestPath, $sContent);
     }
 
-    /*public function _minifyCSS (array $aSrcPaths, $sDestPath)
+    /**
+     * Retourne une ligne de commentaire, à insérer en 1re ligne d'un fichier CSS ou JS minifié,
+     * énumérant tous les fichiers sources le constituant.
+     *
+     * Par exemple :
+     * "/* Contains: /home/resources/a.css *[slash]\n"
+     * "/* Contains (basedir='/path/to/resources/'): a.txt, b.txt *[slash]\n"
+     *
+     * @param array $aSrcPaths liste de fichiers sources
+     * @return string une ligne de commentaire, à insérer en 1re ligne d'un fichier CSS ou JS minifié,
+     * énumérant tous les fichiers sources le constituant.
+     */
+    private function _getHeader (array $aSrcPaths)
     {
-        $sContent = $this->getContent($aSrcPaths);
-
-        // Separate s0.c4tw.net >> s0.c4tw.net/s1.c4tw.net
-        $sContent = preg_replace_callback(
-            '!s0.c4tw.net/(.*)/(.*).(png|gif|jpg)!',
-            array($this, 'getNewImgPath'),
-            $sContent
-        );
-
-        // remove comments
-        $sContent = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*XXX/!', '', $sContent);
-
-        // remove tabs, spaces, newlines, etc.
-        $sContent = str_replace(array("\r\n" , "\r" , "\n" , "\t"), '', $sContent);
-        $sContent = str_replace(array('  ' , '   ' , '    '), ' ', $sContent);
+        if (count($aSrcPaths) === 1) {
+            $sHeader = "/* Contains: " . reset($aSrcPaths) . ' */' . "\n";
+        } else {
+            $sCommonPrefix = $this->_getLargestCommonPrefix($aSrcPaths);
+            $iPrefixLength = strlen($sCommonPrefix);
+            $aShortPaths = array();
+            foreach ($aSrcPaths as $sSrcPath) {
+                $aShortPaths[] = substr($sSrcPath, $iPrefixLength);
+            }
+            $sHeader = "/* Contains (basedir='$sCommonPrefix'): " . implode(', ', $aShortPaths) . ' */' . "\n";
+        }
+        return $sHeader;
     }
 
-    private function _getNewImgPath (array $aMatches)
+    /**
+     * Retourne le plus long préfixe commun aux chaînes fournies.
+     *
+     * @param array $aStrings liste de chaînes à comparer
+     * @return string le plus long préfixe commun aux chaînes fournies.
+     * @see http://stackoverflow.com/questions/1336207/finding-common-prefix-of-array-of-strings/1336357#1336357
+     */
+    private function _getLargestCommonPrefix (array $aStrings)
     {
-        list(, $sDir, $sFilename, $sExtension) = $aMatches;
+        // take the first item as initial prefix:
+        $sPrefix = array_shift($aStrings);
+        $iLength = strlen($sPrefix);
 
-        // sDomain = "[|c|cn].c4tw.net"
-        // s0cn.c4tw.net/20110906174722P/web/css/images/events/dayoffer/bg-beige.jpg
-        $sNewImgPath = 's' . (crc32($sFilename) % 2) . $this->sDomain . '/'
-                  . $this->sTwBuild . $this->sOutPath . '/css/' . $sDir . '/' . $sFilename . '.' . $sExtension;
+        // compare the current prefix with the prefix of the same length of the other items
+        foreach ($aStrings as $sItem) {
 
-        return $sNewImgPath;
-    }
+            // check if there is a match; if not, decrease the prefix by one character at a time
+            while ($iLength > 0 && substr($sItem, 0, $iLength) !== $sPrefix) {
+                $iLength--;
+                $sPrefix = substr($sPrefix, 0, -1);
+            }
 
-    private function _getHash ($sString)
-    {
-        $sHash = abs(crc32($sString));
-
-        // This function returns the same int value on a 64 bit mc. like the crc32() function on a 32 bit mc.
-        if ($sHash & 0x80000000) {
-            $sHash ^= 0xffffffff;
-            $sHash += 1;
+            if ($iLength === 0) {
+                break;
+            }
         }
 
-        return $sHash;
-    }*/
+        return $sPrefix;
+    }
 
     /**
      * Retourne la concaténation du contenu des fichiers spécifiés.
      *
      * @param array $aSrcPaths liste de chemins dont on veut concaténer le contenu
      * @return string la concaténation du contenu des fichiers spécifiés.
+     * @throws RuntimeException si l'un des fichiers est introuvable
      * @see _minifyCSS()
      */
     private function _getContent (array $aSrcPaths)
@@ -187,7 +205,11 @@ class Minifier_JSMinAdapter implements Minifier_Interface
 
         $sContent = '';
         foreach ($aExpandedPaths as $sPath) {
-            $sContent .= file_get_contents($sPath);
+            try {
+                $sContent .= file_get_contents($sPath);
+            } catch (Exception $oException) {
+                throw new RuntimeException("File not found: '$sPath'!", 1, $oException);
+            }
         }
         return $sContent;
     }
