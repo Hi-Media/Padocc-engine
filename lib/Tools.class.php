@@ -17,8 +17,8 @@ class Tools
      * Par exemple, si $iFileSize vaut 2000, alors le résultat sera : array(1024, 'Kio').
      *
      * @param int $iFileSize taille en octets à changer d'unité
-     * @return array tableau (int, string) comprenant d'une part le nombre d'octets contenus dans la plus grande unité inférieure
-     * à la taille spécifiée, et d'autre part le nom de cette unité.
+     * @return array tableau (int, string) comprenant d'une part le nombre d'octets contenus dans la plus grande
+     * unité inférieure à la taille spécifiée, et d'autre part le nom de cette unité.
      */
     public static function getFileSizeUnit ($iFileSize)
     {
