@@ -109,7 +109,7 @@
             loadtwengaservers="true"
             basedir="/home/aai/deployment_test/dest_test_b2c"
     >
-        <property name="servers" value="aai@aai-01" />
+        <property name="servers" value="aai@aai-01.eu1 aai@aai-02.eu1" />
         <call target="static_content" />
     </env>
 
@@ -133,9 +133,9 @@
 
     <target name="static_content">
         <externalproperty name="ref" description="Branch or tag to deploy" />
-        <!-- <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${REF}"
+        <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${REF}"
             srcsubdir="/v3"
-            destdir="${TMPDIR}/web" /> -->
+            destdir="${TMPDIR}/web" />
         <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${REF}"
             srcsubdir="/v4"
             destdir="${TMPDIR}/webv4" />
@@ -151,6 +151,10 @@
         <minify srcfile="${TMPDIR}/webv4/js/*.js" destfile="${TMPDIR}/minify_resultN.js" />
         <minify srcfile="${TMPDIR}/webv4/css/account.css" destfile="${TMPDIR}/minify_account.css" />
         <minify srcfile="${TMPDIR}/webv4/css/*.css" destfile="${TMPDIR}/minify_N.css" />
+        <tplminify tpldir="${TMPDIR}/web/templates" cssparentdir="${TMPDIR}/web"
+            jsparentdir="${TMPDIR}/web" destdir="${TMPDIR}" imgoutpath="/${EXECUTION_ID}/web" />
+        <tplminify tpldir="${TMPDIR}/webv4/templates" cssparentdir="${TMPDIR}/webv4"
+            jsparentdir="${TMPDIR}/webv4" destdir="${TMPDIR}" imgoutpath="/${EXECUTION_ID}/webv4" />
         <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" />
     </target>
 
