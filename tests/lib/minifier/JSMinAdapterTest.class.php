@@ -248,11 +248,13 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
         $method->invokeArgs($oJSminAdapter, array(array(__DIR__ . '/resources/a.css'), $sTmpPath));
         $sContent = file_get_contents($sTmpPath);
         unlink($sTmpPath);
-        $this->assertEquals(
-            "/* Contains: /home/gaubry/deployment/tests/lib/minifier/resources/a.css */"
-                . "\nbody { padding: 0; background-color:#ffffff;"
+        $this->assertContains("/* Contains: /", $sContent);
+        $this->assertContains("/tests/lib/minifier/resources/a.css */", $sContent);
+        $this->assertContains(
+            "\nbody { padding: 0; background-color:#ffffff;"
                 . " background:url('http://s0.twenga.com/background.gif') repeat-y 0% 0 fixed;} ",
-            $sContent);
+            $sContent
+        );
     }
 
     /**
