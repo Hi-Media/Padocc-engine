@@ -1,0 +1,8 @@
+
+/****** Sprite ******/
+.s1{background:url(http://s0.c4tw.net/images/sprites/search.png) no-repeat;}
+#search .hproduct .highlight{background:url(http://s0.c4tw.net/images/search/pct_best_partner.png) no-repeat;display:block;height:61px;left:0;position:absolute;top:0;width:61px;}
+
+/****** Share Box ******/
+.lang-jp .shareBtn{top:253px;}
+.shareBtn{display:none;position:absolute;right:-6px;top:213px;}
