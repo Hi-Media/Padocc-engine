@@ -248,7 +248,7 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
         $method->setAccessible(true);
 
         $sTmp = DEPLOYMENT_TMP_DIR;
-        $sFirstPath = __DIR__ . '/resources/a.css';	// size=196 octets une fois minifié
+        $sFirstPath = __DIR__ . '/resources/a.css';	// size=138+strlen($sFirstPath) octets une fois minifié
         $aPaths = array($sFirstPath);
         $sCSSParentDir = '';
         $sDestDir = $sTmp;
@@ -266,7 +266,7 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
         );
         $this->assertFileEquals("$sTmp/$sHash.css", "$sTmp/c$sHash.css");
         $this->assertFileEquals("$sTmp/$sHash.css", "$sTmp/cn$sHash.css");
-        $this->assertEquals(196*3, $iFilesSize);
+        $this->assertEquals((138+strlen($sFirstPath))*3, $iFilesSize);
         $this->assertFileNotExists("$sTmp/tmp_$sHash.css");
 
         @unlink("$sTmp/$sHash.css");
@@ -301,7 +301,7 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
         $sImgOutPath = '/ID';
         $sSrcTemplateFile = 'tplX';
 
-        $sPattern = "/* Contains: /home/gaubry/deployment/tests/lib/minifier/resources/urls.css */\n"
+        $sPattern = "/* Contains: $sFirstPath */\n"
         . ".s1{background:url(http://s1%1\$s.c4tw.net/ID/css/images/sprites/search.png) no-repeat;}#search .hproduct .highlight{background:url(http://s1%1\$s.c4tw.net/ID/css/images/search/pct_best_partner.png) no-repeat;display:block;height:61px;left:0;position:absolute;top:0;width:61px;}.lang-jp .shareBtn{top:253px;}.shareBtn{display:none;position:absolute;right:-6px;top:213px;}";
         $method->invokeArgs(
             $oTplMinifier,
