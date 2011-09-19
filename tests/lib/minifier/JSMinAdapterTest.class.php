@@ -28,7 +28,9 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
 
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($oLogger));
-        $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
+        $oMockShell->expects($this->any())->method('exec')->will(
+            $this->returnCallback(array($this, 'shellExecCallback'))
+        );
         $this->aShellExecCmds = array();
 
         //$oShell = new Shell_Adapter($oLogger);
