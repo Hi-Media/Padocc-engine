@@ -73,6 +73,14 @@
             destdir="${SERVERS}:${BASEDIR}/test_cvsexport1" />
         <link server="${SERVERS}" src="${BASEDIR}/test_link/link" target="${BASEDIR}/test_gitexport1" />
         <http url="http://aai.twenga.com/push.php?server=${SERVER_AAI}&amp;app=deploy" />
+
+        <gitexport repository="git@git.twenga.com:aa/deployment.git" ref="release-0.10.0"
+            srcsubdir="/tests/core/task/base/resources"
+            destdir="${TMPDIR}/resources" />
+        <filltemplate
+            srcfile="${TMPDIR}/resources/config_template.inc.php"
+            destfile="${TMPDIR}/resources/config.inc.php" />
+        <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" />
     </env>
 
     <env
@@ -113,24 +121,6 @@
         <call target="static_content" />
     </env>
 
-    <target name="static_content_OLD">
-        <externalproperty name="ref" description="Branch or tag to deploy" />
-        <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${ref}"
-            srcsubdir="/v3"
-            destdir="aai@aai-01:${BASEDIR}/web" />
-        <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${ref}"
-            srcsubdir="/v4"
-            destdir="aai@aai-01:${BASEDIR}/webv4" />
-        <sync src="prod@fs3:/home/prod/twenga_files/merchant_logos/"
-            destdir="aai@aai-01:${BASEDIR}/img/sites"
-            include="*.png"
-            exclude="*" />
-        <sync src="prod@fs3:/home/prod/twenga_files/brand_logos/"
-            destdir="aai@aai-01:${BASEDIR}/img/brands"
-            include="*.png"
-            exclude="*" />
-    </target>
-
     <target name="static_content">
         <externalproperty name="ref" description="Branch or tag to deploy" />
         <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${REF}"
@@ -155,7 +145,7 @@
             jsparentdir="${TMPDIR}/web" destdir="${TMPDIR}" imgoutpath="/${EXECUTION_ID}/web" />
         <tplminify tpldir="${TMPDIR}/webv4/templates" cssparentdir="${TMPDIR}/webv4"
             jsparentdir="${TMPDIR}/webv4" destdir="${TMPDIR}" imgoutpath="/${EXECUTION_ID}/webv4" />
-        <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" />
+        <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" exclude="/web/templates /webv4/templates" />
     </target>
 
     <env
