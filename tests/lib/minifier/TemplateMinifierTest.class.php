@@ -74,7 +74,16 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
      */
     public function testMinifyJS_throwExceptionIfSubdomainCopyFailed ()
     {
-        $oTplMinifier = new Minifier_TemplateMinifier($this->oJSminAdapter, $this->oServiceContainer->getLogAdapter());
+        $sHash = '012345678';
+        $oTplMinifier = $this->getMock(
+            'Minifier_TemplateMinifier',
+            array('_getHash'),
+            array($this->oJSminAdapter, $this->oServiceContainer->getLogAdapter())
+        );
+        $oTplMinifier->expects($this->any())->method('_getHash')->will($this->returnValue($sHash));
+        $oTplMinifier->expects($this->exactly(1))->method('_getHash');
+
+        //$oTplMinifier = new Minifier_TemplateMinifier($this->oJSminAdapter, $this->oServiceContainer->getLogAdapter());
         $class = new ReflectionClass($oTplMinifier);
         $method = $class->getMethod('_minifyJS');
         $method->setAccessible(true);
@@ -89,7 +98,7 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
 
         $this->setExpectedException(
             'RuntimeException',
-            "Copy from '$sTmp/tmp_448037154.js' to '$sTmp/448037154.js' failed!"
+            "Copy from '$sTmp/tmp_$sHash.js' to '$sTmp/$sHash.js' failed!"
         );
         $method->invokeArgs($oTplMinifier, array($aPaths, $sJSParentDir, $sDestDir, $sImgOutPath));
     }
@@ -102,7 +111,16 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
      */
     public function testMinifyJS_with1SimpleFile ()
     {
-        $oTplMinifier = new Minifier_TemplateMinifier($this->oJSminAdapter, $this->oServiceContainer->getLogAdapter());
+        $sHash = '012345678';
+        $oTplMinifier = $this->getMock(
+            'Minifier_TemplateMinifier',
+            array('_getHash'),
+            array($this->oJSminAdapter, $this->oServiceContainer->getLogAdapter())
+        );
+        $oTplMinifier->expects($this->any())->method('_getHash')->will($this->returnValue($sHash));
+        $oTplMinifier->expects($this->exactly(1))->method('_getHash');
+
+        //$oTplMinifier = new Minifier_TemplateMinifier($this->oJSminAdapter, $this->oServiceContainer->getLogAdapter());
         $class = new ReflectionClass($oTplMinifier);
         $method = $class->getMethod('_minifyJS');
         $method->setAccessible(true);
@@ -115,25 +133,25 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
         $sDestDir = $sTmp;
         $sImgOutPath = '';
 
-        copy($sFirstPath, $sTmp . '/tmp_448037154.js');
-        @unlink($sTmp . '/448037154.js');
-        @unlink($sTmp . '/c448037154.js');
-        @unlink($sTmp . '/cn448037154.js');
+        copy($sFirstPath, $sTmp . "/tmp_$sHash.js");
+        @unlink("$sTmp/$sHash.js");
+        @unlink("$sTmp/c$sHash.js");
+        @unlink("$sTmp/cn$sHash.js");
 
         $iFilesSize = $method->invokeArgs($oTplMinifier, array($aPaths, $sJSParentDir, $sDestDir, $sImgOutPath));
         $this->assertEquals(
-            array("cat \"$sFirstPath\" | $sJSMinPath >'$sTmp/tmp_448037154.js' && sed --in-place '1i/* Contains: $sFirstPath */\n' '$sTmp/tmp_448037154.js'"),
+            array("cat \"$sFirstPath\" | $sJSMinPath >'$sTmp/tmp_$sHash.js' && sed --in-place '1i/* Contains: $sFirstPath */\n' '$sTmp/tmp_$sHash.js'"),
             $this->aShellExecCmds
         );
-        $this->assertFileEquals($sFirstPath, $sTmp . '/448037154.js');
-        $this->assertFileEquals($sFirstPath, $sTmp . '/c448037154.js');
-        $this->assertFileEquals($sFirstPath, $sTmp . '/cn448037154.js');
+        $this->assertFileEquals($sFirstPath, "$sTmp/$sHash.js");
+        $this->assertFileEquals($sFirstPath, "$sTmp/c$sHash.js");
+        $this->assertFileEquals($sFirstPath, "$sTmp/cn$sHash.js");
         $this->assertEquals(343*3, $iFilesSize);
-        $this->assertFileNotExists($sTmp . '/tmp_448037154.js');
+        $this->assertFileNotExists("$sTmp/tmp_$sHash.js");
 
-        @unlink($sTmp . '/448037154.js');
-        @unlink($sTmp . '/c448037154.js');
-        @unlink($sTmp . '/cn448037154.js');
+        @unlink("$sTmp/$sHash.js");
+        @unlink("$sTmp/c$sHash.js");
+        @unlink("$sTmp/cn$sHash.js");
     }
 
     /**
@@ -166,7 +184,16 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
      */
     public function testMinifyJS_with1SimpleFileAnd1AlreadyExists ()
     {
-        $oTplMinifier = new Minifier_TemplateMinifier($this->oJSminAdapter, $this->oServiceContainer->getLogAdapter());
+        $sHash = '012345678';
+        $oTplMinifier = $this->getMock(
+            'Minifier_TemplateMinifier',
+            array('_getHash'),
+            array($this->oJSminAdapter, $this->oServiceContainer->getLogAdapter())
+        );
+        $oTplMinifier->expects($this->any())->method('_getHash')->will($this->returnValue($sHash));
+        $oTplMinifier->expects($this->exactly(1))->method('_getHash');
+
+        //$oTplMinifier = new Minifier_TemplateMinifier($this->oJSminAdapter, $this->oServiceContainer->getLogAdapter());
         $class = new ReflectionClass($oTplMinifier);
         $method = $class->getMethod('_minifyJS');
         $method->setAccessible(true);
@@ -179,26 +206,26 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
         $sDestDir = $sTmp;
         $sImgOutPath = '';
 
-        copy($sFirstPath, $sTmp . '/tmp_448037154.js');
-        touch($sTmp . '/448037154.js');
-        @unlink($sTmp . '/c448037154.js');
-        @unlink($sTmp . '/cn448037154.js');
+        copy($sFirstPath, "$sTmp/tmp_$sHash.js");
+        touch("$sTmp/$sHash.js");
+        @unlink("$sTmp/c$sHash.js");
+        @unlink("$sTmp/cn$sHash.js");
 
         $iFilesSize = $method->invokeArgs($oTplMinifier, array($aPaths, $sJSParentDir, $sDestDir, $sImgOutPath));
         $this->assertEquals(
-            array("cat \"$sFirstPath\" | $sJSMinPath >'$sTmp/tmp_448037154.js' && sed --in-place '1i/* Contains: $sFirstPath */\n' '$sTmp/tmp_448037154.js'"),
+            array("cat \"$sFirstPath\" | $sJSMinPath >'$sTmp/tmp_$sHash.js' && sed --in-place '1i/* Contains: $sFirstPath */\n' '$sTmp/tmp_$sHash.js'"),
             $this->aShellExecCmds
         );
-        $this->assertFileExists($sTmp . '/448037154.js');
-        $this->assertEquals('', file_get_contents($sTmp . '/448037154.js'));
-        $this->assertFileEquals($sFirstPath, $sTmp . '/c448037154.js');
-        $this->assertFileEquals($sFirstPath, $sTmp . '/cn448037154.js');
+        $this->assertFileExists("$sTmp/$sHash.js");
+        $this->assertEquals('', file_get_contents("$sTmp/$sHash.js"));
+        $this->assertFileEquals($sFirstPath, "$sTmp/c$sHash.js");
+        $this->assertFileEquals($sFirstPath, "$sTmp/cn$sHash.js");
         $this->assertEquals(343*2, $iFilesSize);
-        $this->assertFileNotExists($sTmp . '/tmp_448037154.js');
+        $this->assertFileNotExists("$sTmp/tmp_$sHash.js");
 
-        @unlink($sTmp . '/448037154.js');
-        @unlink($sTmp . '/c448037154.js');
-        @unlink($sTmp . '/cn448037154.js');
+        @unlink("$sTmp/$sHash.js");
+        @unlink("$sTmp/c$sHash.js");
+        @unlink("$sTmp/cn$sHash.js");
     }
 
     /**
@@ -206,7 +233,16 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
      */
     public function testMinifyCSS_with1SimpleFile ()
     {
-        $oTplMinifier = new Minifier_TemplateMinifier($this->oJSminAdapter, $this->oServiceContainer->getLogAdapter());
+        $sHash = '012345678';
+        $oTplMinifier = $this->getMock(
+            'Minifier_TemplateMinifier',
+            array('_getHash'),
+            array($this->oJSminAdapter, $this->oServiceContainer->getLogAdapter())
+        );
+        $oTplMinifier->expects($this->any())->method('_getHash')->will($this->returnValue($sHash));
+        $oTplMinifier->expects($this->exactly(1))->method('_getHash');
+
+        //$oTplMinifier = new Minifier_TemplateMinifier($this->oJSminAdapter, $this->oServiceContainer->getLogAdapter());
         $class = new ReflectionClass($oTplMinifier);
         $method = $class->getMethod('_minifyCSS');
         $method->setAccessible(true);
@@ -220,22 +256,22 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
         $sSrcTemplateFile = 'tplX';
 
         //copy($sFirstPath, $sTmp . '/tmp_448037154.css');
-        @unlink($sTmp . '/1046150687.css');
-        @unlink($sTmp . '/c1046150687.css');
-        @unlink($sTmp . '/cn1046150687.css');
+        @unlink("$sTmp/$sHash.css");
+        @unlink("$sTmp/c$sHash.css");
+        @unlink("$sTmp/cn$sHash.css");
 
         $iFilesSize = $method->invokeArgs(
             $oTplMinifier,
             array($aPaths, $sCSSParentDir, $sDestDir, $sImgOutPath, $sSrcTemplateFile)
         );
-        $this->assertFileEquals($sTmp . '/1046150687.css', $sTmp . '/c1046150687.css');
-        $this->assertFileEquals($sTmp . '/1046150687.css', $sTmp . '/cn1046150687.css');
+        $this->assertFileEquals("$sTmp/$sHash.css", "$sTmp/c$sHash.css");
+        $this->assertFileEquals("$sTmp/$sHash.css", "$sTmp/cn$sHash.css");
         $this->assertEquals(196*3, $iFilesSize);
-        $this->assertFileNotExists($sTmp . '/tmp_1046150687.css');
+        $this->assertFileNotExists("$sTmp/tmp_$sHash.css");
 
-        @unlink($sTmp . '/1046150687.css');
-        @unlink($sTmp . '/c1046150687.css');
-        @unlink($sTmp . '/cn1046150687.css');
+        @unlink("$sTmp/$sHash.css");
+        @unlink("$sTmp/c$sHash.css");
+        @unlink("$sTmp/cn$sHash.css");
     }
 
     /**
@@ -243,7 +279,16 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
      */
     public function testMinifyCSS_with1FileWithURLs ()
     {
-        $oTplMinifier = new Minifier_TemplateMinifier($this->oJSminAdapter, $this->oServiceContainer->getLogAdapter());
+        $sHash = '012345678';
+        $oTplMinifier = $this->getMock(
+            'Minifier_TemplateMinifier',
+            array('_getHash'),
+            array($this->oJSminAdapter, $this->oServiceContainer->getLogAdapter())
+        );
+        $oTplMinifier->expects($this->any())->method('_getHash')->will($this->returnValue($sHash));
+        $oTplMinifier->expects($this->exactly(1))->method('_getHash');
+
+        //$oTplMinifier = new Minifier_TemplateMinifier($this->oJSminAdapter, $this->oServiceContainer->getLogAdapter());
         $class = new ReflectionClass($oTplMinifier);
         $method = $class->getMethod('_minifyCSS');
         $method->setAccessible(true);
@@ -258,17 +303,16 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
 
         $sPattern = "/* Contains: /home/gaubry/deployment/tests/lib/minifier/resources/urls.css */\n"
         . ".s1{background:url(http://s1%1\$s.c4tw.net/ID/css/images/sprites/search.png) no-repeat;}#search .hproduct .highlight{background:url(http://s1%1\$s.c4tw.net/ID/css/images/search/pct_best_partner.png) no-repeat;display:block;height:61px;left:0;position:absolute;top:0;width:61px;}.lang-jp .shareBtn{top:253px;}.shareBtn{display:none;position:absolute;right:-6px;top:213px;}";
-        @unlink($sTmp . '/1141071088.css');
-        @unlink($sTmp . '/c1141071088.css');
-        @unlink($sTmp . '/cn1141071088.css');
-
         $method->invokeArgs(
             $oTplMinifier,
             array($aPaths, $sCSSParentDir, $sDestDir, $sImgOutPath, $sSrcTemplateFile)
         );
-        $this->assertEquals(sprintf($sPattern, ''), file_get_contents($sTmp . '/1141071088.css'));
-        $this->assertEquals(sprintf($sPattern, 'c'), file_get_contents($sTmp . '/c1141071088.css'));
-        $this->assertEquals(sprintf($sPattern, 'cn'), file_get_contents($sTmp . '/cn1141071088.css'));
+        $this->assertEquals(sprintf($sPattern, ''), file_get_contents("$sTmp/$sHash.css"));
+        $this->assertEquals(sprintf($sPattern, 'c'), file_get_contents("$sTmp/c$sHash.css"));
+        $this->assertEquals(sprintf($sPattern, 'cn'), file_get_contents("$sTmp/cn$sHash.css"));
+        @unlink("$sTmp/$sHash.css");
+        @unlink("$sTmp/c$sHash.css");
+        @unlink("$sTmp/cn$sHash.css");
     }
 
     /**

@@ -64,6 +64,16 @@ class Minifier_TemplateMinifier
         $this->_aSubDomains = array('', 'c', 'cn');
     }
 
+    /**
+     * Génère tous les packages de CSS ou JS minifiés décrits dans les fichiers template (.tpl)
+     * trouvables dans le répertoire $sTplDir ou ses sous-répertoires.
+     *
+     * @param string $sTplDir répertoire de templates
+     * @param string $sCSSParentDir répertoire source des CSS
+     * @param string $sJSParentDir répertoire source des JS
+     * @param string $sDestDir répertoire de destination
+     * @param string $sImgOutPath sous-répertoire devant être inséré dans les URLs des images
+     */
     public function process ($sTplDir, $sCSSParentDir, $sJSParentDir, $sDestDir, $sImgOutPath)
     {
         $aTemplateFiles = $this->_getTemplates($sTplDir);
@@ -100,6 +110,15 @@ class Minifier_TemplateMinifier
         $this->_oLogger->log($sMsg);
     }
 
+    /**
+     * Minifie l'ensemble de fichiers JS $aPaths en un seul dans $sDestDir.
+     *
+     * @param array $aPaths liste de fichiers JS à minifier
+     * @param string $sJSParentDir répertoire source des CSS
+     * @param string $sDestDir répertoire de destination
+     * @param string $sImgOutPath sous-répertoire devant être inséré dans les URLs des images
+     * @return int la taille cumulée en octets des fichiers générés
+     */
     private function _minifyJS (array $aPaths, $sJSParentDir, $sDestDir, $sImgOutPath)
     {
         foreach ($aPaths as $i => $sValue) {
@@ -117,6 +136,17 @@ class Minifier_TemplateMinifier
         return $iFilesSize;
     }
 
+    /**
+     * Minifie l'ensemble de fichiers CSS $aPaths en un seul dans $sDestDir.
+     *
+     * @param array $aPaths liste de fichiers CSS à minifier
+     * @param string $sCSSParentDir répertoire source des CSS
+     * @param string $sDestDir répertoire de destination
+     * @param string $sImgOutPath sous-répertoire devant être inséré dans les URLs des images
+     * @param string $sSrcTemplateFile fichier template (.tpl) cause de cet appel
+     * @throws RuntimeException si l'un des CSS source est manquant
+     * @return int la taille cumulée en octets des fichiers générés
+     */
     private function _minifyCSS (array $aPaths, $sCSSParentDir, $sDestDir, $sImgOutPath, $sSrcTemplateFile)
     {
         foreach ($aPaths as $i => $sValue) {
@@ -135,8 +165,7 @@ class Minifier_TemplateMinifier
                 throw $oException;
             } else {
                 $this->_oLogger->log(
-                    "[WARNING] In template '$sSrcTemplateFile'. " . $sErrorMsg
-                        . " Files '$sPattern' not generated.",
+                    "[WARNING] In template '$sSrcTemplateFile'. $sErrorMsg Files '$sPattern' not generated.",
                     Logger_Interface::WARNING
                 );
                 return 0;
@@ -148,6 +177,19 @@ class Minifier_TemplateMinifier
         return $iFilesSize;
     }
 
+    /**
+     * Duplique le fichier minifié temporaire spécifié selon chaque sous-domaine de $this->_aSubDomains,
+     * en prenant soin de redistribuer les URLs qu'il contient sur les serveurs de statique s0 et s1,
+     * en accord avec les sous-domaines.
+     *
+     * @param string $sPattern pattern au sens sprintf() du chemin des fichiers à générer par sous-domaine.
+     *     Il doit y avoir un '%s' ou '%1$s' pour insérer le sous-domaine.
+     * @param string $sTmpDestPath chemin du fichier minifié temporaire à dupliquer
+     * @param string $sImgOutPath sous-répertoire des images à insérer dans les nouvelles URLs d'images
+     * @throws RuntimeException si la copie de la source en l'une des versions pour sous-domaine échoue
+     * @see getNewImgURL()
+     * @return int la taille cumulée en octets des fichiers générés
+     */
     private function _generateSubdomainsFiles ($sPattern, $sTmpDestPath, $sImgOutPath)
     {
         $iFilesSize = 0;
@@ -184,6 +226,25 @@ class Minifier_TemplateMinifier
         return $iFilesSize;
     }
 
+    /**
+     * Extrait les URLs des blocs '{combine}' en les séparant selon qu'elles proviennent du JS ou du CSS.
+     *
+     * Exemple de bloc '{combine}' de fichier .tpl :
+     * {combine compress=true}
+     *     <script type="text/javascript" src="/js/google/analytics_controllerv4.js"></script>
+     *     ...
+     * {/combine}
+     *
+     * Ou encore :
+     * {combine compress=true}
+     *     <link media="all" href="/css/search/noscript.css" rel="stylesheet" type="text/css" />
+     *     ...
+     * {/combine}
+     *
+     * @param string $sTemplateFile chemin de template (.tpl) à analyser
+     * @return array couple de 2 tableaux, le premier listant les URLs extraites de code CSS, groupées par bloc
+     * 		combine, le second listant les URLs extraites de code JS, groupées également par bloc combine.
+     */
     private function _extractStaticPaths ($sTemplateFile)
     {
         $aCSSPaths = array();
@@ -257,7 +318,7 @@ class Minifier_TemplateMinifier
      * @param string $sString
      * @return string un hash de la chaîne spécifiée, compatible processeurs 64bits.
      */
-    private function _getHash ($sString)
+    protected function _getHash ($sString)
     {
         $sHash = abs(crc32($sString));
 
