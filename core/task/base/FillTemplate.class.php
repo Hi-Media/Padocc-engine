@@ -84,10 +84,9 @@ class Task_Base_FillTemplate extends Task
                 $aValues[] = addslashes($sValue);
             } catch (UnexpectedValueException $oException) {
                 $aValues[] = $sParameter;
-                $this->_oLogger->log(
-                    "[WARNING] Parameter '$sParameter' not resolved in '$sSrcFile'!",
-                    Logger_Interface::WARNING
-                );
+                $sMsg = "[WARNING] Parameter '$sParameter' not resolved in '$sSrcFile' ("
+                      . $oException->getMessage() . ").";
+                $this->_oLogger->log($sMsg, Logger_Interface::WARNING);
             }
         }
         $sContent = str_replace($aParameters, $aValues, $sContent);
