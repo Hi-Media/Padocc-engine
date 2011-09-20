@@ -80,7 +80,7 @@
         <filltemplate
             srcfile="${TMPDIR}/resources/config_template.inc.php"
             destfile="${TMPDIR}/resources/config.inc.php" />
-        <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" />
+        <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" include="resources resources/*" exclude="*" />
     </env>
 
     <env
