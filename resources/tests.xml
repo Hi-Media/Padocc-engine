@@ -81,6 +81,7 @@
             srcfile="${TMPDIR}/resources/config_template.inc.php"
             destfile="${TMPDIR}/resources/config.inc.php" />
         <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" include="resources resources/*" exclude="*" />
+        <switchsymlink />
     </env>
 
     <env
@@ -117,7 +118,8 @@
             loadtwengaservers="true"
             basedir="/home/aai/deployment_test/dest_test_b2c"
     >
-        <property name="servers" value="aai@aai-01.eu1 aai@aai-02.eu1" />
+        <!-- <property name="servers" value="aai@aai-01.eu1 aai@aai-02.eu1" /> -->
+        <property name="servers" value="aai@${SERVER_AAI}" />
         <call target="static_content" />
     </env>
 
@@ -129,14 +131,14 @@
         <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${REF}"
             srcsubdir="/v4"
             destdir="${TMPDIR}/webv4" />
-        <!-- <sync src="prod@fs3:/home/prod/twenga_files/merchant_logos/"
+        <sync src="prod@fs3:/home/prod/twenga_files/merchant_logos/"
             destdir="${TMPDIR}/img/sites"
             include="*.png"
             exclude="*" />
         <sync src="prod@fs3:/home/prod/twenga_files/brand_logos/"
             destdir="${TMPDIR}/img/brands"
             include="*.png"
-            exclude="*" /> -->
+            exclude="*" />
         <minify srcfile="${TMPDIR}/webv4/js/account.js" destfile="${TMPDIR}/minify_result.js" />
         <minify srcfile="${TMPDIR}/webv4/js/*.js" destfile="${TMPDIR}/minify_resultN.js" />
         <minify srcfile="${TMPDIR}/webv4/css/account.css" destfile="${TMPDIR}/minify_account.css" />
