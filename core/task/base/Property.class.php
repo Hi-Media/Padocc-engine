@@ -30,7 +30,7 @@ class Task_Base_Property extends Task
         parent::__construct($oTask, $oProject, $oServiceContainer);
         $this->_aAttrProperties = array(
             'name' => AttributeProperties::REQUIRED,
-            'value' => AttributeProperties::REQUIRED
+            'value' => AttributeProperties::REQUIRED | AttributeProperties::ALLOW_PARAMETER
         );
     }
 
