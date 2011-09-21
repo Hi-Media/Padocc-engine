@@ -20,3 +20,9 @@ define('DEPLOYMENT_TMP_DIR', '/tmp');
 
 define('DEPLOYMENT_RSYNC_MAX_NB_PROCESSES', 3);
 define('DEPLOYMENT_SYMLINK_MAX_NB_RELEASES', 20);
+
+/**
+ * Suffixe concaténé au base directory pour obtenir le nom du répertoire regroupant les différentes releases.
+ * @var string
+ */
+define('DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX', '_releases');
