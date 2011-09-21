@@ -23,7 +23,7 @@ class Task_Extended_SwitchSymlink extends Task_Base_Link
      * @var int
      * @see getNbInstances()
      */
-    private static $iNbInstances = 0;
+    private static $_iNbInstances = 0;
 
     /**
      * Accesseur au compteur d'instances de la classe.
@@ -33,7 +33,7 @@ class Task_Extended_SwitchSymlink extends Task_Base_Link
      */
     public static function getNbInstances ()
     {
-        return self::$iNbInstances;
+        return self::$_iNbInstances;
     }
 
     /**
@@ -52,7 +52,7 @@ class Task_Extended_SwitchSymlink extends Task_Base_Link
             'target' => AttributeProperties::FILE | AttributeProperties::DIR | AttributeProperties::ALLOW_PARAMETER,
             'server' => AttributeProperties::ALLOW_PARAMETER
         );
-        self::$iNbInstances++;
+        self::$_iNbInstances++;
     }
 
     /**
