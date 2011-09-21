@@ -36,6 +36,18 @@
     </env>
 
     <env
+        name="prod47"
+        mailto="devaa@twenga.com, qateam@twenga.com, devrts@twenga.com"
+        withsymlinks="true"
+        loadtwengaservers="true"
+        basedir="/home/httpd/extranet.twenga.com"
+    >
+        <property name="servers" value="www47" />
+        <property name="commondir" value="/home/httpd/twenga-common" />
+        <call target="content" />
+    </env>
+
+    <env
         name="prod"
         mailto="devaa@twenga.com, qateam@twenga.com, devrts@twenga.com"
         withsymlinks="true"
