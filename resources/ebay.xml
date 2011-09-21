@@ -7,7 +7,6 @@
         loadtwengaservers="true"
         basedir="/home/prod/twenga/tools/ebay_qa"
     >
-        <externalproperty name="ref" description="Branch or tag to deploy" />
         <call target="content" />
     </env>
 
@@ -18,11 +17,11 @@
         loadtwengaservers="true"
         basedir="/home/prod/twenga/tools/ebay"
     >
-        <externalproperty name="ref" description="Branch or tag to deploy" />
         <call target="content" />
     </env>
 
     <target name="content">
+        <externalproperty name="ref" description="Branch or tag to deploy" />
         <gitexport repository="git@git.twenga.com:feeds/ebay.git" ref="${REF}"
             destdir="${SERVER_EBAY_ALL}:${BASEDIR}" />
     </target>
