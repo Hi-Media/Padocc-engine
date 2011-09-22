@@ -251,7 +251,7 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase
         $oTaskCopy->setUp();
         $oTaskCopy->execute();
         $this->assertEquals(array(
-            'ssh -T user@server /bin/bash <<EOF' . "\n"
+            'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
                 . 'mkdir -p "/path/to/destdir_releases/12345/srcdir"' . "\n"
                 . 'EOF' . "\n",
             'rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/path/to/srcdir/" "user@server:/path/to/destdir_releases/12345/srcdir"'

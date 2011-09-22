@@ -262,7 +262,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
         $oTask->setUp();
         $oTask->execute();
         $this->assertEquals(array(
-            'ssh -T user@server /bin/bash <<EOF' . "\n"
+            'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
                 . 'mkdir -p "$(dirname "/path/to/link")" && ln -snf "/path/to/destdir" "/path/to/link"' . "\n"
                 . 'EOF' . "\n"
         ), $this->aShellExecCmds);
@@ -311,7 +311,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
         $oTask->setUp();
         $oTask->execute();
         $this->assertEquals(array(
-            'ssh -T user@server /bin/bash <<EOF' . "\n"
+            'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
                 . 'mkdir -p "$(dirname "/path/to/link")" && ln -snf "/path/to/destdir" "/path/to/link"' . "\n"
                 . 'EOF' . "\n"
         ), $this->aShellExecCmds);
@@ -355,7 +355,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
         $oTask->setUp();
         $oTask->execute();
         $this->assertEquals(array(
-            'ssh -T user@server /bin/bash <<EOF' . "\n"
+            'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
                 . 'mkdir -p "$(dirname "/path/to/destdir_releases/12345/link")" && ln -snf "/path/to/destdir_releases/12345/subdir" "/path/to/destdir_releases/12345/link"' . "\n"
                 . 'EOF' . "\n"
         ), $this->aShellExecCmds);
@@ -398,7 +398,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
         $oTask->setUp();
         $oTask->execute();
         $this->assertEquals(array(
-            'ssh -T user@server /bin/bash <<EOF' . "\n"
+            'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
                 . 'mkdir -p "$(dirname "/path/to/destdir_releases/12345/link")" && ln -snf "/path/to/destdir_releases/12345/subdir" "/path/to/destdir_releases/12345/link"' . "\n"
                 . 'EOF' . "\n"
         ), $this->aShellExecCmds);
