@@ -14,6 +14,7 @@ define('DEPLOYMENT_BASH_PATH', '/bin/bash');
 /**
  * Nombre de secondes avant timeout lors d'une connexion SSH.
  * @var int
+ * @see Shell_Interface
  */
 define('DEPLOYMENT_SSH_CONNECTION_TIMEOUT', 10);
 
@@ -25,7 +26,13 @@ define('DEPLOYMENT_JSMIN_BIN_PATH', DEPLOYMENT_LIB_DIR . '/minifier/jsmin/jsmin'
  */
 define('DEPLOYMENT_TMP_DIR', '/tmp');
 
+/**
+ * Nombre maximal d'exécutions shell rsync en parallèle.
+ * @var int
+ * @see Shell_Interface::sync()
+ */
 define('DEPLOYMENT_RSYNC_MAX_NB_PROCESSES', 3);
+
 define('DEPLOYMENT_SYMLINK_MAX_NB_RELEASES', 20);
 
 /**
