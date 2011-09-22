@@ -81,7 +81,8 @@ class Shell_Adapter implements Shell_Interface
         $sCmd = sprintf($sPatternCmd, $this->escapePath($sRealPath));
         //$sCmd = vsprintf($sPatternCmd, array_map(array(self, 'escapePath'), $mParams));
         if ($bIsRemote) {
-            $sCmd = 'ssh -o StrictHostKeyChecking=no -T ' . $sServer . " /bin/bash <<EOF\n$sCmd\nEOF\n";
+            $sSSHOptions = ' -o StrictHostKeyChecking=no -o ConnectTimeout=' . DEPLOYMENT_SSH_CONNECTION_TIMEOUT;
+            $sCmd = 'ssh' . $sSSHOptions . ' -T ' . $sServer . " /bin/bash <<EOF\n$sCmd\nEOF\n";
         }
         return $this->exec($sCmd);
     }
