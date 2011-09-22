@@ -79,7 +79,7 @@ class TaskFillTemplateTest extends PHPUnit_Framework_TestCase
      * @covers Task_Base_FillTemplate::__construct
      * @covers Task_Base_FillTemplate::check
      */
-    public function testCheck_throwExceptionIfSrcIsRemote ()
+    public function testCheck_ThrowExceptionIfSrcIsRemote ()
     {
         $oTask = Task_Base_FillTemplate::getNewInstance(
             array('srcfile' => 'server:/path/to/srcfile', 'destfile' => '/path/to/destdir'),
@@ -94,7 +94,7 @@ class TaskFillTemplateTest extends PHPUnit_Framework_TestCase
      * @covers Task_Base_FillTemplate::__construct
      * @covers Task_Base_FillTemplate::check
      */
-    public function testCheck_throwExceptionIfDestIsRemote ()
+    public function testCheck_ThrowExceptionIfDestIsRemote ()
     {
         $oTask = Task_Base_FillTemplate::getNewInstance(
             array('srcfile' => '/path/to/srcfile', 'destfile' => 'server:/path/to/destdir'),
@@ -105,6 +105,76 @@ class TaskFillTemplateTest extends PHPUnit_Framework_TestCase
         $oTask->setUp();
     }
 
+    /**
+     * @covers Task_Base_FillTemplate::check
+     * @covers Task_Base_FillTemplate::_centralExecute
+     */
+    public function testExecute_ThrowExceptionIfMultipleSrcfile ()
+    {
+        $oClass = new ReflectionClass('Properties_Adapter');
+        $oProperty = $oClass->getProperty('_aProperties');
+        $oProperty->setAccessible(true);
+        $oPropertiesAdapter = $this->oServiceContainer->getPropertiesAdapter();
+        $oProperty->setValue($oPropertiesAdapter, array(
+            'project_name' => 'my\\project',
+            'environment_name' => 'my "env"',
+            'execution_id' => '01234\'5\'6789',
+            'with_symlinks' => 'false',
+            'basedir' => 'x',
+            'servers' => 'y',
+            'to' => 'a b',
+        ));
+        $this->oServiceContainer->setPropertiesAdapter($oPropertiesAdapter);
+
+        $oTask = Task_Base_FillTemplate::getNewInstance(array(
+            'srcfile' => '/path/${TO}/src',
+            'destfile' => '/path/to/dest'
+        ), $this->oMockProject, $this->oServiceContainer);
+        $this->setExpectedException(
+            'RuntimeException',
+            "String '/path/\${TO}/src' should return a single path after process"
+        );
+        $oTask->setUp();
+        $oTask->execute();
+    }
+
+    /**
+     * @covers Task_Base_FillTemplate::check
+     * @covers Task_Base_FillTemplate::_centralExecute
+     */
+    public function testExecute_ThrowExceptionIfMultipleDestfile ()
+    {
+        $oClass = new ReflectionClass('Properties_Adapter');
+        $oProperty = $oClass->getProperty('_aProperties');
+        $oProperty->setAccessible(true);
+        $oPropertiesAdapter = $this->oServiceContainer->getPropertiesAdapter();
+        $oProperty->setValue($oPropertiesAdapter, array(
+            'project_name' => 'my\\project',
+            'environment_name' => 'my "env"',
+            'execution_id' => '01234\'5\'6789',
+            'with_symlinks' => 'false',
+            'basedir' => 'x',
+            'servers' => 'y',
+            'to' => 'a b',
+        ));
+        $this->oServiceContainer->setPropertiesAdapter($oPropertiesAdapter);
+
+        $oTask = Task_Base_FillTemplate::getNewInstance(array(
+            'srcfile' => '/path/to/src',
+            'destfile' => '/path/${TO}/dest'
+        ), $this->oMockProject, $this->oServiceContainer);
+        $this->setExpectedException(
+            'RuntimeException',
+            "String '/path/\${TO}/dest' should return a single path after process"
+        );
+        $oTask->setUp();
+        $oTask->execute();
+    }
+
+    /**
+     * @covers Task_Base_FillTemplate::check
+     * @covers Task_Base_FillTemplate::_centralExecute
+     */
     public function testExecute_Simple ()
     {
         $oClass = new ReflectionClass('Properties_Adapter');
@@ -151,7 +221,11 @@ EOT;
         $this->assertEquals(0, count($this->aWarnMessages[Logger_Interface::WARNING]));
     }
 
-    public function testExecute_withWarning ()
+    /**
+     * @covers Task_Base_FillTemplate::check
+     * @covers Task_Base_FillTemplate::_centralExecute
+     */
+    public function testExecute_WithWarning ()
     {
         $oClass = new ReflectionClass('Properties_Adapter');
         $oProperty = $oClass->getProperty('_aProperties');
