@@ -192,7 +192,7 @@ class TaskRenameTest extends PHPUnit_Framework_TestCase
         $oTask->setUp();
         $oTask->execute();
         $this->assertEquals(
-            array("mv \"/path/to/dest\" '/path/to/src'"),
+            array("mv \"/path/to/src\" '/path/to/dest'"),
             $this->aShellExecCmds
         );
     }
