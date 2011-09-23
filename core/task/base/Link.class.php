@@ -108,8 +108,11 @@ class Task_Base_Link extends Task
         $aTargetPaths = $this->_processPath($sRawTargetPath);
         foreach ($aTargetPaths as $sTargetPath) {
             list(, $sDestServer, ) = $this->_oShell->isRemotePath($sTargetPath);
+            if ( ! empty($sDestServer)) {
+                $sDestServer .= ':';
+            }
             list(, , $sSrcRealPath) = $this->_oShell->isRemotePath($this->_aAttributes['src']);
-            $sSrc = $this->_processSimplePath($sDestServer . ':' . $sSrcRealPath);
+            $sSrc = $this->_processSimplePath($sDestServer . $sSrcRealPath);
             $this->_oShell->createLink($sSrc, $sTargetPath);
         }
         $this->_oLogger->unindent();

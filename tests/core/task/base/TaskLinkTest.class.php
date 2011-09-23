@@ -274,6 +274,39 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
      * @covers Task_Base_Link::_centralExecute
      * @covers Task_Base_Link::_postExecute
      */
+    public function testExecute_WithoutAttrServerAndLocal ()
+    {
+        $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
+        $oMockProperties->expects($this->at(0))->method('getProperty')
+            ->with($this->equalTo('with_symlinks'))
+            ->will($this->returnValue('false'));
+        $oMockProperties->expects($this->at(1))->method('getProperty')
+            ->with($this->equalTo('with_symlinks'))
+            ->will($this->returnValue('false'));
+        $oMockProperties->expects($this->exactly(2))->method('getProperty');
+        $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
+
+        $oTask = Task_Base_Link::getNewInstance(array(
+            'src' => '/path/to/link',
+            'target' => '/path/to/destdir'
+        ), $this->oMockProject, $this->oServiceContainer);
+        $oTask->setUp();
+        $oTask->execute();
+        $this->assertEquals(
+            array(
+                '[ -h "/path/to/link" ] && echo -n 1; [ -d "/path/to/link" ] && echo 2 || ([ -f "/path/to/link" ] && echo 1 || echo 0)',
+                'mkdir -p "$(dirname "/path/to/link")" && ln -snf "/path/to/destdir" "/path/to/link"'
+            ),
+            $this->aShellExecCmds
+        );
+    }
+
+    /**
+     * @covers Task_Base_Link::execute
+     * @covers Task_Base_Link::_preExecute
+     * @covers Task_Base_Link::_centralExecute
+     * @covers Task_Base_Link::_postExecute
+     */
     public function testExecute_WithoutAttrServerThrowExceptionIfBadSrc ()
     {
         $oTask = Task_Base_Link::getNewInstance(array(
