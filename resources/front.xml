@@ -16,9 +16,19 @@
     <target name="web_content">
         <externalproperty name="ref" description="Branch or tag to deploy" />
         <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${REF}" destdir="${TMPDIR}" />
+        <filltemplate
+            srcfile="${TMPDIR}/inc/deploy_config-template.inc.php"
+            destfile="${TMPDIR}/inc/deploy_config.inc.php" />
         <!-- <buildlanguage project="web" destdir="${TMPDIR}/languages" /> -->
         <cvsexport repository=":extssh:@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
             destdir="${TMPDIR}/twenga-common" />
+        <link src="${TMPDIR}/html/shorturl/config_shorturl.php" target="../../../../config/www.twenga/config_shorturl.php" />
+        <link src="${TMPDIR}/inc/config.php" target="../../../config/www.twenga/config.php" />
+        <link src="${TMPDIR}/inc/config-local" target="../../../config/www.twenga/config-local" />
+        <link src="${TMPDIR}/inc/config_tracker.php" target="../../../config/www.twenga/config_tracker.php" />
+        <mkdir destdir="${TMPDIR}/v3/templates_c" mode="777" />
+        <mkdir destdir="${TMPDIR}/v4/templates_c" mode="777" />
+        <!-- <sync src="${TMPDIR}/" destdir="${WEB_SERVERS}:${BASEDIR}" exclude="html/shorturl/config_shorturl.php inc/config.php inc/config-local inc/config_tracker.php v3/css v3/js v4/css v4/js" /> -->
         <sync src="${TMPDIR}/" destdir="${WEB_SERVERS}:${BASEDIR}" exclude="v3/css v3/js v4/css v4/js" />
     </target>
 
