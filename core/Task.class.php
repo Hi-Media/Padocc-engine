@@ -313,7 +313,11 @@ abstract class Task
      */
     protected function _preExecute ()
     {
-        $this->_oLogger->log("Execute '" . $this->_sName . "' task");
+        $sMsg = "Execute '" . $this->_sName . "' task";
+        if ( ! empty($this->_aAttributes['name'])) {
+            $sMsg .= ': \'' . $this->_aAttributes['name'] . '\'';
+        }
+        $this->_oLogger->log($sMsg);
     }
 
     /**
