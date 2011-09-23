@@ -70,6 +70,8 @@ class Task_Base_FillTemplate extends Task
     {
         parent::_centralExecute();
         $this->_oLogger->indent();
+        $sMsg = "Generate '" . $this->_aAttributes['destfile'] . "' from '" . $this->_aAttributes['srcfile'] . "'.";
+        $this->_oLogger->log($sMsg);
 
         $sSrcFile = $this->_processSimplePath($this->_aAttributes['srcfile']);
         $sDestFile = $this->_processSimplePath($this->_aAttributes['destfile']);
