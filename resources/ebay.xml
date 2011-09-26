@@ -19,7 +19,7 @@
         basedir="/cluster/lib/php/ebay_qa"
     >
         <externalproperty name="ref" description="Branch or tag to deploy" />
-        <property name="servers" value="compute-01.eu1" />
+        <property name="servers" value="ebay@compute-01.eu1" />
         <gitexport repository="git@git.twenga.com:feeds/ebay.git" ref="${REF}" destdir="${TMPDIR}" />
         <rename src="${TMPDIR}/config_pool_qa.php" dest="${TMPDIR}/config.php" />
         <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" />
