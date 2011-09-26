@@ -7,7 +7,22 @@
         loadtwengaservers="true"
         basedir="/home/prod/twenga/tools/ebay_qa"
     >
+        <property name="servers" value="${SERVER_EBAY_ALL}" />
         <call target="content" />
+    </env>
+
+    <env
+        name="qa-pool"
+        mailto="devaa@twenga.com, francois.pasini@twenga.com, herve.gouchet@twenga.com, laurent.macret@twenga.com"
+        withsymlinks="true"
+        loadtwengaservers="true"
+        basedir="/cluster/lib/php/ebay_qa"
+    >
+        <externalproperty name="ref" description="Branch or tag to deploy" />
+        <property name="servers" value="compute-01.prod" />
+        <gitexport repository="git@git.twenga.com:feeds/ebay.git" ref="${REF}" destdir="${TMPDIR}" />
+        <rename src="${TMPDIR}/config_pool_qa.php" dest="${TMPDIR}/config.php" />
+        <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" />
     </env>
 
     <env
@@ -17,12 +32,12 @@
         loadtwengaservers="true"
         basedir="/home/prod/twenga/tools/ebay"
     >
+        <property name="servers" value="${SERVER_EBAY_ALL}" />
         <call target="content" />
     </env>
 
     <target name="content">
         <externalproperty name="ref" description="Branch or tag to deploy" />
-        <gitexport repository="git@git.twenga.com:feeds/ebay.git" ref="${REF}"
-            destdir="${SERVER_EBAY_ALL}:${BASEDIR}" />
+        <gitexport repository="git@git.twenga.com:feeds/ebay.git" ref="${REF}" destdir="${SERVERS}:${BASEDIR}" />
     </target>
 </project>
