@@ -8,6 +8,7 @@
         basedir="/home/prod/twenga/tools/photo_crawler"
     >
         <gitexport repository="git@git.twenga.com:photo-tools/photocrawler.git" ref="master"
-            destdir="${SERVER_PHOTO_CRAWLER_ALL}:/home/prod/twenga/tools/photo_crawler" />
+            destdir="${SERVER_PHOTO_CRAWLER_ALL}:/home/prod/twenga/tools/photo_crawler"
+            exclude="config*" />
     </env>
 </project>
