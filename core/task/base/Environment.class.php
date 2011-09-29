@@ -127,7 +127,8 @@ class Task_Base_Environment extends Task_Base_Target
         $aServersWithSymlinks = array_keys($this->_aPathsToHandle);
         if (count($aServersWithSymlinks) > 0) {
             sort($aServersWithSymlinks);
-            $sMsg = "Servers concerned with base directory: '" . implode("', '", $aServersWithSymlinks) . "'.";
+            $sMsg = "Servers concerned with base directory (#"
+                  . count($aServersWithSymlinks) . "): '" . implode("', '", $aServersWithSymlinks) . "'.";
         } else {
             $sMsg = 'No server concerned with base directory.';
         }
