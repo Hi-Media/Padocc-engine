@@ -106,8 +106,7 @@ array_shift($argv);
 
 if ($argc == 1 && $argv[0] === "--getProjectsEnvsList") {
     new ErrorHandler(false);
-    $oDeployment = new Deployment();
-    $aProjectsEnvsList = $oDeployment->getProjectsEnvsList();
+    $aProjectsEnvsList = Deployment::getProjectsEnvsList();
     echo json_encode($aProjectsEnvsList);
 } else if ($argc < 4) {
     $sMsg = 'Missing parameters! Supplied parameters: ' . print_r($argv, true)
