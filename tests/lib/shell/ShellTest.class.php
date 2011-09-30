@@ -250,7 +250,7 @@ class ShellTest extends PHPUnit_Framework_TestCase
 
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
-            ->with($this->equalTo('ssh -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'ls "/path/to/my file"' . "\n" . 'EOF' . "\n"))
+            ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'ls "/path/to/my file"' . "\n" . 'EOF' . "\n"))
             ->will($this->returnValue($aExpectedResult));
         $oMockShell->expects($this->exactly(1))->method('exec');
 
@@ -308,7 +308,7 @@ class ShellTest extends PHPUnit_Framework_TestCase
 
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
-            ->with($this->equalTo('ssh -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'mkdir -p "/path/to/my file"' . "\n" . 'EOF' . "\n"))
+            ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'mkdir -p "/path/to/my file"' . "\n" . 'EOF' . "\n"))
             ->will($this->returnValue($aExpectedResult));
         $oMockShell->expects($this->exactly(1))->method('exec');
 
@@ -323,7 +323,7 @@ class ShellTest extends PHPUnit_Framework_TestCase
     {
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
-            ->with($this->equalTo('ssh -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'mkdir -p "/path/to/my file" && chmod 777 "/path/to/my file"' . "\n" . 'EOF' . "\n"));
+            ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'mkdir -p "/path/to/my file" && chmod 777 "/path/to/my file"' . "\n" . 'EOF' . "\n"));
         $oMockShell->expects($this->exactly(1))->method('exec');
         $aResult = $oMockShell->mkdir('gaubry@dv2:/path/to/my file', '777');
     }
@@ -403,7 +403,7 @@ class ShellTest extends PHPUnit_Framework_TestCase
         ));
 
         $oMockShell->expects($this->at(0))->method('exec')
-            ->with($this->equalTo('ssh -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'rm -rf "/path/to/my file"' . "\n" . 'EOF' . "\n"))
+            ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'rm -rf "/path/to/my file"' . "\n" . 'EOF' . "\n"))
             ->will($this->returnValue($aExpectedResult));
         $oMockShell->expects($this->exactly(1))->method('exec');
 
@@ -491,7 +491,7 @@ class ShellTest extends PHPUnit_Framework_TestCase
         $aExpectedResult = array('blabla');
 
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
-        $oMockShell->expects($this->at(0))->method('exec')->with($this->equalTo('ssh -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'mkdir -p "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"));
+        $oMockShell->expects($this->at(0))->method('exec')->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'mkdir -p "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"));
         $oMockShell->expects($this->at(1))->method('exec')
             ->with($this->equalTo('scp -rpq "/srcpath/to/my file" "gaubry@dv2:/destpath/to/my dir"'))
             ->will($this->returnValue($aExpectedResult));
@@ -528,7 +528,7 @@ class ShellTest extends PHPUnit_Framework_TestCase
         $aExpectedResult = array('blabla');
 
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
-        $oMockShell->expects($this->at(0))->method('exec')->with($this->equalTo('ssh -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'mkdir -p "/destpath/to"' . "\n" . 'EOF' . "\n"));
+        $oMockShell->expects($this->at(0))->method('exec')->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'mkdir -p "/destpath/to"' . "\n" . 'EOF' . "\n"));
         $oMockShell->expects($this->at(1))->method('exec')
             ->with($this->equalTo('scp -rpq "/srcpath/to/my file" "gaubry@dv2:/destpath/to/my file"'))
             ->will($this->returnValue($aExpectedResult));
@@ -1034,10 +1034,10 @@ total size is 64093953  speedup is 1618.29');
 
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
-            ->with($this->equalTo('ssh -T server1 /bin/bash <<EOF' . "\n" . 'mkdir -p "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
+            ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T server1 /bin/bash <<EOF' . "\n" . 'mkdir -p "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
             ->will($this->returnValue(array()));
         $oMockShell->expects($this->at(1))->method('exec')
-            ->with($this->equalTo('ssh -T login@server2 /bin/bash <<EOF' . "\n" . 'mkdir -p "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
+            ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T login@server2 /bin/bash <<EOF' . "\n" . 'mkdir -p "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
             ->will($this->returnValue(array()));
         $oMockShell->expects($this->at(2))->method('exec')
             ->with($this->equalTo($sCmd))
@@ -1058,11 +1058,11 @@ total size is 64093953  speedup is 1618.29');
     {
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
-            ->with($this->equalTo('ssh -T user@server /bin/bash <<EOF' . "\n"
+            ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
                 . 'mkdir -p "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
             ->will($this->returnValue(array()));
         $oMockShell->expects($this->at(1))->method('exec')
-            ->with($this->equalTo('ssh -T user@server /bin/bash <<EOF' . "\n"
+            ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
                 . 'rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --exclude="smarty/*/wrt*" --exclude="smarty/**/wrt*" --stats -e ssh "/srcpath/to/my dir" "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
             ->will($this->returnValue(array()));
         $oMockShell->expects($this->exactly(2))->method('exec');
@@ -1077,11 +1077,11 @@ total size is 64093953  speedup is 1618.29');
     {
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
-            ->with($this->equalTo('ssh -T server2 /bin/bash <<EOF' . "\n"
+            ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T server2 /bin/bash <<EOF' . "\n"
                 . 'mkdir -p "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
             ->will($this->returnValue(array()));
         $oMockShell->expects($this->at(1))->method('exec')
-            ->with($this->equalTo('ssh -T user@server1 /bin/bash <<EOF' . "\n"
+            ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server1 /bin/bash <<EOF' . "\n"
                 . 'rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/srcpath/to/my dir" "server2:/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
             ->will($this->returnValue(array()));
         $oMockShell->expects($this->exactly(2))->method('exec');
@@ -1171,7 +1171,7 @@ total size is 64093953  speedup is 1618.29');
 
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
-            ->with($this->equalTo('ssh -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'mkdir -p "$(dirname "/path/to/my file")" && ln -snf "/path/to/my target" "/path/to/my file"' . "\n" . 'EOF' . "\n"))
+            ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'mkdir -p "$(dirname "/path/to/my file")" && ln -snf "/path/to/my target" "/path/to/my file"' . "\n" . 'EOF' . "\n"))
             ->will($this->returnValue($aExpectedResult));
         $oMockShell->expects($this->exactly(1))->method('exec');
 

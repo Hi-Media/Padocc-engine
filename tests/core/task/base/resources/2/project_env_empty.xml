@@ -1,0 +1,3 @@
+<project>
+    <env name="my_env"></env>
+</project>

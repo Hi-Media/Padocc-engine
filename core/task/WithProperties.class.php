@@ -59,7 +59,7 @@ abstract class Task_WithProperties extends Task
     }
 
     /**
-     * Lors de l'exécution de la taĉhe, charge les propriétés des éventuels fichiers de configuration INI,
+     * Lors de l'exécution de la tâche, charge les propriétés des éventuels fichiers de configuration INI,
      * fichiers de configuration shell ou encore la liste des groupes de serveurs Twenga.
      */
     private function _loadProperties ()

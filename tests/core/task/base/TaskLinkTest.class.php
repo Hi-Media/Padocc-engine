@@ -262,10 +262,43 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
         $oTask->setUp();
         $oTask->execute();
         $this->assertEquals(array(
-            'ssh -T user@server /bin/bash <<EOF' . "\n"
+            'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
                 . 'mkdir -p "$(dirname "/path/to/link")" && ln -snf "/path/to/destdir" "/path/to/link"' . "\n"
                 . 'EOF' . "\n"
         ), $this->aShellExecCmds);
+    }
+
+    /**
+     * @covers Task_Base_Link::execute
+     * @covers Task_Base_Link::_preExecute
+     * @covers Task_Base_Link::_centralExecute
+     * @covers Task_Base_Link::_postExecute
+     */
+    public function testExecute_WithoutAttrServerAndLocal ()
+    {
+        $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
+        $oMockProperties->expects($this->at(0))->method('getProperty')
+            ->with($this->equalTo('with_symlinks'))
+            ->will($this->returnValue('false'));
+        $oMockProperties->expects($this->at(1))->method('getProperty')
+            ->with($this->equalTo('with_symlinks'))
+            ->will($this->returnValue('false'));
+        $oMockProperties->expects($this->exactly(2))->method('getProperty');
+        $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
+
+        $oTask = Task_Base_Link::getNewInstance(array(
+            'src' => '/path/to/link',
+            'target' => '/path/to/destdir'
+        ), $this->oMockProject, $this->oServiceContainer);
+        $oTask->setUp();
+        $oTask->execute();
+        $this->assertEquals(
+            array(
+                '[ -h "/path/to/link" ] && echo -n 1; [ -d "/path/to/link" ] && echo 2 || ([ -f "/path/to/link" ] && echo 1 || echo 0)',
+                'mkdir -p "$(dirname "/path/to/link")" && ln -snf "/path/to/destdir" "/path/to/link"'
+            ),
+            $this->aShellExecCmds
+        );
     }
 
     /**
@@ -311,7 +344,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
         $oTask->setUp();
         $oTask->execute();
         $this->assertEquals(array(
-            'ssh -T user@server /bin/bash <<EOF' . "\n"
+            'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
                 . 'mkdir -p "$(dirname "/path/to/link")" && ln -snf "/path/to/destdir" "/path/to/link"' . "\n"
                 . 'EOF' . "\n"
         ), $this->aShellExecCmds);
@@ -355,7 +388,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
         $oTask->setUp();
         $oTask->execute();
         $this->assertEquals(array(
-            'ssh -T user@server /bin/bash <<EOF' . "\n"
+            'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
                 . 'mkdir -p "$(dirname "/path/to/destdir_releases/12345/link")" && ln -snf "/path/to/destdir_releases/12345/subdir" "/path/to/destdir_releases/12345/link"' . "\n"
                 . 'EOF' . "\n"
         ), $this->aShellExecCmds);
@@ -398,7 +431,7 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
         $oTask->setUp();
         $oTask->execute();
         $this->assertEquals(array(
-            'ssh -T user@server /bin/bash <<EOF' . "\n"
+            'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
                 . 'mkdir -p "$(dirname "/path/to/destdir_releases/12345/link")" && ln -snf "/path/to/destdir_releases/12345/subdir" "/path/to/destdir_releases/12345/link"' . "\n"
                 . 'EOF' . "\n"
         ), $this->aShellExecCmds);

@@ -32,8 +32,6 @@ class Task_Base_Environment extends Task_Base_Target
         return 'env';
     }
 
-    private $_oLinkTask;
-
     /**
      * Constructeur.
      *
@@ -60,22 +58,23 @@ class Task_Base_Environment extends Task_Base_Target
         $this->_oProperties->setProperty('basedir', $sBaseDir);
         $sWithSymlinks = (empty($this->_aAttributes['withsymlinks']) ? 'false' : $this->_aAttributes['withsymlinks']);
         $this->_oProperties->setProperty('with_symlinks', $sWithSymlinks);
+        $this->_addSwithSymlinkTask();
+    }
 
-        // Création de switch de symlink sous-jacente :
-        if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
+    // Création de switch de symlink sous-jacente :
+    private function _addSwithSymlinkTask ()
+    {
+        if (
+            Task_Extended_SwitchSymlink::getNbInstances() === 0
+            && $this->_oProperties->getProperty('with_symlinks') === 'true'
+        ) {
             $this->_oNumbering->addCounterDivision();
-            $sBaseSymLink = $this->_oProperties->getProperty('basedir');
-            $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
-                             . '/' . $this->_oProperties->getProperty('execution_id');
-            $this->_oLinkTask = Task_Base_Link::getNewInstance(
-                array(
-                    'src' => $sBaseSymLink,
-                    'target' => $sReleaseSymLink,
-                    'server' => '${SERVERS_CONCERNED_WITH_BASE_DIR}'
-                ),
-                $oProject,
-                $oServiceContainer
+            $oLinkTask = Task_Extended_SwitchSymlink::getNewInstance(
+                array(),
+                $this->_oProject,
+                $this->_oServiceContainer
             );
+            array_push($this->_aTasks, $oLinkTask);
             $this->_oNumbering->removeCounterDivision();
         }
     }
@@ -128,7 +127,8 @@ class Task_Base_Environment extends Task_Base_Target
         $aServersWithSymlinks = array_keys($this->_aPathsToHandle);
         if (count($aServersWithSymlinks) > 0) {
             sort($aServersWithSymlinks);
-            $sMsg = "Servers concerned with base directory: '" . implode("', '", $aServersWithSymlinks) . "'.";
+            $sMsg = "Servers concerned with base directory (#"
+                  . count($aServersWithSymlinks) . "): '" . implode("', '", $aServersWithSymlinks) . "'.";
         } else {
             $sMsg = 'No server concerned with base directory.';
         }
@@ -148,7 +148,7 @@ class Task_Base_Environment extends Task_Base_Target
                 $bTransitionMade = true;
                 list(, $sServer, ) = $this->_oShell->isRemotePath($sExpandedPath);
                 $sDir = $sExpandedPath . '/';
-                $sOriginRelease = $sServer . ':' . $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
+                $sOriginRelease = $sServer . ':' . $sBaseSymLink . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX
                                 . '/' . $this->_oProperties->getProperty('execution_id') . '_origin';
                 $this->_oLogger->log("Backup '$sDir' to '$sOriginRelease'.");
                 $this->_oShell->sync($sDir, $sOriginRelease, array(), array('smarty/*/wrt*', 'smarty/**/wrt*'));
@@ -195,7 +195,7 @@ class Task_Base_Environment extends Task_Base_Target
         $this->_oLogger->indent();
         $sBaseSymLink = $this->_oProperties->getProperty('basedir');
         $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
-        $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
+        $sReleaseSymLink = $sBaseSymLink . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX
                          . '/' . $this->_oProperties->getProperty('execution_id');
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
             list(, $sServer, ) = $this->_oShell->isRemotePath($sExpandedPath);
@@ -262,7 +262,8 @@ class Task_Base_Environment extends Task_Base_Target
             $this->_oLogger->log('No release found.');
         } else {
             $sBaseSymLink = $this->_oProperties->getProperty('basedir');
-            $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX;
+            $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':'
+                   . $sBaseSymLink . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX;
             foreach ($this->_expandPath($sPath) as $sExpandedPath) {
                 list(, $sServer, ) = $this->_oShell->isRemotePath($sExpandedPath);
                 $this->_oLogger->log("Check " . $sServer . ':');
@@ -272,22 +273,6 @@ class Task_Base_Environment extends Task_Base_Target
             }
         }
         $this->_oLogger->unindent();
-    }
-
-    /**
-     * Prépare la tâche avant exécution : vérifications basiques, analyse des serveurs concernés...
-     */
-    public function setUp ()
-    {
-        if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
-            array_push($this->_aTasks, $this->_oLinkTask);
-        }
-
-        parent::setUp();
-
-        if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
-            array_pop($this->_aTasks);
-        }
     }
 
     /**
@@ -322,35 +307,5 @@ class Task_Base_Environment extends Task_Base_Target
             $this->_makeTransitionFromSymlinks();
         }
         $this->_oLogger->unindent();
-    }
-
-    /**
-     * Phase de post-traitements de l'exécution de la tâche.
-     * Elle devrait systématiquement finir par "parent::_postExecute();".
-     * Appelé par _execute().
-     * @see execute()
-     */
-    protected function _postExecute()
-    {
-        if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
-            $this->_oLogger->indent();
-            if ($this->_oProperties->getProperty('servers_concerned_with_base_dir') == '') {
-                $sMsg = 'No release found.';
-            } else {
-                $this->_oProperties->setProperty('with_symlinks', 'false');
-                $this->_oLinkTask->execute();
-                $this->_oProperties->setProperty('with_symlinks', 'true');
-
-                $sBaseSymLink = $this->_oProperties->getProperty('basedir');
-                $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX
-                                 . '/' . $this->_oProperties->getProperty('execution_id');
-                $sMsg = "Change target of base directory's symbolic link to new release: '$sReleaseSymLink'";
-            }
-            $this->_oLogger->indent();
-            $this->_oLogger->log($sMsg);
-            $this->_oLogger->unindent();
-            $this->_oLogger->unindent();
-        }
-        parent::_postExecute();
     }
 }

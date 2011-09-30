@@ -39,8 +39,6 @@ class Task_Extended_Minifier extends Task
             'srcfile' => AttributeProperties::FILEJOKER | AttributeProperties::ALLOW_PARAMETER,
             'destfile' => AttributeProperties::FILE | AttributeProperties::ALLOW_PARAMETER
         );
-
-        //$this->_oMinifier = new Minifier_JSMinAdapter(DEPLOYMENT_JSMIN_BIN_PATH, $this->_oShell);
         $this->_oMinifier = Minifier_Factory::getInstance(Minifier_Factory::TYPE_JSMIN, $this->_oShell);
     }
 
@@ -55,7 +53,8 @@ class Task_Extended_Minifier extends Task
         parent::_centralExecute();
         $this->_oLogger->indent();
 
-        $this->_oLogger->log('Minify');
+        $sMsg = "Minify '" . $this->_aAttributes['srcfile'] . "' into '" . $this->_aAttributes['destfile'] . "'.";
+        $this->_oLogger->log($sMsg);
 
         $aSrcPaths = $this->_processPath($this->_aAttributes['srcfile']);
         $sDestPaths = $this->_processSimplePath($this->_aAttributes['destfile']);

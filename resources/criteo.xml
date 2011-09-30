@@ -8,7 +8,6 @@
         basedir="/home/prod/twengaweb/sem/criteo"
     >
         <gitexport repository="git@git.twenga.com:sem/criteo.git" ref="master"
-            destdir="${SERVER_SCHED_ALL}:/home/prod/twengaweb/sem/criteo"
-            exclude="" />
+            destdir="${SERVER_SCHED_ALL}:/home/prod/twengaweb/sem/criteo" />
     </env>
 </project>

@@ -245,7 +245,7 @@ class TaskCopyTest extends PHPUnit_Framework_TestCase
         $oTaskCopy->setUp();
         $oTaskCopy->execute();
         $this->assertEquals(array(
-            'ssh -T user@server /bin/bash <<EOF' . "\n"
+            'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
                 . 'mkdir -p "/path/to/destdir_releases/12345/srcdir"' . "\n"
                 . 'EOF' . "\n",
             'scp -rpq "/path/to/srcdir/"* "user@server:/path/to/destdir_releases/12345/srcdir"'

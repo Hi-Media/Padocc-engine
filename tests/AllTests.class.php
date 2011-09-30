@@ -45,7 +45,7 @@ class AllTests {
         // run ourselves on the resulting array.  This is the
         // recursion step, which will not execute if there are no
         // directories.
-        $paths = glob($path.'/*', GLOB_ONLYDIR|GLOB_NOSORT);
+        $paths = glob($path.'/*', GLOB_ONLYDIR | GLOB_NOSORT);
         foreach ($paths as $path) {
             $sub_files = self::getFiles($path, $patterns, 0);
             $files = array_merge($files, $sub_files);

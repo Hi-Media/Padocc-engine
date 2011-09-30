@@ -9,12 +9,6 @@ abstract class Task
 {
 
     /**
-     * Suffixe concaténé au base directory pour obtenir le nom du répertoire regroupant les différentes releases.
-     * @var string
-     */
-    const RELEASES_DIRECTORY_SUFFIX = '_releases';
-
-    /**
      * Compteur d'instances pour mieux s'y retrouver dans les logs des tâches.
      * @var Numbering_Interface
      * @see $sName
@@ -227,7 +221,7 @@ abstract class Task
     /**
      * Reroute de façon transparente tous les chemins système inclus ou égal à la valeur de la propriété 'basedir'
      * dans le répertoire de releases nommé de la valeur de 'basedir'
-     * avec le suffixe self::RELEASES_DIRECTORY_SUFFIX.
+     * avec le suffixe DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX.
      *
      * @param array $aPaths
      */
@@ -235,7 +229,7 @@ abstract class Task
     {
         if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
             $sBaseSymLink = $this->_oProperties->getProperty('basedir');
-            $sReleaseSymLink = $sBaseSymLink . self::RELEASES_DIRECTORY_SUFFIX . '/'
+            $sReleaseSymLink = $sBaseSymLink . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX . '/'
                              . $this->_oProperties->getProperty('execution_id');
             for ($i=0, $iMax=count($aPaths); $i<$iMax; $i++) {
                 if (preg_match('#^(.*?:)' . preg_quote($sBaseSymLink, '#') . '\b#', $aPaths[$i], $aMatches) === 1) {
@@ -319,7 +313,11 @@ abstract class Task
      */
     protected function _preExecute ()
     {
-        $this->_oLogger->log("Execute '" . $this->_sName . "' task");
+        $sMsg = "Execute '" . $this->_sName . "' task";
+        if ( ! empty($this->_aAttributes['name'])) {
+            $sMsg .= ': \'' . $this->_aAttributes['name'] . '\'';
+        }
+        $this->_oLogger->log($sMsg);
     }
 
     /**

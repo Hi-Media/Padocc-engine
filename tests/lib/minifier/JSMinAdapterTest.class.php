@@ -28,7 +28,9 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
 
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($oLogger));
-        $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
+        $oMockShell->expects($this->any())->method('exec')->will(
+            $this->returnCallback(array($this, 'shellExecCallback'))
+        );
         $this->aShellExecCmds = array();
 
         //$oShell = new Shell_Adapter($oLogger);
@@ -73,6 +75,24 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
 
         $sResult = $method->invokeArgs($oJSminAdapter, array(array()));
         $this->assertEquals('', $sResult);
+    }
+
+    /**
+     * @covers Minifier_JSMinAdapter::_getContent
+     */
+    public function testGetContent_throwExceptionIfNotFound ()
+    {
+        $oJSminAdapter = new Minifier_JSMinAdapter(
+            DEPLOYMENT_JSMIN_BIN_PATH,
+            $this->oServiceContainer->getShellAdapter()
+        );
+
+        $class = new ReflectionClass($oJSminAdapter);
+        $method = $class->getMethod('_getContent');
+        $method->setAccessible(true);
+
+        $this->setExpectedException('RuntimeException', "File not found: '/unknow/file'!");
+        $sResult = $method->invokeArgs($oJSminAdapter, array(array('/unknow/file')));
     }
 
     /**
@@ -135,6 +155,8 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
     /**
      * @covers Minifier_JSMinAdapter::__construct
      * @covers Minifier_JSMinAdapter::_minifyJS
+     * @covers Minifier_JSMinAdapter::_getHeader
+     * @covers Minifier_JSMinAdapter::_getLargestCommonPrefix
      */
     public function testMinifyJS_With1File ()
     {
@@ -149,13 +171,17 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
 
         $method->invokeArgs($oJSminAdapter, array(array('/path/to/resources/a.txt'), '/dest/path'));
         $this->assertEquals(array(
-            'cat "/path/to/resources/a.txt" ' . "| /path/to/jsmin >'/dest/path'"
+            'cat "/path/to/resources/a.txt" '
+                . "| /path/to/jsmin >'/dest/path'"
+                . " && sed --in-place '1i/* Contains: /path/to/resources/a.txt */\n' '/dest/path'"
         ), $this->aShellExecCmds);
     }
 
     /**
      * @covers Minifier_JSMinAdapter::__construct
      * @covers Minifier_JSMinAdapter::_minifyJS
+     * @covers Minifier_JSMinAdapter::_getHeader
+     * @covers Minifier_JSMinAdapter::_getLargestCommonPrefix
      */
     public function testMinifyJS_WithFiles ()
     {
@@ -173,13 +199,17 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
             '/dest/path'
         ));
         $this->assertEquals(array(
-            'cat "/path/to/resources/a.txt" "/path/to/resources/b.txt" ' . "| /path/to/jsmin >'/dest/path'"
+            'cat "/path/to/resources/a.txt" "/path/to/resources/b.txt" '
+                . "| /path/to/jsmin >'/dest/path'"
+                . " && sed --in-place '1i/* Contains (basedir='/path/to/resources/'): a.txt, b.txt */\n' '/dest/path'"
         ), $this->aShellExecCmds);
     }
 
     /**
      * @covers Minifier_JSMinAdapter::__construct
      * @covers Minifier_JSMinAdapter::_minifyJS
+     * @covers Minifier_JSMinAdapter::_getHeader
+     * @covers Minifier_JSMinAdapter::_getLargestCommonPrefix
      */
     public function testMinifyJS_WithJoker ()
     {
@@ -194,13 +224,17 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
 
         $method->invokeArgs($oJSminAdapter, array(array('/path/to/resources/*.txt'), '/dest/path'));
         $this->assertEquals(array(
-            'cat "/path/to/resources/"*".txt" ' . "| /path/to/jsmin >'/dest/path'"
+            'cat "/path/to/resources/"*".txt" '
+                . "| /path/to/jsmin >'/dest/path'"
+                . " && sed --in-place '1i/* Contains: /path/to/resources/*.txt */\n' '/dest/path'"
         ), $this->aShellExecCmds);
     }
 
     /**
      * @covers Minifier_JSMinAdapter::__construct
      * @covers Minifier_JSMinAdapter::_minifyCSS
+     * @covers Minifier_JSMinAdapter::_getHeader
+     * @covers Minifier_JSMinAdapter::_getLargestCommonPrefix
      */
     public function testMinifyCSS_With1File ()
     {
@@ -216,9 +250,13 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
         $method->invokeArgs($oJSminAdapter, array(array(__DIR__ . '/resources/a.css'), $sTmpPath));
         $sContent = file_get_contents($sTmpPath);
         unlink($sTmpPath);
-        $this->assertEquals(
-            "body { padding: 0; background-color:#ffffff; background:url('http://s0.twenga.com/background.gif') repeat-y 0% 0 fixed;} ",
-            $sContent);
+        $this->assertContains("/* Contains: /", $sContent);
+        $this->assertContains("/tests/lib/minifier/resources/a.css */", $sContent);
+        $this->assertContains(
+            "\nbody { padding: 0; background-color:#ffffff;"
+                . " background:url('http://s0.twenga.com/background.gif') repeat-y 0% 0 fixed;} ",
+            $sContent
+        );
     }
 
     /**
@@ -325,5 +363,35 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
 
         $oResult = $oMockJSminAdapter->minify(array('/path/a.css'), '/dest/path/b.css');
         $this->assertEquals($oResult, $oMockJSminAdapter);
+    }
+
+    /**
+     * @covers Minifier_JSMinAdapter::_getLargestCommonPrefix
+     * @dataProvider dataProvider_testGetLargestCommonPrefix
+     */
+    public function testGetLargestCommonPrefix ($aPaths, $sExpected)
+    {
+        $oJSminAdapter = new Minifier_JSMinAdapter(
+            '/path/to/jsmin',
+            $this->oServiceContainer->getShellAdapter()
+        );
+
+        $class = new ReflectionClass($oJSminAdapter);
+        $method = $class->getMethod('_getLargestCommonPrefix');
+        $method->setAccessible(true);
+
+        $sResult = $method->invokeArgs($oJSminAdapter, array($aPaths));
+        $this->assertEquals($sExpected, $sResult);
+    }
+
+    public static function dataProvider_testGetLargestCommonPrefix ()
+    {
+        return array(
+            array(array(''), ''),
+            array(array('/path/to/my file'), '/path/to/my file'),
+            array(array('/path/to/a', '/path/to/b'), '/path/to/'),
+            array(array('/path/to/a', '/other/path/to/b'), '/'),
+            array(array('/path/to/a', 'xyz'), ''),
+        );
     }
 }
