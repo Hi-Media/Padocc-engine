@@ -159,7 +159,7 @@ class TaskMkDirTest extends PHPUnit_Framework_TestCase
         $oTask->setUp();
         $oTask->execute();
         $this->assertEquals(array(
-            'ssh -T user@server /bin/bash <<EOF' . "\n"
+            'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
                 . 'mkdir -p "/path/to/destdir_releases/12345/subdir" && chmod 755 "/path/to/destdir_releases/12345/subdir"' . "\n"
                 . 'EOF' . "\n"
         ), $this->aShellExecCmds);

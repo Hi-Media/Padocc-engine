@@ -57,16 +57,27 @@ class Deployment
         $this->_oLogger->unindent();
     }
 
+    /* Structure :
+     * {
+     * 		"rts":{"dev":[],"qa":[],"pre-prod":[]},
+     * 		"tests":{
+     * 			"tests_gitexport":{"rts_ref":"Branch or tag to deploy"},
+     * 			"tests_languages":{"t1":"Branch","t2":"or tag","t3":"or tag"},
+     * 			"all_tests":[]},
+     * 		"ptpn":{"prod":[]}
+     * }
+     */
     public function getProjectsEnvsList ()
     {
         $aAllProjectsName = Task_Base_Project::getAllProjectsName(DEPLOYMENT_RESOURCES_DIR);
-        $aTargetsByProject = array();
+        $aEnvsByProject = array();
         if ( ! empty($aAllProjectsName)) {
             foreach ($aAllProjectsName as $sProjectName) {
-                $aTargetsByProject[$sProjectName] = Task_Base_Target::getAvailableTargetsList($sProjectName);
+                $sProjectPath = DEPLOYMENT_RESOURCES_DIR . '/' . $sProjectName . '.xml';
+                $aEnvsByProject[$sProjectName] = Task_Base_Target::getAvailableEnvsList($sProjectPath);
             }
         }
-        ksort($aTargetsByProject);
-        return $aTargetsByProject;
+        ksort($aEnvsByProject);
+        return $aEnvsByProject;
     }
 }

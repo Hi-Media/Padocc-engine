@@ -856,8 +856,8 @@ class TaskTest extends PHPUnit_Framework_TestCase
         $aDest = array(
             $sBaseDir,
             $sBaseDir . '/subdir',
-            'user@server:' . $sBaseDir . Task::RELEASES_DIRECTORY_SUFFIX . '/12345',
-            'user@server:' . $sBaseDir . Task::RELEASES_DIRECTORY_SUFFIX . '/12345/subdir'
+            'user@server:' . $sBaseDir . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX . '/12345',
+            'user@server:' . $sBaseDir . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX . '/12345/subdir'
         );
 
         $oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);

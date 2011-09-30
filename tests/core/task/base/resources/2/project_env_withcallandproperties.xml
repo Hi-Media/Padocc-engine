@@ -1,0 +1,14 @@
+<project>
+    <env name="my_env">
+        <externalproperty name="ref" description="Branch or tag to deploy" />
+        <any></any>
+        <call target="content" />
+        <externalproperty name="ref3" description="other..." />
+    </env>
+
+    <target name="content">
+        <externalproperty name="ref2" description="label" />
+        <gitexport repository="git@git.twenga.com:feeds/ebay.git" ref="${REF}"
+            destdir="${SERVER_EBAY_ALL}:${BASEDIR}" />
+    </target>
+</project>

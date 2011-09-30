@@ -81,7 +81,10 @@ class Shell_Adapter implements Shell_Interface
         $sCmd = sprintf($sPatternCmd, $this->escapePath($sRealPath));
         //$sCmd = vsprintf($sPatternCmd, array_map(array(self, 'escapePath'), $mParams));
         if ($bIsRemote) {
-            $sCmd = 'ssh -T ' . $sServer . " /bin/bash <<EOF\n$sCmd\nEOF\n";
+            $sSSHOptions = ' -o StrictHostKeyChecking=no'
+                         . ' -o ConnectTimeout=' . DEPLOYMENT_SSH_CONNECTION_TIMEOUT
+                         . ' -o BatchMode=yes';
+            $sCmd = 'ssh' . $sSSHOptions . ' -T ' . $sServer . " /bin/bash <<EOF\n$sCmd\nEOF\n";
         }
         return $this->exec($sCmd);
     }
@@ -396,7 +399,7 @@ class Shell_Adapter implements Shell_Interface
      *  	total size is 64093953  speedup is 1618.29
      *  - sortie :
      *  	Number of transferred files ( / total): 2 / 1774
-     *  	Total transferred file size ( / total): 0 / 61 Mio
+     *  	Total transferred file size ( / total): <1 / 61 Mio
      *
      * @param array $aRawResult tableau indexé du flux de sortie shell de la commande rsync, découpé par ligne
      * @return array du tableau indexé du flux de sortie shell de commandes rsync résumé
@@ -437,26 +440,16 @@ class Shell_Adapter implements Shell_Interface
 
             $aResult = array();
             foreach ($aAllStats as $aStats) {
-                if ($aStats['total file size'] < 1024) {
-                    $iUnit = 1;
-                    $sUnit = 'o';
-                } else if ($aStats['total file size'] < 1024*1024) {
-                    $iUnit = 1024;
-                    $sUnit = 'Kio';
-                } else {
-                    $iUnit = 1024*1024;
-                    $sUnit = 'Mio';
-                }
-
-                $sTransferred = round($aStats['total transferred file size']/$iUnit);
-                if ($sTransferred == 0 && $aStats['number of files transferred'] > 0) {
-                    $sTransferred = '<1';
-                }
+                list($sTransferred, ) = Tools::convertFileSize2String(
+                    $aStats['total transferred file size'],
+                    $aStats['total file size']
+                );
+                list($sTotal, $sUnit) = Tools::convertFileSize2String($aStats['total file size']);
 
                 $aResult[] = 'Number of transferred files ( / total): ' . $aStats['number of files transferred']
                            . ' / ' . $aStats['number of files'] . "\n"
                            . 'Total transferred file size ( / total): '
-                           . $sTransferred . ' / ' . round($aStats['total file size']/$iUnit) . " $sUnit\n";
+                           . $sTransferred . ' / ' . $sTotal . " $sUnit\n";
             }
         }
         return $aResult;
