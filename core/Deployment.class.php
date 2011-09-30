@@ -67,7 +67,7 @@ class Deployment
      * 		"ptpn":{"prod":[]}
      * }
      */
-    public function getProjectsEnvsList ()
+    public static function getProjectsEnvsList ()
     {
         $aAllProjectsName = Task_Base_Project::getAllProjectsName(DEPLOYMENT_RESOURCES_DIR);
         $aEnvsByProject = array();
