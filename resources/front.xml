@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="front">
+
+    <!-- /bin/bash /home/gaubry/supervisor/supervisor.sh deployment.php front dev feature-testGeoff -->
     <env
         name="dev"
         mailto="geoffroy.aubry@twenga.com"
