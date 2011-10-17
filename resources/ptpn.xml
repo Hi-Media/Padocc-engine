@@ -8,11 +8,11 @@
     >
         <externalproperty name="ref" description="Branch or tag to deploy" />
         <gitexport repository="git@git.twenga.com:distribution/ptpn.git" ref="${ref}"
-            destdir="www10:/home/httpd/ptpn" exclude="config.* config_application.php db.ini" />
+            destdir="www10:${BASEDIR}" exclude="config.* config_application.php db.ini" />
         <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
             destdir="www10:/home/httpd/twenga-common" />
-        <mkdir destdir="www10:/home/httpd/ptpn/cache/smarty" mode="777" />
-        <buildlanguage project="ptpn" destdir="www10:/home/httpd/ptpn/i18n" />
+        <mkdir destdir="www10:${BASEDIR}/cache/smarty" mode="777" />
+        <buildlanguage project="ptpn" destdir="www10:${BASEDIR}/i18n" />
     </env>
 
     <env
@@ -23,10 +23,12 @@
     >
         <externalproperty name="ref" description="Branch or tag to deploy" />
         <gitexport repository="git@git.twenga.com:distribution/ptpn.git" ref="${ref}"
-            destdir="www46:/home/httpd/ptpn" exclude="config.* config_application.php db.ini" />
+            destdir="www46:${BASEDIR}" exclude="config.* config_application.php db.ini" />
         <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
             destdir="www46:/home/httpd/twenga-common" />
-        <mkdir destdir="www46:/home/httpd/ptpn/cache/smarty" mode="777" />
-        <buildlanguage project="ptpn" destdir="www46:/home/httpd/ptpn/i18n" />
+        <mkdir destdir="www46:${BASEDIR}/cache/smarty" mode="777" />
+        <buildlanguage project="ptpn" destdir="www46:${BASEDIR}/i18n" />
     </env>
+
+
 </project>
