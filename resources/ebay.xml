@@ -1,18 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="ebay">
-    <env
-        name="qa"
-        mailto="devaa@twenga.com, francois.pasini@twenga.com, herve.gouchet@twenga.com, laurent.macret@twenga.com"
-        withsymlinks="true"
-        loadtwengaservers="true"
-        basedir="/home/prod/twenga/tools/ebay_qa"
-    >
-        <property name="servers" value="${SERVER_EBAY_ALL}" />
-        <call target="content" />
-    </env>
 
     <env
-        name="qa-pool"
+        name="qa"
         mailto="devaa@twenga.com, francois.pasini@twenga.com, herve.gouchet@twenga.com, laurent.macret@twenga.com"
         withsymlinks="true"
         loadtwengaservers="true"
@@ -30,17 +20,6 @@
         mailto="devaa@twenga.com, francois.pasini@twenga.com, herve.gouchet@twenga.com, laurent.macret@twenga.com"
         withsymlinks="true"
         loadtwengaservers="true"
-        basedir="/home/prod/twenga/tools/ebay"
-    >
-        <property name="servers" value="${SERVER_EBAY_ALL}" />
-        <call target="content" />
-    </env>
-
-    <env
-        name="prod-pool"
-        mailto="devaa@twenga.com, francois.pasini@twenga.com, herve.gouchet@twenga.com, laurent.macret@twenga.com"
-        withsymlinks="true"
-        loadtwengaservers="true"
         basedir="/cluster/lib/php/ebay"
     >
         <externalproperty name="ref" description="Branch or tag to deploy" />
@@ -49,9 +28,4 @@
         <rename src="${TMPDIR}/config_pool.php" dest="${TMPDIR}/config.php" />
         <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" />
     </env>
-
-    <target name="content">
-        <externalproperty name="ref" description="Branch or tag to deploy" />
-        <gitexport repository="git@git.twenga.com:feeds/ebay.git" ref="${REF}" destdir="${SERVERS}:${BASEDIR}" />
-    </target>
 </project>
