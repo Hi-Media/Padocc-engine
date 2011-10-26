@@ -21,7 +21,7 @@ done
  */
 
 // PHPUnit : aller dans /tests, puis : phpunit
-// http://gaubry.dev.twenga.com/deployment/report/index.html
+// http://gaubry.aa.dev.twenga.local/deployment/report/index.html
 
 // ln -s /home/gaubry/deployment/deployment.php /home/gaubry/supervisor/scripts/php/deployment.php
 // CRON * * * * * date +\%s > /home/gaubry/cron_heartbeat.txt

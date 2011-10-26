@@ -117,6 +117,7 @@ class AttributeProperties
      * Par exemple si c'est un AttributeProperties::FILEJOKER, alors c'est forcément aussi
      * un AttributeProperties::FILE.
      *
+     * @param array &$aProperties tableau associatif 'nom d'attribut' => propriétés de l'attribut
      * @see aAttributeProperties
      */
     private function _normalizeAttributeProperties (array &$aProperties)

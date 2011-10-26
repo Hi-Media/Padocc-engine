@@ -8,8 +8,16 @@
 class IndentedLoggerTest extends PHPUnit_Extensions_OutputTestCase
 {
 
+    /**
+     * Chaîne correspondant à une identation.
+     * @var string
+     */
     const BASE_INDENTATION = '----';
 
+    /**
+     * Instance de log.
+     * @var Logger_IndentedInterface
+     */
     private $oLogger;
 
     /**

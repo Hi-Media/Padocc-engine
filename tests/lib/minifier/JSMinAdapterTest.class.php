@@ -388,6 +388,8 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
     /**
      * @covers Minifier_JSMinAdapter::_getLargestCommonPrefix
      * @dataProvider dataProvider_testGetLargestCommonPrefix
+     * @param array $aStrings liste de chaînes à comparer
+     * @param string $sExpected le plus long préfixe commun aux chaînes fournies.
      */
     public function testGetLargestCommonPrefix ($aPaths, $sExpected)
     {
@@ -404,6 +406,9 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($sExpected, $sResult);
     }
 
+    /**
+     * Data provider pour testGetLargestCommonPrefix()
+     */
     public static function dataProvider_testGetLargestCommonPrefix ()
     {
         return array(

@@ -8,7 +8,16 @@
 class ShellTest extends PHPUnit_Framework_TestCase
 {
 
+    /**
+     * Instance de log.
+     * @var Logger_Interface
+     */
     private $oLogger;
+
+    /**
+     * Instance Shell.
+     * @var Shell_Interface
+     */
     private $oShell;
 
     /**

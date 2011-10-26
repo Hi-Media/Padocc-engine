@@ -14,6 +14,10 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
      */
     private $oServiceContainer;
 
+    /**
+     * Instance Minifier
+     * @var Minifier_Interface
+     */
     private $oJSminAdapter;
 
     /**
@@ -452,6 +456,9 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
     /**
      * @covers Minifier_TemplateMinifier::_extractStaticPaths
      * @dataProvider dataProvider_testExtractStaticPaths
+     * @param string $sTemplateFile chemin de template (.tpl) à analyser
+     * @param array $aExpected couple de 2 tableaux, le premier listant les URLs extraites de code CSS, groupées par bloc
+     * 		combine, le second listant les URLs extraites de code JS, groupées également par bloc combine.
      */
     public function testExtractStaticPaths ($sTemplateFile, $aExpected)
     {
@@ -464,6 +471,9 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($aExpected, $aStatics);
     }
 
+    /**
+     * Data provider pour testExtractStaticPaths()
+     */
     public static function dataProvider_testExtractStaticPaths ()
     {
         return array(

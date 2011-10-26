@@ -11,6 +11,9 @@ class ToolsTest extends PHPUnit_Framework_TestCase
     /**
      * @covers Tools::getFileSizeUnit
      * @dataProvider dataProvider_testGetFileSizeUnit
+     * @param int $iFileSize taille en octets à changer d'unité
+     * @param array $aExpected tableau (int, string) comprenant d'une part le nombre d'octets contenus dans la plus grande
+     * unité inférieure à la taille spécifiée, et d'autre part le nom de cette unité.
      */
     public function testGetFileSizeUnit ($iFileSize, $aExpected)
     {
@@ -18,6 +21,9 @@ class ToolsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($aExpected, $aResult);
     }
 
+    /**
+     * Data provider pour testGetFileSizeUnit()
+     */
     public static function dataProvider_testGetFileSizeUnit ()
     {
         return array(
@@ -31,6 +37,10 @@ class ToolsTest extends PHPUnit_Framework_TestCase
     /**
      * @covers Tools::convertFileSize2String
      * @dataProvider dataProvider_testConvertFileSize2String
+     * @param int $iSize taille à convertir
+     * @param int $iRefSize référentiel de conversion, si différent de 0
+     * @param array $aExpected un couple comprenant d'une part la taille spécifiée arrondie,
+     * et d'autre part l'unité dans laquelle la taille a été arrondie.
      */
     public function testConvertFileSize2String ($iSize, $iRefSize, $aExpected)
     {
@@ -38,6 +48,9 @@ class ToolsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($aExpected, $aResult);
     }
 
+    /**
+     * Data provider pour testConvertFileSize2String()
+     */
     public static function dataProvider_testConvertFileSize2String ()
     {
         return array(
