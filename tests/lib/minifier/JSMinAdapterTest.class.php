@@ -388,10 +388,10 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
     /**
      * @covers Minifier_JSMinAdapter::_getLargestCommonPrefix
      * @dataProvider dataProvider_testGetLargestCommonPrefix
-     * @param array $aStrings liste de chaînes à comparer
+     * @param array $aPaths liste de chaînes à comparer
      * @param string $sExpected le plus long préfixe commun aux chaînes fournies.
      */
-    public function testGetLargestCommonPrefix ($aPaths, $sExpected)
+    public function testGetLargestCommonPrefix (array $aPaths, $sExpected)
     {
         $oJSminAdapter = new Minifier_JSMinAdapter(
             '/path/to/jsmin',

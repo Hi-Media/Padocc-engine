@@ -241,12 +241,46 @@ class TaskFillTemplateTest extends PHPUnit_Framework_TestCase
         $sExpectedResult = <<<'EOT'
 <?php
 
+/**
+ * bla bla...
+ * @var string
+ */
 define('PROJECT', 'my\\project');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('PROJECT_BIS', 'my\\project');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('ENV', 'my \"env\"');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('EXECUTION_ID', '01234\'5\'6789');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('BASEDIR', 'x');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('LOCAL_PROPERTY_SERVERS', 'y');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('TEST', 'z');
 
 EOT;
@@ -288,12 +322,46 @@ EOT;
         $sExpectedResult = <<<'EOT'
 <?php
 
+/**
+ * bla bla...
+ * @var string
+ */
 define('PROJECT', 'my project');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('PROJECT_BIS', 'my project');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('ENV', 'my env');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('EXECUTION_ID', '0123456789');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('BASEDIR', '${BASEDIR}');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('LOCAL_PROPERTY_SERVERS', '${SERVERS}');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('TEST', '${NOT_EXISTS}');
 
 EOT;
