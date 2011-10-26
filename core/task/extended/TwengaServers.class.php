@@ -24,6 +24,10 @@ class Task_Extended_TwengaServers extends Task
      */
     private $_oGitExportTask;
 
+    /**
+     * Répertoire temporaire où extraire master_synchro.cfg.
+     * @var string
+     */
     private $_sTmpDir;
 
     /**

@@ -8,8 +8,16 @@
 class NumberingTest extends PHPUnit_Framework_TestCase
 {
 
+    /**
+     * Chaîne intercalée entre chaque niveau hiérarchique
+     * @var string
+     */
     const SEPARATOR = '#';
 
+    /**
+     * Instance de numérotation de tâches.
+     * @var Numbering_Interface
+     */
     private $oNumbering;
 
     /**

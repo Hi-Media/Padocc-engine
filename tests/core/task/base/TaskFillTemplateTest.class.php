@@ -34,13 +34,26 @@ class TaskFillTemplateTest extends PHPUnit_Framework_TestCase
      * @param string $sCmd commande Shell qui aurait dûe être exécutée.
      * @see $aShellExecCmds
      */
-   public function shellExecCallback ($sCmd)
+    public function shellExecCallback ($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
     }
 
+    /**
+     * Tableau de tous les messages de log interceptés, regroupés par priorité.
+     * @var array
+     * @see logCallback()
+     */
     private $aWarnMessages;
 
+    /**
+     * Callback déclenchée sur appel de Logger_IndentedDecorator::log().
+     * Log tous les appels dans le tableau indexé $this->aWarnMessages.
+     *
+     * @param string $sMsg message à logger.
+     * @param int $iLevel priorité du message.
+     * @see $aWarnMessages
+     */
     public function logCallback ($sMsg, $iLevel)
     {
         $this->aWarnMessages[$iLevel][] = $sMsg;

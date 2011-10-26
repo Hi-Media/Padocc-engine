@@ -7,25 +7,35 @@
  */
 class Deployment
 {
-
-    private $_oLogger;
+    /**
+     * Instance de services.
+     * @var ServiceContainer
+     */
     private $_oServiceContainer;
 
+    /**
+     * Constructeur.
+     */
     public function __construct ()
     {
         $oBaseLogger = new Logger_Adapter(Logger_Interface::DEBUG);
-        $this->_oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
-        $oShell = new Shell_Adapter($this->_oLogger);
+        $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
+        $oShell = new Shell_Adapter($oLogger);
 
         $this->_oServiceContainer = new ServiceContainer();
         $this->_oServiceContainer
-            ->setLogAdapter($this->_oLogger)
+            ->setLogAdapter($oLogger)
             ->setShellAdapter($oShell)
             ->setPropertiesAdapter(new Properties_Adapter($oShell))
             ->setNumberingAdapter(new Numbering_Adapter());
     }
 
-    private function _setExternalProperties (array $aExternalProperties=array())
+    /**
+     * Enregistre les propriétés externes dans l'instance Properties_Interface.
+     *
+     * @param array $aExternalProperties tableau indexé des valeurs ordonnées des propriétés externes.
+     */
+    private function _setExternalProperties (array $aExternalProperties)
     {
         $oProperties = $this->_oServiceContainer->getPropertiesAdapter();
         foreach ($aExternalProperties as $i => $sValue) {
@@ -34,6 +44,15 @@ class Deployment
         }
     }
 
+    /**
+     * Exécute le déploiement.
+     *
+     * @param string $sProjectName
+     * @param string $sEnvName
+     * @param string $sExecutionID au format YYYYMMDDHHMMSS_xxxxx, où x est un chiffre aléatoire,
+     * par exemple '20111026142342_07502'
+     * @param array $aExternalProperties tableau indexé des valeurs ordonnées des propriétés externes.
+     */
     public function run ($sProjectName, $sEnvName, $sExecutionID, array $aExternalProperties=array())
     {
         $oProperties = $this->_oServiceContainer->getPropertiesAdapter();
@@ -46,17 +65,22 @@ class Deployment
 
         $sProjectPath = DEPLOYMENT_RESOURCES_DIR . '/' . $sProjectName . '.xml';
         $oProject = new Task_Base_Project($sProjectPath, $sEnvName, $this->_oServiceContainer);
-        $this->_oLogger->log('Check tasks:');
-        $this->_oLogger->indent();
+        $oLogger = $this->_oServiceContainer->getLogAdapter();
+        $oLogger->log('Check tasks:');
+        $oLogger->indent();
         $oProject->setUp();
-        $this->_oLogger->unindent();
-        $this->_oLogger->log('Execute tasks:');
-        $this->_oLogger->indent();
+        $oLogger->unindent();
+        $oLogger->log('Execute tasks:');
+        $oLogger->indent();
         $oProject->execute();
-        $this->_oLogger->unindent();
+        $oLogger->unindent();
     }
 
-    /* Structure :
+    /**
+     * Retourne la liste des environnements de chaque projet,
+     * avec pour chacun d'eux la liste des paramètres externes.
+     *
+     * Structure :
      * {
      * 		"rts":{"dev":[],"qa":[],"pre-prod":[]},
      * 		"tests":{
@@ -65,6 +89,9 @@ class Deployment
      * 			"all_tests":[]},
      * 		"ptpn":{"prod":[]}
      * }
+     *
+     * @return array la liste des environnements de chaque projet,
+     * avec pour chacun d'eux la liste des paramètres externes.
      */
     public static function getProjectsEnvsList ()
     {

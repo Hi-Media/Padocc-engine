@@ -8,6 +8,9 @@
 class FactoryTest extends PHPUnit_Framework_TestCase
 {
 
+    /**
+     * @covers Minifier_Factory::getInstance
+     */
     public function testGetInstance_throwExceptionWhenUnknownType ()
     {
         $oBaseLogger = new Logger_Adapter(Logger_Interface::WARNING);

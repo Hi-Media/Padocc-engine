@@ -12,6 +12,10 @@
 class Task_Base_Target extends Task_WithProperties
 {
 
+    /**
+     * Liste d'instances de type Task ordonnées constituant la cible.
+     * @var array
+     */
     protected $_aTasks;
 
     /**
