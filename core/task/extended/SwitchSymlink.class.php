@@ -78,7 +78,7 @@ class Task_Extended_SwitchSymlink extends Task_Base_Link
                              . '/' . $this->_oProperties->getProperty('execution_id');
             $this->_aAttributes['src'] = $sBaseSymLink;
             $this->_aAttributes['target'] = $sReleaseSymLink;
-            $this->_aAttributes['server'] = '${SERVERS_CONCERNED_WITH_BASE_DIR}';
+            $this->_aAttributes['server'] = '${' . Task_Base_Environment::SERVERS_CONCERNED_WITH_BASE_DIR . '}';
         }
 
         parent::check();
@@ -94,7 +94,7 @@ class Task_Extended_SwitchSymlink extends Task_Base_Link
     {
         $this->_oLogger->indent();
         if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
-            if ($this->_oProperties->getProperty('servers_concerned_with_base_dir') == '') {
+            if ($this->_oProperties->getProperty(Task_Base_Environment::SERVERS_CONCERNED_WITH_BASE_DIR) == '') {
                 $sMsg = 'No release found.';
             } else {
                 $this->_oProperties->setProperty('with_symlinks', 'false');

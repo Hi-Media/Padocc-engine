@@ -20,7 +20,17 @@
  */
 class Task_Base_Environment extends Task_Base_Target
 {
-    static private $_iDefaultMaxNbReleases = DEPLOYMENT_SYMLINK_MAX_NB_RELEASES;
+    /**
+     * Nombre maximal de déploiement à garder dans les répertoires de releases.
+     * @var int
+     */
+    private static $_iDefaultMaxNbReleases = DEPLOYMENT_SYMLINK_MAX_NB_RELEASES;
+
+    /**
+     * Propriété (au sens Properties_Interface) contenant la liste des serveurs concernés par le déploiement.
+     * @var string
+     */
+    const SERVERS_CONCERNED_WITH_BASE_DIR = 'SERVERS_CONCERNED_WITH_BASE_DIR';
 
     /**
      * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
@@ -61,7 +71,10 @@ class Task_Base_Environment extends Task_Base_Target
         $this->_addSwithSymlinkTask();
     }
 
-    // Création de switch de symlink sous-jacente :
+    /**
+     * Ajoute une tâche Task_Extended_SwitchSymlink en toute dernière étape de déploiement
+     * si le XML du projet n'en a pas spécifié.
+     */
     private function _addSwithSymlinkTask ()
     {
         if (
@@ -106,11 +119,13 @@ class Task_Base_Environment extends Task_Base_Target
         $this->_oLogger->unindent();
     }
 
-    private $_aPathsToHandle;
-
+    /**
+     * Extrait la liste des serveurs concernés par le déploiement à partir de self::$_aRegisteredPaths
+     * et l'enregistre dans la propriété self::SERVERS_CONCERNED_WITH_BASE_DIR.
+     */
     private function _analyzeRegisteredPaths ()
     {
-        $this->_aPathsToHandle = array();
+        $aPathsToHandle = array();
         $aPaths = array_keys(self::$_aRegisteredPaths);
 
         $sBaseSymLink = $this->_oProperties->getProperty('basedir');
@@ -119,12 +134,12 @@ class Task_Base_Environment extends Task_Base_Target
             foreach ($aExpandedPaths as $sExpandedPath) {
                 list($bIsRemote, $sServer, $sRealPath) = $this->_oShell->isRemotePath($sExpandedPath);
                 if ($bIsRemote && strpos($sRealPath, $sBaseSymLink) !== false) {
-                    $this->_aPathsToHandle[$sServer][] = $sRealPath;
+                    $aPathsToHandle[$sServer][] = $sRealPath;
                 }
             }
         }
 
-        $aServersWithSymlinks = array_keys($this->_aPathsToHandle);
+        $aServersWithSymlinks = array_keys($aPathsToHandle);
         if (count($aServersWithSymlinks) > 0) {
             sort($aServersWithSymlinks);
             $sMsg = "Servers concerned with base directory (#"
@@ -133,15 +148,18 @@ class Task_Base_Environment extends Task_Base_Target
             $sMsg = 'No server concerned with base directory.';
         }
         $this->_oLogger->log($sMsg);
-        $this->_oProperties->setProperty('servers_concerned_with_base_dir', implode(' ', $aServersWithSymlinks));
+        $this->_oProperties->setProperty(self::SERVERS_CONCERNED_WITH_BASE_DIR, implode(' ', $aServersWithSymlinks));
     }
 
+    /**
+     * Gère la transition d'un déploiement sans stratégie de liens symboliques vers cette stratégie.
+     */
     private function _makeTransitionToSymlinks ()
     {
         $this->_oLogger->log('If needed, make transition to symlinks:');
         $this->_oLogger->indent();
         $sBaseSymLink = $this->_oProperties->getProperty('basedir');
-        $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
+        $sPath = '${' . self::SERVERS_CONCERNED_WITH_BASE_DIR . '}:' . $sBaseSymLink;
         $bTransitionMade = false;
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
             if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_PathStatus::STATUS_DIR) {
@@ -162,12 +180,15 @@ class Task_Base_Environment extends Task_Base_Target
         $this->_oLogger->unindent();
     }
 
+    /**
+     * Gère la transition d'un déploiement avec stratégie de liens symboliques vers une approche sans.
+     */
     private function _makeTransitionFromSymlinks ()
     {
         $this->_oLogger->log('If needed, make transition from symlinks:');
         $this->_oLogger->indent();
         $sBaseSymLink = $this->_oProperties->getProperty('basedir');
-        $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
+        $sPath = '${' . self::SERVERS_CONCERNED_WITH_BASE_DIR . '}:' . $sBaseSymLink;
         $bTransitionMade = false;
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
             if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_PathStatus::STATUS_SYMLINKED_DIR) {
@@ -189,12 +210,15 @@ class Task_Base_Environment extends Task_Base_Target
         $this->_oLogger->unindent();
     }
 
+    /**
+     * Initialise la nouvelle release avec le contenu de l'ancienne, dans le but d'accélerer le déploiement.
+     */
     private function _initNewRelease ()
     {
         $this->_oLogger->log('Initialize with content of previous release:');
         $this->_oLogger->indent();
         $sBaseSymLink = $this->_oProperties->getProperty('basedir');
-        $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':' . $sBaseSymLink;
+        $sPath = '${' . self::SERVERS_CONCERNED_WITH_BASE_DIR . '}:' . $sBaseSymLink;
         $sReleaseSymLink = $sBaseSymLink . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX
                          . '/' . $this->_oProperties->getProperty('execution_id');
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
@@ -216,7 +240,12 @@ class Task_Base_Environment extends Task_Base_Target
         $this->_oLogger->unindent();
     }
 
-    // Récupération et tri (de la + jeune à la + vieille) des releases existentes pour un répertoire :
+    /**
+     * Retourne la liste triée chronologiquement des différentes releases présentes à l'endroit spécifié.
+     *
+     * @param string $sExpandedPath au format [[user@]servername_or_ip:]/path
+     * @return array tableau indexé des releases de la plus jeune à la plus vieille
+     */
     private function _getAllReleases ($sExpandedPath)
     {
         $sPattern = '^[0-9]{14}_[0-9]{5}(_origin)?$';
@@ -227,6 +256,12 @@ class Task_Base_Environment extends Task_Base_Target
         return array_reverse($aAllReleases);
     }
 
+    /**
+     * Supprime les vieilles releases surnuméraires sur un serveur donné.
+     *
+     * @param string $sExpandedPath au format [[user@]servername_or_ip:]/path
+     * @see self::$_iDefaultMaxNbReleases
+     */
     private function _removeOldestReleasesInOneDirectory ($sExpandedPath)
     {
         $aAllReleases = $this->_getAllReleases($sExpandedPath);
@@ -254,15 +289,18 @@ class Task_Base_Environment extends Task_Base_Target
         }
     }
 
+    /**
+     * Supprime les vieilles releases surnuméraires sur chaque serveur concerné par le déploiement.
+     */
     private function _removeOldestReleases ()
     {
         $this->_oLogger->log('Remove too old releases:');
         $this->_oLogger->indent();
-        if ($this->_oProperties->getProperty('servers_concerned_with_base_dir') == '') {
+        if ($this->_oProperties->getProperty(self::SERVERS_CONCERNED_WITH_BASE_DIR) == '') {
             $this->_oLogger->log('No release found.');
         } else {
             $sBaseSymLink = $this->_oProperties->getProperty('basedir');
-            $sPath = '${SERVERS_CONCERNED_WITH_BASE_DIR}' . ':'
+            $sPath = '${' . self::SERVERS_CONCERNED_WITH_BASE_DIR . '}:'
                    . $sBaseSymLink . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX;
             foreach ($this->_expandPath($sPath) as $sExpandedPath) {
                 list(, $sServer, ) = $this->_oShell->isRemotePath($sExpandedPath);
