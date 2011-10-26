@@ -82,7 +82,7 @@ define('DEPLOYMENT_TMP_DIR', '/tmp');
 define('DEPLOYMENT_RSYNC_MAX_NB_PROCESSES', 3);
 
 /**
- * Nombre maximal de déploiement à garder dans les répertoires de release.
+ * Nombre maximal de déploiement à garder dans les répertoires de releases.
  * @var int
  * @see DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX
  * @see Task_Base_Environment::_removeOldestReleasesInOneDirectory

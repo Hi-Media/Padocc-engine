@@ -13,9 +13,21 @@ class TaskProjectTest extends PHPUnit_Framework_TestCase
      */
     private $oServiceContainer;
 
+    /**
+     * Tableau indexé contenant les commandes Shell de tous les appels effectués à Shell_Adapter::exec().
+     * @var array
+     * @see shellExecCallback()
+     */
     private $aShellExecCmds;
 
-    public function shellExecCallback ($sCmd)
+    /**
+     * Callback déclenchée sur appel de Shell_Adapter::exec().
+     * Log tous les appels dans le tableau indexé $this->aShellExecCmds.
+     *
+     * @param string $sCmd commande Shell qui aurait dûe être exécutée.
+     * @see $aShellExecCmds
+     */
+   public function shellExecCallback ($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
     }

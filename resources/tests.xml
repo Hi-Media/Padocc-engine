@@ -74,7 +74,7 @@
         <link server="${SERVERS}" src="${BASEDIR}/test_link/link" target="${BASEDIR}/test_gitexport1" />
         <http url="http://aai.twenga.com/push.php?server=${SERVER_AAI}&amp;app=deploy" />
 
-        <gitexport repository="git@git.twenga.com:aa/deployment.git" ref="release-0.10.0"
+        <gitexport repository="git@git.twenga.com:aa/deployment.git" ref="release-0.11.0"
             srcsubdir="/tests/core/task/base/resources"
             destdir="${TMPDIR}/resources" />
         <filltemplate

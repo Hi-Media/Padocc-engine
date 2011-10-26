@@ -20,9 +20,21 @@ class TaskSwitchSymlinkTest extends PHPUnit_Framework_TestCase
      */
     private $oMockProject;
 
+    /**
+     * Tableau indexé contenant les commandes Shell de tous les appels effectués à Shell_Adapter::exec().
+     * @var array
+     * @see shellExecCallback()
+     */
     private $aShellExecCmds;
 
-    public function shellExecCallback ($sCmd)
+    /**
+     * Callback déclenchée sur appel de Shell_Adapter::exec().
+     * Log tous les appels dans le tableau indexé $this->aShellExecCmds.
+     *
+     * @param string $sCmd commande Shell qui aurait dûe être exécutée.
+     * @see $aShellExecCmds
+     */
+   public function shellExecCallback ($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
     }
@@ -221,7 +233,7 @@ class TaskSwitchSymlinkTest extends PHPUnit_Framework_TestCase
             'src' => $oPropertiesAdapter->getProperty('basedir'),
             'target' => $oPropertiesAdapter->getProperty('basedir') . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX
                       . '/' . $oPropertiesAdapter->getProperty('execution_id'),
-            'server' => '${SERVERS_CONCERNED_WITH_BASE_DIR}'
+            'server' => '${' . Task_Base_Environment::SERVERS_CONCERNED_WITH_BASE_DIR . '}'
         ), '_aAttributes', $oTask);
     }
 
