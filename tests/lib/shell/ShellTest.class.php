@@ -11,12 +11,20 @@ class ShellTest extends PHPUnit_Framework_TestCase
     private $oLogger;
     private $oShell;
 
+    /**
+     * Sets up the fixture, for example, open a network connection.
+     * This method is called before a test is executed.
+     */
     public function setUp ()
     {
         $this->oLogger = new Logger_Adapter(Logger_Interface::WARNING);
         $this->oShell = new Shell_Adapter($this->oLogger);
     }
 
+    /**
+     * Tears down the fixture, for example, close a network connection.
+     * This method is called after a test is executed.
+     */
     public function tearDown()
     {
         $this->oLogger = NULL;
