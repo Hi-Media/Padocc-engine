@@ -128,7 +128,7 @@ abstract class Task
     /**
      * Constructeur.
      *
-     * @param SimpleXMLElement $oTask Contenu XML de la tâche.
+     * @param SimpleXMLElement $oXMLTask Contenu XML de la tâche.
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
