@@ -116,10 +116,21 @@ interface Shell_Interface
     public function remove ($sPath);
 
     /**
+     * Effectue un tar gzip du répertoire $sSrcPath dans $sBackupPath.
+     *
+     * @param string $sSrcPath au format [[user@sername_or_ip:]/path
+     * @param string $sBackupPath au format [[user@sername_or_ip:]/path
+     * @return array tableau indexé du flux de sortie shell découpé par ligne
+     * @throws RuntimeException en cas d'erreur shell
+     */
+    public function backup ($sSrcPath, $sBackupPath);
+
+    /**
      * Crée le chemin spécifié s'il n'existe pas déjà, avec les droits éventuellement transmis dans tous les cas.
      *
      * @param string $sPath chemin à créer, au format [[user@sername_or_ip:]/path
-     * @param string $sMode droits utilisateur du chemin, par ex. '644', appliqués même si ce dernier existe déjà
+     * @param string $sMode droits utilisateur du chemin appliqués même si ce dernier existe déjà.
+     * Par exemple '644'.
      * @return array tableau indexé du flux de sortie shell découpé par ligne
      * @throws RuntimeException en cas d'erreur shell
      */
@@ -128,8 +139,8 @@ interface Shell_Interface
     /**
      * Synchronise une source avec une ou plusieurs destinations.
      *
-     * @param string $sSrcPath, au format [[user@sername_or_ip:]/path
-     * @param string|array $mDestPath, chaque destination au format [[user@sername_or_ip:]/path
+     * @param string $sSrcPath au format [[user@sername_or_ip:]/path
+     * @param string|array $mDestPath chaque destination au format [[user@sername_or_ip:]/path
      * @param array $aIncludedPaths chemins à transmettre aux paramètres --include de la commande shell rsync.
      * Il précéderons les paramètres --exclude.
      * @param array $aExcludedPaths chemins à transmettre aux paramètres --exclude de la commande shell rsync

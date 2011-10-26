@@ -12,11 +12,19 @@ class NumberingTest extends PHPUnit_Framework_TestCase
 
     private $oNumbering;
 
+    /**
+     * Sets up the fixture, for example, open a network connection.
+     * This method is called before a test is executed.
+     */
     public function setUp ()
     {
         $this->_oNumbering = new Numbering_Adapter(self::SEPARATOR);
     }
 
+    /**
+     * Tears down the fixture, for example, close a network connection.
+     * This method is called after a test is executed.
+     */
     public function tearDown()
     {
         $this->_oNumbering = NULL;
