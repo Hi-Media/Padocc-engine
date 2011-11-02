@@ -7,8 +7,11 @@
         basedir="/home/httpd/ptpn"
     >
         <externalproperty name="ref" description="Branch or tag to deploy" />
+        <externalproperty name="ref_common" description="Branch or tag php-common" />
         <gitexport repository="git@git.twenga.com:distribution/ptpn.git" ref="${ref}"
             destdir="www10:${BASEDIR}" exclude="config.* config_application.php db.ini" />
+        <gitexport repository="git@git.twenga.com:php-common/php-common.git" ref="${ref_common}"
+            destdir="www10:${BASEDIR}/Twenga" exclude="/Tests /build.xml /phpunit.xml.dist" />
         <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
             destdir="www10:/home/httpd/twenga-common" />
         <mkdir destdir="www10:${BASEDIR}/cache/smarty" mode="777" />
