@@ -53,8 +53,11 @@ class Task_Extended_BuildLanguage extends Task
             $this->_oProperties->getProperty('execution_id') . '_languages_'
         );
         $fh = fopen($sLanguagesPath, 'w');
+        $sURL = 'https://admin.twenga.com/translation_tool/build_language_files.php?project='
+              . $this->_aAttributes['project'];
+        $this->_oLogger->log('Call web service: ' . $sURL);
         $aCurlParameters = array(
-            'url' => 'https://admin.twenga.com/translation_tool/build_language_files.php?project=rts',
+            'url' => $sURL,
             'login' => 'gaubry',
             'password' => 'jR7nN0',
             'user_agent' => Curl::$aUserAgents['FireFox3'],
