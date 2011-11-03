@@ -15,7 +15,8 @@
         <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
             destdir="www10:/home/httpd/twenga-common" />
         <mkdir destdir="www10:${BASEDIR}/cache/smarty" mode="777" />
-        <buildlanguage project="ptpn" destdir="www10:${BASEDIR}/i18n" />
+        <mkdir destdir="www10:/tmp/ptpn/media/invoices" mode="777" />
+        <buildlanguage project="distribution" destdir="www10:${BASEDIR}/i18n" />
     </env>
 
     <env
@@ -30,7 +31,7 @@
         <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
             destdir="www46:/home/httpd/twenga-common" />
         <mkdir destdir="www46:${BASEDIR}/cache/smarty" mode="777" />
-        <buildlanguage project="ptpn" destdir="www46:${BASEDIR}/i18n" />
+        <buildlanguage project="distribution" destdir="www46:${BASEDIR}/i18n" />
     </env>
 
 
