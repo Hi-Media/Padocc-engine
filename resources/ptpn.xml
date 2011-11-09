@@ -6,17 +6,9 @@
         withsymlinks="true"
         basedir="/home/httpd/ptpn"
     >
-        <externalproperty name="ref" description="Branch or tag to deploy" />
-        <externalproperty name="ref_common" description="Branch or tag php-common" />
-        <gitexport repository="git@git.twenga.com:distribution/ptpn.git" ref="${ref}"
-            destdir="www10:${BASEDIR}" exclude="config.* config_application.php db.ini" />
-        <gitexport repository="git@git.twenga.com:php-common/php-common.git" ref="${ref_common}"
-            destdir="www10:${BASEDIR}/Twenga" exclude="/build.xml /CHANGELOG /dependancies.ini /phpunit.xml.dist /Tests" />
-        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
-            destdir="www10:/home/httpd/twenga-common" />
-        <mkdir destdir="www10:${BASEDIR}/cache/smarty" mode="777" />
-        <mkdir destdir="www10:/tmp/ptpn/media/invoices" mode="777" />
-        <buildlanguage project="distribution" destdir="www10:${BASEDIR}/i18n" />
+        <property name="servers" value="www10" />
+        <call target="content" />
+        <mkdir destdir="${SERVERS}:/tmp/ptpn/media/invoices" mode="777" />
     </env>
 
     <env
@@ -25,15 +17,20 @@
         withsymlinks="true"
         basedir="/home/httpd/ptpn"
     >
+        <property name="servers" value="www46" />
+        <call target="content" />
+    </env>
+
+    <target name="content">
         <externalproperty name="ref" description="Branch or tag to deploy" />
         <externalproperty name="ref_common" description="Branch or tag php-common" />
-        <gitexport repository="git@git.twenga.com:distribution/ptpn.git" ref="${ref}"
-            destdir="www46:${BASEDIR}" exclude="config.* config_application.php db.ini" />
-        <gitexport repository="git@git.twenga.com:php-common/php-common.git" ref="${ref_common}"
-            destdir="www46:${BASEDIR}/Twenga" exclude="/build.xml /CHANGELOG /dependancies.ini /phpunit.xml.dist /Tests" />
+        <gitexport repository="git@git.twenga.com:distribution/ptpn.git" ref="${REF}"
+            destdir="${SERVERS}:${BASEDIR}" exclude="config.* config_application.php db.ini" />
+        <gitexport repository="git@git.twenga.com:php-common/php-common.git" ref="${REF_COMMON}"
+            destdir="${SERVERS}:${BASEDIR}/Twenga" exclude="/build.xml /CHANGELOG /dependancies.ini /phpunit.xml.dist /Tests" />
         <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
-            destdir="www46:/home/httpd/twenga-common" />
-        <mkdir destdir="www46:${BASEDIR}/cache/smarty" mode="777" />
-        <buildlanguage project="distribution" destdir="www46:${BASEDIR}/i18n" />
-    </env>
+            destdir="${SERVERS}:/home/httpd/twenga-common" />
+        <mkdir destdir="${SERVERS}:${BASEDIR}/cache/smarty" mode="777" />
+        <buildlanguage project="distribution" destdir="${SERVERS}:${BASEDIR}/i18n" />
+    </target>
 </project>
