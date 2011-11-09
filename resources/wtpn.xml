@@ -6,11 +6,8 @@
         withsymlinks="true"
         basedir="/home/httpd/wtpn"
     >
-        <externalproperty name="ref" description="Branch or tag to deploy" />
-        <gitexport repository="git@git.twenga.com:distribution/wtpn.git" ref="${ref}"
-            destdir="www10:/home/httpd/wtpn" exclude="config.* dynconfig* config_application.php db.ini" />
-        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
-            destdir="www10:/home/httpd/twenga-common" />
+        <property name="servers" value="www10" />
+        <call target="content" />
     </env>
 
     <env
@@ -19,10 +16,15 @@
         withsymlinks="true"
         basedir="/home/httpd/wtpn"
     >
-        <externalproperty name="ref" description="Branch or tag to deploy" />
-        <gitexport repository="git@git.twenga.com:distribution/wtpn.git" ref="${ref}"
-            destdir="www46:/home/httpd/wtpn" exclude="config.* dynconfig* config_application.php db.ini" />
-        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
-            destdir="www46:/home/httpd/twenga-common" />
+        <property name="servers" value="www46 www47" />
+        <call target="content" />
     </env>
+
+    <target name="content">
+        <externalproperty name="ref" description="Branch or tag to deploy" />
+        <gitexport repository="git@git.twenga.com:distribution/wtpn.git" ref="${REF}"
+            destdir="${SERVERS}:${BASEDIR}" exclude="config.* dynconfig* config_application.php db.ini" />
+        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
+            destdir="${SERVERS}:/home/httpd/twenga-common" />
+    </target>
 </project>
