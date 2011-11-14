@@ -107,19 +107,30 @@ if ($argc == 1 && $argv[0] === "--getProjectsEnvsList") {
     new ErrorHandler(false);
     $aProjectsEnvsList = Deployment::getProjectsEnvsList();
     echo json_encode($aProjectsEnvsList);
-} else if ($argc < 4) {
-    $sMsg = 'Missing parameters! Supplied parameters: ' . print_r($argv, true)
-          . ' Example: /usr/bin/php -q ~/deployment/deployment.php project1 dev 20110518121106'
-          . ' /tmp/deployment.php.20110518121106.error.log';
-    file_put_contents('php://stderr', $sMsg, E_USER_ERROR);
-    exit(1);
 } else {
-    $sErrorLogFile = array_pop($argv);
-    $sExecutionID = array_pop($argv);
-    $sProjectName = array_shift($argv);
-    $sEnvName = array_shift($argv);
+    $sErrorLogFile = array_pop($argv); $argc--;
+    $sExecutionID = array_pop($argv); $argc--;
 
-    new ErrorHandler(false, $sErrorLogFile);
-    $oDeployment = new Deployment();
-    $oDeployment->run($sProjectName, $sEnvName, $sExecutionID, $argv);
+    if (preg_match('/--rollback=(\d{14}_\d{5})/', $argv[$argc-1], $aMatches) === 1) {
+        $sRollbackID = $aMatches[1];
+        $argc--;
+        array_pop($argv);
+    } else {
+        $sRollbackID = '';
+    }
+
+    if ($argc < 3) {
+        $sMsg = 'Missing parameters! Supplied parameters: ' . print_r($argv, true)
+              . ' Example: /usr/bin/php -q ~/deployment/deployment.php project1 dev 20110518121106'
+              . ' /tmp/deployment.php.20110518121106.error.log';
+        file_put_contents('php://stderr', $sMsg, E_USER_ERROR);
+        exit(1);
+    } else {
+        $sProjectName = array_shift($argv);
+        $sEnvName = array_shift($argv);
+
+        new ErrorHandler(false, $sErrorLogFile);
+        $oDeployment = new Deployment();
+        $oDeployment->run($sProjectName, $sEnvName, $sExecutionID, $argv, $sRollbackID);
+    }
 }

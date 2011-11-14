@@ -110,6 +110,7 @@ class Task_Base_Project extends Task_WithProperties
         if (count($aTargets) !== 1) {
             throw new UnexpectedValueException("Environment '$sEnvName' not found or not unique in this project!");
         }
+
         $this->_oBoundTask = new Task_Base_Environment($aTargets[0], $this->_oProject, $this->_oServiceContainer);
     }
 

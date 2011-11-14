@@ -53,13 +53,14 @@ class Deployment
      * par exemple '20111026142342_07502'
      * @param array $aExternalProperties tableau indexé des valeurs ordonnées des propriétés externes.
      */
-    public function run ($sProjectName, $sEnvName, $sExecutionID, array $aExternalProperties=array())
+    public function run ($sProjectName, $sEnvName, $sExecutionID, array $aExternalProperties=array(), $sRollbackID)
     {
-        $oProperties = $this->_oServiceContainer->getPropertiesAdapter();
-        $oProperties->setProperty('project_name', $sProjectName);
-        $oProperties->setProperty('environment_name', $sEnvName);
-        $oProperties->setProperty('execution_id', $sExecutionID);
-        $oProperties->setProperty('tmpdir', DEPLOYMENT_TMP_DIR . '/deploy_' . $sExecutionID);
+        $this->_oServiceContainer->getPropertiesAdapter()
+            ->setProperty('project_name', $sProjectName)
+            ->setProperty('environment_name', $sEnvName)
+            ->setProperty('execution_id', $sExecutionID)
+            ->setProperty('tmpdir', DEPLOYMENT_TMP_DIR . '/deploy_' . $sExecutionID)
+            ->setProperty('rollback_id', $sRollbackID);
 
         $this->_setExternalProperties($aExternalProperties);
 
