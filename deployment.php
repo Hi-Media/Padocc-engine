@@ -119,7 +119,7 @@ if ($argc == 1 && $argv[0] === "--getProjectsEnvsList") {
         $sRollbackID = '';
     }
 
-    if ($argc < 3) {
+    if ($argc < 2) {
         $sMsg = 'Missing parameters! Supplied parameters: ' . print_r($argv, true)
               . ' Example: /usr/bin/php -q ~/deployment/deployment.php project1 dev 20110518121106'
               . ' /tmp/deployment.php.20110518121106.error.log';
