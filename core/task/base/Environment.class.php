@@ -319,7 +319,8 @@ class Task_Base_Environment extends Task_Base_Target
      *
      * @see $this->_aTasks
      */
-    private function _removeUnnecessaryTasksForRollback () {
+    private function _removeUnnecessaryTasksForRollback ()
+    {
         if ($this->_oProperties->getProperty('rollback_id') !== '') {
             $this->_oLogger->log('Remove unnecessary tasks for rollback.');
             $aKeptTasks = array();
