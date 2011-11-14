@@ -315,17 +315,11 @@ class Task_Base_Environment extends Task_Base_Target
     }
 
     /**
-     * Phase de pré-traitements de l'exécution de la tâche.
-     * Elle devrait systématiquement commencer par "parent::_preExecute();".
-     * Appelé par _execute().
-     * @see execute()
+     * Supprime les tâches qui ne sont plus nécessaires pour le rollback.
+     *
+     * @see $this->_aTasks
      */
-    protected function _preExecute ()
-    {
-        parent::_preExecute();
-        $this->_oLogger->indent();
-
-        // Supprime les tâches qui ne sont plus nécessaires pour le rollback :
+    private function _removeUnnecessaryTasksForRollback () {
         if ($this->_oProperties->getProperty('rollback_id') !== '') {
             $this->_oLogger->log('Remove unnecessary tasks for rollback.');
             $aKeptTasks = array();
@@ -340,6 +334,21 @@ class Task_Base_Environment extends Task_Base_Target
             }
             $this->_aTasks = $aKeptTasks;
         }
+    }
+
+    /**
+     * Phase de pré-traitements de l'exécution de la tâche.
+     * Elle devrait systématiquement commencer par "parent::_preExecute();".
+     * Appelé par _execute().
+     * @see execute()
+     */
+    protected function _preExecute ()
+    {
+        parent::_preExecute();
+        $this->_oLogger->indent();
+
+        // Supprime les tâches qui ne sont plus nécessaires pour le rollback :
+        $this->_removeUnnecessaryTasksForRollback();
 
         // Exécute tout de suite toutes les tâches Task_Base_Property ou Task_Base_ExternalProperty qui
         // suivent directement :

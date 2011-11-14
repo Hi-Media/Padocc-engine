@@ -52,8 +52,10 @@ class Deployment
      * @param string $sExecutionID au format YYYYMMDDHHMMSS_xxxxx, où x est un chiffre aléatoire,
      * par exemple '20111026142342_07502'
      * @param array $aExternalProperties tableau indexé des valeurs ordonnées des propriétés externes.
+     * @param string $sRollbackID identifiant de déploiement sur lequel effectuer un rollback,
+     * par exemple '20111026142342_07502'
      */
-    public function run ($sProjectName, $sEnvName, $sExecutionID, array $aExternalProperties=array(), $sRollbackID)
+    public function run ($sProjectName, $sEnvName, $sExecutionID, array $aExternalProperties, $sRollbackID)
     {
         $this->_oServiceContainer->getPropertiesAdapter()
             ->setProperty('project_name', $sProjectName)
