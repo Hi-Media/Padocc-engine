@@ -68,6 +68,7 @@ class Task_Base_Environment extends Task_Base_Target
         $this->_oProperties->setProperty('basedir', $sBaseDir);
         $sWithSymlinks = (empty($this->_aAttributes['withsymlinks']) ? 'false' : $this->_aAttributes['withsymlinks']);
         $this->_oProperties->setProperty('with_symlinks', $sWithSymlinks);
+
         $this->_addSwithSymlinkTask();
     }
 
@@ -324,6 +325,22 @@ class Task_Base_Environment extends Task_Base_Target
         parent::_preExecute();
         $this->_oLogger->indent();
 
+        // Supprime les tâches qui ne sont plus nécessaires pour le rollback :
+        if ($this->_oProperties->getProperty('rollback_id') !== '') {
+            $this->_oLogger->log('Remove unnecessary tasks for rollback.');
+            $aKeptTasks = array();
+            foreach ($this->_aTasks as $oTask) {
+               if (
+                       ($oTask instanceof Task_Base_Property)
+                       || ($oTask instanceof Task_Base_ExternalProperty)
+                       || ($oTask instanceof Task_Extended_SwitchSymlink)
+               ) {
+                   $aKeptTasks[] = $oTask;
+               }
+            }
+            $this->_aTasks = $aKeptTasks;
+        }
+
         // Exécute tout de suite toutes les tâches Task_Base_Property ou Task_Base_ExternalProperty qui
         // suivent directement :
         $oTask = reset($this->_aTasks);
@@ -337,9 +354,11 @@ class Task_Base_Environment extends Task_Base_Target
         $this->_analyzeRegisteredPaths();
         if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
             $this->_oProperties->setProperty('with_symlinks', 'false');
-            $this->_makeTransitionToSymlinks();
-            $this->_initNewRelease();
-            $this->_removeOldestReleases();
+            if ($this->_oProperties->getProperty('rollback_id') === '') {
+                $this->_makeTransitionToSymlinks();
+                $this->_initNewRelease();
+                $this->_removeOldestReleases();
+            }
             $this->_oProperties->setProperty('with_symlinks', 'true');
         } else {
             $this->_makeTransitionFromSymlinks();

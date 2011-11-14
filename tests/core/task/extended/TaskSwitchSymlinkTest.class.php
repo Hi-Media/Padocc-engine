@@ -224,6 +224,7 @@ class TaskSwitchSymlinkTest extends PHPUnit_Framework_TestCase
             'execution_id' => '0123456789',
             'with_symlinks' => 'false',
             'basedir' => '/home/to/basedir',
+            'rollback_id' => ''
         ));
         $this->oServiceContainer->setPropertiesAdapter($oPropertiesAdapter);
 
@@ -233,6 +234,34 @@ class TaskSwitchSymlinkTest extends PHPUnit_Framework_TestCase
             'src' => $oPropertiesAdapter->getProperty('basedir'),
             'target' => $oPropertiesAdapter->getProperty('basedir') . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX
                       . '/' . $oPropertiesAdapter->getProperty('execution_id'),
+            'server' => '${' . Task_Base_Environment::SERVERS_CONCERNED_WITH_BASE_DIR . '}'
+        ), '_aAttributes', $oTask);
+    }
+
+    /**
+     * @covers Task_Extended_SwitchSymlink::__construct
+     * @covers Task_Extended_SwitchSymlink::check
+     */
+    public function testCheck_WithoutAttributesWithRollback ()
+    {
+        $oClass = new ReflectionClass('Properties_Adapter');
+        $oProperty = $oClass->getProperty('_aProperties');
+        $oProperty->setAccessible(true);
+        $oPropertiesAdapter = $this->oServiceContainer->getPropertiesAdapter();
+        $oProperty->setValue($oPropertiesAdapter, array(
+            'execution_id' => '0123456789',
+            'with_symlinks' => 'false',
+            'basedir' => '/home/to/basedir',
+            'rollback_id' => '1111111111'
+        ));
+        $this->oServiceContainer->setPropertiesAdapter($oPropertiesAdapter);
+
+        $oTask = Task_Extended_SwitchSymlink::getNewInstance(array(), $this->oMockProject, $this->oServiceContainer);
+        $oTask->setUp();
+        $this->assertAttributeEquals(array(
+            'src' => $oPropertiesAdapter->getProperty('basedir'),
+            'target' => $oPropertiesAdapter->getProperty('basedir') . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX
+                      . '/' . $oPropertiesAdapter->getProperty('rollback_id'),
             'server' => '${' . Task_Base_Environment::SERVERS_CONCERNED_WITH_BASE_DIR . '}'
         ), '_aAttributes', $oTask);
     }
