@@ -11,6 +11,12 @@ class Task_Extended_B2CPrepareStaticContent extends Task
 {
 
     /**
+     * Nom du symlink directory pointant sur le dernier déploiement statique.
+     * @var string
+     */
+    private static $_sLastDir = 'last_deploy';
+
+    /**
      * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
      *
      * @return string nom du tag XML correspondant à cette tâche dans les config projet.
@@ -41,8 +47,8 @@ class Task_Extended_B2CPrepareStaticContent extends Task
 
         $this->_oNumbering->addCounterDivision();
         $aAttributes = array(
-            'src' => '${STATIC_SERVERS}:${BASEDIR}_statics_last',
-            'target' => '${STATIC_SERVERS}:${BASEDIR}_statics/${EXECUTION_ID}'
+            'src' => '${STATIC_SERVERS}:${STATIC_BASEDIR}/' . self::$_sLastDir,
+            'target' => '${STATIC_SERVERS}:${STATIC_BASEDIR}/${EXECUTION_ID}'
         );
         $this->_oLinkTask = Task_Base_Link::getNewInstance($aAttributes, $oProject, $oServiceContainer);
         $this->_oNumbering->removeCounterDivision();
@@ -59,14 +65,14 @@ class Task_Extended_B2CPrepareStaticContent extends Task
         $this->_oLogger->indent();
         $this->_oLogger->log('Initialize static content with previous release:');
         $this->_oLogger->indent();
-        $sPath = '${STATIC_SERVERS}:${BASEDIR}_statics_last';
+        $sPath = '${STATIC_SERVERS}:${STATIC_BASEDIR}/' . self::$_sLastDir;
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
             if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_PathStatus::STATUS_SYMLINKED_DIR) {
                 list(, $sServer, ) = $this->_oShell->isRemotePath($sExpandedPath);
                 $sSrcDir = $sExpandedPath . '/';
-                $sDestDir = $sServer . ':'
-                       . $this->_oProperties->getProperty('basedir') . '_statics/'
-                       . $this->_oProperties->getProperty('execution_id');
+                $sDestDir = $sServer
+                          . ':' . $this->_oProperties->getProperty('static_basedir')
+                          . '/' . $this->_oProperties->getProperty('execution_id');
                 $this->_oLogger->log("Initialize '$sDestDir' with previous release.");
                 $this->_oLogger->indent();
                 $aResults = $this->_oShell->sync($sSrcDir, $sDestDir, array(), array());
@@ -76,7 +82,7 @@ class Task_Extended_B2CPrepareStaticContent extends Task
                 $this->_oLogger->unindent();
 
             } else {
-                $this->_oLogger->log("Symlink to last release not found.");
+                $this->_oLogger->log("Symlink to last release not found: '$sExpandedPath'");
             }
         }
         $this->_oLogger->unindent();

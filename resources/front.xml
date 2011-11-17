@@ -7,6 +7,7 @@
         basedir="/home/aai/deployment_test/www.twenga"
     >
         <property name="web_servers" value="aai@${SERVER_AAI}" />
+        <property name="static_basedir" value="${BASEDIR}_statics" />
         <property name="static_servers" value="aai@${SERVER_AAI}" />
         <call target="content" />
     </env>
@@ -15,9 +16,10 @@
         mailto="geoffroy.aubry@twenga.com"
         withsymlinks="true"
         loadtwengaservers="true"
-        basedir="/home/httpd-qa/www.twenga"
+        basedir="/home/httpd-qa/www.twenga2"
     >
         <property name="web_servers" value="${SERVER_QA_PHPWEB_ALL}" />
+        <property name="static_basedir" value="/home/static" />
         <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
         <call target="content" />
     </env>
@@ -61,7 +63,7 @@
             jsparentdir="${TMPDIR}/web" destdir="${TMPDIR}" imgoutpath="/${EXECUTION_ID}/web" />
         <tplminify tpldir="${TMPDIR}/webv4/templates" cssparentdir="${TMPDIR}/webv4"
             jsparentdir="${TMPDIR}/webv4" destdir="${TMPDIR}" imgoutpath="/${EXECUTION_ID}/webv4" />
-        <sync src="${TMPDIR}/" destdir="${STATIC_SERVERS}:${BASEDIR}_statics/${EXECUTION_ID}"
+        <sync src="${TMPDIR}/" destdir="${STATIC_SERVERS}:${STATIC_BASEDIR}/${EXECUTION_ID}"
             exclude="/Front /html /inc /languages /twenga-common /web/templates /webv4/templates" />
     </target>
 </project>

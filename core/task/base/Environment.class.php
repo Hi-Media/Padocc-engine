@@ -111,13 +111,17 @@ class Task_Base_Environment extends Task_Base_Target
             throw new DomainException("Attribute 'basedir' must begin by a '/'!");
         }
 
-        $this->_oLogger->indent();
+        $aMsg = array();
         foreach ($this->_aAttributes as $sAttribute => $sValue) {
             if ( ! empty($sValue) && $sAttribute !== 'name') {
-                $this->_oLogger->log("Attribute: $sAttribute = '$sValue'");
+                $aMsg[] = "Attribute: $sAttribute = '$sValue'";
             }
         }
-        $this->_oLogger->unindent();
+        if (count($aMsg) > 0) {
+            $this->_oLogger->indent();
+            $this->_oLogger->log(implode("\n", $aMsg));
+            $this->_oLogger->unindent();
+        }
     }
 
     /**
