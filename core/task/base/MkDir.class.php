@@ -46,6 +46,7 @@ class Task_Base_MkDir extends Task
     {
         parent::_centralExecute();
         $this->_oLogger->indent();
+        $this->_oLogger->log("Create directory '" . $this->_aAttributes['destdir'] . "'.");
         $sMode = (empty($this->_aAttributes['mode']) ? '' : $this->_aAttributes['mode']);
 
         $aDestDirs = $this->_processPath($this->_aAttributes['destdir']);

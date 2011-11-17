@@ -104,6 +104,7 @@ class Task_Base_Link extends Task
         if ( ! empty($this->_aAttributes['server'])) {
             $sRawTargetPath = $this->_aAttributes['server'] . ':' . $sRawTargetPath;
         }
+        $this->_oLogger->log("Create symlink from '$sPath' to '$sRawTargetPath'.");
 
         $aTargetPaths = $this->_processPath($sRawTargetPath);
         foreach ($aTargetPaths as $sTargetPath) {

@@ -183,7 +183,7 @@ class Task_Base_Target extends Task_WithProperties
      */
     private function _getTaskInstances (SimpleXMLElement $oTarget, Task_Base_Project $oProject)
     {
-        $this->_oLogger->log('Initialize tasks');
+        $this->_oLogger->log("Initialize tasks of target '" . $this->_aAttributes['name'] . "'.");
         $aAvailableTasks = self::_getAvailableTasks();
 
         // Mise à plat des tâches car SimpleXML regroupe celles successives de même nom
