@@ -161,6 +161,7 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
         @unlink("$sTmp/$sHash.js");
         @unlink("$sTmp/c$sHash.js");
         @unlink("$sTmp/cn$sHash.js");
+        @unlink("$sTmp/cs$sHash.js");
 
         $iFilesSize = $method->invokeArgs($oTplMinifier, array($aPaths, $sJSParentDir, $sDestDir, $sImgOutPath));
         $this->assertEquals(
@@ -170,12 +171,13 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
         $this->assertFileEquals($sFirstPath, "$sTmp/$sHash.js");
         $this->assertFileEquals($sFirstPath, "$sTmp/c$sHash.js");
         $this->assertFileEquals($sFirstPath, "$sTmp/cn$sHash.js");
-        $this->assertEquals(343*3, $iFilesSize);
+        $this->assertEquals(343*4, $iFilesSize);
         $this->assertFileNotExists("$sTmp/tmp_$sHash.js");
 
         @unlink("$sTmp/$sHash.js");
         @unlink("$sTmp/c$sHash.js");
         @unlink("$sTmp/cn$sHash.js");
+        @unlink("$sTmp/cs$sHash.js");
     }
 
     /**
@@ -234,6 +236,7 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
         touch("$sTmp/$sHash.js");
         @unlink("$sTmp/c$sHash.js");
         @unlink("$sTmp/cn$sHash.js");
+        @unlink("$sTmp/cs$sHash.js");
 
         $iFilesSize = $method->invokeArgs($oTplMinifier, array($aPaths, $sJSParentDir, $sDestDir, $sImgOutPath));
         $this->assertEquals(
@@ -244,12 +247,13 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('', file_get_contents("$sTmp/$sHash.js"));
         $this->assertFileEquals($sFirstPath, "$sTmp/c$sHash.js");
         $this->assertFileEquals($sFirstPath, "$sTmp/cn$sHash.js");
-        $this->assertEquals(343*2, $iFilesSize);
+        $this->assertEquals(343*3, $iFilesSize);
         $this->assertFileNotExists("$sTmp/tmp_$sHash.js");
 
         @unlink("$sTmp/$sHash.js");
         @unlink("$sTmp/c$sHash.js");
         @unlink("$sTmp/cn$sHash.js");
+        @unlink("$sTmp/cs$sHash.js");
     }
 
     /**
@@ -283,6 +287,7 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
         @unlink("$sTmp/$sHash.css");
         @unlink("$sTmp/c$sHash.css");
         @unlink("$sTmp/cn$sHash.css");
+        @unlink("$sTmp/cs$sHash.css");
 
         $iFilesSize = $method->invokeArgs(
             $oTplMinifier,
@@ -290,12 +295,13 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
         );
         $this->assertFileEquals("$sTmp/$sHash.css", "$sTmp/c$sHash.css");
         $this->assertFileEquals("$sTmp/$sHash.css", "$sTmp/cn$sHash.css");
-        $this->assertEquals((138+strlen($sFirstPath))*3, $iFilesSize);
+        $this->assertEquals((138+strlen($sFirstPath))*4, $iFilesSize);
         $this->assertFileNotExists("$sTmp/tmp_$sHash.css");
 
         @unlink("$sTmp/$sHash.css");
         @unlink("$sTmp/c$sHash.css");
         @unlink("$sTmp/cn$sHash.css");
+        @unlink("$sTmp/cs$sHash.css");
     }
 
     /**
@@ -326,17 +332,22 @@ class TemplateMinifierTest extends PHPUnit_Framework_TestCase
         $sSrcTemplateFile = 'tplX';
 
         $sPattern = "/* Contains: $sFirstPath */\n"
-        . ".s1{background:url(http://s1%1\$s.c4tw.net/ID/css/images/sprites/search.png) no-repeat;}#search .hproduct .highlight{background:url(http://s1%1\$s.c4tw.net/ID/css/images/search/pct_best_partner.png) no-repeat;display:block;height:61px;left:0;position:absolute;top:0;width:61px;}.lang-jp .shareBtn{top:253px;}.shareBtn{display:none;position:absolute;right:-6px;top:213px;}";
+                  . ".s1{background:url(http://%1\$s/ID/css/images/sprites/search.png) no-repeat;}#search .hproduct "
+                  . ".highlight{background:url(http://%1\$s/ID/css/images/search/pct_best_partner.png) no-repeat;"
+                  . "display:block;height:61px;left:0;position:absolute;top:0;width:61px;}.lang-jp "
+                  . ".shareBtn{top:253px;}.shareBtn{display:none;position:absolute;right:-6px;top:213px;}";
         $method->invokeArgs(
             $oTplMinifier,
             array($aPaths, $sCSSParentDir, $sDestDir, $sImgOutPath, $sSrcTemplateFile)
         );
-        $this->assertEquals(sprintf($sPattern, ''), file_get_contents("$sTmp/$sHash.css"));
-        $this->assertEquals(sprintf($sPattern, 'c'), file_get_contents("$sTmp/c$sHash.css"));
-        $this->assertEquals(sprintf($sPattern, 'cn'), file_get_contents("$sTmp/cn$sHash.css"));
+        $this->assertEquals(sprintf($sPattern, 's1.c4tw.net'), file_get_contents("$sTmp/$sHash.css"));
+        $this->assertEquals(sprintf($sPattern, 's1c.c4tw.net'), file_get_contents("$sTmp/c$sHash.css"));
+        $this->assertEquals(sprintf($sPattern, 's1cn.c4tw.net'), file_get_contents("$sTmp/cn$sHash.css"));
+        $this->assertEquals(sprintf($sPattern, 'static.cycling-shopping.co.uk'), file_get_contents("$sTmp/cs$sHash.css"));
         @unlink("$sTmp/$sHash.css");
         @unlink("$sTmp/c$sHash.css");
         @unlink("$sTmp/cn$sHash.css");
+        @unlink("$sTmp/cs$sHash.css");
     }
 
     /**

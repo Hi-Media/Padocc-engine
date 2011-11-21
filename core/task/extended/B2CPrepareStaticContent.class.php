@@ -67,7 +67,8 @@ class Task_Extended_B2CPrepareStaticContent extends Task
         $this->_oLogger->indent();
         $sPath = '${STATIC_SERVERS}:${STATIC_BASEDIR}/' . self::$_sLastDir;
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
-            if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_PathStatus::STATUS_SYMLINKED_DIR) {
+            $iPathStatus = $this->_oShell->getPathStatus($sExpandedPath);
+            if ($iPathStatus == Shell_PathStatus::STATUS_SYMLINKED_DIR) {
                 list(, $sServer, ) = $this->_oShell->isRemotePath($sExpandedPath);
                 $sSrcDir = $sExpandedPath . '/';
                 $sDestDir = $sServer
@@ -82,7 +83,7 @@ class Task_Extended_B2CPrepareStaticContent extends Task
                 $this->_oLogger->unindent();
 
             } else {
-                $this->_oLogger->log("Symlink to last release not found: '$sExpandedPath'");
+                $this->_oLogger->log("Symlink to last release not found: '$sExpandedPath' ($iPathStatus)");
             }
         }
         $this->_oLogger->unindent();
