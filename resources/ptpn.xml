@@ -25,7 +25,7 @@
         <externalproperty name="ref" description="Branch or tag to deploy" />
         <externalproperty name="ref_common" description="Branch or tag php-common" />
         <gitexport repository="git@git.twenga.com:distribution/ptpn.git" ref="${REF}"
-            destdir="${SERVERS}:${BASEDIR}" exclude="config.* config_application.php db.ini" />
+            destdir="${SERVERS}:${BASEDIR}" exclude="config.* config_application.php db.ini vendors.php" />
         <gitexport repository="git@git.twenga.com:php-common/php-common.git" ref="${REF_COMMON}"
             destdir="${SERVERS}:${BASEDIR}/Twenga" exclude="/build.xml /CHANGELOG /dependancies.ini /phpunit.xml.dist /Tests" />
         <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
