@@ -58,8 +58,8 @@ class Task_Extended_BuildLanguage extends Task
         $this->_oLogger->log('Call web service: ' . $sURL);
         $aCurlParameters = array(
             'url' => $sURL,
-            'login' => 'gaubry',
-            'password' => 'jR7nN0',
+            'login' => DEPLOYMENT_LANGUAGE_WS_LOGIN,
+            'password' => DEPLOYMENT_LANGUAGE_WS_PASSWORD,
             'user_agent' => Curl::$aUserAgents['FireFox3'],
             'referer' => 'http://aai.twenga.com',
             'file' => $fh,

@@ -94,3 +94,15 @@ define('DEPLOYMENT_SYMLINK_MAX_NB_RELEASES', 20);
  * @var string
  */
 define('DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX', '_releases');
+
+/**
+ * Login du web service de génération des fichiers de langue.
+ * @var string
+ */
+define('DEPLOYMENT_LANGUAGE_WS_LOGIN', 'translator');
+
+/**
+ * Password du web service de génération des fichiers de langue.
+ * @var string
+ */
+define('DEPLOYMENT_LANGUAGE_WS_PASSWORD', '616DyKM3');

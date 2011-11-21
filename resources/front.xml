@@ -35,7 +35,7 @@
         <filltemplate
             srcfile="${TMPDIR}/inc/deploy_config-template.inc.php"
             destfile="${TMPDIR}/inc/deploy_config.inc.php" />
-        <!-- <buildlanguage project="web" destdir="${TMPDIR}/languages" /> -->
+        <buildlanguage project="website" destdir="${TMPDIR}/languages" />
         <cvsexport repository=":extssh:@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
             destdir="${TMPDIR}/twenga-common" />
         <link src="${TMPDIR}/html/shorturl/config_shorturl.php" target="../../../../config/www.twenga/config_shorturl.php" />
