@@ -9,11 +9,12 @@
         basedir="/home/httpd/admin.twenga.com"
     >
         <!-- <property name="servers" value="${SERVER_ADMIN}" /> => wbatch10 down -->
-        <property name="servers" value="www2 www4 wbatch01 wbatch-01" />
+        <property name="servers" value="www2" />
         <gitexport repository="git@git.twenga.com:boc/boc.git" ref="master"
             destdir="${SERVERS}:${BASEDIR}"
-            exclude="inc/config.php" />
+            exclude="inc/config.php inc/config-db.php" />
         <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
-            destdir="${SERVERS}:/home/httpd/twenga-common" />
+            destdir="${SERVERS}:${BASEDIR}/twenga-common" />
+        <mkdir destdir="${SERVERS}:${BASEDIR}/smarty/templates_c" mode="777" />
     </env>
 </project>
