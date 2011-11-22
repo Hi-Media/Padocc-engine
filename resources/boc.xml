@@ -8,8 +8,7 @@
         loadtwengaservers="true"
         basedir="/home/httpd/admin.twenga.com"
     >
-        <!-- <property name="servers" value="${SERVER_ADMIN}" /> => wbatch10 down -->
-        <property name="servers" value="www2" />
+        <property name="servers" value="${SERVER_ADMIN}" />
         <gitexport repository="git@git.twenga.com:boc/boc.git" ref="master"
             destdir="${SERVERS}:${BASEDIR}"
             exclude="inc/config.php inc/config-db.php html/.htaccess" />
