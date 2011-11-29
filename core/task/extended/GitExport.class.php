@@ -115,13 +115,13 @@ class Task_Extended_GitExport extends Task
         $sMsg = "Export '$sRef' reference from '" . $this->_aAttributes['repository'] . "' git repository";
         $this->_oLogger->log($sMsg);
         $this->_oLogger->indent();
-        $result = $this->_oShell->exec(
+        $aResult = $this->_oShell->exec(
             DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/gitexport.inc.sh'
             . ' "' . $this->_aAttributes['repository'] . '"'
             . ' "' . $sRef . '"'
             . ' "' . $this->_aAttributes['localrepositorydir'] . '"'
         );
-        $this->_oLogger->log(implode("\n", $result));
+        $this->_oLogger->log(implode("\n", $aResult));
         $this->_oLogger->unindent();
 
         $this->_oSyncTask->execute();
