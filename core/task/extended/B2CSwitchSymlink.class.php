@@ -56,20 +56,25 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
         $this->_oLogger->indent();
         $aToExec = $this->_processPath('${WEB_SERVERS}:/root/apache_restart');
         foreach ($aToExec as $sToExec) {
-            list(, $sServer, ) = $this->isRemotePath($sToExec);
+            list(, $sServer, ) = $this->_oShell->isRemotePath($sToExec);
             $this->_oLogger->log("Restart Apache webserver '$sServer'.");
-            $this->_oShell->execSSH('sudo %s', $sToExec);
+            $aResult = $this->_oShell->execSSH('sudo %s', $sToExec);
+            $this->_oLogger->indent();
+            $this->_oLogger->log(implode("\n", $aResult));
+            $this->_oLogger->unindent();
         }
         $this->_oLogger->unindent();
 
         // Clear Smarty caches
         $this->_oLogger->log('Clear Smarty caches:');
         $this->_oLogger->indent();
-        $aToExec = $this->_processPath('/home/prod/twenga/tools/clear_cache ${WEB_SERVERS} smarty');
-        foreach ($aToExec as $sToExec) {
-            list(, $sServer, ) = $this->isRemotePath($sToExec);
-            $this->_oLogger->log("Clear Smarty cache on server '$sServer'.");
-            $this->_oShell->execSSH('%s', 'fs3:' . $sToExec);
+        $aServers = $this->_processPath('${WEB_SERVERS}');
+        foreach ($aServers as $sServer) {
+            $this->_oLogger->log("Clear Smarty cache on server '$sServer':");
+            $aResult = $this->_oShell->execSSH("/home/prod/twenga/tools/clear_cache $sServer smarty", 'fs3:foo');
+            $this->_oLogger->indent();
+            $this->_oLogger->log(implode("\n", $aResult));
+            $this->_oLogger->unindent();
         }
         $this->_oLogger->unindent();
 
