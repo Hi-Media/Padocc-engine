@@ -47,7 +47,7 @@ class Task_Base_HTTP extends Task
 
         $aURLs = $this->_processPath($this->_aAttributes['url']);
         foreach ($aURLs as $sURL) {
-            $aResults = $this->_oShell->exec('curl --silent --retry 2 --retry-delay 2 --max-time 5 "' . $sURL . '"');
+            $aResults = $this->_oShell->exec('/usr/bin/curl --silent --retry 2 --retry-delay 2 --max-time 5 "' . $sURL . '"');
             if (count($aResults) > 0 && substr(end($aResults), 0, 7) === '[ERROR]') {
                 throw new RuntimeException(implode("\n", $aResults));
             }
