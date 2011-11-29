@@ -11,7 +11,7 @@
         <property name="servers" value="${SERVER_ADMIN}" />
         <gitexport repository="git@git.twenga.com:boc/boc.git" ref="master"
             destdir="${SERVERS}:${BASEDIR}"
-            exclude="inc/config.php inc/config-db.php html/.htaccess" />
+            exclude="inc/config.php inc/config-db.php html/.htaccess html/bugdocs" />
         <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
             destdir="${SERVERS}:${BASEDIR}/twenga-common" />
         <mkdir destdir="${SERVERS}:${BASEDIR}/smarty/templates_c" mode="777" />
