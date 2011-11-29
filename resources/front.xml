@@ -16,12 +16,13 @@
         mailto="geoffroy.aubry@twenga.com"
         withsymlinks="true"
         loadtwengaservers="true"
-        basedir="/home/httpd-qa/www.twenga2"
+        basedir="/home/httpd-qa/www.twenga"
     >
         <property name="web_servers" value="${SERVER_QA_PHPWEB_ALL}" />
         <property name="static_basedir" value="/home/static" />
         <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
         <call target="content" />
+        <b2cswitchsymlink />
     </env>
 
     <target name="content">
