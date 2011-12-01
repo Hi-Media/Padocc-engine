@@ -125,7 +125,7 @@ class TaskHTTPTest extends PHPUnit_Framework_TestCase
         $oTaskHTTP->setUp();
         $oTaskHTTP->execute();
         $this->assertEquals(array(
-            'curl --silent --retry 2 --retry-delay 2 --max-time 5 "http://aai.twenga.com/push.php?server=www26&app=web"'
+            '/usr/bin/curl --silent --retry 2 --retry-delay 2 --max-time 5 "http://aai.twenga.com/push.php?server=www26&app=web"'
         ), $this->aShellExecCmds);
     }
 
@@ -152,9 +152,9 @@ class TaskHTTPTest extends PHPUnit_Framework_TestCase
         $oTaskHTTP->setUp();
         $oTaskHTTP->execute();
         $this->assertEquals(array(
-            'curl --silent --retry 2 --retry-delay 2 --max-time 5 "http://aai.twenga.com/push.php?server=www01&app=web"',
-            'curl --silent --retry 2 --retry-delay 2 --max-time 5 "http://aai.twenga.com/push.php?server=www02&app=web"',
-            'curl --silent --retry 2 --retry-delay 2 --max-time 5 "http://aai.twenga.com/push.php?server=www03&app=web"',
+            '/usr/bin/curl --silent --retry 2 --retry-delay 2 --max-time 5 "http://aai.twenga.com/push.php?server=www01&app=web"',
+            '/usr/bin/curl --silent --retry 2 --retry-delay 2 --max-time 5 "http://aai.twenga.com/push.php?server=www02&app=web"',
+            '/usr/bin/curl --silent --retry 2 --retry-delay 2 --max-time 5 "http://aai.twenga.com/push.php?server=www03&app=web"',
         ), $this->aShellExecCmds);
     }
 }
