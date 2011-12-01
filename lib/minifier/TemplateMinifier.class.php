@@ -121,7 +121,8 @@ class Minifier_TemplateMinifier
      * la 1re étant la liste de fichiers fournie en entrée adaptée pour un appel à Minifier_Interface::minify(),
      * la 2nde étant cette même liste de fichiers adaptée pour un appel à $this->_getHash().
      */
-    private function _buildPaths (array $aPaths, $sParentDir) {
+    private function _buildPaths (array $aPaths, $sParentDir)
+    {
         $aPathsToMinify = array();
         $aPathsToHash = array();
         foreach ($aPaths as $sValue) {
