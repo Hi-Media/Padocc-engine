@@ -28,7 +28,7 @@ class Task_Base_Environment extends Task_Base_Target
      * @see _makeTransitionFromSymlinks()
      * @see _initNewRelease()
      */
-    public static $_aSmartyRsyncExclude = array('smarty/templates_c', 'smarty/*/wrt*', 'smarty/**/wrt*');
+    private static $_aSmartyRsyncExclude = array('smarty/templates_c', 'smarty/*/wrt*', 'smarty/**/wrt*');
 
     /**
      * Nombre maximal de déploiement à garder dans les répertoires de releases.
