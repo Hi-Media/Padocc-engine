@@ -20,6 +20,16 @@
  */
 class Task_Base_Environment extends Task_Base_Target
 {
+
+    /**
+     * Liste d'exclusions Smarty pour les rsync réalisés lors de l'initialisation des déploiements.
+     * @var array
+     * @see _makeTransitionToSymlinks()
+     * @see _makeTransitionFromSymlinks()
+     * @see _initNewRelease()
+     */
+    public static $_aSmartyRsyncExclude = array('smarty/templates_c', 'smarty/*/wrt*', 'smarty/**/wrt*');
+
     /**
      * Nombre maximal de déploiement à garder dans les répertoires de releases.
      * @var int
@@ -174,7 +184,7 @@ class Task_Base_Environment extends Task_Base_Target
                 $sOriginRelease = $sServer . ':' . $sBaseSymLink . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX
                                 . '/' . $this->_oProperties->getProperty('execution_id') . '_origin';
                 $this->_oLogger->log("Backup '$sDir' to '$sOriginRelease'.");
-                $this->_oShell->sync($sDir, $sOriginRelease, array(), array('smarty/*/wrt*', 'smarty/**/wrt*'));
+                $this->_oShell->sync($sDir, $sOriginRelease, array(), self::$_aSmartyRsyncExclude);
                 $this->_oShell->remove($sExpandedPath);
                 $this->_oShell->createLink($sExpandedPath, $sOriginRelease);
             }
@@ -204,7 +214,7 @@ class Task_Base_Environment extends Task_Base_Target
                 $sMsg = "Remove symlink on '$sExpandedPath' base directory"
                       . " and initialize it with last release's content.";
                 $this->_oLogger->log($sMsg);
-                $this->_oShell->sync($sDir, $sTmpDest, array(), array('smarty/*/wrt*', 'smarty/**/wrt*'));
+                $this->_oShell->sync($sDir, $sTmpDest, array(), self::$_aSmartyRsyncExclude);
                 $this->_oShell->remove($sExpandedPath);
                 $this->_oShell->execSSH("mv %s '" . $sRealPath . "'", $sTmpDest);
             }
@@ -233,7 +243,7 @@ class Task_Base_Environment extends Task_Base_Target
             if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_PathStatus::STATUS_SYMLINKED_DIR) {
                 $this->_oLogger->log("Initialize '$sDest' with previous release.");
                 $this->_oLogger->indent();
-                $aResults = $this->_oShell->sync($sDir, $sDest, array(), array('smarty/*/wrt*', 'smarty/**/wrt*'));
+                $aResults = $this->_oShell->sync($sDir, $sDest, array(), self::$_aSmartyRsyncExclude);
                 foreach ($aResults as $sResult) {
                     $this->_oLogger->log($sResult);
                 }
