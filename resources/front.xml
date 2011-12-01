@@ -25,6 +25,32 @@
         <b2cswitchsymlink />
     </env>
 
+    <env name="bct"
+        mailto="geoffroy.aubry@twenga.com"
+        withsymlinks="true"
+        loadtwengaservers="true"
+        basedir="/home/httpd-bct/www.twenga"
+    >
+        <property name="web_servers" value="${SERVER_BCT_PHPWEB_ALL}" />
+        <property name="static_basedir" value="/home/static" />
+        <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
+        <call target="content" />
+        <b2cswitchsymlink />
+    </env>
+
+    <env name="internal"
+        mailto="geoffroy.aubry@twenga.com"
+        withsymlinks="true"
+        loadtwengaservers="true"
+        basedir="/home/httpd/www.twenga"
+    >
+        <property name="web_servers" value="${SERVER_INT_PHPWEB_ALL}" />
+        <property name="static_basedir" value="/home/static" />
+        <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
+        <call target="content" />
+        <b2cswitchsymlink />
+    </env>
+
     <target name="content">
         <call target="web_content" />
         <call target="static_content" />
