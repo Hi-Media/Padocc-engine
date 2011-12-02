@@ -8,9 +8,39 @@
 class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
 {
 
+    /**
+     * Doit-on envoyer des notifications aux admins ?
+     *
+     * @var bool
+     * @see check()
+     * @see _sendSysopsNotification()
+     */
     private $_bWithSysopsNotifications;
+
+    /**
+     * Doit-on ajouter le Twenga build number dans la table SQL de Twenga ?
+     *
+     * @var bool
+     * @see check()
+     */
     private $_bWithAddSQLTwBuild;
-    private $_bWithClusterExiting;
+
+    /**
+     * Doit-on sortir les serveurs du cluster en début de tâche ?
+     *
+     * @var bool
+     * @see check()
+     * @see _setCluster()
+     */
+    private $_bWithClusterRemoving;
+
+    /**
+     * Doit-on réintégrer les serveurs du cluster en fin de tâche ?
+     *
+     * @var bool
+     * @see check()
+     * @see _setCluster()
+     */
     private $_bWithClusterReintegration;
 
     /**
@@ -66,7 +96,7 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
     {
         parent::check();
 
-           if ( ! isset($this->_aAttributes['mode'])) {
+        if ( ! isset($this->_aAttributes['mode'])) {
             $this->_aAttributes['mode'] = '';
         }
 
@@ -74,21 +104,21 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
             case 'preprod':
                 $this->_bWithSysopsNotifications = true;
                 $this->_bWithAddSQLTwBuild = false;
-                $this->_bWithClusterExiting = true;
+                $this->_bWithClusterRemoving = true;
                 $this->_bWithClusterReintegration = false;
                 break;
 
             case 'prod':
                 $this->_bWithSysopsNotifications = true;
                 $this->_bWithAddSQLTwBuild = true;
-                $this->_bWithClusterExiting = true;
+                $this->_bWithClusterRemoving = true;
                 $this->_bWithClusterReintegration = true;
                 break;
 
             default:
                 $this->_bWithSysopsNotifications = false;
                 $this->_bWithAddSQLTwBuild = false;
-                $this->_bWithClusterExiting = false;
+                $this->_bWithClusterRemoving = false;
                 $this->_bWithClusterReintegration = false;
                 break;
         }
@@ -110,6 +140,9 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
             $sID = $this->_oProperties->getProperty('execution_id');
             $this->_sendSysopsNotification('MEP-activation', 2, "Deploy to $sEnv servers (#$sID) is switching...");
         }
+        if ($this->_bWithClusterRemoving) {
+            $this->_setCluster(false);
+        }
         $this->_oLogger->unindent();
     }
 
@@ -125,6 +158,9 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
 
         $this->_restartApache();
         $this->_clearSmartyCaches();
+        if ($this->_bWithClusterReintegration) {
+            $this->_setCluster(true);
+        }
         if ($this->_bWithSysopsNotifications) {
             $sEnv = $this->_oProperties->getProperty('environment_name');
             $sID = $this->_oProperties->getProperty('execution_id');
@@ -136,6 +172,13 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
         parent::_postExecute();
     }
 
+    /**
+     * Envoie une notification sur le téléphone des admins.
+     *
+     * @param string $sService catégorie
+     * @param int $iStatus 0 ok, 1 warning, 2 critical
+     * @param string $sMessage
+     */
     private function _sendSysopsNotification ($sService, $iStatus, $sMessage)
     {
         $this->_oLogger->log("Send notification to Sysops: '$sMessage'");
@@ -143,6 +186,9 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
         $this->_oShell->execSSH($sCmd, 'fs3:foo');
     }
 
+    /**
+     * Redémarre le serveur Apache de tous les serveurs.
+     */
     private function _restartApache ()
     {
         $this->_oLogger->log('Restart Apache webservers:');
@@ -159,6 +205,9 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
         $this->_oLogger->unindent();
     }
 
+    /**
+     * Réinitialise les caches Smarty de tous les serveurs.
+     */
     private function _clearSmartyCaches ()
     {
         $this->_oLogger->log('Clear Smarty caches:');
@@ -167,6 +216,29 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
         foreach ($aServers as $sServer) {
             $this->_oLogger->log("Clear Smarty cache on server '$sServer':");
             $aResult = $this->_oShell->execSSH("/home/prod/twenga/tools/clear_cache $sServer smarty", 'fs3:foo');
+            $this->_oLogger->indent();
+            $this->_oLogger->log(implode("\n", $aResult));
+            $this->_oLogger->unindent();
+        }
+        $this->_oLogger->unindent();
+    }
+
+    /**
+     * Sors ou réintègre les serveurs du cluster.
+     *
+     * @param bool $bStatus true pour réintégrer, false pour sortir.
+     */
+    private function _setCluster ($bStatus)
+    {
+        $aMsgs = ($bStatus ? array('Reintegrate', 'into', 'enable') : array('Remove', 'from', 'disable'));
+
+        $this->_oLogger->log("$aMsgs[0] servers $aMsgs[1] the cluster:");
+        $this->_oLogger->indent();
+        $aServers = $this->_processPath('${WEB_SERVERS}');
+        foreach ($aServers as $sServer) {
+            $this->_oLogger->log($aMsgs[0] . " '$sServer' server");
+            $sCmd = "/home/prod/twenga/tools/wwwcluster -s $sServer --$aMsgs[2]";
+            $aResult = $this->_oShell->exec($sCmd);
             $this->_oLogger->indent();
             $this->_oLogger->log(implode("\n", $aResult));
             $this->_oLogger->unindent();
