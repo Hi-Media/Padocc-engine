@@ -2,7 +2,7 @@
 <project name="ebay">
     <env
         name="prod"
-        mailto="devaa@twenga.com, francois.pasini@twenga.com, herve.gouchet@twenga.com, laurent.macret@twenga.com"
+        mailto="devaa@twenga.com, francois.pasini@twenga.com, herve.gouchet@twenga.com"
         withsymlinks="true"
         loadtwengaservers="true"
         basedir="/home/prod/twenga/tools/ebay"

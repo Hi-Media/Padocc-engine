@@ -13,7 +13,7 @@
     </env>
 
     <env name="qa"
-        mailto="geoffroy.aubry@twenga.com"
+        mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com"
         withsymlinks="true"
         loadtwengaservers="true"
         basedir="/home/httpd-qa/www.twenga"
@@ -26,7 +26,7 @@
     </env>
 
     <env name="bct"
-        mailto="geoffroy.aubry@twenga.com"
+        mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com"
         withsymlinks="true"
         loadtwengaservers="true"
         basedir="/home/httpd-bct/www.twenga"
@@ -39,7 +39,7 @@
     </env>
 
     <env name="internal"
-        mailto="geoffroy.aubry@twenga.com"
+        mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com"
         withsymlinks="true"
         loadtwengaservers="true"
         basedir="/home/httpd/www.twenga"
@@ -49,6 +49,32 @@
         <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
         <call target="content" />
         <b2cswitchsymlink />
+    </env>
+
+    <env name="preprod"
+        mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com"
+        withsymlinks="true"
+        loadtwengaservers="true"
+        basedir="/home/httpd/www.twenga"
+    >
+        <property name="web_servers" value="www34.eu1 www36.eu1 www42.eu1 www49.eu1 www-01.us1 wwwtest1.eu1 wwwtest2.eu1" />
+        <property name="static_basedir" value="/home/static" />
+        <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
+        <call target="content" />
+        <b2cswitchsymlink mode="preprod"/>
+    </env>
+
+    <env name="prod"
+        mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com"
+        withsymlinks="true"
+        loadtwengaservers="true"
+        basedir="/home/httpd/www.twenga"
+    >
+        <property name="web_servers" value="${SERVER_PHPWEB_ALL}" />
+        <property name="static_basedir" value="/home/static" />
+        <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
+        <call target="content" />
+        <b2cswitchsymlink mode="prod" />
     </env>
 
     <target name="content">
@@ -75,7 +101,7 @@
     </target>
 
     <target name="static_content">
-        <preparestaticcontent />
+        <b2cpreparestaticcontent />
         <sync src="prod@fs3:/home/prod/twenga_files/merchant_logos/"
             destdir="${TMPDIR}/img/sites"
             include="*.png"

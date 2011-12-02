@@ -3,7 +3,7 @@
 
     <env
         name="qa"
-        mailto="devaa@twenga.com, francois.pasini@twenga.com, herve.gouchet@twenga.com, laurent.macret@twenga.com"
+        mailto="devaa@twenga.com, francois.pasini@twenga.com, herve.gouchet@twenga.com"
         withsymlinks="true"
         loadtwengaservers="true"
         basedir="/cluster/lib/php/ebay_qa"
@@ -17,7 +17,7 @@
 
     <env
         name="prod"
-        mailto="devaa@twenga.com, francois.pasini@twenga.com, herve.gouchet@twenga.com, laurent.macret@twenga.com"
+        mailto="devaa@twenga.com, francois.pasini@twenga.com, herve.gouchet@twenga.com"
         withsymlinks="true"
         loadtwengaservers="true"
         basedir="/cluster/lib/php/ebay"

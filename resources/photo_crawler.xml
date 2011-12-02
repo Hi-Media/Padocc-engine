@@ -2,7 +2,7 @@
 <project name="photo_crawler">
     <env
         name="prod"
-        mailto="devaa@twenga.com, fabien.bernard@twenga.com, laurent.macret@twenga.com"
+        mailto="devaa@twenga.com, fabien.bernard@twenga.com"
         withsymlinks="true"
         loadtwengaservers="true"
         basedir="/home/prod/twenga/tools/photo_crawler"

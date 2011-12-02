@@ -2,7 +2,7 @@
 <project name="webservices">
     <env
         name="qa"
-        mailto="devaa@twenga.com, laurent.macret@twenga.com, herve.gouchet@twenga.com"
+        mailto="devaa@twenga.com, herve.gouchet@twenga.com"
         withsymlinks="true"
         loadtwengaservers="true"
         basedir="/home/httpd-qa/webservices"
@@ -18,7 +18,7 @@
 
     <env
         name="prod"
-        mailto="devaa@twenga.com, laurent.macret@twenga.com, herve.gouchet@twenga.com"
+        mailto="devaa@twenga.com, herve.gouchet@twenga.com"
         withsymlinks="true"
         loadtwengaservers="true"
         basedir="/home/httpd/webservices"
