@@ -23,7 +23,7 @@ class Task_Extended_B2CPrepareStaticContent extends Task
      */
     public static function getTagName ()
     {
-        return 'preparestaticcontent';
+        return 'b2cpreparestaticcontent';
     }
 
     /**
@@ -62,6 +62,7 @@ class Task_Extended_B2CPrepareStaticContent extends Task
      */
     protected function _centralExecute ()
     {
+        parent::_centralExecute();
         $this->_oLogger->indent();
         $this->_oLogger->log('Initialize static content with previous release:');
         $this->_oLogger->indent();
