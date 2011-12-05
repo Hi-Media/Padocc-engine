@@ -9,41 +9,6 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
 {
 
     /**
-     * Doit-on envoyer des notifications aux admins ?
-     *
-     * @var bool
-     * @see check()
-     * @see _sendSysopsNotification()
-     */
-    private $_bWithSysopsNotifications;
-
-    /**
-     * Doit-on ajouter le Twenga build number dans la table SQL de Twenga ?
-     *
-     * @var bool
-     * @see check()
-     */
-    private $_bWithAddSQLTwBuild;
-
-    /**
-     * Doit-on sortir les serveurs du cluster en début de tâche ?
-     *
-     * @var bool
-     * @see check()
-     * @see _setCluster()
-     */
-    private $_bWithClusterRemoving;
-
-    /**
-     * Doit-on réintégrer les serveurs du cluster en fin de tâche ?
-     *
-     * @var bool
-     * @see check()
-     * @see _setCluster()
-     */
-    private $_bWithClusterReintegration;
-
-    /**
      * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
      *
      * @return string nom du tag XML correspondant à cette tâche dans les config projet.
@@ -72,7 +37,12 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
         parent::__construct($oTask, $oProject, $oServiceContainer);
         $this->_aAttrProperties = array_merge(
             $this->_aAttrProperties,
-            array('mode' => 0)
+            array(
+                'sysopsnotifications' => AttributeProperties::BOOLEAN,
+                'addSQLTwBuild' => AttributeProperties::BOOLEAN,
+                'clusterRemoving' => AttributeProperties::BOOLEAN,
+                'clusterReintegration' => AttributeProperties::BOOLEAN
+            )
         );
 
         $this->_oNumbering->addCounterDivision();
@@ -96,31 +66,11 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
     {
         parent::check();
 
-        if ( ! isset($this->_aAttributes['mode'])) {
-            $this->_aAttributes['mode'] = '';
-        }
-
-        switch ($this->_aAttributes['mode']) {
-            case 'preprod':
-                $this->_bWithSysopsNotifications = true;
-                $this->_bWithAddSQLTwBuild = false;
-                $this->_bWithClusterRemoving = true;
-                $this->_bWithClusterReintegration = false;
-                break;
-
-            case 'prod':
-                $this->_bWithSysopsNotifications = true;
-                $this->_bWithAddSQLTwBuild = true;
-                $this->_bWithClusterRemoving = true;
-                $this->_bWithClusterReintegration = true;
-                break;
-
-            default:
-                $this->_bWithSysopsNotifications = false;
-                $this->_bWithAddSQLTwBuild = false;
-                $this->_bWithClusterRemoving = false;
-                $this->_bWithClusterReintegration = false;
-                break;
+        $aAttrToInit = array('sysopsnotifications', 'addSQLTwBuild', 'clusterRemoving', 'clusterReintegration');
+        foreach ($aAttrToInit as $sAttrName) {
+            if ( ! isset($this->_aAttributes[$sAttrName])) {
+                $this->_aAttributes[$sAttrName] = 'false';
+            }
         }
     }
 
@@ -135,12 +85,12 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
         parent::_preExecute();
 
         $this->_oLogger->indent();
-        if ($this->_bWithSysopsNotifications) {
+        if ($this->_aAttributes['sysopsnotifications'] == 'true') {
             $sEnv = $this->_oProperties->getProperty('environment_name');
             $sID = $this->_oProperties->getProperty('execution_id');
             $this->_sendSysopsNotification('MEP-activation', 2, "Deploy to $sEnv servers (#$sID) is switching...");
         }
-        if ($this->_bWithClusterRemoving) {
+        if ($this->_aAttributes['clusterRemoving'] == 'true') {
             $this->_setCluster(false);
         }
         $this->_oLogger->unindent();
@@ -154,16 +104,19 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
      */
     protected function _postExecute ()
     {
+        $sEnv = $this->_oProperties->getProperty('environment_name');
+        $sID = $this->_oProperties->getProperty('execution_id');
         $this->_oLogger->indent();
 
         $this->_restartApache();
         $this->_clearSmartyCaches();
-        if ($this->_bWithClusterReintegration) {
+        if ($this->_aAttributes['clusterReintegration'] == 'true') {
             $this->_setCluster(true);
         }
-        if ($this->_bWithSysopsNotifications) {
-            $sEnv = $this->_oProperties->getProperty('environment_name');
-            $sID = $this->_oProperties->getProperty('execution_id');
+        if ($this->_aAttributes['addSQLTwBuild'] == 'true') {
+            $this->_addSQLTwBuild($sID, $sEnv);
+        }
+        if ($this->_aAttributes['sysopsnotifications'] == 'true') {
             $this->_sendSysopsNotification('MEP-activation', 0, "Deploy to $sEnv servers (#$sID) finished.");
         }
         $this->_oHTTPTask->execute();
@@ -183,6 +136,24 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
     {
         $this->_oLogger->log("Send notification to Sysops: '$sMessage'");
         $sCmd = "/home/prod/twenga/tools/send_nsca_fs3.sh $sService $iStatus \"$sMessage\"";
+        $this->_oShell->execSSH($sCmd, 'fs3:foo');
+    }
+
+    /**
+     * Insère le Twenga build number dans la table SQL centralisée 'TWENGABUILD'.
+     *
+     * @param string $sID Twenga build number
+     * @param string $sEnv Environnement
+     * @throws DomainException quand environnement non capturé
+     */
+    private function _addSQLTwBuild ($sID, $sEnv)
+    {
+        $aTypes = array('qa' => 'Q', 'bct' => 'B', 'internal' => 'I', 'preprod' => 'P', 'prod' => 'P');
+        if ( ! isset($aTypes[$sEnv])) {
+            throw new DomainException("Environment not handled: '$sEnv'!");
+        }
+        $this->_oLogger->log("Add Twenga build number into 'TWENGABUILD' SQL table.");
+        $sCmd = "/home/prod/twenga/tools/add_twengabuild $sID " . $aTypes[$sEnv];
         $this->_oShell->execSSH($sCmd, 'fs3:foo');
     }
 
@@ -215,7 +186,12 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
         $aServers = $this->_processPath('${WEB_SERVERS}');
         foreach ($aServers as $sServer) {
             $this->_oLogger->log("Clear Smarty cache on server '$sServer':");
-            $aResult = $this->_oShell->execSSH("/home/prod/twenga/tools/clear_cache $sServer smarty", 'fs3:foo');
+
+            $sCmd = "/home/prod/twenga/tools/clear_cache $sServer smarty";
+            if (strcasecmp(strrchr($sServer, '.'), '.us1') === 0) {
+                $sCmd = 'export FORCE_TWENGA_DC=US && ' . $sCmd . ' && export FORCE_TWENGA_DC=\'\'';
+            }
+            $aResult = $this->_oShell->execSSH($sCmd, 'fs3:foo');
             $this->_oLogger->indent();
             $this->_oLogger->log(implode("\n", $aResult));
             $this->_oLogger->unindent();

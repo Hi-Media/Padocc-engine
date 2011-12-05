@@ -22,7 +22,12 @@
         <property name="static_basedir" value="/home/static" />
         <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
         <call target="content" />
-        <b2cswitchsymlink />
+        <b2cswitchsymlink
+            sysopsnotifications="false"
+            addSQLTwBuild="false"
+            clusterRemoving="false"
+            clusterReintegration="false"
+        />
     </env>
 
     <env name="bct"
@@ -35,7 +40,12 @@
         <property name="static_basedir" value="/home/static" />
         <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
         <call target="content" />
-        <b2cswitchsymlink />
+        <b2cswitchsymlink
+            sysopsnotifications="false"
+            addSQLTwBuild="false"
+            clusterRemoving="false"
+            clusterReintegration="false"
+        />
     </env>
 
     <env name="internal"
@@ -48,7 +58,12 @@
         <property name="static_basedir" value="/home/static" />
         <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
         <call target="content" />
-        <b2cswitchsymlink />
+        <b2cswitchsymlink
+            sysopsnotifications="false"
+            addSQLTwBuild="false"
+            clusterRemoving="false"
+            clusterReintegration="false"
+        />
     </env>
 
     <env name="preprod"
@@ -61,7 +76,12 @@
         <property name="static_basedir" value="/home/static" />
         <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
         <call target="content" />
-        <b2cswitchsymlink mode="preprod"/>
+        <b2cswitchsymlink
+            sysopsnotifications="true"
+            addSQLTwBuild="false"
+            clusterRemoving="true"
+            clusterReintegration="false"
+        />
     </env>
 
     <env name="prod"
@@ -74,7 +94,12 @@
         <property name="static_basedir" value="/home/static" />
         <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
         <call target="content" />
-        <b2cswitchsymlink mode="prod" />
+        <b2cswitchsymlink
+            sysopsnotifications="true"
+            addSQLTwBuild="true"
+            clusterRemoving="true"
+            clusterReintegration="true"
+        />
     </env>
 
     <target name="content">
