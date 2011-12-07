@@ -106,6 +106,7 @@ class Task_Base_Link extends Task
         }
         $this->_oLogger->log("Create symlink from '$sPath' to '$sRawTargetPath'.");
 
+        $this->_oLogger->indent();
         $aTargetPaths = $this->_processPath($sRawTargetPath);
         foreach ($aTargetPaths as $sTargetPath) {
             list(, $sDestServer, ) = $this->_oShell->isRemotePath($sTargetPath);
@@ -116,6 +117,7 @@ class Task_Base_Link extends Task
             $sSrc = $this->_processSimplePath($sDestServer . $sSrcRealPath);
             $this->_oShell->createLink($sSrc, $sTargetPath);
         }
+        $this->_oLogger->unindent();
         $this->_oLogger->unindent();
     }
 }
