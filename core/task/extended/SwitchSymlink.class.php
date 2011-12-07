@@ -99,10 +99,16 @@ class Task_Extended_SwitchSymlink extends Task_Base_Link
      */
     protected function _centralExecute ()
     {
+        $this->_oLogger->indent();
         if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
             if ($this->_oProperties->getProperty(Task_Base_Environment::SERVERS_CONCERNED_WITH_BASE_DIR) == '') {
-                $sMsg = 'No release found.';
+                $this->_oLogger->log('No release found.');
             } else {
+                $sMsg = "Change target of base directory's symbolic link to new release: '"
+                      . $this->_aAttributes['src'] . "' -> '"
+                      . $this->_aAttributes['target'] . "'.";
+                $this->_oLogger->log($sMsg);
+
                 $this->_oProperties->setProperty('with_symlinks', 'false');
 
                 $this->_oLogger->indent();
@@ -111,15 +117,10 @@ class Task_Extended_SwitchSymlink extends Task_Base_Link
 
                 parent::_centralExecute();
                 $this->_oProperties->setProperty('with_symlinks', 'true');
-                $sMsg = "Change target of base directory's symbolic link to new release: '"
-                      . $this->_aAttributes['src'] . "' -> '"
-                      . $this->_aAttributes['target'] . "'.";
             }
         } else {
-            $sMsg = "Mode 'withsymlinks' is off: nothing to do.";
+            $this->_oLogger->log("Mode 'withsymlinks' is off: nothing to do.");
         }
-        $this->_oLogger->indent();
-        $this->_oLogger->log($sMsg);
         $this->_oLogger->unindent();
     }
 
