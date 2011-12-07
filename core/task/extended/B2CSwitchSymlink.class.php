@@ -155,13 +155,15 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
      */
     private function _addSQLTwBuild ($sID, $sEnv)
     {
-        $aTypes = array('qa' => 'Q', 'bct' => 'B', 'internal' => 'I', 'preprod' => 'P', 'prod' => 'P');
+        $aTypes = array('qa' => 'Q', 'bct' => 'B', 'internal' => 'I', 'preprod' => 'X', 'prod' => 'P');
         if ( ! isset($aTypes[$sEnv])) {
             throw new DomainException("Environment not handled: '$sEnv'!");
         }
         $this->_oLogger->log("Add Twenga build number into 'TWENGABUILD' SQL table.");
+        $this->_oLogger->indent();
         $sCmd = "/home/prod/twenga/tools/add_twengabuild $sID " . $aTypes[$sEnv];
         $this->_oShell->execSSH($sCmd, 'fs3:foo');
+        $this->_oLogger->unindent();
     }
 
     /**

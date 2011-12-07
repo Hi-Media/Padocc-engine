@@ -131,6 +131,9 @@ class Task_Extended_SwitchSymlink extends Task_Base_Link
      */
     private function _checkTargets ()
     {
+        $this->_oLogger->log('Check all targets exists.');
+        $this->_oLogger->indent();
+
         $sPath = $this->_aAttributes['target'];
         if ( ! empty($this->_aAttributes['server'])) {
             $sPath = $this->_aAttributes['server'] . ':' . $sPath;
@@ -146,5 +149,7 @@ class Task_Extended_SwitchSymlink extends Task_Base_Link
                 throw new RuntimeException($sMsg);
             }
         }
+
+        $this->_oLogger->unindent();
     }
 }
