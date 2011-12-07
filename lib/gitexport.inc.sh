@@ -42,5 +42,5 @@ elif git tag | grep -q "$ref"; then
         git checkout --quiet -fb "$ref" "$ref" 1>/dev/null || exit $?
     fi
 else
-    echo "Git: tag '$ref' not found!" >&2 && exit 1
+    echo "Git: branch or tag '$ref' not found!" >&2 && exit 1
 fi
