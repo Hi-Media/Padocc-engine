@@ -46,7 +46,8 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
         );
 
         $this->_oNumbering->addCounterDivision();
-        $aAttributes = array('url' => 'http://aai.twenga.com/push.php?server=${WEB_SERVERS}&amp;app=qa');
+        $sURL = 'http://aai.twenga.com/push.php?server=${WEB_SERVERS}&amp;app=${ENVIRONMENT_NAME}';
+        $aAttributes = array('url' => $sURL);
         $this->_oHTTPTask = Task_Base_HTTP::getNewInstance($aAttributes, $oProject, $oServiceContainer);
         $this->_oNumbering->removeCounterDivision();
     }
@@ -135,8 +136,10 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
     private function _sendSysopsNotification ($sService, $iStatus, $sMessage)
     {
         $this->_oLogger->log("Send notification to Sysops: '$sMessage'");
+        $this->_oLogger->indent();
         $sCmd = "/home/prod/twenga/tools/send_nsca_fs3.sh $sService $iStatus \"$sMessage\"";
         $this->_oShell->execSSH($sCmd, 'fs3:foo');
+        $this->_oLogger->unindent();
     }
 
     /**
@@ -168,8 +171,8 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
         foreach ($aToExec as $sToExec) {
             list(, $sServer, ) = $this->_oShell->isRemotePath($sToExec);
             $this->_oLogger->log("Restart Apache webserver '$sServer'.");
-            $aResult = $this->_oShell->execSSH('sudo %s', $sToExec);
             $this->_oLogger->indent();
+            $aResult = $this->_oShell->execSSH('sudo %s', $sToExec);
             $this->_oLogger->log(implode("\n", $aResult));
             $this->_oLogger->unindent();
         }
@@ -186,13 +189,13 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
         $aServers = $this->_processPath('${WEB_SERVERS}');
         foreach ($aServers as $sServer) {
             $this->_oLogger->log("Clear Smarty cache on server '$sServer':");
+            $this->_oLogger->indent();
 
             $sCmd = "/home/prod/twenga/tools/clear_cache $sServer smarty";
             if (strcasecmp(strrchr($sServer, '.'), '.us1') === 0) {
                 $sCmd = 'export FORCE_TWENGA_DC=US && ' . $sCmd . ' && export FORCE_TWENGA_DC=\'\'';
             }
             $aResult = $this->_oShell->execSSH($sCmd, 'fs3:foo');
-            $this->_oLogger->indent();
             $this->_oLogger->log(implode("\n", $aResult));
             $this->_oLogger->unindent();
         }
@@ -206,18 +209,23 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
      */
     private function _setCluster ($bStatus)
     {
-        $aMsgs = ($bStatus ? array('Reintegrate', 'into', 'enable') : array('Remove', 'from', 'disable'));
+        $aMsgs = ($bStatus ? array('Reintegrate', 'into', '-e') : array('Remove', 'from', '-d'));
 
         $this->_oLogger->log("$aMsgs[0] servers $aMsgs[1] the cluster:");
         $this->_oLogger->indent();
         $aServers = $this->_processPath('${WEB_SERVERS}');
         foreach ($aServers as $sServer) {
-            $this->_oLogger->log($aMsgs[0] . " '$sServer' server");
-            $sCmd = "/home/prod/twenga/tools/wwwcluster -s $sServer --$aMsgs[2]";
-            $aResult = $this->_oShell->exec($sCmd);
-            $this->_oLogger->indent();
-            $this->_oLogger->log(implode("\n", $aResult));
-            $this->_oLogger->unindent();
+            if (preg_match('/wwwtest/i', $sServer) !== 1) {
+                $this->_oLogger->log($aMsgs[0] . " '$sServer' server");
+                $this->_oLogger->indent();
+                $sCmd = "/home/prod/twenga/tools/wwwcluster -s $sServer $aMsgs[2]";
+                $aResult = $this->_oShell->exec($sCmd);
+                $sResult = implode("\n", $aResult);
+                if ($sResult != '') {
+                    $this->_oLogger->log(implode("\n", $aResult));
+                }
+                $this->_oLogger->unindent();
+            }
         }
         $this->_oLogger->unindent();
     }
