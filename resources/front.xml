@@ -9,7 +9,7 @@
         <property name="web_servers" value="aai@${SERVER_AAI}" />
         <property name="static_basedir" value="${BASEDIR}_statics" />
         <property name="static_servers" value="aai@${SERVER_AAI}" />
-        <call target="content" />
+        <call target="web_content" />
     </env>
 
     <env name="qa"
@@ -21,7 +21,7 @@
         <property name="web_servers" value="${SERVER_QA_PHPWEB_ALL}" />
         <property name="static_basedir" value="/home/static" />
         <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
-        <call target="content" />
+        <call target="web_content" />
         <b2cswitchsymlink
             sysopsnotifications="false"
             addSQLTwBuild="false"
@@ -39,7 +39,7 @@
         <property name="web_servers" value="${SERVER_BCT_PHPWEB_ALL}" />
         <property name="static_basedir" value="/home/static" />
         <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
-        <call target="content" />
+        <call target="web_content" />
         <b2cswitchsymlink
             sysopsnotifications="false"
             addSQLTwBuild="false"
@@ -57,7 +57,7 @@
         <property name="web_servers" value="${SERVER_INT_PHPWEB_ALL}" />
         <property name="static_basedir" value="/home/static" />
         <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
-        <call target="content" />
+        <call target="web_content" />
         <b2cswitchsymlink
             sysopsnotifications="false"
             addSQLTwBuild="false"
@@ -75,7 +75,7 @@
         <property name="web_servers" value="www34.eu1 www36.eu1 www42.eu1 www49.eu1 www-01.us1 wwwtest1.eu1 wwwtest2.eu1" />
         <property name="static_basedir" value="/home/static" />
         <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
-        <call target="content" />
+        <call target="web_content" />
         <b2cswitchsymlink
             sysopsnotifications="true"
             addSQLTwBuild="false"
@@ -93,7 +93,8 @@
         <property name="web_servers" value="${SERVER_PHPWEB_ALL}" />
         <property name="static_basedir" value="/home/static" />
         <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
-        <call target="content" />
+        <call target="web_content" />
+        <call target="schedulers_content" />
         <b2cswitchsymlink
             sysopsnotifications="true"
             addSQLTwBuild="true"
@@ -102,12 +103,12 @@
         />
     </env>
 
-    <target name="content">
-        <call target="web_content" />
+    <target name="web_content">
+        <call target="dynamic_content" />
         <call target="static_content" />
     </target>
 
-    <target name="web_content">
+    <target name="dynamic_content">
         <externalproperty name="ref" description="Branch or tag to deploy" />
         <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${REF}" destdir="${TMPDIR}" />
         <filltemplate
@@ -143,5 +144,13 @@
             jsparentdir="${TMPDIR}/webv4" destdir="${TMPDIR}" imgoutpath="/${EXECUTION_ID}/webv4" />
         <sync src="${TMPDIR}/" destdir="${STATIC_SERVERS}:${STATIC_BASEDIR}/${EXECUTION_ID}"
             exclude="/Front /html /inc /languages /twenga-common /web/templates /webv4/templates" />
+    </target>
+
+    <target name="schedulers_content">
+        <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${REF}"
+            destdir="${SERVER_SCHED_DEPLOY}:${BASEDIR}"
+            exclude="inc/config.php inc/config-local" />
+        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
+            destdir="${SERVER_SCHED_DEPLOY}:${BASEDIR}/twenga-common" />
     </target>
 </project>
