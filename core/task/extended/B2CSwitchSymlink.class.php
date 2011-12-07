@@ -46,7 +46,11 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
         );
 
         $this->_oNumbering->addCounterDivision();
-        $sURL = 'http://aai.twenga.com/push.php?server=${WEB_SERVERS}&amp;app=${ENVIRONMENT_NAME}';
+        // Parce qu'évidemment il n'y a pas de logique commune :
+        $aMappingAAI = array('qa' => 'qa', 'prod' => 'web');
+        $sEnv = $this->_oProperties->getProperty('environment_name');
+        $sAppParameter = (isset($aMappingAAI[$sEnv]) ? $aMappingAAI[$sEnv] : $sEnv);
+        $sURL = 'http://aai.twenga.com/push.php?server=${WEB_SERVERS}&amp;app=' . $sAppParameter;
         $aAttributes = array('url' => $sURL);
         $this->_oHTTPTask = Task_Base_HTTP::getNewInstance($aAttributes, $oProject, $oServiceContainer);
         $this->_oNumbering->removeCounterDivision();
