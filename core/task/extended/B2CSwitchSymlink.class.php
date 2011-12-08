@@ -128,7 +128,6 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
                     $aAttributes = array(
                         'src' => $this->_aAttributes['src'],
                         'target' => $this->_aAttributes['target'],
-                        //'server' => $this->_aAttributes['server']
                         'server' => $sServer
                     );
                     $oLinkTask = Task_Base_Link::getNewInstance(
@@ -153,10 +152,11 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
                 if (count($aDiff) > 0) {
                     $this->_oLogger->log('Switch other servers: ' . implode(', ', $aDiff) . '.');
                     $this->_oLogger->indent();
+                    $this->_oProperties->setProperty('remaining_servers_to_switch', implode(' ', $aDiff));
                     $aAttributes = array(
                         'src' => $this->_aAttributes['src'],
                         'target' => $this->_aAttributes['target'],
-                        'server' => implode(' ', $aDiff)
+                        'server' => '${remaining_servers_to_switch}'
                     );
                     $oLinkTask = Task_Base_Link::getNewInstance(
                         $aAttributes, $this->_oProject, $this->_oServiceContainer
