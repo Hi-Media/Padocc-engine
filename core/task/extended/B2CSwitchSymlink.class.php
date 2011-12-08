@@ -95,8 +95,62 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
             $sID = $this->_oProperties->getProperty('execution_id');
             $this->_sendSysopsNotification('MEP-activation', 2, "Deploy to $sEnv servers (#$sID) is switching...");
         }
-        if ($this->_aAttributes['clusterRemoving'] == 'true') {
-            $this->_setCluster(false);
+        $this->_oLogger->unindent();
+    }
+
+    /**
+     * Phase de traitements centraux de l'exécution de la tâche.
+     * Elle devrait systématiquement commencer par "parent::_centralExecute();".
+     * Appelé par _execute().
+     * @see execute()
+     */
+    protected function _centralExecute ()
+    {
+        $this->_oLogger->indent();
+        if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
+            if ($this->_oProperties->getProperty(Task_Base_Environment::SERVERS_CONCERNED_WITH_BASE_DIR) == '') {
+                $this->_oLogger->log('No release found.');
+            } else {
+                $sMsg = "Change target of base directory's symbolic link to new release: '"
+                      . $this->_aAttributes['src'] . "' -> '"
+                      . $this->_aAttributes['target'] . "'.";
+                $this->_oLogger->log($sMsg);
+
+                $this->_oProperties->setProperty('with_symlinks', 'false');
+                $this->_oLogger->indent();
+                $this->_checkTargets();
+
+                // Pour chaque serveur :
+                $aServers = $this->_processPath('${WEB_SERVERS}');
+                foreach ($aServers as $sServer) {
+                    if ($this->_aAttributes['clusterRemoving'] == 'true') {
+                        $this->_setCluster($sServer, false);
+                    }
+
+                    // Switch du lien symbolique :
+                    $aAttributes = array(
+                        'src' => $this->_aAttributes['src'],
+                        'target' => $this->_aAttributes['target'],
+                        'server' => $this->_aAttributes['server']
+                    );
+                    $oLinkTask = Task_Base_Link::getNewInstance(
+                        $aAttributes, $this->_oProject, $this->_oServiceContainer
+                    );
+                    $oLinkTask->setUp();
+                    $oLinkTask->execute();
+
+                    $this->_restartServerApache($sServer);
+                    $this->_clearServerSmartyCaches($sServer);
+                    if ($this->_aAttributes['clusterReintegration'] == 'true') {
+                        $this->_setCluster($sServer, true);
+                    }
+                }
+
+                $this->_oLogger->unindent();
+                $this->_oProperties->setProperty('with_symlinks', 'true');
+            }
+        } else {
+            $this->_oLogger->log("Mode 'withsymlinks' is off: nothing to do.");
         }
         $this->_oLogger->unindent();
     }
@@ -113,11 +167,6 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
         $sID = $this->_oProperties->getProperty('execution_id');
         $this->_oLogger->indent();
 
-        $this->_restartApache();
-        $this->_clearSmartyCaches();
-        if ($this->_aAttributes['clusterReintegration'] == 'true') {
-            $this->_setCluster(true);
-        }
         if ($this->_aAttributes['addSQLTwBuild'] == 'true') {
             $this->_addSQLTwBuild($sID, $sEnv);
         }
@@ -169,7 +218,7 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
     /**
      * Redémarre le serveur Apache de tous les serveurs.
      */
-    private function _restartApache ()
+    /*private function _restartServersApache ()
     {
         $this->_oLogger->log('Restart Apache webservers:');
         $this->_oLogger->indent();
@@ -183,12 +232,27 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
             $this->_oLogger->unindent();
         }
         $this->_oLogger->unindent();
+    }*/
+
+    /**
+     * Redémarre le serveur Apache du serveur spécifié.
+     *
+     * @param string $sServer au format [user@]servername_or_ip
+     */
+    private function _restartServerApache ($sServer)
+    {
+        $this->_oLogger->log("Restart Apache webserver '$sServer'.");
+        $this->_oLogger->indent();
+        $sToExec = $this->_processSimplePath($sServer . ':/root/apache_restart');
+        $aResult = $this->_oShell->execSSH('sudo %s', $sToExec);
+        $this->_oLogger->log(implode("\n", $aResult));
+        $this->_oLogger->unindent();
     }
 
     /**
      * Réinitialise les caches Smarty de tous les serveurs.
      */
-    private function _clearSmartyCaches ()
+    /*private function _clearServersSmartyCaches ()
     {
         $this->_oLogger->log('Clear Smarty caches:');
         $this->_oLogger->indent();
@@ -206,6 +270,25 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
             $this->_oLogger->unindent();
         }
         $this->_oLogger->unindent();
+    }*/
+
+    /**
+     * Réinitialise les caches Smarty du serveur spécifié.
+     *
+     * @param string $sServer au format [user@]servername_or_ip
+     */
+    private function _clearServerSmartyCaches ($sServer)
+    {
+        $this->_oLogger->log("Clear Smarty caches of server '$sServer':");
+        $this->_oLogger->indent();
+
+        $sCmd = "/home/prod/twenga/tools/clear_cache $sServer smarty";
+        if (strcasecmp(strrchr($sServer, '.'), '.us1') === 0) {
+            $sCmd = 'export FORCE_TWENGA_DC=US && ' . $sCmd . ' && export FORCE_TWENGA_DC=\'\'';
+        }
+        $aResult = $this->_oShell->execSSH($sCmd, 'fs3:foo');
+        $this->_oLogger->log(implode("\n", $aResult));
+        $this->_oLogger->unindent();
     }
 
     /**
@@ -213,7 +296,7 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
      *
      * @param bool $bStatus true pour réintégrer, false pour sortir.
      */
-    private function _setCluster ($bStatus)
+    /*private function _setClusters ($bStatus)
     {
         $aMsgs = ($bStatus ? array('Reintegrate', 'into', '-e') : array('Remove', 'from', '-d'));
 
@@ -234,6 +317,31 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
             }
         }
         $this->_oLogger->unindent();
+    }*/
+
+    /**
+     * Sors ou réintègre le serveur spécifié du cluster.
+     *
+     * @param string $sServer au format [user@]servername_or_ip
+     * @param bool $bStatus true pour réintégrer, false pour sortir.
+     */
+    private function _setCluster ($sServer, $bStatus)
+    {
+        $aMsgs = ($bStatus ? array('Reintegrate', 'into', '-e') : array('Remove', 'from', '-d'));
+
+        if (preg_match('/wwwtest/i', $sServer) !== 1) {
+            $this->_oLogger->log($aMsgs[0] . " '$sServer' server $aMsgs[1] the cluster.");
+            $this->_oLogger->indent();
+            $sCmd = "/home/prod/twenga/tools/wwwcluster -s $sServer $aMsgs[2]";
+            $aResult = $this->_oShell->exec($sCmd);
+            $sResult = implode("\n", $aResult);
+            if ($sResult != '') {
+                $this->_oLogger->log(implode("\n", $aResult));
+            }
+            $this->_oLogger->unindent();
+        } else {
+            $this->_oLogger->log(" '$sServer' server is not handled by the cluster.");
+        }
     }
 
     /**

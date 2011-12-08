@@ -69,6 +69,11 @@ class Task_Base_Link extends Task
                   . ' Src=' . $this->_aAttributes['src'] . ' Target=' . $this->_aAttributes['target'];
             throw new DomainException($sMsg);
         }
+
+        // Valeur par défaut :
+        if ( ! isset($this->_aAttributes['server'])) {
+            $this->_aAttributes['server'] = '';
+        }
     }
 
     /**
