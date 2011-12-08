@@ -235,25 +235,6 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
     }
 
     /**
-     * Redémarre le serveur Apache de tous les serveurs.
-     */
-    /*private function _restartServersApache ()
-    {
-        $this->_oLogger->log('Restart Apache webservers:');
-        $this->_oLogger->indent();
-        $aToExec = $this->_processPath('${WEB_SERVERS}:/root/apache_restart');
-        foreach ($aToExec as $sToExec) {
-            list(, $sServer, ) = $this->_oShell->isRemotePath($sToExec);
-            $this->_oLogger->log("Restart Apache webserver '$sServer'.");
-            $this->_oLogger->indent();
-            $aResult = $this->_oShell->execSSH('sudo %s', $sToExec);
-            $this->_oLogger->log(implode("\n", $aResult));
-            $this->_oLogger->unindent();
-        }
-        $this->_oLogger->unindent();
-    }*/
-
-    /**
      * Redémarre le serveur Apache du serveur spécifié.
      *
      * @param string $sServer au format [user@]servername_or_ip
@@ -267,29 +248,6 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
         $this->_oLogger->log(implode("\n", $aResult));
         $this->_oLogger->unindent();
     }
-
-    /**
-     * Réinitialise les caches Smarty de tous les serveurs.
-     */
-    /*private function _clearServersSmartyCaches ()
-    {
-        $this->_oLogger->log('Clear Smarty caches:');
-        $this->_oLogger->indent();
-        $aServers = $this->_processPath('${WEB_SERVERS}');
-        foreach ($aServers as $sServer) {
-            $this->_oLogger->log("Clear Smarty cache on server '$sServer':");
-            $this->_oLogger->indent();
-
-            $sCmd = "/home/prod/twenga/tools/clear_cache $sServer smarty";
-            if (strcasecmp(strrchr($sServer, '.'), '.us1') === 0) {
-                $sCmd = 'export FORCE_TWENGA_DC=US && ' . $sCmd . ' && export FORCE_TWENGA_DC=\'\'';
-            }
-            $aResult = $this->_oShell->execSSH($sCmd, 'fs3:foo');
-            $this->_oLogger->log(implode("\n", $aResult));
-            $this->_oLogger->unindent();
-        }
-        $this->_oLogger->unindent();
-    }*/
 
     /**
      * Réinitialise les caches Smarty du serveur spécifié.
@@ -309,34 +267,6 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
         $this->_oLogger->log(strip_tags(implode("\n", $aResult)));
         $this->_oLogger->unindent();
     }
-
-    /**
-     * Sors ou réintègre les serveurs du cluster.
-     *
-     * @param bool $bStatus true pour réintégrer, false pour sortir.
-     */
-    /*private function _setClusters ($bStatus)
-    {
-        $aMsgs = ($bStatus ? array('Reintegrate', 'into', '-e') : array('Remove', 'from', '-d'));
-
-        $this->_oLogger->log("$aMsgs[0] servers $aMsgs[1] the cluster:");
-        $this->_oLogger->indent();
-        $aServers = $this->_processPath('${WEB_SERVERS}');
-        foreach ($aServers as $sServer) {
-            if (preg_match('/wwwtest/i', $sServer) !== 1) {
-                $this->_oLogger->log($aMsgs[0] . " '$sServer' server");
-                $this->_oLogger->indent();
-                $sCmd = "/home/prod/twenga/tools/wwwcluster -s $sServer $aMsgs[2]";
-                $aResult = $this->_oShell->exec($sCmd);
-                $sResult = implode("\n", $aResult);
-                if ($sResult != '') {
-                    $this->_oLogger->log(implode("\n", $aResult));
-                }
-                $this->_oLogger->unindent();
-            }
-        }
-        $this->_oLogger->unindent();
-    }*/
 
     /**
      * Sors ou réintègre le serveur spécifié du cluster.
