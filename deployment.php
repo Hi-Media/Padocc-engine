@@ -11,7 +11,9 @@
 // tail -fn 500 /tmp/deployment.php.xxx.error.log
 // rm -rf /home/gaubry/deployment_backup/* && rm -rf /home/gaubry/test/dest/*
 // rm -rf /home/gaubry/deployment_backup/* && rm -rf /home/gaubry/deployment_test/*
-// chmod +x /home/gaubry/deployment/lib/minifier/jsmin/jsmin
+
+// MAJ de l'appli sur deploy-02 :
+//     cd /home/aai/deployment && git reset --hard && git pull && chmod +x lib/minifier/jsmin/jsmin
 
 // Exemple de script backup préalable :
 /*

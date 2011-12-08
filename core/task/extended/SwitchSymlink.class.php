@@ -123,6 +123,7 @@ class Task_Extended_SwitchSymlink extends Task_Base_Link
 
     /**
      * Vérifie que chaque répertoire cible des liens existe.
+     * Notamment nécessaire en cas de rollback.
      *
      * @throws RuntimeException si l'un des répertoires cible des liens n'existe pas
      */
