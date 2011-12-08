@@ -117,7 +117,7 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
                 // Pour chaque serveur :
                 $aServers = $this->_processPath('${WEB_SERVERS}');
                 foreach ($aServers as $sServer) {
-                    $this->_oLogger->log("Switch '$sServer' server");
+                    $this->_oLogger->log("Switch '$sServer' server:");
                     $this->_oLogger->indent();
 
                     if ($this->_aAttributes['clusterRemoving'] == 'true') {
@@ -128,7 +128,8 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
                     $aAttributes = array(
                         'src' => $this->_aAttributes['src'],
                         'target' => $this->_aAttributes['target'],
-                        'server' => $this->_aAttributes['server']
+                        //'server' => $this->_aAttributes['server']
+                        'server' => $sServer
                     );
                     $oLinkTask = Task_Base_Link::getNewInstance(
                         $aAttributes, $this->_oProject, $this->_oServiceContainer
@@ -205,7 +206,7 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
         if ( ! isset($aTypes[$sEnv])) {
             throw new DomainException("Environment not handled: '$sEnv'!");
         }
-        $this->_oLogger->log("Add Twenga build number #$sID into 'TWENGABUILD' SQL table.");
+        $this->_oLogger->log("Add Twenga build number $sID into 'TWENGABUILD' SQL table.");
         $this->_oLogger->indent();
         $sCmd = "/home/prod/twenga/tools/add_twengabuild $sID " . $aTypes[$sEnv];
         $this->_oShell->execSSH($sCmd, 'fs3:foo');
