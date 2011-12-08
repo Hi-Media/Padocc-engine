@@ -104,16 +104,13 @@ class Task_Extended_SwitchSymlink extends Task_Base_Link
             if ($this->_oProperties->getProperty(Task_Base_Environment::SERVERS_CONCERNED_WITH_BASE_DIR) == '') {
                 $this->_oLogger->log('No release found.');
             } else {
+                $this->_oProperties->setProperty('with_symlinks', 'false');
+
+                $this->_checkTargets();
                 $sMsg = "Change target of base directory's symbolic link to new release: '"
                       . $this->_aAttributes['src'] . "' -> '"
                       . $this->_aAttributes['target'] . "'.";
                 $this->_oLogger->log($sMsg);
-
-                $this->_oProperties->setProperty('with_symlinks', 'false');
-
-                $this->_oLogger->indent();
-                $this->_checkTargets();
-                $this->_oLogger->unindent();
 
                 parent::_centralExecute();
                 $this->_oProperties->setProperty('with_symlinks', 'true');
@@ -131,7 +128,7 @@ class Task_Extended_SwitchSymlink extends Task_Base_Link
      */
     protected function _checkTargets ()
     {
-        $this->_oLogger->log('Check all targets exists.');
+        $this->_oLogger->log('Check that all symlinks targets exists.');
         $this->_oLogger->indent();
 
         $sPath = $this->_aAttributes['target'];

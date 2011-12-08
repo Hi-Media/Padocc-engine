@@ -111,18 +111,15 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
             if ($this->_oProperties->getProperty(Task_Base_Environment::SERVERS_CONCERNED_WITH_BASE_DIR) == '') {
                 $this->_oLogger->log('No release found.');
             } else {
-                $sMsg = "Change target of base directory's symbolic link to new release: '"
-                      . $this->_aAttributes['src'] . "' -> '"
-                      . $this->_aAttributes['target'] . "'.";
-                $this->_oLogger->log($sMsg);
-
                 $this->_oProperties->setProperty('with_symlinks', 'false');
-                $this->_oLogger->indent();
                 $this->_checkTargets();
 
                 // Pour chaque serveur :
                 $aServers = $this->_processPath('${WEB_SERVERS}');
                 foreach ($aServers as $sServer) {
+                    $this->_oLogger->log("Switch '$sServer' server");
+                    $this->_oLogger->indent();
+
                     if ($this->_aAttributes['clusterRemoving'] == 'true') {
                         $this->_setCluster($sServer, false);
                     }
@@ -144,9 +141,9 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
                     if ($this->_aAttributes['clusterReintegration'] == 'true') {
                         $this->_setCluster($sServer, true);
                     }
+                    $this->_oLogger->unindent();
                 }
 
-                $this->_oLogger->unindent();
                 $this->_oProperties->setProperty('with_symlinks', 'true');
             }
         } else {
@@ -208,7 +205,7 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
         if ( ! isset($aTypes[$sEnv])) {
             throw new DomainException("Environment not handled: '$sEnv'!");
         }
-        $this->_oLogger->log("Add Twenga build number into 'TWENGABUILD' SQL table.");
+        $this->_oLogger->log("Add Twenga build number #$sID into 'TWENGABUILD' SQL table.");
         $this->_oLogger->indent();
         $sCmd = "/home/prod/twenga/tools/add_twengabuild $sID " . $aTypes[$sEnv];
         $this->_oShell->execSSH($sCmd, 'fs3:foo');

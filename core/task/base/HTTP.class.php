@@ -44,6 +44,8 @@ class Task_Base_HTTP extends Task
     {
         parent::_centralExecute();
         $this->_oLogger->indent();
+        $this->_oLogger->log('Call URL: ' . $this->_aAttributes['url']);
+        $this->_oLogger->indent();
 
         $aURLs = $this->_processPath($this->_aAttributes['url']);
         foreach ($aURLs as $sURL) {
@@ -54,6 +56,7 @@ class Task_Base_HTTP extends Task
             }
         }
 
+        $this->_oLogger->unindent();
         $this->_oLogger->unindent();
     }
 }
