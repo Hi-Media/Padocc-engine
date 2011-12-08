@@ -145,6 +145,27 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
                     $this->_oLogger->unindent();
                 }
 
+                // Switch des symlinks
+                // des éventuels serveurs de Task_Base_Environment::SERVERS_CONCERNED_WITH_BASE_DIR
+                // non inclus dans ${WEB_SERVERS}, comme les schedulers par exemple...
+                $aAllServers = $this->_expandPath($this->_aAttributes['server']);
+                $aDiff = array_diff($aAllServers, $aServers);
+                if (count($aDiff) > 0) {
+                    $this->_oLogger->log('Switch other servers: ' . implode(', ', $aDiff) . '.');
+                    $this->_oLogger->indent();
+                    $aAttributes = array(
+                        'src' => $this->_aAttributes['src'],
+                        'target' => $this->_aAttributes['target'],
+                        'server' => implode(' ', $aDiff)
+                    );
+                    $oLinkTask = Task_Base_Link::getNewInstance(
+                        $aAttributes, $this->_oProject, $this->_oServiceContainer
+                    );
+                    $oLinkTask->setUp();
+                    $oLinkTask->execute();
+                    $this->_oLogger->unindent();
+                }
+
                 $this->_oProperties->setProperty('with_symlinks', 'true');
             }
         } else {
