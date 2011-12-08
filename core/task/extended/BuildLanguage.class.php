@@ -47,7 +47,6 @@ class Task_Extended_BuildLanguage extends Task
         parent::_centralExecute();
         $this->_oLogger->indent();
 
-        $this->_oLogger->log('Generate language archive');
         $sLanguagesPath = tempnam(
             DEPLOYMENT_TMP_DIR,
             $this->_oProperties->getProperty('execution_id') . '_languages_'
@@ -55,7 +54,7 @@ class Task_Extended_BuildLanguage extends Task
         $fh = fopen($sLanguagesPath, 'w');
         $sURL = 'https://admin.twenga.com/translation_tool/build_language_files.php?project='
               . $this->_aAttributes['project'];
-        $this->_oLogger->log('Call web service: ' . $sURL);
+        $this->_oLogger->log('Generate language archive from web service: ' . $sURL);
         $aCurlParameters = array(
             'url' => $sURL,
             'login' => DEPLOYMENT_LANGUAGE_WS_LOGIN,
@@ -74,7 +73,9 @@ class Task_Extended_BuildLanguage extends Task
             // Du coup on vérifie si c'est vrai en testant l'archive :
             if (preg_match('/^transfer closed with \d+ bytes remaining to read$/i', $result['curl_error']) === 1) {
                 $this->_oLogger->log('Test language archive');
+                $this->_oLogger->indent();
                 $this->_oShell->exec('tar -tf "' . $sLanguagesPath . '"');
+                $this->_oLogger->unindent();
             } else {
                 @unlink($sLanguagesPath);
                 throw new RuntimeException($result['curl_error']);;
@@ -88,10 +89,10 @@ class Task_Extended_BuildLanguage extends Task
                 . '. Body: ' . $result['body']
             );
         }
-        //$sLanguagesPath = '/home/gaubry/languages.tar.gz';
 
         // Diffusion de l'archive :
-        $this->_oLogger->log('Send language archive to servers');
+        $this->_oLogger->log('Send language archive to all servers');
+        $this->_oLogger->indent();
         $aDestDirs = $this->_processPath($this->_aAttributes['destdir']);
         foreach ($aDestDirs as $sDestDir) {
             $aResult = $this->_oShell->copy($sLanguagesPath, $sDestDir);
@@ -100,9 +101,11 @@ class Task_Extended_BuildLanguage extends Task
                 $this->_oLogger->log($sResult);
             }
         }
+        $this->_oLogger->unindent();
 
         // Décompression des archives :
-        $this->_oLogger->log('Extract language files from archive on servers');
+        $this->_oLogger->log('Extract language files from archive on each server');
+        $this->_oLogger->indent();
         $sPatternCmd = 'cd %1$s && tar -xf %1$s/"' . basename($sLanguagesPath)
                      . '" && rm -f %1$s/"' . basename($sLanguagesPath) . '"';
         foreach ($aDestDirs as $sDestDir) {
@@ -112,6 +115,7 @@ class Task_Extended_BuildLanguage extends Task
                 $this->_oLogger->log($sResult);
             }
         }
+        $this->_oLogger->unindent();
 
         @unlink($sLanguagesPath);
         $this->_oLogger->unindent();

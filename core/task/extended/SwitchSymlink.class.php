@@ -105,14 +105,10 @@ class Task_Extended_SwitchSymlink extends Task_Base_Link
                 $this->_oLogger->log('No release found.');
             } else {
                 $this->_oProperties->setProperty('with_symlinks', 'false');
-
                 $this->_checkTargets();
-                $sMsg = "Change target of base directory's symbolic link to new release: '"
-                      . $this->_aAttributes['src'] . "' -> '"
-                      . $this->_aAttributes['target'] . "'.";
-                $this->_oLogger->log($sMsg);
-
+                $this->_oLogger->unindent();
                 parent::_centralExecute();
+                $this->_oLogger->indent();
                 $this->_oProperties->setProperty('with_symlinks', 'true');
             }
         } else {
