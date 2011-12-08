@@ -24,7 +24,7 @@
         <call target="web_content" />
         <b2cswitchsymlink
             sysopsnotifications="false"
-            addSQLTwBuild="false"
+            addSQLTwBuild="true"
             clusterRemoving="false"
             clusterReintegration="false"
         />
@@ -42,7 +42,7 @@
         <call target="web_content" />
         <b2cswitchsymlink
             sysopsnotifications="false"
-            addSQLTwBuild="false"
+            addSQLTwBuild="true"
             clusterRemoving="false"
             clusterReintegration="false"
         />
@@ -60,14 +60,14 @@
         <call target="web_content" />
         <b2cswitchsymlink
             sysopsnotifications="false"
-            addSQLTwBuild="false"
+            addSQLTwBuild="true"
             clusterRemoving="false"
             clusterReintegration="false"
         />
     </env>
 
     <env name="preprod"
-        mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com"
+        mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com, sysops@twenga.com"
         withsymlinks="true"
         loadtwengaservers="true"
         basedir="/home/httpd/www.twenga"
@@ -78,14 +78,14 @@
         <call target="web_content" />
         <b2cswitchsymlink
             sysopsnotifications="true"
-            addSQLTwBuild="false"
+            addSQLTwBuild="true"
             clusterRemoving="true"
             clusterReintegration="false"
         />
     </env>
 
     <env name="prod"
-        mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com"
+        mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com, sysops@twenga.com"
         withsymlinks="true"
         loadtwengaservers="true"
         basedir="/home/httpd/www.twenga"
@@ -93,8 +93,10 @@
         <property name="web_servers" value="${SERVER_PHPWEB_ALL}" />
         <property name="static_basedir" value="/home/static" />
         <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
-        <call target="web_content" />
-        <call target="schedulers_content" />
+        <call target="dynamic_content_step1" />
+        <sync src="${TMPDIR}/" destdir="${SERVER_SCHED_DEPLOY}:${BASEDIR}" exclude="inc/config.php inc/config-local" />
+        <call target="dynamic_content_step2" />
+        <call target="static_content" />
         <b2cswitchsymlink
             sysopsnotifications="true"
             addSQLTwBuild="true"
@@ -104,19 +106,23 @@
     </env>
 
     <target name="web_content">
-        <call target="dynamic_content" />
+        <call target="dynamic_content_step1" />
+        <call target="dynamic_content_step2" />
         <call target="static_content" />
     </target>
 
-    <target name="dynamic_content">
+    <target name="dynamic_content_step1">
         <externalproperty name="ref" description="Branch or tag to deploy" />
         <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${REF}" destdir="${TMPDIR}" />
         <filltemplate
             srcfile="${TMPDIR}/inc/deploy_config-template.inc.php"
             destfile="${TMPDIR}/inc/deploy_config.inc.php" />
-        <buildlanguage project="website" destdir="${TMPDIR}/languages" />
-        <cvsexport repository=":extssh:@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
+        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
             destdir="${TMPDIR}/twenga-common" />
+    </target>
+
+    <target name="dynamic_content_step2">
+        <buildlanguage project="website" destdir="${TMPDIR}/languages" />
         <link src="${TMPDIR}/html/shorturl/config_shorturl.php" target="../../../../config/www.twenga/config_shorturl.php" />
         <link src="${TMPDIR}/inc/config.php" target="../../../config/www.twenga/config.php" />
         <link src="${TMPDIR}/inc/config-local" target="../../../config/www.twenga/config-local" />
@@ -125,6 +131,24 @@
         <mkdir destdir="${TMPDIR}/v4/templates_c" mode="777" />
         <sync src="${TMPDIR}/" destdir="${WEB_SERVERS}:${BASEDIR}" exclude="v3/css v3/js v4/css v4/js" />
     </target>
+
+    <!-- <target name="dynamic_content">
+        <externalproperty name="ref" description="Branch or tag to deploy" />
+        <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${REF}" destdir="${TMPDIR}" />
+        <filltemplate
+            srcfile="${TMPDIR}/inc/deploy_config-template.inc.php"
+            destfile="${TMPDIR}/inc/deploy_config.inc.php" />
+        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
+            destdir="${TMPDIR}/twenga-common" />
+        <buildlanguage project="website" destdir="${TMPDIR}/languages" />
+        <link src="${TMPDIR}/html/shorturl/config_shorturl.php" target="../../../../config/www.twenga/config_shorturl.php" />
+        <link src="${TMPDIR}/inc/config.php" target="../../../config/www.twenga/config.php" />
+        <link src="${TMPDIR}/inc/config-local" target="../../../config/www.twenga/config-local" />
+        <link src="${TMPDIR}/inc/config_tracker.php" target="../../../config/www.twenga/config_tracker.php" />
+        <mkdir destdir="${TMPDIR}/v3/templates_c" mode="777" />
+        <mkdir destdir="${TMPDIR}/v4/templates_c" mode="777" />
+        <sync src="${TMPDIR}/" destdir="${WEB_SERVERS}:${BASEDIR}" exclude="v3/css v3/js v4/css v4/js" />
+    </target> -->
 
     <target name="static_content">
         <b2cpreparestaticcontent />
@@ -146,11 +170,11 @@
             exclude="/Front /html /inc /languages /twenga-common /web/templates /webv4/templates" />
     </target>
 
-    <target name="schedulers_content">
+    <!-- <target name="schedulers_content">
         <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${REF}"
             destdir="${SERVER_SCHED_DEPLOY}:${BASEDIR}"
             exclude="inc/config.php inc/config-local" />
         <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
             destdir="${SERVER_SCHED_DEPLOY}:${BASEDIR}/twenga-common" />
-    </target>
+    </target> -->
 </project>

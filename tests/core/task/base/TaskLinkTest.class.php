@@ -220,7 +220,8 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
         $oTask->setUp();
         $this->assertAttributeEquals(array(
             'src' => '/path/to/link',
-            'target' => '/path/to/destdir'
+            'target' => '/path/to/destdir',
+            'server' => ''
         ), '_aAttributes', $oTask);
     }
 
@@ -253,7 +254,8 @@ class TaskLinkTest extends PHPUnit_Framework_TestCase
         $oTask->setUp();
         $this->assertAttributeEquals(array(
             'src' => 'user@server:/path/to/link',
-            'target' => 'user@server:/path/to/destdir'
+            'target' => 'user@server:/path/to/destdir',
+            'server' => ''
         ), '_aAttributes', $oTask);
     }
 

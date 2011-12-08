@@ -129,7 +129,7 @@ class Task_Extended_SwitchSymlink extends Task_Base_Link
      *
      * @throws RuntimeException si l'un des répertoires cible des liens n'existe pas
      */
-    private function _checkTargets ()
+    protected function _checkTargets ()
     {
         $this->_oLogger->log('Check all targets exists.');
         $this->_oLogger->indent();
