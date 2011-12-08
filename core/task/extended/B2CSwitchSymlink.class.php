@@ -306,7 +306,7 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
             $sCmd = 'export FORCE_TWENGA_DC=US && ' . $sCmd . ' && export FORCE_TWENGA_DC=\'\'';
         }
         $aResult = $this->_oShell->execSSH($sCmd, 'fs3:foo');
-        $this->_oLogger->log(implode("\n", $aResult));
+        $this->_oLogger->log(strip_tags(implode("\n", $aResult)));
         $this->_oLogger->unindent();
     }
 
