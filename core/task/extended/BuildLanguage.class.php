@@ -51,9 +51,11 @@ class Task_Extended_BuildLanguage extends Task
             DEPLOYMENT_TMP_DIR,
             $this->_oProperties->getProperty('execution_id') . '_languages_'
         );
-        $sURL = 'https://' . DEPLOYMENT_LANGUAGE_WS_LOGIN . ':' . DEPLOYMENT_LANGUAGE_WS_PASSWORD . '@'
+        $sURL = 'https://%s:%s@'
               . 'admin.twenga.com/translation_tool/build_language_files.php?project='
               . $this->_aAttributes['project'];
+        $this->_oLogger->log('Generate language archive from web service: ' . $sURL);
+        $sURL = sprintf($sURL, DEPLOYMENT_LANGUAGE_WS_LOGIN, DEPLOYMENT_LANGUAGE_WS_PASSWORD);
         if ( ! copy($sURL, $sLanguagesPath)) {
             throw new RuntimeException("Copy of '$sURL' to '$sLanguagesPath' failed!");
         }
