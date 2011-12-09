@@ -1,4 +1,5 @@
 #!/bin/bash
+# @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
 
 repository="$1"
 module="$2"
