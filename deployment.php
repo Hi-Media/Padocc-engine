@@ -55,7 +55,6 @@ chmod 777 deployment/resources -R
 // TODO archivage des logs
 // TODO connecteur CVS ne gère que le trunk
 // TODO remonter heartbeat dans AAI
-// TODO lib cURL : see curl_setopt_array
 // TODO AAI bien gérer qd second ajout (projet, env) refusé.
 // TODO multi rsync n'effectue pas les mkdir en parallèle
 // TODO pas de gestion robuste des erreurs qd appel direct (par AAI) de deployment.php.
