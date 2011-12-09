@@ -45,6 +45,15 @@ class Shell_Adapter implements Shell_Interface
         $this->_aFileStatus = array();
     }
 
+    public function parallelize ($sUID, array $aServers, $sPattern) {
+        $sCmdPattern = DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "%s" "%s" "%s"';
+        $sCmd = sprintf($sCmdPattern, $sUID, implode(' ', $aServers), $sPattern);
+        //var_dump($sCmd);
+        $aResult = $this->exec($sCmd);
+        //var_dump($aResult);
+        return $aResult;
+    }
+
     /**
      * Exécute la commande shell spécifiée et retourne la sortie découpée par ligne dans un tableau.
      * En cas d'erreur shell (code d'erreur <> 0), lance une exception incluant le message d'erreur.
@@ -55,7 +64,7 @@ class Shell_Adapter implements Shell_Interface
      */
     public function exec ($sCmd)
     {
-        $this->_oLogger->log('[DEBUG] shell# ' . trim($sCmd), Logger_Interface::DEBUG);
+        $this->_oLogger->log('[DEBUG] shell# ' . trim($sCmd, " \t"), Logger_Interface::DEBUG);
         $sFullCmd = '( ' . $sCmd . ' ) 2>&1';
         exec($sFullCmd, $aResult, $iReturnCode);
         if ($iReturnCode !== 0) {
@@ -325,7 +334,7 @@ class Shell_Adapter implements Shell_Interface
      * @return array tableau indexé du flux de sortie shell des commandes rsync exécutées,
      * découpé par ligne et analysé par _resumeSyncResult()
      * @throws RuntimeException en cas d'erreur shell
-     * @throws RuntimeException car non implémenté quand plusieurs $mDestPath et $sSrcPath est distant
+     * @throws RuntimeException car non implémenté quand plusieurs $mDestPath et $sSrcPath sont distants
      */
     public function sync ($sSrcPath, $mDestPath, array $aIncludedPaths=array(), array $aExcludedPaths=array())
     {

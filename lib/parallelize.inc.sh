@@ -43,10 +43,11 @@ for hostname in $hostnames; do
     outEndDate="$(date --reference=$outPath +%s)"
     errEndDate="$(date --reference=$errPath +%s)"
     [ "$outEndDate" -gt "$errEndDate" ] && endDate="$outEndDate" || endDate="$errEndDate"
-    let elapsedTime=endDate-startDate
+
+    let "elapsedTime=endDate-startDate" || :
+    echo "$endDate|$startDate => $elapsedTime"
     echo "---[$hostname]-->${results[$i]}|${elapsedTime}s"
     echo [OUT] && cat $outPath
     [ -s "$errPath" ] && echo [ERR] && cat $errPath
-    ((i++))
+    let i++ || :
 done
-
