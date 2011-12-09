@@ -51,43 +51,11 @@ class Task_Extended_BuildLanguage extends Task
             DEPLOYMENT_TMP_DIR,
             $this->_oProperties->getProperty('execution_id') . '_languages_'
         );
-        $fh = fopen($sLanguagesPath, 'w');
-        $sURL = 'https://admin.twenga.com/translation_tool/build_language_files.php?project='
+        $sURL = 'https://' . DEPLOYMENT_LANGUAGE_WS_LOGIN . ':' . DEPLOYMENT_LANGUAGE_WS_PASSWORD . '@'
+              . 'admin.twenga.com/translation_tool/build_language_files.php?project='
               . $this->_aAttributes['project'];
-        $this->_oLogger->log('Generate language archive from web service: ' . $sURL);
-        $aCurlParameters = array(
-            'url' => $sURL,
-            'login' => DEPLOYMENT_LANGUAGE_WS_LOGIN,
-            'password' => DEPLOYMENT_LANGUAGE_WS_PASSWORD,
-            'user_agent' => Curl::$aUserAgents['FireFox3'],
-            'referer' => 'http://aai.twenga.com',
-            'file' => $fh,
-            'timeout' => 120,
-            'return_header' => 0,
-        );
-        $result = Curl::disguiseCurl($aCurlParameters);
-        fclose($fh);
-
-        if ( ! empty($result['curl_error'])) {
-            // Selon les configuration serveur, il se peut que le retour de cURL soit mal interprété.
-            // Du coup on vérifie si c'est vrai en testant l'archive :
-            if (preg_match('/^transfer closed with \d+ bytes remaining to read$/i', $result['curl_error']) === 1) {
-                $this->_oLogger->log('Test language archive');
-                $this->_oLogger->indent();
-                $this->_oShell->exec('tar -tf "' . $sLanguagesPath . '"');
-                $this->_oLogger->unindent();
-            } else {
-                @unlink($sLanguagesPath);
-                throw new RuntimeException($result['curl_error']);;
-            }
-
-        } else if ($result['http_code'] < 200 || $result['http_code'] >= 300) {
-            @unlink($sLanguagesPath);
-            throw new RuntimeException(
-                'Return HTTP code: ' . $result['http_code']
-                . '. Last URL: ' . $result['last_url']
-                . '. Body: ' . $result['body']
-            );
+        if ( ! copy($sURL, $sLanguagesPath)) {
+            throw new RuntimeException("Copy of '$sURL' to '$sLanguagesPath' failed!");
         }
 
         // Diffusion de l'archive :
