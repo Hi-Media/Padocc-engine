@@ -45,12 +45,44 @@ class Shell_Adapter implements Shell_Interface
         $this->_aFileStatus = array();
     }
 
-    public function parallelize ($sUID, array $aServers, $sPattern) {
-        $sCmdPattern = DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "%s" "%s" "%s"';
-        $sCmd = sprintf($sCmdPattern, $sUID, implode(' ', $aServers), $sPattern);
+    /**
+     * Exécute dans des processus parallèles les déclinaisons du pattern spécifié en fonction des valeurs.
+     *
+     * Exemple : $this->parallelize(array('aai@aai-01', 'prod@aai-01'), "ssh [] /bin/bash <<EOF\nls -l\nEOF\n");
+     * Exemple : $this->parallelize(array('a', 'b'), 'cat /.../resources/[].txt');
+     *
+     * @param array $aValues liste de valeurs qui viendront remplacer le '[]' du pattern
+     * @param string $sPattern pattern possédant une ou plusieurs occurences de paires de crochets vides '[]'
+     * qui seront remplacées dans les processus lancés en parallèle par l'une des valeurs spécifiées.
+     * @return array TODO
+     */
+    public function parallelize (array $aValues, $sPattern) {
+        $sCmdPattern = DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "%s" "%s"';
+        $sCmd = sprintf($sCmdPattern, implode(' ', $aValues), $sPattern);
         //var_dump($sCmd);
         $aResult = $this->exec($sCmd);
         //var_dump($aResult);
+
+        $sResult = implode("\n", $aResult) . "\n";
+        //var_dump($sResult);
+        preg_match_all(
+            '#^---\[(.*?)\]-->(\d+)\|(\d+)s\n\[CMD\]\n(.*?)\n\[OUT\]\n(.*?)\[ERR\]\n(.*?)///#ms',
+            $sResult,
+            $aMatches,
+            PREG_SET_ORDER
+        );
+
+        $aResult = array();
+        foreach ($aMatches as $aSet) {
+            $aResult[] = array(
+                'value' => $aSet[1],
+                'error_code' => $aSet[2],
+                'elapsed_time' => $aSet[3],
+                'cmd' => $aSet[4],
+                'output' => (strlen($aSet[5]) > 0 ? substr($aSet[5], 0, -1) : ''),
+                'error' => (strlen($aSet[6]) > 0 ? substr($aSet[6], 0, -1) : '')
+            );
+        }
         return $aResult;
     }
 
@@ -163,8 +195,6 @@ class Shell_Adapter implements Shell_Interface
      * Les jokers '*' et '?' sont autorisés.
      * Par exemple copiera le contenu de $sSrcPath si celui-ci se termine par '/*'.
      * Si le chemin de destination n'existe pas, il sera créé.
-     *
-     * TODO ajouter gestion tar/gz
      *
      * @param string $sSrcPath chemin source, au format [[user@sername_or_ip:]/path
      * @param string $sDestPath chemin de destination, au format [[user@sername_or_ip:]/path
