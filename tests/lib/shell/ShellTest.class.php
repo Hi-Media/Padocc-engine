@@ -32,11 +32,13 @@ class ShellTest extends PHPUnit_Framework_TestCase
      * Log tous les appels dans le tableau indexé $this->aShellExecCmds.
      *
      * @param string $sCmd commande Shell qui aurait dûe être exécutée.
+     * @return array tableau vide
      * @see $aShellExecCmds
      */
     public function shellExecCallback ($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
+        return array();
     }
 
     /**
@@ -198,22 +200,104 @@ class ShellTest extends PHPUnit_Framework_TestCase
     /**
      * @covers Shell_Adapter::parallelize
      */
-    public function testParallelize_wellFormed ()
+    public function testParallelize_wellFormedCall ()
     {
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
         $aResult = $oMockShell->parallelize(
-            '123',
             array('aai@aai-01', 'prod@aai-01'),
             "ssh [] /bin/bash <<EOF\nls -l\nEOF\n"
         );
 
         $this->assertEquals(array(
-            '/bin/bash /home/gaubry/deployment/lib/parallelize.inc.sh "123" "aai@aai-01 prod@aai-01"'
+            '/bin/bash /home/gaubry/deployment/lib/parallelize.inc.sh "aai@aai-01 prod@aai-01"'
                 . ' "ssh [] /bin/bash <<EOF' . "\n" . 'ls -l' . "\n" . 'EOF' . "\n" . '"'
         ), $this->aShellExecCmds);
+    }
+
+    /*
+     * @covers Shell_Adapter::parallelize
+     */
+    public function testParallelize_ThrowExceptionWhenExecFailed ()
+    {
+        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+        $oMockShell->expects($this->exactly(1))->method('exec');
+        $oMockShell->expects($this->at(0))->method('exec')->will($this->throwException(new RuntimeException('aborted!')));
+        $this->setExpectedException('RuntimeException', 'aborted!');
+        $oMockShell->parallelize(
+            array('a', 'b'),
+            'cat ' . __DIR__ . '/resources/[].txt'
+        );
+    }
+
+    /**
+     * @covers Shell_Adapter::parallelize
+     */
+    public function testParallelize_ok ()
+    {
+        $aExpectedResult = array(
+            array(
+                'value' => 'a',
+                'error_code' => 0,
+                //'elapsed_time' => 0,
+                'cmd' => 'cat ' . __DIR__ . '/resources/a.txt',
+                'output' => file_get_contents(__DIR__ . '/resources/a.txt'),
+                'error' => ''
+            ),
+            array(
+                'value' => 'b',
+                'error_code' => 0,
+                //'elapsed_time' => 0,
+                'cmd' => 'cat ' . __DIR__ . '/resources/b.txt',
+                'output' => file_get_contents(__DIR__ . '/resources/b.txt'),
+                'error' => ''
+            ),
+        );
+
+        $aResult = $this->oShell->parallelize(
+            array('a', 'b'),
+            'cat ' . __DIR__ . '/resources/[].txt'
+        );
+        unset($aResult[0]['elapsed_time']);
+        unset($aResult[1]['elapsed_time']);
+
+        $this->assertEquals($aExpectedResult, $aResult);
+    }
+
+    /**
+     * @covers Shell_Adapter::parallelize
+     */
+    public function testParallelize_withError ()
+    {
+        $aExpectedResult = array(
+            array(
+                'value' => 'a',
+                'error_code' => 0,
+                //'elapsed_time' => 0,
+                'cmd' => 'cat ' . __DIR__ . '/resources/a.txt',
+                'output' => file_get_contents(__DIR__ . '/resources/a.txt'),
+                'error' => ''
+            ),
+            array(
+                'value' => 'not_exists',
+                'error_code' => 1,
+                //'elapsed_time' => 0,
+                'cmd' => 'cat ' . __DIR__ . '/resources/not_exists.txt',
+                'output' => '',
+                'error' => 'cat: ' . __DIR__ . '/resources/not_exists.txt: No such file or directory' . "\n"
+            ),
+        );
+
+        $aResult = $this->oShell->parallelize(
+            array('a', 'not_exists'),
+            'cat ' . __DIR__ . '/resources/[].txt'
+        );
+        unset($aResult[0]['elapsed_time']);
+        unset($aResult[1]['elapsed_time']);
+
+        $this->assertEquals($aExpectedResult, $aResult);
     }
 
     /**
