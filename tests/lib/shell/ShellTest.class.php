@@ -212,8 +212,8 @@ class ShellTest extends PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals(array(
-            '/bin/bash /home/gaubry/deployment/lib/parallelize.inc.sh "aai@aai-01 prod@aai-01"'
-                . ' "ssh [] /bin/bash <<EOF' . "\n" . 'ls -l' . "\n" . 'EOF' . "\n" . '"'
+            DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "aai@aai-01 prod@aai-01"'
+                . ' "ssh [] ' . DEPLOYMENT_BASH_PATH . ' <<EOF' . "\n" . 'ls -l' . "\n" . 'EOF' . "\n" . '"'
         ), $this->aShellExecCmds);
     }
 

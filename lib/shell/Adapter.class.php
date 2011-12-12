@@ -56,7 +56,8 @@ class Shell_Adapter implements Shell_Interface
      * qui seront remplacées dans les processus lancés en parallèle par l'une des valeurs spécifiées.
      * @return array TODO
      */
-    public function parallelize (array $aValues, $sPattern) {
+    public function parallelize (array $aValues, $sPattern)
+    {
         $sCmdPattern = DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "%s" "%s"';
         $sCmd = sprintf($sCmdPattern, implode(' ', $aValues), $sPattern);
         //var_dump($sCmd);
@@ -125,7 +126,7 @@ class Shell_Adapter implements Shell_Interface
             $sSSHOptions = ' -o StrictHostKeyChecking=no'
                          . ' -o ConnectTimeout=' . DEPLOYMENT_SSH_CONNECTION_TIMEOUT
                          . ' -o BatchMode=yes';
-            $sCmd = 'ssh' . $sSSHOptions . ' -T ' . $sServer . " /bin/bash <<EOF\n$sCmd\nEOF\n";
+            $sCmd = 'ssh' . $sSSHOptions . ' -T ' . $sServer . ' ' . DEPLOYMENT_BASH_PATH . " <<EOF\n$sCmd\nEOF\n";
         }
         return $this->exec($sCmd);
     }
