@@ -33,6 +33,7 @@
 
     <target name="content">
         <externalproperty name="ref" description="Branch or tag to deploy" />
+        <externalproperty name="ref_tpl" description="Ref. widget_tmpl" />
         <gitexport repository="git@git.twenga.com:distribution/mldelivery.git" ref="${ref}"
             srcsubdir="/widget"
             destdir="${SERVERS}:${BASEDIR}" exclude="config.* dynconfig* config_application.php db.ini" />
