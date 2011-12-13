@@ -16,7 +16,7 @@
         withsymlinks="true"
         basedir="/home/httpd/ptpn"
     >
-        <property name="servers" value="www46" />
+        <property name="servers" value="www46 www47" />
         <call target="content" />
     </env>
 
