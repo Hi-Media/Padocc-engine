@@ -512,7 +512,8 @@ class Shell_Adapter implements Shell_Interface
 
         return $aAllResults;
     }*/
-    public function sync ($sSrcPath, $sDestPath, array $aValues=array(), array $aIncludedPaths=array(), array $aExcludedPaths=array())
+    public function sync ($sSrcPath, $sDestPath, array $aValues=array(),
+            array $aIncludedPaths=array(), array $aExcludedPaths=array())
     {
         if (count($aValues) === 0 || (count($aValues) === 1 && $aValues[0] == '')) {
             $aValues=array('-');

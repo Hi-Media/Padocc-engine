@@ -66,27 +66,29 @@ class Task_Extended_B2CPrepareStaticContent extends Task
         $this->_oLogger->indent();
         $this->_oLogger->log('Initialize static content with previous release:');
         $this->_oLogger->indent();
-        $sPath = '${STATIC_SERVERS}:${STATIC_BASEDIR}/' . self::$_sLastDir;
-        foreach ($this->_expandPath($sPath) as $sExpandedPath) {
-            $iPathStatus = $this->_oShell->getPathStatus($sExpandedPath);
-            if ($iPathStatus == Shell_PathStatus::STATUS_SYMLINKED_DIR) {
-                list(, $sServer, ) = $this->_oShell->isRemotePath($sExpandedPath);
-                $sSrcDir = $sExpandedPath . '/';
-                $sDestDir = $sServer
-                          . ':' . $this->_processSimplePath($this->_oProperties->getProperty('static_basedir'))
-                          . '/' . $this->_oProperties->getProperty('execution_id');
-                $this->_oLogger->log("Initialize '$sDestDir' with previous release.");
-                $this->_oLogger->indent();
-                $aResults = $this->_oShell->sync($sSrcDir, $sDestDir, array(), array());
-                foreach ($aResults as $sResult) {
-                    $this->_oLogger->log($sResult);
-                }
-                $this->_oLogger->unindent();
 
+        $aServers = $this->_expandPath('${STATIC_SERVERS}');
+        $sBaseDir = $this->_processSimplePath('${STATIC_BASEDIR}/' . self::$_sLastDir);
+        $aPathStatusResult = $this->_oShell->getParallelSSHPathStatus($sBaseDir, $aServers);
+
+        // Recherche des serveurs que l'on peut initialiser :
+        $aServersToInit = array();
+        foreach ($aServers as $sServer) {
+            $iPathStatus = $aPathStatusResult[$sServer];
+            if ($iPathStatus == Shell_PathStatus::STATUS_SYMLINKED_DIR) {
+                $aServersToInit[] = $sServer;
             } else {
-                $this->_oLogger->log("Symlink to last release not found: '$sExpandedPath' ($iPathStatus)");
+                $this->_oLogger->log("Symlink to last release not found on server '$sServer': '$sBaseDir' ($iPathStatus)");
             }
         }
+
+        // Initialisation de ses serveurs :
+        $sDestDir = '[]:' . $this->_processSimplePath('${STATIC_BASEDIR}/${EXECUTION_ID}');
+        $aResults = $this->_oShell->sync("[]:$sBaseDir/", $sDestDir, $aServersToInit);
+        foreach ($aResults as $sResult) {
+            $this->_oLogger->log($sResult);
+        }
+
         $this->_oLogger->unindent();
         $this->_oLinkTask->execute();
         $this->_oLogger->unindent();
