@@ -73,8 +73,8 @@ interface Shell_Interface
      *
      * TODO ajouter gestion tar/gz
      *
-     * @param string $sSrcPath chemin source, au format [[user@sername_or_ip:]/path
-     * @param string $sDestPath chemin de destination, au format [[user@sername_or_ip:]/path
+     * @param string $sSrcPath chemin source, au format [[user@]hostname_or_ip:]/path
+     * @param string $sDestPath chemin de destination, au format [[user@]hostname_or_ip:]/path
      * @param bool $bIsDestFile précise si le chemin de destination est un simple fichier ou non,
      * information nécessaire si l'on doit créer une partie de ce chemin si inexistant
      * @return array tableau indexé du flux de sortie shell découpé par ligne
@@ -85,8 +85,8 @@ interface Shell_Interface
     /**
      * Crée un lien symbolique de chemin $sLinkPath vers la cible $sTargetPath.
      *
-     * @param string $sLinkPath nom du lien, au format [[user@sername_or_ip:]/path
-     * @param string $sTargetPath cible sur laquelle faire pointer le lien, au format [[user@sername_or_ip:]/path
+     * @param string $sLinkPath nom du lien, au format [[user@]hostname_or_ip:]/path
+     * @param string $sTargetPath cible sur laquelle faire pointer le lien, au format [[user@]hostname_or_ip:]/path
      * @return array tableau indexé du flux de sortie shell découpé par ligne
      * @throws DomainException si les chemins référencent des serveurs différents
      * @throws RuntimeException en cas d'erreur shell
@@ -107,7 +107,7 @@ interface Shell_Interface
      * Supprime le chemin spécifié, répertoire ou fichier, distant ou local.
      * S'efforce de maintenir cohérent le cache de statut de chemins rempli par getPathStatus().
      *
-     * @param string $sPath chemin à supprimer, au format [[user@sername_or_ip:]/path
+     * @param string $sPath chemin à supprimer, au format [[user@]hostname_or_ip:]/path
      * @return array tableau indexé du flux de sortie shell découpé par ligne
      * @throws DomainException si chemin invalide (garde-fou)
      * @throws RuntimeException en cas d'erreur shell
@@ -118,8 +118,8 @@ interface Shell_Interface
     /**
      * Effectue un tar gzip du répertoire $sSrcPath dans $sBackupPath.
      *
-     * @param string $sSrcPath au format [[user@sername_or_ip:]/path
-     * @param string $sBackupPath au format [[user@sername_or_ip:]/path
+     * @param string $sSrcPath au format [[user@]hostname_or_ip:]/path
+     * @param string $sBackupPath au format [[user@]hostname_or_ip:]/path
      * @return array tableau indexé du flux de sortie shell découpé par ligne
      * @throws RuntimeException en cas d'erreur shell
      */
@@ -128,7 +128,7 @@ interface Shell_Interface
     /**
      * Crée le chemin spécifié s'il n'existe pas déjà, avec les droits éventuellement transmis dans tous les cas.
      *
-     * @param string $sPath chemin à créer, au format [[user@sername_or_ip:]/path
+     * @param string $sPath chemin à créer, au format [[user@]hostname_or_ip:]/path
      * @param string $sMode droits utilisateur du chemin appliqués même si ce dernier existe déjà.
      * Par exemple '644'.
      * @return array tableau indexé du flux de sortie shell découpé par ligne
@@ -139,8 +139,8 @@ interface Shell_Interface
     /**
      * Synchronise une source avec une ou plusieurs destinations.
      *
-     * @param string $sSrcPath au format [[user@sername_or_ip:]/path
-     * @param string|array $mDestPath chaque destination au format [[user@sername_or_ip:]/path
+     * @param string $sSrcPath au format [[user@]hostname_or_ip:]/path
+     * @param string|array $mDestPath chaque destination au format [[user@]hostname_or_ip:]/path
      * @param array $aIncludedPaths chemins à transmettre aux paramètres --include de la commande shell rsync.
      * Il précéderons les paramètres --exclude.
      * @param array $aExcludedPaths chemins à transmettre aux paramètres --exclude de la commande shell rsync
