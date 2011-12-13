@@ -200,21 +200,65 @@ class ShellTest extends PHPUnit_Framework_TestCase
     /**
      * @covers Shell_Adapter::parallelize
      */
-    public function testParallelize_wellFormedCall ()
+    public function testParallelize_wellFormedSimpleCall ()
     {
-        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
-        $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
-        $this->aShellExecCmds = array();
+        $sExpectedCmd = DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR
+                      . '/parallelize.inc.sh "aai@aai-01 prod@aai-01"'
+                      . ' "ssh [] ' . DEPLOYMENT_BASH_PATH . ' <<EOF' . "\n" . 'ls -l' . "\n" . 'EOF' . "\n" . '"';
+        $aReturnExec = array(
+            '---[aai@aai-01]-->0|0s', '[CMD]', 'foo', '[OUT]', '1', '[ERR]', '///',
+            '---[prod@aai-01]-->0|0s', '[CMD]', 'foo', '[OUT]', '0', '[ERR]', '///',
+        );
 
-        $aResult = $oMockShell->parallelize(
+        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+
+        $oMockShell->expects($this->at(0))->method('exec')
+            ->with($this->equalTo($sExpectedCmd))
+            ->will($this->returnValue($aReturnExec));
+        $oMockShell->expects($this->exactly(1))->method('exec');
+
+        $oMockShell->parallelize(
             array('aai@aai-01', 'prod@aai-01'),
             "ssh [] /bin/bash <<EOF\nls -l\nEOF\n"
         );
+    }
 
-        $this->assertEquals(array(
-            DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "aai@aai-01 prod@aai-01"'
-                . ' "ssh [] ' . DEPLOYMENT_BASH_PATH . ' <<EOF' . "\n" . 'ls -l' . "\n" . 'EOF' . "\n" . '"'
-        ), $this->aShellExecCmds);
+    /**
+     * @covers Shell_Adapter::parallelize
+     */
+    public function testParallelize_wellFormedSplittedCalls ()
+    {
+        $sFirstExpectedCmd = DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR
+                      . '/parallelize.inc.sh "aai@aai-01 prod@aai-01 x"'
+                      . ' "ssh [] ' . DEPLOYMENT_BASH_PATH . ' <<EOF' . "\n" . 'ls -l' . "\n" . 'EOF' . "\n" . '"';
+        $aFirstReturnExec = array(
+            '---[aai@aai-01]-->0|0s', '[CMD]', 'foo', '[OUT]', '1', '[ERR]', '///',
+            '---[prod@aai-01]-->0|0s', '[CMD]', 'foo', '[OUT]', '0', '[ERR]', '///',
+            '---[x]-->0|0s', '[CMD]', 'foo', '[OUT]', '0', '[ERR]', '///',
+        );
+        $sSecondExpectedCmd = DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR
+                      . '/parallelize.inc.sh "y z"'
+                      . ' "ssh [] ' . DEPLOYMENT_BASH_PATH . ' <<EOF' . "\n" . 'ls -l' . "\n" . 'EOF' . "\n" . '"';
+        $aSecondReturnExec = array(
+            '---[y]-->0|0s', '[CMD]', 'foo', '[OUT]', '1', '[ERR]', '///',
+            '---[z]-->0|0s', '[CMD]', 'foo', '[OUT]', '0', '[ERR]', '///',
+        );
+
+        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+
+        $oMockShell->expects($this->at(0))->method('exec')
+            ->with($this->equalTo($sFirstExpectedCmd))
+            ->will($this->returnValue($aFirstReturnExec));
+        $oMockShell->expects($this->at(1))->method('exec')
+            ->with($this->equalTo($sSecondExpectedCmd))
+            ->will($this->returnValue($aSecondReturnExec));
+        $oMockShell->expects($this->exactly(2))->method('exec');
+
+        $oMockShell->parallelize(
+            array('aai@aai-01', 'prod@aai-01', 'x', 'y', 'z'),
+            "ssh [] /bin/bash <<EOF\nls -l\nEOF\n",
+            3
+        );
     }
 
     /*
@@ -228,37 +272,37 @@ class ShellTest extends PHPUnit_Framework_TestCase
         $this->setExpectedException('RuntimeException', 'aborted!');
         $oMockShell->parallelize(
             array('a', 'b'),
-            'cat ' . __DIR__ . '/resources/[].txt'
+            'cat ' . __DIR__ . '/resources/testParallelize_[].txt'
         );
     }
 
     /**
      * @covers Shell_Adapter::parallelize
      */
-    public function testParallelize_ok ()
+    public function testParallelize_simple ()
     {
         $aExpectedResult = array(
             array(
                 'value' => 'a',
                 'error_code' => 0,
                 //'elapsed_time' => 0,
-                'cmd' => 'cat ' . __DIR__ . '/resources/a.txt',
-                'output' => file_get_contents(__DIR__ . '/resources/a.txt'),
+                'cmd' => 'cat ' . __DIR__ . '/resources/testParallelize_a.txt',
+                'output' => file_get_contents(__DIR__ . '/resources/testParallelize_a.txt'),
                 'error' => ''
             ),
             array(
                 'value' => 'b',
                 'error_code' => 0,
                 //'elapsed_time' => 0,
-                'cmd' => 'cat ' . __DIR__ . '/resources/b.txt',
-                'output' => file_get_contents(__DIR__ . '/resources/b.txt'),
+                'cmd' => 'cat ' . __DIR__ . '/resources/testParallelize_b.txt',
+                'output' => file_get_contents(__DIR__ . '/resources/testParallelize_b.txt'),
                 'error' => ''
             ),
         );
 
         $aResult = $this->oShell->parallelize(
             array('a', 'b'),
-            'cat ' . __DIR__ . '/resources/[].txt'
+            'cat ' . __DIR__ . '/resources/testParallelize_[].txt'
         );
         unset($aResult[0]['elapsed_time']);
         unset($aResult[1]['elapsed_time']);
@@ -269,35 +313,109 @@ class ShellTest extends PHPUnit_Framework_TestCase
     /**
      * @covers Shell_Adapter::parallelize
      */
-    public function testParallelize_withError ()
+    public function testParallelize_splitted ()
     {
         $aExpectedResult = array(
             array(
                 'value' => 'a',
                 'error_code' => 0,
                 //'elapsed_time' => 0,
-                'cmd' => 'cat ' . __DIR__ . '/resources/a.txt',
-                'output' => file_get_contents(__DIR__ . '/resources/a.txt'),
+                'cmd' => 'cat ' . __DIR__ . '/resources/testParallelize_a.txt',
+                'output' => file_get_contents(__DIR__ . '/resources/testParallelize_a.txt'),
                 'error' => ''
             ),
             array(
-                'value' => 'not_exists',
-                'error_code' => 1,
+                'value' => 'b',
+                'error_code' => 0,
                 //'elapsed_time' => 0,
-                'cmd' => 'cat ' . __DIR__ . '/resources/not_exists.txt',
-                'output' => '',
-                'error' => 'cat: ' . __DIR__ . '/resources/not_exists.txt: No such file or directory' . "\n"
+                'cmd' => 'cat ' . __DIR__ . '/resources/testParallelize_b.txt',
+                'output' => file_get_contents(__DIR__ . '/resources/testParallelize_b.txt'),
+                'error' => ''
+            ),
+            array(
+                'value' => 'c',
+                'error_code' => 0,
+                //'elapsed_time' => 0,
+                'cmd' => 'cat ' . __DIR__ . '/resources/testParallelize_c.txt',
+                'output' => file_get_contents(__DIR__ . '/resources/testParallelize_c.txt'),
+                'error' => ''
             ),
         );
 
+        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+        $oMockShell->expects($this->at(0))->method('exec')->will($this->returnCallback(array($this->oShell, 'exec')));
+        $oMockShell->expects($this->at(1))->method('exec')->will($this->returnCallback(array($this->oShell, 'exec')));
+        $oMockShell->expects($this->exactly(2))->method('exec');
+
+        $aResult = $oMockShell->parallelize(
+            array('a', 'b', 'c'),
+            'cat ' . __DIR__ . '/resources/testParallelize_[].txt',
+            2
+        );
+        unset($aResult[0]['elapsed_time']);
+        unset($aResult[1]['elapsed_time']);
+        unset($aResult[2]['elapsed_time']);
+
+        $this->assertEquals($aExpectedResult, $aResult);
+    }
+
+    /**
+     * @covers Shell_Adapter::parallelize
+     */
+    public function testParallelize_ThrowExceptionOnShellExitCodeNotNull ()
+    {
+        $this->setExpectedException(
+            'RuntimeException',
+            'cat: ' . __DIR__ . '/resources/not_exists.txt: No such file or directory'
+        );
         $aResult = $this->oShell->parallelize(
             array('a', 'not_exists'),
             'cat ' . __DIR__ . '/resources/[].txt'
         );
-        unset($aResult[0]['elapsed_time']);
-        unset($aResult[1]['elapsed_time']);
+    }
 
-        $this->assertEquals($aExpectedResult, $aResult);
+    /**
+     * @covers Shell_Adapter::parallelize
+     */
+    public function testParallelize_ThrowExceptionWhenNotAskedValue ()
+    {
+        $this->setExpectedException(
+            'RuntimeException',
+            "Not asked value: 'not_asked'!"
+        );
+        $aReturnExec = array('---[not_asked]-->0|0s', '[CMD]', 'foo', '[OUT]', '1', '[ERR]', '///');
+
+        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+        $oMockShell->expects($this->at(0))->method('exec')
+            ->will($this->returnValue($aReturnExec));
+        $oMockShell->expects($this->exactly(1))->method('exec');
+
+        $oMockShell->parallelize(
+            array('a'),
+            'cat ' . __DIR__ . '/resources/[].txt'
+        );
+    }
+
+    /**
+     * @covers Shell_Adapter::parallelize
+     */
+    public function testParallelize_ThrowExceptionWhenMissingValues ()
+    {
+        $this->setExpectedException(
+            'RuntimeException',
+            'Missing values!'
+        );
+        $aReturnExec = array('---[a]-->0|0s', '[CMD]', 'foo', '[OUT]', '1', '[ERR]', '///');
+
+        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+        $oMockShell->expects($this->at(0))->method('exec')
+            ->will($this->returnValue($aReturnExec));
+        $oMockShell->expects($this->exactly(1))->method('exec');
+
+        $oMockShell->parallelize(
+            array('a', 'b'),
+            'cat ' . __DIR__ . '/resources/[].txt'
+        );
     }
 
     /**
@@ -426,6 +544,7 @@ class ShellTest extends PHPUnit_Framework_TestCase
 
         $aResult = $oMockShell->mkdir('/path/to/my file');
         $this->assertEquals($aExpectedResult, $aResult);
+        $this->assertAttributeEquals(array('/path/to/my file' => 2), '_aFileStatus', $oMockShell);
     }
 
     /**
@@ -438,6 +557,7 @@ class ShellTest extends PHPUnit_Framework_TestCase
             ->with($this->equalTo('mkdir -p "/path/to/my file" && chmod 777 "/path/to/my file"'));
         $oMockShell->expects($this->exactly(1))->method('exec');
         $aResult = $oMockShell->mkdir('/path/to/my file', '777');
+        $this->assertAttributeEquals(array('/path/to/my file' => 2), '_aFileStatus', $oMockShell);
     }
 
     /**
@@ -455,6 +575,7 @@ class ShellTest extends PHPUnit_Framework_TestCase
 
         $aResult = $oMockShell->mkdir('gaubry@dv2:/path/to/my file');
         $this->assertEquals($aExpectedResult, $aResult);
+        $this->assertAttributeEquals(array('gaubry@dv2:/path/to/my file' => 2), '_aFileStatus', $oMockShell);
     }
 
     /**
@@ -467,6 +588,7 @@ class ShellTest extends PHPUnit_Framework_TestCase
             ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T gaubry@dv2 /bin/bash <<EOF' . "\n" . 'mkdir -p "/path/to/my file" && chmod 777 "/path/to/my file"' . "\n" . 'EOF' . "\n"));
         $oMockShell->expects($this->exactly(1))->method('exec');
         $aResult = $oMockShell->mkdir('gaubry@dv2:/path/to/my file', '777');
+        $this->assertAttributeEquals(array('gaubry@dv2:/path/to/my file' => 2), '_aFileStatus', $oMockShell);
     }
 
     /**
@@ -762,14 +884,132 @@ class ShellTest extends PHPUnit_Framework_TestCase
     {
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
-            ->with($this->equalTo('[ -h "/path/to/unknwon" ] && echo -n 1; [ -d "/path/to/unknwon" ] && echo 2 || ([ -f "/path/to/unknwon" ] && echo 1 || echo 0)'))
+            ->with($this->equalTo('[ -h "/path/to/unknown" ] && echo -n 1; [ -d "/path/to/unknown" ] && echo 2 || ([ -f "/path/to/unknown" ] && echo 1 || echo 0)'))
             ->will($this->returnValue(array('0')));
         $oMockShell->expects($this->exactly(1))->method('exec');
 
-        $aResult = $oMockShell->getPathStatus('/path/to/unknwon');
+        $aResult = $oMockShell->getPathStatus('/path/to/unknown');
         $this->assertEquals(0, $aResult);
 
         $this->assertAttributeEquals(array(), '_aFileStatus', $oMockShell);
+    }
+
+    /**
+     * @covers Shell_Adapter::getParallelSSHPathStatus
+     */
+    public function testGetParallelSSHPathStatus_wellFormed()
+    {
+        $sExpectedCmd = DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "aai@aai-01 prod@aai-01"'
+                      . ' "ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T [] '
+                      . DEPLOYMENT_BASH_PATH . ' <<EOF' . "\n"
+                      . '[ -h \"/path/to/my file\" ] && echo -n 1; [ -d \"/path/to/my file\" ] && echo 2 || ([ -f \"/path/to/my file\" ] && echo 1 || echo 0)'
+                      . "\n" . 'EOF' . "\n" . '"';
+        $aReturnExec = array(
+            '---[aai@aai-01]-->0|0s', '[CMD]', 'foo', '[OUT]', '1', '[ERR]', '///',
+            '---[prod@aai-01]-->0|0s', '[CMD]', 'foo', '[OUT]', '0', '[ERR]', '///',
+        );
+
+        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+        $oMockShell->expects($this->at(0))->method('exec')
+            ->with($this->equalTo($sExpectedCmd))
+            ->will($this->returnValue($aReturnExec));
+        $oMockShell->expects($this->exactly(1))->method('exec');
+
+        $oMockShell->getParallelSSHPathStatus (
+            '/path/to/my file',
+            array('aai@aai-01', 'prod@aai-01')
+        );
+    }
+
+    /**
+     * @covers Shell_Adapter::getParallelSSHPathStatus
+     */
+    public function testGetParallelSSHPathStatus_With2Files ()
+    {
+        $aReturnExec = array(
+            '---[aai@aai-01]-->0|0s', '[CMD]', 'foo', '[OUT]', '1', '[ERR]', '///',
+            '---[prod@aai-01]-->0|0s', '[CMD]', 'foo', '[OUT]', '0', '[ERR]', '///',
+        );
+        $aExpectedParallelResult = array(
+            'aai@aai-01' => 1,
+            'prod@aai-01' => 0
+        );
+        $aExpectedStatusResult = array('aai@aai-01:/path/to/my file' => 1);
+
+        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+        $oMockShell->expects($this->at(0))->method('exec')
+            ->will($this->returnValue($aReturnExec));
+        $oMockShell->expects($this->exactly(1))->method('exec');
+
+        $aResult = $oMockShell->getParallelSSHPathStatus (
+            '/path/to/my file',
+            array('aai@aai-01', 'prod@aai-01')
+        );
+        $this->assertEquals($aExpectedParallelResult, $aResult);
+        $this->assertAttributeEquals($aExpectedStatusResult, '_aFileStatus', $oMockShell);
+
+        return $oMockShell;
+    }
+
+    /**
+     * @depends testGetParallelSSHPathStatus_With2Files
+     * @covers Shell_Adapter::getParallelSSHPathStatus
+     */
+    public function testGetParallelSSHPathStatus_WithCacheAnd1File (Shell_Adapter $oMockShell)
+    {
+        $aExpectedInitStatus = array('aai@aai-01:/path/to/my file' => 1);
+        $aReturnExec = array(
+            '---[prod@aai-01]-->0|0s', '[CMD]', 'foo', '[OUT]', '12', '[ERR]', '///',
+        );
+        $aExpectedParallelResult = array(
+            'aai@aai-01' => 1,
+            'prod@aai-01' => 12
+        );
+        $aExpectedStatusResult = array(
+            'aai@aai-01:/path/to/my file' => 1,
+            'prod@aai-01:/path/to/my file' => 12
+        );
+
+        $this->assertAttributeEquals($aExpectedInitStatus, '_aFileStatus', $oMockShell);
+        $oMockShell->expects($this->at(0))->method('exec')
+            ->will($this->returnValue($aReturnExec));
+        $oMockShell->expects($this->exactly(1))->method('exec');
+
+        $aResult = $oMockShell->getParallelSSHPathStatus (
+            '/path/to/my file',
+            array('aai@aai-01', 'prod@aai-01')
+        );
+        $this->assertEquals($aExpectedParallelResult, $aResult);
+        $this->assertAttributeEquals($aExpectedStatusResult, '_aFileStatus', $oMockShell);
+
+        return $oMockShell;
+    }
+
+    /**
+     * @depends testGetParallelSSHPathStatus_WithCacheAnd1File
+     * @covers Shell_Adapter::getParallelSSHPathStatus
+     */
+    public function testGetParallelSSHPathStatus_WithOnlyCache (Shell_Adapter $oMockShell)
+    {
+        $aExpectedInitStatus = array(
+            'aai@aai-01:/path/to/my file' => 1,
+            'prod@aai-01:/path/to/my file' => 12
+        );
+        $aExpectedParallelResult = array(
+            'aai@aai-01' => 1,
+            'prod@aai-01' => 12
+        );
+        $aExpectedStatusResult = $aExpectedInitStatus;
+
+        $this->assertAttributeEquals($aExpectedInitStatus, '_aFileStatus', $oMockShell);
+        $oMockShell->expects($this->never())->method('exec');
+
+        $aResult = $oMockShell->getParallelSSHPathStatus (
+            '/path/to/my file/',	// Le slash final est intentionnel, pour tester sa suppression automatique.
+            array('aai@aai-01', 'prod@aai-01')
+        );
+        $this->assertEquals($aExpectedParallelResult, $aResult);
+        $this->assertAttributeEquals($aExpectedStatusResult, '_aFileStatus', $oMockShell);
     }
 
     /**
@@ -793,27 +1033,31 @@ class ShellTest extends PHPUnit_Framework_TestCase
         $aExpectedResult = array('Number of transferred files ( / total): 2 / 1774
 Total transferred file size ( / total): <1 / 61 Mio
 ');
-        $aRawRsyncResult = explode("\n", 'Number of files: 1774
-Number of files transferred: 2
-Total file size: 64093953 bytes
-Total transferred file size: 178 bytes
-Literal data: 178 bytes
-Matched data: 0 bytes
-File list size: 39177
-File list generation time: 0.013 seconds
-File list transfer time: 0.000 seconds
-Total bytes sent: 39542
-Total bytes received: 64
+        $aRawRsyncResult = array('---[-]-->0|0s', '[CMD]', '...', '[OUT]',
+            'Number of files: 1774',
+            'Number of files transferred: 2',
+            'Total file size: 64093953 bytes',
+            'Total transferred file size: 178 bytes',
+            'Literal data: 178 bytes',
+            'Matched data: 0 bytes',
+            'File list size: 39177',
+            'File list generation time: 0.013 seconds',
+            'File list transfer time: 0.000 seconds',
+            'Total bytes sent: 39542',
+            'Total bytes received: 64',
+            '',
+            'sent 39542 bytes  received 64 bytes  26404.00 bytes/sec',
+            'total size is 64093953  speedup is 1618.29',
+            '[ERR]', '///'
+        );
 
-sent 39542 bytes  received 64 bytes  26404.00 bytes/sec
-total size is 64093953  speedup is 1618.29');
 
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
             ->with($this->equalTo('mkdir -p "/destpath/to/my dir"'))
             ->will($this->returnValue(array()));
         $oMockShell->expects($this->at(1))->method('exec')
-            ->with($this->equalTo('rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/srcpath/to/my file" "/destpath/to/my dir"'))
+            ->with($this->equalTo(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "-" "rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e ssh \"/srcpath/to/my file\" \"/destpath/to/my dir\""'))
             ->will($this->returnValue($aRawRsyncResult));
         $oMockShell->expects($this->exactly(2))->method('exec');
 
@@ -833,27 +1077,30 @@ total size is 64093953  speedup is 1618.29');
         $aExpectedResult = array('Number of transferred files ( / total): 2 / 1774
 Total transferred file size ( / total): <1 / 63 Kio
 ');
-        $aRawRsyncResult = explode("\n", 'Number of files: 1774
-Number of files transferred: 2
-Total file size: 64093 bytes
-Total transferred file size: 178 bytes
-Literal data: 178 bytes
-Matched data: 0 bytes
-File list size: 39177
-File list generation time: 0.013 seconds
-File list transfer time: 0.000 seconds
-Total bytes sent: 39542
-Total bytes received: 64
-
-sent 39542 bytes  received 64 bytes  26404.00 bytes/sec
-total size is 64093953  speedup is 1618.29');
+        $aRawRsyncResult = array('---[-]-->0|0s', '[CMD]', '...', '[OUT]',
+            'Number of files: 1774',
+            'Number of files transferred: 2',
+            'Total file size: 64093 bytes',
+            'Total transferred file size: 178 bytes',
+            'Literal data: 178 bytes',
+            'Matched data: 0 bytes',
+            'File list size: 39177',
+            'File list generation time: 0.013 seconds',
+            'File list transfer time: 0.000 seconds',
+            'Total bytes sent: 39542',
+            'Total bytes received: 64',
+            '',
+            'sent 39542 bytes  received 64 bytes  26404.00 bytes/sec',
+            'total size is 64093953  speedup is 1618.29',
+            '[ERR]', '///'
+        );
 
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
             ->with($this->equalTo('mkdir -p "/destpath/to/my dir"'))
             ->will($this->returnValue(array()));
         $oMockShell->expects($this->at(1))->method('exec')
-            ->with($this->equalTo('rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/srcpath/to/my file" "/destpath/to/my dir"'))
+            ->with($this->equalTo(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "-" "rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e ssh \"/srcpath/to/my file\" \"/destpath/to/my dir\""'))
             ->will($this->returnValue($aRawRsyncResult));
         $oMockShell->expects($this->exactly(2))->method('exec');
 
@@ -873,27 +1120,30 @@ total size is 64093953  speedup is 1618.29');
         $aExpectedResult = array('Number of transferred files ( / total): 2 / 1774
 Total transferred file size ( / total): 178 / 640 o
 ');
-        $aRawRsyncResult = explode("\n", 'Number of files: 1774
-Number of files transferred: 2
-Total file size: 640 bytes
-Total transferred file size: 178 bytes
-Literal data: 178 bytes
-Matched data: 0 bytes
-File list size: 39177
-File list generation time: 0.013 seconds
-File list transfer time: 0.000 seconds
-Total bytes sent: 39542
-Total bytes received: 64
-
-sent 39542 bytes  received 64 bytes  26404.00 bytes/sec
-total size is 64093953  speedup is 1618.29');
+        $aRawRsyncResult = array('---[-]-->0|0s', '[CMD]', '...', '[OUT]',
+            'Number of files: 1774',
+            'Number of files transferred: 2',
+            'Total file size: 640 bytes',
+            'Total transferred file size: 178 bytes',
+            'Literal data: 178 bytes',
+            'Matched data: 0 bytes',
+            'File list size: 39177',
+            'File list generation time: 0.013 seconds',
+            'File list transfer time: 0.000 seconds',
+            'Total bytes sent: 39542',
+            'Total bytes received: 64',
+            '',
+            'sent 39542 bytes  received 64 bytes  26404.00 bytes/sec',
+            'total size is 64093953  speedup is 1618.29',
+            '[ERR]', '///'
+        );
 
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
             ->with($this->equalTo('mkdir -p "/destpath/to/my dir"'))
             ->will($this->returnValue(array()));
         $oMockShell->expects($this->at(1))->method('exec')
-            ->with($this->equalTo('rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/srcpath/to/my file" "/destpath/to/my dir"'))
+            ->with($this->equalTo(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "-" "rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e ssh \"/srcpath/to/my file\" \"/destpath/to/my dir\""'))
             ->will($this->returnValue($aRawRsyncResult));
         $oMockShell->expects($this->exactly(2))->method('exec');
 
@@ -908,58 +1158,48 @@ total size is 64093953  speedup is 1618.29');
      * @covers Shell_Adapter::sync
      * @covers Shell_Adapter::_resumeSyncResult
      */
-    public function testSync_LocalFileTo2LocalDirs ()
+    /*public function testSync_LocalFileTo2LocalDirs ()
     {
-        $aExpectedResult = array('Number of transferred files ( / total): 2 / 1774
-Total transferred file size ( / total): <1 / 61 Mio
-', 'Number of transferred files ( / total): 12 / 2774
-Total transferred file size ( / total): <1 / 61 Mio
-');
-        $aRawRsyncResult = explode("\n", 'Number of files: 1774
-Number of files transferred: 2
-Total file size: 64093953 bytes
-Total transferred file size: 178 bytes
-Literal data: 178 bytes
-Matched data: 0 bytes
-File list size: 39177
-File list generation time: 0.013 seconds
-File list transfer time: 0.000 seconds
-Total bytes sent: 39542
-Total bytes received: 64
-
-sent 39542 bytes  received 64 bytes  26404.00 bytes/sec
-total size is 64093953  speedup is 1618.29
-
-Number of files: 2774
-Number of files transferred: 12
-Total file size: 64093953 bytes
-Total transferred file size: 178 bytes
-Literal data: 178 bytes
-Matched data: 0 bytes
-File list size: 39177
-File list generation time: 0.013 seconds
-File list transfer time: 0.000 seconds
-Total bytes sent: 39542
-Total bytes received: 64
-
-sent 39542 bytes  received 64 bytes  26404.00 bytes/sec
-total size is 64093953  speedup is 1618.29');
+        $aExpectedResult = array(
+            'Number of transferred files ( / total): 2 / 1774
+Total transferred file size ( / total): <1 / 61 Mio',
+        );
+        $aRawRsyncResult = array('---[1]-->0|0s', '[CMD]', '...', '[OUT]',
+            'Number of files: 1774',
+            'Number of files transferred: 2',
+            'Total file size: 64093953 bytes',
+            'Total transferred file size: 178 bytes',
+            'Literal data: 178 bytes',
+            'Matched data: 0 bytes',
+            'File list size: 39177',
+            'File list generation time: 0.013 seconds',
+            'File list transfer time: 0.000 seconds',
+            'Total bytes sent: 39542',
+            'Total bytes received: 64',
+            '',
+            'sent 39542 bytes  received 64 bytes  26404.00 bytes/sec',
+            'total size is 64093953  speedup is 1618.29',
+            '[ERR]', '///',
+        );
 
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
-            ->with($this->equalTo('mkdir -p "/destpath/to/my dir"'))
+            ->with($this->equalTo('mkdir -p "/destpath/to/my dir1"'))
             ->will($this->returnValue(array()));
         $oMockShell->expects($this->at(1))->method('exec')
-            ->with($this->equalTo('rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/srcpath/to/my file" "/destpath/to/my dir"'))
+            ->with($this->equalTo('mkdir -p "/destpath/to/my dir2"'))
+            ->will($this->returnValue(array()));
+        $oMockShell->expects($this->at(2))->method('exec')
+            ->with($this->equalTo(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "1 2" "rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e ssh \"/srcpath/to/my file\" \"/destpath/to/my dir[]\""'))
             ->will($this->returnValue($aRawRsyncResult));
-        $oMockShell->expects($this->exactly(2))->method('exec');
+        $oMockShell->expects($this->exactly(3))->method('exec');
 
-        $aResult = $oMockShell->sync('/srcpath/to/my file', '/destpath/to/my dir');
+        $aResult = $oMockShell->sync('/srcpath/to/my file', '/destpath/to/my dir[]', array('1', '2'));
         $this->assertEquals(
             array_map(function($s){return preg_replace('/\s/', '', $s);}, $aExpectedResult),
             array_map(function($s){return preg_replace('/\s/', '', $s);}, $aResult)
         );
-    }
+    }*/
 
     /**
      * @covers Shell_Adapter::sync
@@ -968,14 +1208,14 @@ total size is 64093953  speedup is 1618.29');
     public function testSync_LocalEmptySourceToLocalDir ()
     {
         $aExpectedResult = array('Empty source directory.');
-        $aRawRsyncResult = array();
+        $aRawRsyncResult = array('---[-]-->0|0s', '[CMD]', '...', '[OUT]', '[ERR]', '///');
 
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
             ->with($this->equalTo('mkdir -p "/destpath/to/my dir"'))
             ->will($this->returnValue(array()));
         $oMockShell->expects($this->at(1))->method('exec')
-            ->with($this->equalTo('rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/srcpath/to/my file" "/destpath/to/my dir"'))
+            ->with($this->equalTo(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "-" "rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e ssh \"/srcpath/to/my file\" \"/destpath/to/my dir\""'))
             ->will($this->returnValue($aRawRsyncResult));
         $oMockShell->expects($this->exactly(2))->method('exec');
 
@@ -992,30 +1232,34 @@ total size is 64093953  speedup is 1618.29');
      */
     public function testSync_LocalFilesToLocalDir ()
     {
-        $aExpectedResult = array('Number of transferred files ( / total): 2 / 1774
-Total transferred file size ( / total): <1 / 61 Mio
-');
-        $aRawRsyncResult = explode("\n", 'Number of files: 1774
-Number of files transferred: 2
-Total file size: 64093953 bytes
-Total transferred file size: 178 bytes
-Literal data: 178 bytes
-Matched data: 0 bytes
-File list size: 39177
-File list generation time: 0.013 seconds
-File list transfer time: 0.000 seconds
-Total bytes sent: 39542
-Total bytes received: 64
-
-sent 39542 bytes  received 64 bytes  26404.00 bytes/sec
-total size is 64093953  speedup is 1618.29');
+        $aExpectedResult = array(
+            'Number of transferred files ( / total): 2 / 1774
+Total transferred file size ( / total): <1 / 61 Mio',
+        );
+        $aRawRsyncResult = array('---[-]-->0|0s', '[CMD]', '...', '[OUT]',
+            'Number of files: 1774',
+            'Number of files transferred: 2',
+            'Total file size: 64093953 bytes',
+            'Total transferred file size: 178 bytes',
+            'Literal data: 178 bytes',
+            'Matched data: 0 bytes',
+            'File list size: 39177',
+            'File list generation time: 0.013 seconds',
+            'File list transfer time: 0.000 seconds',
+            'Total bytes sent: 39542',
+            'Total bytes received: 64',
+            '',
+            'sent 39542 bytes  received 64 bytes  26404.00 bytes/sec',
+            'total size is 64093953  speedup is 1618.29',
+            '[ERR]', '///',
+        );
 
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
             ->with($this->equalTo('mkdir -p "/destpath/to/my dir"'))
             ->will($this->returnValue(array()));
         $oMockShell->expects($this->at(1))->method('exec')
-            ->with($this->equalTo('if ls -1 "/srcpath/to/my files" | grep -q .; then rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/srcpath/to/my files/"* "/destpath/to/my dir"; fi'))
+            ->with($this->equalTo(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "-" "if ls -1 \"/srcpath/to/my files\" | grep -q .; then rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e ssh \"/srcpath/to/my files/\"* \"/destpath/to/my dir\"; fi"'))
             ->will($this->returnValue($aRawRsyncResult));
         $oMockShell->expects($this->exactly(2))->method('exec');
 
@@ -1032,30 +1276,34 @@ total size is 64093953  speedup is 1618.29');
      */
     public function testSync_LocalFilesToLocalDirWithLeadingSlash ()
     {
-        $aExpectedResult = array('Number of transferred files ( / total): 2 / 1774
-Total transferred file size ( / total): <1 / 61 Mio
-');
-        $aRawRsyncResult = explode("\n", 'Number of files: 1774
-Number of files transferred: 2
-Total file size: 64093953 bytes
-Total transferred file size: 178 bytes
-Literal data: 178 bytes
-Matched data: 0 bytes
-File list size: 39177
-File list generation time: 0.013 seconds
-File list transfer time: 0.000 seconds
-Total bytes sent: 39542
-Total bytes received: 64
-
-sent 39542 bytes  received 64 bytes  26404.00 bytes/sec
-total size is 64093953  speedup is 1618.29');
+        $aExpectedResult = array(
+            'Number of transferred files ( / total): 2 / 1774
+Total transferred file size ( / total): <1 / 61 Mio',
+        );
+        $aRawRsyncResult = array('---[-]-->0|0s', '[CMD]', '...', '[OUT]',
+            'Number of files: 1774',
+            'Number of files transferred: 2',
+            'Total file size: 64093953 bytes',
+            'Total transferred file size: 178 bytes',
+            'Literal data: 178 bytes',
+            'Matched data: 0 bytes',
+            'File list size: 39177',
+            'File list generation time: 0.013 seconds',
+            'File list transfer time: 0.000 seconds',
+            'Total bytes sent: 39542',
+            'Total bytes received: 64',
+            '',
+            'sent 39542 bytes  received 64 bytes  26404.00 bytes/sec',
+            'total size is 64093953  speedup is 1618.29',
+            '[ERR]', '///',
+        );
 
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
             ->with($this->equalTo('mkdir -p "/destpath/to/my dir"'))
             ->will($this->returnValue(array()));
         $oMockShell->expects($this->at(1))->method('exec')
-            ->with($this->equalTo('rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/srcpath/to/my files/" "/destpath/to/my dir"'))
+            ->with($this->equalTo(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "-" "rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e ssh \"/srcpath/to/my files/\" \"/destpath/to/my dir\""'))
             ->will($this->returnValue($aRawRsyncResult));
         $oMockShell->expects($this->exactly(2))->method('exec');
 
@@ -1075,31 +1323,34 @@ total size is 64093953  speedup is 1618.29');
         $aExpectedResult = array('Number of transferred files ( / total): 2 / 1774
 Total transferred file size ( / total): <1 / 61 Mio
 ');
-        $aRawRsyncResult = explode("\n", 'Number of files: 1774
-Number of files transferred: 2
-Total file size: 64093953 bytes
-Total transferred file size: 178 bytes
-Literal data: 178 bytes
-Matched data: 0 bytes
-File list size: 39177
-File list generation time: 0.013 seconds
-File list transfer time: 0.000 seconds
-Total bytes sent: 39542
-Total bytes received: 64
-
-sent 39542 bytes  received 64 bytes  26404.00 bytes/sec
-total size is 64093953  speedup is 1618.29');
+        $aRawRsyncResult = array('---[-]-->0|0s', '[CMD]', '...', '[OUT]',
+            'Number of files: 1774',
+            'Number of files transferred: 2',
+            'Total file size: 64093953 bytes',
+            'Total transferred file size: 178 bytes',
+            'Literal data: 178 bytes',
+            'Matched data: 0 bytes',
+            'File list size: 39177',
+            'File list generation time: 0.013 seconds',
+            'File list transfer time: 0.000 seconds',
+            'Total bytes sent: 39542',
+            'Total bytes received: 64',
+            '',
+            'sent 39542 bytes  received 64 bytes  26404.00 bytes/sec',
+            'total size is 64093953  speedup is 1618.29',
+            '[ERR]', '///'
+        );
 
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
             ->with($this->equalTo('mkdir -p "/destpath/to/my dir"'))
             ->will($this->returnValue(array()));
         $oMockShell->expects($this->at(1))->method('exec')
-            ->with($this->equalTo('rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --exclude="toto" --exclude="titi" --stats -e ssh "/srcpath/to/my file" "/destpath/to/my dir"'))
+            ->with($this->equalTo(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "-" "rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --exclude=\"toto\" --exclude=\"titi\" --stats -e ssh \"/srcpath/to/my file\" \"/destpath/to/my dir\""'))
             ->will($this->returnValue($aRawRsyncResult));
         $oMockShell->expects($this->exactly(2))->method('exec');
 
-        $aResult = $oMockShell->sync('/srcpath/to/my file', '/destpath/to/my dir', array(), array('toto', 'titi', 'toto', '.bzr/'));
+        $aResult = $oMockShell->sync('/srcpath/to/my file', '/destpath/to/my dir', array(), array(), array('toto', 'titi', 'toto', '.bzr/'));
         $this->assertEquals(
             array_map(function($s){return preg_replace('/\s/', '', $s);}, $aExpectedResult),
             array_map(function($s){return preg_replace('/\s/', '', $s);}, $aResult)
@@ -1115,31 +1366,34 @@ total size is 64093953  speedup is 1618.29');
         $aExpectedResult = array('Number of transferred files ( / total): 2 / 1774
 Total transferred file size ( / total): <1 / 61 Mio
 ');
-        $aRawRsyncResult = explode("\n", 'Number of files: 1774
-Number of files transferred: 2
-Total file size: 64093953 bytes
-Total transferred file size: 178 bytes
-Literal data: 178 bytes
-Matched data: 0 bytes
-File list size: 39177
-File list generation time: 0.013 seconds
-File list transfer time: 0.000 seconds
-Total bytes sent: 39542
-Total bytes received: 64
-
-sent 39542 bytes  received 64 bytes  26404.00 bytes/sec
-total size is 64093953  speedup is 1618.29');
+        $aRawRsyncResult = array('---[-]-->0|0s', '[CMD]', '...', '[OUT]',
+            'Number of files: 1774',
+            'Number of files transferred: 2',
+            'Total file size: 64093953 bytes',
+            'Total transferred file size: 178 bytes',
+            'Literal data: 178 bytes',
+            'Matched data: 0 bytes',
+            'File list size: 39177',
+            'File list generation time: 0.013 seconds',
+            'File list transfer time: 0.000 seconds',
+            'Total bytes sent: 39542',
+            'Total bytes received: 64',
+            '',
+            'sent 39542 bytes  received 64 bytes  26404.00 bytes/sec',
+            'total size is 64093953  speedup is 1618.29',
+            '[ERR]', '///'
+        );
 
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
             ->with($this->equalTo('mkdir -p "/destpath/to/my dir"'))
             ->will($this->returnValue(array()));
         $oMockShell->expects($this->at(1))->method('exec')
-            ->with($this->equalTo('rsync -axz --delete --include="*.js" --include="*.css" --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --exclude="*" --stats -e ssh "/srcpath/to/my file" "/destpath/to/my dir"'))
+            ->with($this->equalTo(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "-" "rsync -axz --delete --include=\"*.js\" --include=\"*.css\" --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --exclude=\"*\" --stats -e ssh \"/srcpath/to/my file\" \"/destpath/to/my dir\""'))
             ->will($this->returnValue($aRawRsyncResult));
         $oMockShell->expects($this->exactly(2))->method('exec');
 
-        $aResult = $oMockShell->sync('/srcpath/to/my file', '/destpath/to/my dir', array('*.js', '*.css'), array('*'));
+        $aResult = $oMockShell->sync('/srcpath/to/my file', '/destpath/to/my dir', array(), array('*.js', '*.css'), array('*'));
         $this->assertEquals(
             array_map(function($s){return preg_replace('/\s/', '', $s);}, $aExpectedResult),
             array_map(function($s){return preg_replace('/\s/', '', $s);}, $aResult)
@@ -1152,26 +1406,50 @@ total size is 64093953  speedup is 1618.29');
      */
     public function testSync_LocalFileToRemotesDir ()
     {
-        $aExpectedResult = array('Number of transferred files ( / total): 2 / 1774
-Total transferred file size ( / total): <1 / 61 Mio
-');
-        $aRawRsyncResult = explode("\n", 'Number of files: 1774
-Number of files transferred: 2
-Total file size: 64093953 bytes
-Total transferred file size: 178 bytes
-Literal data: 178 bytes
-Matched data: 0 bytes
-File list size: 39177
-File list generation time: 0.013 seconds
-File list transfer time: 0.000 seconds
-Total bytes sent: 39542
-Total bytes received: 64
+        $aExpectedResult = array(
+            'Server: server1
+Number of transferred files ( / total): 2 / 1774
+Total transferred file size ( / total): <1 / 61 Mio',
+            'Server: login@server2
+Number of transferred files ( / total): 2 / 177
+Total transferred file size ( / total): <1 / 626 Kio',
+        );
+        $aRawRsyncResult = array('---[server1]-->0|0s', '[CMD]', '...', '[OUT]',
+            'Number of files: 1774',
+            'Number of files transferred: 2',
+            'Total file size: 64093953 bytes',
+            'Total transferred file size: 178 bytes',
+            'Literal data: 178 bytes',
+            'Matched data: 0 bytes',
+            'File list size: 39177',
+            'File list generation time: 0.013 seconds',
+            'File list transfer time: 0.000 seconds',
+            'Total bytes sent: 39542',
+            'Total bytes received: 64',
+            '',
+            'sent 39542 bytes  received 64 bytes  26404.00 bytes/sec',
+            'total size is 64093953  speedup is 1618.29',
+            '[ERR]', '///',
 
-sent 39542 bytes  received 64 bytes  26404.00 bytes/sec
-total size is 64093953  speedup is 1618.29');
-        $sCmd = 'rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/srcpath/to/my file" "server1:/destpath/to/my dir" & \\'
-            . "\n" . 'rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/srcpath/to/my file" "login@server2:/destpath/to/my dir" & \\'
-            . "\n" . 'wait';
+            '---[login@server2]-->0|0s', '[CMD]', '...', '[OUT]',
+            'Number of files: 177',
+            'Number of files transferred: 2',
+            'Total file size: 640939 bytes',
+            'Total transferred file size: 178 bytes',
+            'Literal data: 178 bytes',
+            'Matched data: 0 bytes',
+            'File list size: 39177',
+            'File list generation time: 0.013 seconds',
+            'File list transfer time: 0.000 seconds',
+            'Total bytes sent: 39542',
+            'Total bytes received: 64',
+            '',
+            'sent 39542 bytes  received 64 bytes  26404.00 bytes/sec',
+            'total size is 64093953  speedup is 1618.29',
+            '[ERR]', '///'
+        );
+
+        $sCmd = DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "server1 login@server2" "rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e ssh \"/srcpath/to/my file\" \"[]:/destpath/to/my dir\""';
 
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
@@ -1185,7 +1463,8 @@ total size is 64093953  speedup is 1618.29');
             ->will($this->returnValue($aRawRsyncResult));
         $oMockShell->expects($this->exactly(3))->method('exec');
 
-        $aResult = $oMockShell->sync('/srcpath/to/my file', array('server1:/destpath/to/my dir', 'login@server2:/destpath/to/my dir'));
+        $aResult = $oMockShell->sync('/srcpath/to/my file', '[]:/destpath/to/my dir', array('server1', 'login@server2'));
+
         $this->assertEquals(
             array_map(function($s){return preg_replace('/\s/', '', $s);}, $aExpectedResult),
             array_map(function($s){return preg_replace('/\s/', '', $s);}, $aResult)
@@ -1197,18 +1476,37 @@ total size is 64093953  speedup is 1618.29');
      */
     public function testSync_RemoteDirToRemoteDirWithSameHost ()
     {
+        $aExecResult = array('---[-]-->0|0s', '[CMD]', '...', '[OUT]',
+            'Number of files: 1774',
+            'Number of files transferred: 2',
+            'Total file size: 64093953 bytes',
+            'Total transferred file size: 178 bytes',
+            'Literal data: 178 bytes',
+            'Matched data: 0 bytes',
+            'File list size: 39177',
+            'File list generation time: 0.013 seconds',
+            'File list transfer time: 0.000 seconds',
+            'Total bytes sent: 39542',
+            'Total bytes received: 64',
+            '',
+            'sent 39542 bytes  received 64 bytes  26404.00 bytes/sec',
+            'total size is 64093953  speedup is 1618.29',
+            '[ERR]', '///'
+        );
+
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
             ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
                 . 'mkdir -p "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
             ->will($this->returnValue(array()));
         $oMockShell->expects($this->at(1))->method('exec')
-            ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
-                . 'rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --exclude="smarty/*/wrt*" --exclude="smarty/**/wrt*" --stats -e ssh "/srcpath/to/my dir" "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
-            ->will($this->returnValue(array()));
+            ->with($this->equalTo(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "-" "ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
+                . 'rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --exclude=\"smarty/*/wrt*\" --exclude=\"smarty/**/wrt*\" --stats -e ssh \"/srcpath/to/my dir\" \"/destpath/to/my dir\"' . "\n"
+                . 'EOF' . "\n" . '"'))
+            ->will($this->returnValue($aExecResult));
         $oMockShell->expects($this->exactly(2))->method('exec');
 
-        $oMockShell->sync('user@server:/srcpath/to/my dir', 'user@server:/destpath/to/my dir', array(), array('smarty/*/wrt*', 'smarty/**/wrt*'));
+        $oMockShell->sync('user@server:/srcpath/to/my dir', 'user@server:/destpath/to/my dir', array(), array(), array('smarty/*/wrt*', 'smarty/**/wrt*'));
     }
 
     /**
@@ -1216,15 +1514,34 @@ total size is 64093953  speedup is 1618.29');
      */
     public function testSync_RemoteDirToRemoteDirWithDifferentHost ()
     {
+        $aExecResult = array('---[-]-->0|0s', '[CMD]', '...', '[OUT]',
+            'Number of files: 1774',
+            'Number of files transferred: 2',
+            'Total file size: 64093953 bytes',
+            'Total transferred file size: 178 bytes',
+            'Literal data: 178 bytes',
+            'Matched data: 0 bytes',
+            'File list size: 39177',
+            'File list generation time: 0.013 seconds',
+            'File list transfer time: 0.000 seconds',
+            'Total bytes sent: 39542',
+            'Total bytes received: 64',
+            '',
+            'sent 39542 bytes  received 64 bytes  26404.00 bytes/sec',
+            'total size is 64093953  speedup is 1618.29',
+            '[ERR]', '///'
+        );
+
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
             ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T server2 /bin/bash <<EOF' . "\n"
                 . 'mkdir -p "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
             ->will($this->returnValue(array()));
         $oMockShell->expects($this->at(1))->method('exec')
-            ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server1 /bin/bash <<EOF' . "\n"
-                . 'rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/srcpath/to/my dir" "server2:/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
-            ->will($this->returnValue(array()));
+            ->with($this->equalTo(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "-" "ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server1 /bin/bash <<EOF' . "\n"
+                . 'rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e ssh \"/srcpath/to/my dir\" \"server2:/destpath/to/my dir\"' . "\n"
+                . 'EOF' . "\n" . '"'))
+            ->will($this->returnValue($aExecResult));
         $oMockShell->expects($this->exactly(2))->method('exec');
 
         $oMockShell->sync('user@server1:/srcpath/to/my dir', 'server2:/destpath/to/my dir');
@@ -1233,10 +1550,117 @@ total size is 64093953  speedup is 1618.29');
     /**
      * @covers Shell_Adapter::sync
      */
-    public function testSyncRemoteDirToLocalDirsThrowException () {
-        $this->setExpectedException('RuntimeException', 'Not yet implemented!');
-        $this->oShell->sync('user@server1:/srcpath/to/my dir', array('/destpath/to/my dir1', '/destpath/to/my dir2'));
+    public function testSync_RemoteDirToLocalDir ()
+    {
+        $aExecResult = array('---[-]-->0|0s', '[CMD]', '...', '[OUT]',
+            'Number of files: 1774',
+            'Number of files transferred: 2',
+            'Total file size: 64093953 bytes',
+            'Total transferred file size: 178 bytes',
+            'Literal data: 178 bytes',
+            'Matched data: 0 bytes',
+            'File list size: 39177',
+            'File list generation time: 0.013 seconds',
+            'File list transfer time: 0.000 seconds',
+            'Total bytes sent: 39542',
+            'Total bytes received: 64',
+            '',
+            'sent 39542 bytes  received 64 bytes  26404.00 bytes/sec',
+            'total size is 64093953  speedup is 1618.29',
+            '[ERR]', '///'
+        );
+
+        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+        $oMockShell->expects($this->at(0))->method('exec')
+            ->with($this->equalTo('mkdir -p "/destpath/to/my dir"'))
+            ->will($this->returnValue(array()));
+        $oMockShell->expects($this->at(1))->method('exec')
+            ->with($this->equalTo(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "-" "rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e ssh \"user@server1:/srcpath/to/my dir\" \"/destpath/to/my dir\""'))
+            ->will($this->returnValue($aExecResult));
+        $oMockShell->expects($this->exactly(2))->method('exec');
+
+        $oMockShell->sync('user@server1:/srcpath/to/my dir', '/destpath/to/my dir');
     }
+
+    /**
+     * @covers Shell_Adapter::sync
+     */
+    public function testSync_RemoteDirToMultiRemotesDirWithDifferentHost ()
+    {
+        $aExpectedResult = array(
+            'Server: aai-01
+Number of transferred files ( / total): 2 / 1774
+Total transferred file size ( / total): <1 / 61 Mio',
+            'Server: aai@aai-02
+Number of transferred files ( / total): 2 / 177
+Total transferred file size ( / total): <1 / 6 Kio',
+        );
+        $aExecResult = array('---[aai-01]-->0|0s', '[CMD]', '...', '[OUT]',
+            'Number of files: 1774',
+            'Number of files transferred: 2',
+            'Total file size: 64093953 bytes',
+            'Total transferred file size: 178 bytes',
+            'Literal data: 178 bytes',
+            'Matched data: 0 bytes',
+            'File list size: 39177',
+            'File list generation time: 0.013 seconds',
+            'File list transfer time: 0.000 seconds',
+            'Total bytes sent: 39542',
+            'Total bytes received: 64',
+            '',
+            'sent 39542 bytes  received 64 bytes  26404.00 bytes/sec',
+            'total size is 64093953  speedup is 1618.29',
+            '[ERR]', '///',
+
+            '---[aai@aai-02]-->0|0s', '[CMD]', '...', '[OUT]',
+            'Number of files: 177',
+            'Number of files transferred: 2',
+            'Total file size: 6409 bytes',
+            'Total transferred file size: 178 bytes',
+            'Literal data: 178 bytes',
+            'Matched data: 0 bytes',
+            'File list size: 39177',
+            'File list generation time: 0.013 seconds',
+            'File list transfer time: 0.000 seconds',
+            'Total bytes sent: 39542',
+            'Total bytes received: 64',
+            '',
+            'sent 39542 bytes  received 64 bytes  26404.00 bytes/sec',
+            'total size is 64093953  speedup is 1618.29',
+            '[ERR]', '///',
+        );
+
+        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
+        $oMockShell->expects($this->at(0))->method('exec')
+            ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T aai-01 /bin/bash <<EOF' . "\n"
+                . 'mkdir -p "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
+            ->will($this->returnValue(array()));
+        $oMockShell->expects($this->at(1))->method('exec')
+            ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T aai@aai-02 /bin/bash <<EOF' . "\n"
+                . 'mkdir -p "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
+            ->will($this->returnValue(array()));
+        $oMockShell->expects($this->at(2))->method('exec')
+            ->with($this->equalTo(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "aai-01 aai@aai-02" "ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server1 /bin/bash <<EOF' . "\n"
+                . 'rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e ssh \"/srcpath/to/my dir\" \"[]:/destpath/to/my dir\"' . "\n"
+                . 'EOF' . "\n" . '"'))
+            ->will($this->returnValue($aExecResult));
+        $oMockShell->expects($this->exactly(3))->method('exec');
+
+        $aResult = $oMockShell->sync('user@server1:/srcpath/to/my dir', '[]:/destpath/to/my dir', array('aai-01', 'aai@aai-02'));
+
+        $this->assertEquals(
+            array_map(function($s){return preg_replace('/\s/', '', $s);}, $aExpectedResult),
+            array_map(function($s){return preg_replace('/\s/', '', $s);}, $aResult)
+        );
+    }
+
+    /**
+     * @covers Shell_Adapter::sync
+     */
+    /*public function testSyncRemoteDirToLocalDirsThrowException () {
+        $this->setExpectedException('RuntimeException', 'Not yet implemented!');
+        $this->oShell->sync('user@server1:/srcpath/to/my dir', '/destpath/to/my dir[]', array('1', '2'));
+    }*/
 
     /**
      * @covers Shell_Adapter::createLink

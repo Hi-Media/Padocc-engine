@@ -174,19 +174,23 @@ class Task_Base_Environment extends Task_Base_Target
         $this->_oLogger->log('If needed, make transition to symlinks:');
         $this->_oLogger->indent();
         $sBaseSymLink = $this->_oProperties->getProperty('basedir');
-        $sPath = '${' . self::SERVERS_CONCERNED_WITH_BASE_DIR . '}:' . $sBaseSymLink;
+        $aServers = $this->_expandPath('${' . self::SERVERS_CONCERNED_WITH_BASE_DIR . '}');
         $bTransitionMade = false;
-        foreach ($this->_expandPath($sPath) as $sExpandedPath) {
-            if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_PathStatus::STATUS_DIR) {
+
+        $aPathStatusResult = $this->_oShell->getParallelSSHPathStatus($sBaseSymLink, $aServers);
+        foreach ($aServers as $sServer) {
+            $sExpandedPath = $sServer . ':' . $sBaseSymLink;
+            if ($aPathStatusResult[$sServer] === Shell_PathStatus::STATUS_DIR) {
                 $bTransitionMade = true;
-                list(, $sServer, ) = $this->_oShell->isRemotePath($sExpandedPath);
                 $sDir = $sExpandedPath . '/';
                 $sOriginRelease = $sServer . ':' . $sBaseSymLink . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX
                                 . '/' . $this->_oProperties->getProperty('execution_id') . '_origin';
                 $this->_oLogger->log("Backup '$sDir' to '$sOriginRelease'.");
+                $this->_oLogger->indent();
                 $this->_oShell->sync($sDir, $sOriginRelease, array(), self::$_aSmartyRsyncExclude);
                 $this->_oShell->remove($sExpandedPath);
                 $this->_oShell->createLink($sExpandedPath, $sOriginRelease);
+                $this->_oLogger->unindent();
             }
         }
         if ( ! $bTransitionMade) {
@@ -233,14 +237,16 @@ class Task_Base_Environment extends Task_Base_Target
         $this->_oLogger->log('Initialize with content of previous release:');
         $this->_oLogger->indent();
         $sBaseSymLink = $this->_oProperties->getProperty('basedir');
-        $sPath = '${' . self::SERVERS_CONCERNED_WITH_BASE_DIR . '}:' . $sBaseSymLink;
+        $aServers = $this->_expandPath('${' . self::SERVERS_CONCERNED_WITH_BASE_DIR . '}');
         $sReleaseSymLink = $sBaseSymLink . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX
                          . '/' . $this->_oProperties->getProperty('execution_id');
-        foreach ($this->_expandPath($sPath) as $sExpandedPath) {
-            list(, $sServer, ) = $this->_oShell->isRemotePath($sExpandedPath);
+
+        $aPathStatusResult = $this->_oShell->getParallelSSHPathStatus($sBaseSymLink, $aServers);
+        foreach ($aServers as $sServer) {
+            $sExpandedPath = $sServer . ':' . $sBaseSymLink;
             $sDir = $sExpandedPath . '/';
             $sDest = $sServer . ':' . $sReleaseSymLink;
-            if ($this->_oShell->getPathStatus($sExpandedPath) === Shell_PathStatus::STATUS_SYMLINKED_DIR) {
+            if ($aPathStatusResult[$sServer] === Shell_PathStatus::STATUS_SYMLINKED_DIR) {
                 $this->_oLogger->log("Initialize '$sDest' with previous release.");
                 $this->_oLogger->indent();
                 $aResults = $this->_oShell->sync($sDir, $sDest, array(), self::$_aSmartyRsyncExclude);

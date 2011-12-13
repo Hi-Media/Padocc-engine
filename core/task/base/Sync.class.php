@@ -86,14 +86,20 @@ class Task_Base_Sync extends Task
                           ? array()
                           : explode(' ', $this->_aAttributes['exclude']));
 
-        $aResults = $this->_oShell->sync(
-            $this->_processSimplePath($this->_aAttributes['src']),
-            $this->_processPath($this->_aAttributes['destdir']),
-            $aIncludedPaths,
-            $aExcludedPaths
-        );
-        foreach ($aResults as $sResult) {
-            $this->_oLogger->log($sResult);
+        list($bIsDestRemote, $sDestServer, $sDestRawPath) =
+            $this->_oShell->isRemotePath($this->_aAttributes['destdir']);
+        $sDestPath = ($bIsDestRemote ? '[]:' . $sDestRawPath : $sDestRawPath);
+        foreach ($this->_processPath($sDestPath) as $sDestRealPath) {
+            $aResults = $this->_oShell->sync(
+                $this->_processSimplePath($this->_aAttributes['src']),
+                $this->_processSimplePath($sDestRealPath),
+                $this->_processPath($sDestServer),
+                $aIncludedPaths,
+                $aExcludedPaths
+            );
+            foreach ($aResults as $sResult) {
+                $this->_oLogger->log($sResult);
+            }
         }
         $this->_oLogger->unindent();
         $this->_oLogger->unindent();

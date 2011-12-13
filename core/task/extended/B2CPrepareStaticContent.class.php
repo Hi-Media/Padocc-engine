@@ -73,7 +73,7 @@ class Task_Extended_B2CPrepareStaticContent extends Task
                 list(, $sServer, ) = $this->_oShell->isRemotePath($sExpandedPath);
                 $sSrcDir = $sExpandedPath . '/';
                 $sDestDir = $sServer
-                          . ':' . $this->_oProperties->getProperty('static_basedir')
+                          . ':' . $this->_processSimplePath($this->_oProperties->getProperty('static_basedir'))
                           . '/' . $this->_oProperties->getProperty('execution_id');
                 $this->_oLogger->log("Initialize '$sDestDir' with previous release.");
                 $this->_oLogger->indent();

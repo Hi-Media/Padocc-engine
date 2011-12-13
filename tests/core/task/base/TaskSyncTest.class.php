@@ -34,11 +34,11 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase
      * @param string $sCmd commande Shell qui aurait dûe être exécutée.
      * @see $aShellExecCmds
      */
-   public function shellExecCallback ($sCmd)
+    /*public function shellExecCallback ($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
         return array();
-    }
+    }*/
 
     /**
      * Sets up the fixture, for example, open a network connection.
@@ -50,8 +50,8 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
 
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($oLogger));
-        $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
-        $this->aShellExecCmds = array();
+        //$oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
+        //$this->aShellExecCmds = array();
 
         $oClass = new ReflectionClass('Shell_Adapter');
         $oProperty = $oClass->getProperty('_aFileStatus');
@@ -148,15 +148,38 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase
      */
     public function testExecute_WithSrcDir ()
     {
+        $aRawRsyncResult = array('---[-]-->0|0s', '[CMD]', '...', '[OUT]',
+            'Number of files: 1774',
+            'Number of files transferred: 2',
+            'Total file size: 64093953 bytes',
+            'Total transferred file size: 178 bytes',
+            'Literal data: 178 bytes',
+            'Matched data: 0 bytes',
+            'File list size: 39177',
+            'File list generation time: 0.013 seconds',
+            'File list transfer time: 0.000 seconds',
+            'Total bytes sent: 39542',
+            'Total bytes received: 64',
+            '',
+            'sent 39542 bytes  received 64 bytes  26404.00 bytes/sec',
+            'total size is 64093953  speedup is 1618.29',
+            '[ERR]', '///',
+        );
+
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
-        $oMockProperties->expects($this->at(0))->method('getProperty')
+        $oMockProperties->expects($this->any())->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
-        $oMockProperties->expects($this->at(1))->method('getProperty')
-            ->with($this->equalTo('with_symlinks'))
-            ->will($this->returnValue('false'));
-        $oMockProperties->expects($this->exactly(2))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
+
+        $oMockShell = $this->oServiceContainer->getShellAdapter();
+        $oMockShell->expects($this->at(0))->method('exec')
+            ->with($this->equalTo('mkdir -p "/path/to/destdir/srcdir"'))
+            ->will($this->returnValue(array()));
+        $oMockShell->expects($this->at(1))->method('exec')
+            ->with($this->equalTo(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "-" "rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --exclude=\"to_exclude.*\" --exclude=\"config.php\" --stats -e ssh \"/path/to/srcdir/\" \"/path/to/destdir/srcdir\""'))
+            ->will($this->returnValue($aRawRsyncResult));
+        $oMockShell->expects($this->exactly(2))->method('exec');
 
         $oTaskCopy = Task_Base_Sync::getNewInstance(array(
             'src' => '/path/to/srcdir',
@@ -165,10 +188,6 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase
         ), $this->oMockProject, $this->oServiceContainer);
         $oTaskCopy->setUp();
         $oTaskCopy->execute();
-        $this->assertEquals(array(
-            'mkdir -p "/path/to/destdir/srcdir"',
-            'rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --exclude="to_exclude.*" --exclude="config.php" --stats -e ssh "/path/to/srcdir/" "/path/to/destdir/srcdir"'
-        ), $this->aShellExecCmds);
     }
 
     /**
@@ -179,15 +198,38 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase
      */
     public function testExecute_WithSrcDirAndInclude ()
     {
+        $aRawRsyncResult = array('---[-]-->0|0s', '[CMD]', '...', '[OUT]',
+            'Number of files: 1774',
+            'Number of files transferred: 2',
+            'Total file size: 64093953 bytes',
+            'Total transferred file size: 178 bytes',
+            'Literal data: 178 bytes',
+            'Matched data: 0 bytes',
+            'File list size: 39177',
+            'File list generation time: 0.013 seconds',
+            'File list transfer time: 0.000 seconds',
+            'Total bytes sent: 39542',
+            'Total bytes received: 64',
+            '',
+            'sent 39542 bytes  received 64 bytes  26404.00 bytes/sec',
+            'total size is 64093953  speedup is 1618.29',
+            '[ERR]', '///',
+        );
+
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
-        $oMockProperties->expects($this->at(0))->method('getProperty')
+        $oMockProperties->expects($this->any())->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
-        $oMockProperties->expects($this->at(1))->method('getProperty')
-            ->with($this->equalTo('with_symlinks'))
-            ->will($this->returnValue('false'));
-        $oMockProperties->expects($this->exactly(2))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
+
+        $oMockShell = $this->oServiceContainer->getShellAdapter();
+        $oMockShell->expects($this->at(0))->method('exec')
+            ->with($this->equalTo('mkdir -p "/path/to/destdir/srcdir"'))
+            ->will($this->returnValue(array()));
+        $oMockShell->expects($this->at(1))->method('exec')
+            ->with($this->equalTo(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "-" "rsync -axz --delete --include=\"*.js\" --include=\"*.css\" --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e ssh \"/path/to/srcdir/\" \"/path/to/destdir/srcdir\""'))
+            ->will($this->returnValue($aRawRsyncResult));
+        $oMockShell->expects($this->exactly(2))->method('exec');
 
         $oTaskCopy = Task_Base_Sync::getNewInstance(array(
             'src' => '/path/to/srcdir',
@@ -196,10 +238,6 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase
         ), $this->oMockProject, $this->oServiceContainer);
         $oTaskCopy->setUp();
         $oTaskCopy->execute();
-        $this->assertEquals(array(
-            'mkdir -p "/path/to/destdir/srcdir"',
-            'rsync -axz --delete --include="*.js" --include="*.css" --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/path/to/srcdir/" "/path/to/destdir/srcdir"'
-        ), $this->aShellExecCmds);
     }
 
     /**
@@ -210,15 +248,38 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase
      */
     public function testExecute_WithSrcDirAndIncludeAndExclude ()
     {
+        $aRawRsyncResult = array('---[-]-->0|0s', '[CMD]', '...', '[OUT]',
+            'Number of files: 1774',
+            'Number of files transferred: 2',
+            'Total file size: 64093953 bytes',
+            'Total transferred file size: 178 bytes',
+            'Literal data: 178 bytes',
+            'Matched data: 0 bytes',
+            'File list size: 39177',
+            'File list generation time: 0.013 seconds',
+            'File list transfer time: 0.000 seconds',
+            'Total bytes sent: 39542',
+            'Total bytes received: 64',
+            '',
+            'sent 39542 bytes  received 64 bytes  26404.00 bytes/sec',
+            'total size is 64093953  speedup is 1618.29',
+            '[ERR]', '///',
+        );
+
         $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
-        $oMockProperties->expects($this->at(0))->method('getProperty')
+        $oMockProperties->expects($this->any())->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
-        $oMockProperties->expects($this->at(1))->method('getProperty')
-            ->with($this->equalTo('with_symlinks'))
-            ->will($this->returnValue('false'));
-        $oMockProperties->expects($this->exactly(2))->method('getProperty');
         $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
+
+        $oMockShell = $this->oServiceContainer->getShellAdapter();
+        $oMockShell->expects($this->at(0))->method('exec')
+            ->with($this->equalTo('mkdir -p "/path/to/destdir/srcdir"'))
+            ->will($this->returnValue(array()));
+        $oMockShell->expects($this->at(1))->method('exec')
+            ->with($this->equalTo(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "-" "rsync -axz --delete --include=\"*.js\" --include=\"*.css\" --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --exclude=\"to_exclude.*\" --exclude=\"config.php\" --stats -e ssh \"/path/to/srcdir/\" \"/path/to/destdir/srcdir\""'))
+            ->will($this->returnValue($aRawRsyncResult));
+        $oMockShell->expects($this->exactly(2))->method('exec');
 
         $oTaskCopy = Task_Base_Sync::getNewInstance(array(
             'src' => '/path/to/srcdir',
@@ -228,10 +289,6 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase
         ), $this->oMockProject, $this->oServiceContainer);
         $oTaskCopy->setUp();
         $oTaskCopy->execute();
-        $this->assertEquals(array(
-            'mkdir -p "/path/to/destdir/srcdir"',
-            'rsync -axz --delete --include="*.js" --include="*.css" --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --exclude="to_exclude.*" --exclude="config.php" --stats -e ssh "/path/to/srcdir/" "/path/to/destdir/srcdir"'
-        ), $this->aShellExecCmds);
     }
 
     /**
@@ -242,27 +299,39 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase
      */
     public function testExecute_WithSrcDirAndSymLinks ()
     {
-        $oMockProperties = $this->getMock('Properties_Adapter', array('getProperty'), array($this->oServiceContainer->getShellAdapter()));
-        $oMockProperties->expects($this->at(0))->method('getProperty')
-            ->with($this->equalTo('with_symlinks'))
-            ->will($this->returnValue('true'));
-        $oMockProperties->expects($this->at(1))->method('getProperty')
-            ->with($this->equalTo('basedir'))
-            ->will($this->returnValue('/path/to/destdir'));
-        $oMockProperties->expects($this->at(2))->method('getProperty')
-            ->with($this->equalTo('execution_id'))
-            ->will($this->returnValue('12345'));
-        $oMockProperties->expects($this->at(3))->method('getProperty')
-            ->with($this->equalTo('with_symlinks'))
-            ->will($this->returnValue('true'));
-        $oMockProperties->expects($this->at(4))->method('getProperty')
-            ->with($this->equalTo('basedir'))
-            ->will($this->returnValue('/path/to/destdir'));
-        $oMockProperties->expects($this->at(5))->method('getProperty')
-            ->with($this->equalTo('execution_id'))
-            ->will($this->returnValue('12345'));
-        $oMockProperties->expects($this->exactly(6))->method('getProperty');
-        $this->oServiceContainer->setPropertiesAdapter($oMockProperties);
+        $aRawRsyncResult = array('---[user@server]-->0|0s', '[CMD]', '...', '[OUT]',
+            'Number of files: 1774',
+            'Number of files transferred: 2',
+            'Total file size: 64093953 bytes',
+            'Total transferred file size: 178 bytes',
+            'Literal data: 178 bytes',
+            'Matched data: 0 bytes',
+            'File list size: 39177',
+            'File list generation time: 0.013 seconds',
+            'File list transfer time: 0.000 seconds',
+            'Total bytes sent: 39542',
+            'Total bytes received: 64',
+            '',
+            'sent 39542 bytes  received 64 bytes  26404.00 bytes/sec',
+            'total size is 64093953  speedup is 1618.29',
+            '[ERR]', '///',
+        );
+
+        $oProperty = $this->oServiceContainer->getPropertiesAdapter();
+        $oProperty->setProperty('with_symlinks', 'true');
+        $oProperty->setProperty('basedir', '/path/to/destdir');
+        $oProperty->setProperty('execution_id', '12345');
+
+        $oMockShell = $this->oServiceContainer->getShellAdapter();
+        $oMockShell->expects($this->at(0))->method('exec')
+            ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
+                . 'mkdir -p "/path/to/destdir_releases/12345/srcdir"' . "\n"
+                . 'EOF' . "\n"))
+            ->will($this->returnValue(array()));
+        $oMockShell->expects($this->at(1))->method('exec')
+            ->with($this->equalTo(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "user@server" "rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e ssh \"/path/to/srcdir/\" \"[]:/path/to/destdir_releases/12345/srcdir\""'))
+            ->will($this->returnValue($aRawRsyncResult));
+        $oMockShell->expects($this->exactly(2))->method('exec');
 
         $oTaskCopy = Task_Base_Sync::getNewInstance(array(
             'src' => '/path/to/srcdir',
@@ -270,11 +339,5 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase
         ), $this->oMockProject, $this->oServiceContainer);
         $oTaskCopy->setUp();
         $oTaskCopy->execute();
-        $this->assertEquals(array(
-            'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
-                . 'mkdir -p "/path/to/destdir_releases/12345/srcdir"' . "\n"
-                . 'EOF' . "\n",
-            'rsync -axz --delete --exclude=".bzr/" --exclude=".cvsignore" --exclude=".git/" --exclude=".gitignore" --exclude=".svn/" --exclude="cvslog.*" --exclude="CVS" --exclude="CVS.adm" --stats -e ssh "/path/to/srcdir/" "user@server:/path/to/destdir_releases/12345/srcdir"'
-        ), $this->aShellExecCmds);
     }
 }
