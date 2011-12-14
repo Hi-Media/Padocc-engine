@@ -240,74 +240,50 @@ class Task_Base_Environment extends Task_Base_Target
         $aServers = $this->_expandPath('${' . self::SERVERS_CONCERNED_WITH_BASE_DIR . '}');
         $sReleaseSymLink = $sBaseSymLink . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX
                          . '/' . $this->_oProperties->getProperty('execution_id');
-
         $aPathStatusResult = $this->_oShell->getParallelSSHPathStatus($sBaseSymLink, $aServers);
+
+        // Recherche des serveurs que l'on peut initialiser :
+        $aServersToInit = array();
         foreach ($aServers as $sServer) {
-            $sExpandedPath = $sServer . ':' . $sBaseSymLink;
-            $sDir = $sExpandedPath . '/';
-            $sDest = $sServer . ':' . $sReleaseSymLink;
-            if ($aPathStatusResult[$sServer] === Shell_PathStatus::STATUS_SYMLINKED_DIR) {
-                $this->_oLogger->log("Initialize '$sDest' with previous release.");
-                $this->_oLogger->indent();
-                $aResults = $this->_oShell->sync($sDir, $sDest, array(), self::$_aSmartyRsyncExclude);
-                foreach ($aResults as $sResult) {
-                    $this->_oLogger->log($sResult);
-                }
-                $this->_oLogger->unindent();
+            if ($aPathStatusResult[$sServer] == Shell_PathStatus::STATUS_SYMLINKED_DIR) {
+                $aServersToInit[] = $sServer;
             } else {
-                $this->_oLogger->log("No previous release to initialize '$sDest'.");
+                $this->_oLogger->log("No previous release to initialize '$sServer:$sReleaseSymLink'.");
             }
         }
+
+        // Initialisation de ces serveurs :
+        $aResults = $this->_oShell->sync("[]:$sBaseSymLink/", '[]:' . $sReleaseSymLink, $aServersToInit);
+        foreach ($aResults as $sResult) {
+            $this->_oLogger->log($sResult);
+        }
+
         $this->_oLogger->unindent();
     }
 
     /**
      * Retourne la liste triée chronologiquement des différentes releases présentes à l'endroit spécifié.
      *
-     * @param string $sExpandedPath au format [[user@]servername_or_ip:]/path
-     * @return array tableau indexé des releases de la plus jeune à la plus vieille
+     * @param string $sExpandedPath chemin sans serveur
+     * @param array $aServers liste de serveurs au format [user@]servername_or_ip
+     * @return array tableau associatif "sServer" => aReleases,
+     * où aReleases est la liste des releases du serveur associé, de la plus jeune à la plus vieille.
      */
-    private function _getAllReleases ($sExpandedPath)
+    private function _getAllReleases ($sExpandedPath, array $aServers)
     {
         $sPattern = '^[0-9]{14}_[0-9]{5}(_origin)?$';
         $sCmd = "if [ -d %1\$s ] && ls -1 %1\$s | grep -qE '$sPattern'; "
               . "then ls -1 %1\$s | grep -E '$sPattern'; fi";
-        $aAllReleases = $this->_oShell->execSSH($sCmd, $sExpandedPath);
-        sort($aAllReleases);
-        return array_reverse($aAllReleases);
-    }
+        $sSSHCmd = $this->_oShell->buildSSHCmd($sCmd, '[]:' . $sExpandedPath);
+        $aParallelResult = $this->_oShell->parallelize($aServers, $sSSHCmd);
 
-    /**
-     * Supprime les vieilles releases surnuméraires sur un serveur donné.
-     *
-     * @param string $sExpandedPath au format [[user@]servername_or_ip:]/path
-     * @see self::$_iDefaultMaxNbReleases
-     */
-    private function _removeOldestReleasesInOneDirectory ($sExpandedPath)
-    {
-        $aAllReleases = $this->_getAllReleases($sExpandedPath);
-        $iNbReleases = count($aAllReleases);
-        if ($iNbReleases === 0) {
-            $this->_oLogger->log('No release found.');
-        } else {
-            $bIsQuotaExceeded = ($iNbReleases > self::$_iDefaultMaxNbReleases);
-            $sMsg = $iNbReleases . ' release(s) found: quota '
-                  . ($bIsQuotaExceeded ? 'exceeded' : 'not exceeded')
-                  . ' (' . self::$_iDefaultMaxNbReleases . ' backups max).';
-            $this->_oLogger->log($sMsg);
-            if ($bIsQuotaExceeded) {
-                $aReleasesToDelete = array_slice($aAllReleases, self::$_iDefaultMaxNbReleases);
-                $sMsg = 'Release(s) deleted (the oldest): ' . implode(', ', $aReleasesToDelete) . '.';
-                $sFirst = $sExpandedPath . '/' . array_shift($aReleasesToDelete);
-                $sCmd = 'rm -rf %s';
-                if (count($aReleasesToDelete) > 0) {
-                    list(, , $sRealPath) = $this->_oShell->isRemotePath($sExpandedPath);
-                    $sCmd .= ' ' . $sRealPath . '/' . implode(' ' . $sRealPath . '/', $aReleasesToDelete);
-                }
-                $this->_oShell->execSSH($sCmd, $sFirst);
-                $this->_oLogger->log($sMsg);
-            }
+        foreach ($aParallelResult as $aServerResult) {
+            $sServer = $aServerResult['value'];
+            $aReleases = explode("\n", trim($aServerResult['output']));
+            sort($aReleases);
+            $aAllReleases[$sServer] = array_reverse($aReleases);
         }
+        return $aAllReleases;
     }
 
     /**
@@ -317,19 +293,54 @@ class Task_Base_Environment extends Task_Base_Target
     {
         $this->_oLogger->log('Remove too old releases:');
         $this->_oLogger->indent();
+
         if ($this->_oProperties->getProperty(self::SERVERS_CONCERNED_WITH_BASE_DIR) == '') {
             $this->_oLogger->log('No release found.');
         } else {
-            $sBaseSymLink = $this->_oProperties->getProperty('basedir');
-            $sPath = '${' . self::SERVERS_CONCERNED_WITH_BASE_DIR . '}:'
-                   . $sBaseSymLink . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX;
-            foreach ($this->_expandPath($sPath) as $sExpandedPath) {
-                list(, $sServer, ) = $this->_oShell->isRemotePath($sExpandedPath);
-                $this->_oLogger->log("Check " . $sServer . ':');
-                $this->_oLogger->indent();
-                $this->_removeOldestReleasesInOneDirectory($sExpandedPath);
-                $this->_oLogger->unindent();
+
+            // Check releases:
+            $sBaseSymLink = $this->_oProperties->getProperty('basedir') . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX;
+            $aServers = $this->_expandPath('${' . self::SERVERS_CONCERNED_WITH_BASE_DIR . '}');
+            $this->_oLogger->log('Check releases on each server.');
+            $this->_oLogger->indent();
+            $aAllReleases = $this->_getAllReleases($sBaseSymLink, $aServers);
+            $this->_oLogger->unindent();
+
+            // Identification des releases à supprimer :
+            $aAllReleasesToDelete = array();
+            foreach ($aAllReleases as $sServer => $aReleases) {
+                $iNbReleases = count($aReleases);
+                if ($iNbReleases === 0) {
+                    $this->_oLogger->log("No release found on server '$sServer'.");
+                } else {
+                    $bIsQuotaExceeded = ($iNbReleases > self::$_iDefaultMaxNbReleases);
+                    $sMsg = $iNbReleases . " release(s) found on server '$sServer': quota "
+                          . ($bIsQuotaExceeded ? 'exceeded' : 'not exceeded')
+                          . ' (' . self::$_iDefaultMaxNbReleases . ' backups max).';
+                    $this->_oLogger->log($sMsg);
+
+                    if ($bIsQuotaExceeded) {
+                        $aReleasesToDelete = array_slice($aReleases, self::$_iDefaultMaxNbReleases);
+                        foreach ($aReleasesToDelete as $sReleaseToDelete) {
+                            $aAllReleasesToDelete[$sReleaseToDelete][] = $sServer;
+                        }
+                    }
+                }
             }
+
+            // Suppression des releases surnuméraires les plus vieilles :
+            foreach ($aAllReleasesToDelete as $sRelease => $aServers) {
+                if ( ! empty($sRelease)) {
+                    $sMsg = "Remove release '$sRelease' on following server(s): " . implode(', ', $aServers) . '.';
+                    $this->_oLogger->log($sMsg);
+                    $this->_oLogger->indent();
+                    $sPath = "[]:$sBaseSymLink/$sRelease";
+                    $sSSHCmd = $this->_oShell->buildSSHCmd('rm -rf %s', $sPath);
+                    $aParallelResult = $this->_oShell->parallelize($aServers, $sSSHCmd);
+                    $this->_oLogger->unindent();
+                }
+            }
+
         }
         $this->_oLogger->unindent();
     }

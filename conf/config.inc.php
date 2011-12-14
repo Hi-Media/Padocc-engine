@@ -75,11 +75,20 @@ define('DEPLOYMENT_JSMIN_BIN_PATH', DEPLOYMENT_LIB_DIR . '/minifier/jsmin/jsmin'
 define('DEPLOYMENT_TMP_DIR', '/tmp');
 
 /**
+ * Nombre maximal de processus lancés en parallèle par parallelize.inc.sh.
+ * @var int
+ * @see Shell_Interface::parallelize()
+ */
+define('DEPLOYMENT_PARALLELIZATION_MAX_NB_PROCESSES', 10);
+
+/**
  * Nombre maximal d'exécutions shell rsync en parallèle.
+ * Prioritaire sur DEPLOYMENT_PARALLELIZATION_MAX_NB_PROCESSES.
  * @var int
  * @see Shell_Interface::sync()
+ * @see DEPLOYMENT_PARALLELIZATION_MAX_NB_PROCESSES
  */
-define('DEPLOYMENT_RSYNC_MAX_NB_PROCESSES', 3);
+define('DEPLOYMENT_RSYNC_MAX_NB_PROCESSES', 4);
 
 /**
  * Nombre maximal de déploiement à garder dans les répertoires de releases.
