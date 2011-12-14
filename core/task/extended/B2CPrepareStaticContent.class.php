@@ -78,11 +78,12 @@ class Task_Extended_B2CPrepareStaticContent extends Task
             if ($iPathStatus == Shell_PathStatus::STATUS_SYMLINKED_DIR) {
                 $aServersToInit[] = $sServer;
             } else {
-                $this->_oLogger->log("Symlink to last release not found on server '$sServer': '$sBaseDir' ($iPathStatus)");
+                $sMsg = "Symlink to last release not found on server '$sServer': '$sBaseDir' ($iPathStatus)";
+                $this->_oLogger->log($sMsg);
             }
         }
 
-        // Initialisation de ses serveurs :
+        // Initialisation de ces serveurs :
         $sDestDir = '[]:' . $this->_processSimplePath('${STATIC_BASEDIR}/${EXECUTION_ID}');
         $aResults = $this->_oShell->sync("[]:$sBaseDir/", $sDestDir, $aServersToInit);
         foreach ($aResults as $sResult) {

@@ -128,17 +128,17 @@ class Task_Extended_SwitchSymlink extends Task_Base_Link
         $this->_oLogger->log('Check that all symlinks targets exists.');
         $this->_oLogger->indent();
 
-        $sPath = $this->_aAttributes['target'];
-        if ( ! empty($this->_aAttributes['server'])) {
-            $sPath = $this->_aAttributes['server'] . ':' . $sPath;
-        }
-
         $aValidStatus = array(
             Shell_PathStatus::STATUS_DIR,
             Shell_PathStatus::STATUS_SYMLINKED_DIR
         );
-        foreach ($this->_expandPath($sPath) as $sExpandedPath) {
-            if ( ! in_array($this->_oShell->getPathStatus($sExpandedPath), $aValidStatus)) {
+
+        $sPath = $this->_aAttributes['target'];
+        $aServers = $this->_expandPath($this->_aAttributes['server']);
+        $aPathStatusResult = $this->_oShell->getParallelSSHPathStatus($sPath, $aServers);
+        foreach ($aServers as $sServer) {
+            $sExpandedPath = $sServer . ':' . $sPath;
+            if ( ! in_array($aPathStatusResult[$sServer], $aValidStatus)) {
                 $sMsg = "Target attribute must be a directory or a symlink to a directory: '" . $sExpandedPath . "'";
                 throw new RuntimeException($sMsg);
             }
