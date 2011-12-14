@@ -88,7 +88,7 @@ define('DEPLOYMENT_PARALLELIZATION_MAX_NB_PROCESSES', 10);
  * @see Shell_Interface::sync()
  * @see DEPLOYMENT_PARALLELIZATION_MAX_NB_PROCESSES
  */
-define('DEPLOYMENT_RSYNC_MAX_NB_PROCESSES', 4);
+define('DEPLOYMENT_RSYNC_MAX_NB_PROCESSES', 5);
 
 /**
  * Nombre maximal de déploiement à garder dans les répertoires de releases.
