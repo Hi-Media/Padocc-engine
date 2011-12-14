@@ -333,11 +333,9 @@ class Task_Base_Environment extends Task_Base_Target
                 if ( ! empty($sRelease)) {
                     $sMsg = "Remove release '$sRelease' on following server(s): " . implode(', ', $aServers) . '.';
                     $this->_oLogger->log($sMsg);
-                    $this->_oLogger->indent();
                     $sPath = "[]:$sBaseSymLink/$sRelease";
                     $sSSHCmd = $this->_oShell->buildSSHCmd('rm -rf %s', $sPath);
-                    $aParallelResult = $this->_oShell->parallelize($aServers, $sSSHCmd);
-                    $this->_oLogger->unindent();
+                    $this->_oShell->parallelize($aServers, $sSSHCmd);
                 }
             }
 
