@@ -229,9 +229,9 @@ class Shell_Adapter implements Shell_Interface
     }
 
     /**
-     * Pour chaque serveur, retourne l'une des constantes de Shell_PathStatus, indiquant pour le chemin spécifié s'il est
-     * inexistant, un fichier, un répertoire, un lien symbolique sur fichier ou encore un lien symbolique sur
-     * répertoire.
+     * Pour chaque serveur retourne l'une des constantes de Shell_PathStatus, indiquant pour le chemin spécifié
+     * s'il est inexistant, un fichier, un répertoire, un lien symbolique sur fichier
+     * ou encore un lien symbolique sur répertoire.
      *
      * Comme getPathStatus(), mais sur une liste de serveurs.
      *
