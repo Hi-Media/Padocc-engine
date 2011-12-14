@@ -1407,10 +1407,10 @@ Total transferred file size ( / total): <1 / 61 Mio
     public function testSync_LocalFileToRemotesDir ()
     {
         $aExpectedResult = array(
-            'Server: server1
+            'Server: server1 (~0s)
 Number of transferred files ( / total): 2 / 1774
 Total transferred file size ( / total): <1 / 61 Mio',
-            'Server: login@server2
+            'Server: login@server2 (~0s)
 Number of transferred files ( / total): 2 / 177
 Total transferred file size ( / total): <1 / 626 Kio',
         );
@@ -1591,10 +1591,10 @@ Total transferred file size ( / total): <1 / 626 Kio',
     public function testSync_RemoteDirToMultiRemotesDirWithDifferentHost ()
     {
         $aExpectedResult = array(
-            'Server: aai-01
+            'Server: aai-01 (~0s)
 Number of transferred files ( / total): 2 / 1774
 Total transferred file size ( / total): <1 / 61 Mio',
-            'Server: aai@aai-02
+            'Server: aai@aai-02 (~0s)
 Number of transferred files ( / total): 2 / 177
 Total transferred file size ( / total): <1 / 6 Kio',
         );
