@@ -559,10 +559,15 @@ class Shell_Adapter implements Shell_Interface
         $aParallelResult = $this->parallelize($aValues, $sRsyncCmd, DEPLOYMENT_RSYNC_MAX_NB_PROCESSES);
         $aAllResults = array();
         foreach ($aParallelResult as $aServerResult) {
-            $sServer = ($aServerResult['value'] == '-' ? '' : "Server: " . $aServerResult['value'] . "\n");
+            if ($aServerResult['value'] == '-') {
+                $sHeader = '';
+            } else {
+                $sHeader = "Server: " . $aServerResult['value']
+                         . ' (~' . $aServerResult['elapsed_time'] . 's)' . "\n";
+            }
             $aRawOutput = explode("\n", $aServerResult['output']);
             $aOutput = $this->_resumeSyncResult($aRawOutput);
-            $aOutput = array($sServer . $aOutput[0]);
+            $aOutput = array($sHeader . $aOutput[0]);
             $aAllResults = array_merge($aAllResults, $aOutput);
         }
 
