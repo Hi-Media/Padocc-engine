@@ -299,6 +299,9 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase
      */
     public function testExecute_WithSrcDirAndSymLinks ()
     {
+        $aMkdirExecResult = array(
+            '---[user@server]-->0|0s', '[CMD]', '...', '[OUT]', '[ERR]', '///',
+        );
         $aRawRsyncResult = array('---[user@server]-->0|0s', '[CMD]', '...', '[OUT]',
             'Number of files: 1774',
             'Number of files transferred: 2',
@@ -324,10 +327,10 @@ class TaskSyncTest extends PHPUnit_Framework_TestCase
 
         $oMockShell = $this->oServiceContainer->getShellAdapter();
         $oMockShell->expects($this->at(0))->method('exec')
-            ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
-                . 'mkdir -p "/path/to/destdir_releases/12345/srcdir"' . "\n"
-                . 'EOF' . "\n"))
-            ->will($this->returnValue(array()));
+            ->with($this->equalTo(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "user@server" "ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T [] /bin/bash <<EOF' . "\n"
+                . 'mkdir -p \"/path/to/destdir_releases/12345/srcdir\"' . "\n"
+                . 'EOF' . "\n" . '"'))
+            ->will($this->returnValue($aMkdirExecResult));
         $oMockShell->expects($this->at(1))->method('exec')
             ->with($this->equalTo(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "user@server" "rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e ssh \"/path/to/srcdir/\" \"[]:/path/to/destdir_releases/12345/srcdir\""'))
             ->will($this->returnValue($aRawRsyncResult));

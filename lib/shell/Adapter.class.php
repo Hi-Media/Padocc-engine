@@ -428,7 +428,7 @@ class Shell_Adapter implements Shell_Interface
      * @return array tableau indexé du flux de sortie shell découpé par ligne
      * @throws RuntimeException en cas d'erreur shell
      */
-    public function mkdir ($sPath, $sMode='')
+    /*public function mkdir ($sPath, $sMode='')
     {
         // On passe par 'chmod' car 'mkdir -m xxx' exécuté ssi répertoire inexistant :
         if ($sMode !== '') {
@@ -436,6 +436,36 @@ class Shell_Adapter implements Shell_Interface
         }
         $aResult = $this->execSSH("mkdir -p %1\$s$sMode", $sPath);
         $this->_aFileStatus[$sPath] = Shell_PathStatus::STATUS_DIR;
+        return $aResult;
+    }*/
+    public function mkdir ($sPath, $sMode='', array $aValues=array())
+    {
+        // On passe par 'chmod' car 'mkdir -m xxx' exécuté ssi répertoire inexistant :
+        if ($sMode !== '') {
+            $sMode = " && chmod $sMode %1\$s";
+        }
+        $sPattern = "mkdir -p %1\$s$sMode";
+        $sCmd = $this->_buildSSHCmd($sPattern, $sPath);
+        //var_dump($sPath, $sPattern, $sCmd);
+
+        if (strpos($sPath, '[]') !== false && count($aValues) > 0) {
+            $aParallelResult = $this->parallelize($aValues, $sCmd);
+
+            // Traiter les résultats et MAJ le cache :
+            $aResult = array();
+            foreach ($aParallelResult as $aServerResult) {
+                $sValue = $aServerResult['value'];
+                $sOutput = $aServerResult['output'];
+                $sFinalPath = str_replace('[]', $sValue, $sPath);
+                $this->_aFileStatus[$sFinalPath] = Shell_PathStatus::STATUS_DIR;
+                if (strlen($sOutput) > 0) {
+                    $aResult[] = "$sValue: $sOutput";
+                }
+            }
+        } else {
+            $aResult = $this->exec($sCmd);
+            $this->_aFileStatus[$sPath] = Shell_PathStatus::STATUS_DIR;
+        }
         return $aResult;
     }
 
@@ -515,10 +545,6 @@ class Shell_Adapter implements Shell_Interface
     public function sync ($sSrcPath, $sDestPath, array $aValues=array(),
             array $aIncludedPaths=array(), array $aExcludedPaths=array())
     {
-        if (count($aValues) === 0 || (count($aValues) === 1 && $aValues[0] == '')) {
-            $aValues=array('-');
-        }
-
         // Cas non gérés :
         list($bIsSrcRemote, $sSrcServer, $sSrcRealPath) = $this->isRemotePath($sSrcPath);
         list($bIsDestRemote, $sDestServer, $sDestRealPath) = $this->isRemotePath($sDestPath);
@@ -526,9 +552,10 @@ class Shell_Adapter implements Shell_Interface
             throw new RuntimeException('Not yet implemented!');
         }*/
 
-        for ($i=0; $i<count($aValues); $i++) {
+        /*for ($i=0; $i<count($aValues); $i++) {
             $this->mkdir(str_replace('[]', $aValues[$i], $sDestPath));
-        }
+        }*/
+        $this->mkdir($sDestPath, '', $aValues);
 
         // Inclusions / exclusions :
         $sIncludedPaths = (count($aIncludedPaths) === 0
@@ -555,7 +582,10 @@ class Shell_Adapter implements Shell_Interface
             $sRsyncCmd = sprintf($sRsyncCmd, $this->escapePath($sSrcPath), $this->escapePath($sDestPath));
         }
 
-        $aParallelResult = $this->parallelize($aValues, $sRsyncCmd);
+        if (count($aValues) === 0 || (count($aValues) === 1 && $aValues[0] == '')) {
+            $aValues=array('-');
+        }
+        $aParallelResult = $this->parallelize($aValues, $sRsyncCmd, DEPLOYMENT_RSYNC_MAX_NB_PROCESSES);
         $aAllResults = array();
         foreach ($aParallelResult as $aServerResult) {
             $sServer = ($aServerResult['value'] == '-' ? '' : "Server: " . $aServerResult['value'] . "\n");

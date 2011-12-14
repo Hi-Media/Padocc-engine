@@ -1414,6 +1414,10 @@ Total transferred file size ( / total): <1 / 61 Mio',
 Number of transferred files ( / total): 2 / 177
 Total transferred file size ( / total): <1 / 626 Kio',
         );
+        $aMkdirExecResult = array(
+            '---[server1]-->0|0s', '[CMD]', '...', '[OUT]', '[ERR]', '///',
+            '---[login@server2]-->0|0s', '[CMD]', '...', '[OUT]', '[ERR]', '///'
+        );
         $aRawRsyncResult = array('---[server1]-->0|0s', '[CMD]', '...', '[OUT]',
             'Number of files: 1774',
             'Number of files transferred: 2',
@@ -1453,15 +1457,14 @@ Total transferred file size ( / total): <1 / 626 Kio',
 
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
-            ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T server1 /bin/bash <<EOF' . "\n" . 'mkdir -p "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
-            ->will($this->returnValue(array()));
+            ->with($this->equalTo(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "server1 login@server2" "ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T [] /bin/bash <<EOF' . "\n"
+                . 'mkdir -p \"/destpath/to/my dir\"' . "\n"
+                . 'EOF' . "\n" . '"'))
+            ->will($this->returnValue($aMkdirExecResult));
         $oMockShell->expects($this->at(1))->method('exec')
-            ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T login@server2 /bin/bash <<EOF' . "\n" . 'mkdir -p "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
-            ->will($this->returnValue(array()));
-        $oMockShell->expects($this->at(2))->method('exec')
             ->with($this->equalTo($sCmd))
             ->will($this->returnValue($aRawRsyncResult));
-        $oMockShell->expects($this->exactly(3))->method('exec');
+        $oMockShell->expects($this->exactly(2))->method('exec');
 
         $aResult = $oMockShell->sync('/srcpath/to/my file', '[]:/destpath/to/my dir', array('server1', 'login@server2'));
 
@@ -1595,6 +1598,10 @@ Total transferred file size ( / total): <1 / 61 Mio',
 Number of transferred files ( / total): 2 / 177
 Total transferred file size ( / total): <1 / 6 Kio',
         );
+        $aMkdirExecResult = array(
+            '---[aai-01]-->0|0s', '[CMD]', '...', '[OUT]', '[ERR]', '///',
+            '---[aai@aai-02]-->0|0s', '[CMD]', '...', '[OUT]', '[ERR]', '///'
+        );
         $aExecResult = array('---[aai-01]-->0|0s', '[CMD]', '...', '[OUT]',
             'Number of files: 1774',
             'Number of files transferred: 2',
@@ -1632,19 +1639,16 @@ Total transferred file size ( / total): <1 / 6 Kio',
 
         $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($this->oLogger));
         $oMockShell->expects($this->at(0))->method('exec')
-            ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T aai-01 /bin/bash <<EOF' . "\n"
-                . 'mkdir -p "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
-            ->will($this->returnValue(array()));
+            ->with($this->equalTo(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "aai-01 aai@aai-02" "ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T [] /bin/bash <<EOF' . "\n"
+                . 'mkdir -p \"/destpath/to/my dir\"' . "\n"
+                . 'EOF' . "\n" . '"'))
+            ->will($this->returnValue($aMkdirExecResult));
         $oMockShell->expects($this->at(1))->method('exec')
-            ->with($this->equalTo('ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T aai@aai-02 /bin/bash <<EOF' . "\n"
-                . 'mkdir -p "/destpath/to/my dir"' . "\n" . 'EOF' . "\n"))
-            ->will($this->returnValue(array()));
-        $oMockShell->expects($this->at(2))->method('exec')
             ->with($this->equalTo(DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "aai-01 aai@aai-02" "ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server1 /bin/bash <<EOF' . "\n"
                 . 'rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e ssh \"/srcpath/to/my dir\" \"[]:/destpath/to/my dir\"' . "\n"
                 . 'EOF' . "\n" . '"'))
             ->will($this->returnValue($aExecResult));
-        $oMockShell->expects($this->exactly(3))->method('exec');
+        $oMockShell->expects($this->exactly(2))->method('exec');
 
         $aResult = $oMockShell->sync('user@server1:/srcpath/to/my dir', '[]:/destpath/to/my dir', array('aai-01', 'aai@aai-02'));
 
