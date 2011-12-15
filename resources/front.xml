@@ -112,11 +112,14 @@
     </target>
 
     <target name="dynamic_content_step1">
-        <externalproperty name="ref" description="Branch or tag to deploy" />
+        <externalproperty name="ref" description="Ref. to deploy" />
+        <externalproperty name="ref_common" description="Ref. php-common" />
         <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${REF}" destdir="${TMPDIR}" />
         <filltemplate
             srcfile="${TMPDIR}/inc/deploy_config-template.inc.php"
             destfile="${TMPDIR}/inc/deploy_config.inc.php" />
+        <gitexport repository="git@git.twenga.com:php-common/php-common.git" ref="${REF_COMMON}"
+            destdir="${TMPDIR}/Twenga" exclude="/build.xml /CHANGELOG /dependancies.ini /phpunit.xml.dist /Tests" />
         <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
             destdir="${TMPDIR}/twenga-common" />
     </target>
