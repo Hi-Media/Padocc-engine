@@ -105,6 +105,16 @@
         />
     </env>
 
+    <env name="sched"
+        mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com, sysops@twenga.com"
+        withsymlinks="true"
+        loadtwengaservers="true"
+        basedir="/home/httpd/www.twenga"
+    >
+        <call target="dynamic_content_step1" />
+        <sync src="${TMPDIR}/" destdir="${SERVER_SCHED_DEPLOY}:${BASEDIR}" exclude="inc/config.php inc/config-local" />
+    </env>
+
     <target name="web_content">
         <call target="dynamic_content_step1" />
         <call target="dynamic_content_step2" />
@@ -122,10 +132,10 @@
             destdir="${TMPDIR}/Twenga" exclude="/build.xml /CHANGELOG /dependancies.ini /phpunit.xml.dist /Tests" />
         <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
             destdir="${TMPDIR}/twenga-common" />
+        <buildlanguage project="website" destdir="${TMPDIR}/languages" />
     </target>
 
     <target name="dynamic_content_step2">
-        <buildlanguage project="website" destdir="${TMPDIR}/languages" />
         <link src="${TMPDIR}/html/shorturl/config_shorturl.php" target="../../../../config/www.twenga/config_shorturl.php" />
         <link src="${TMPDIR}/inc/config.php" target="../../../config/www.twenga/config.php" />
         <link src="${TMPDIR}/inc/config-local" target="../../../config/www.twenga/config-local" />
