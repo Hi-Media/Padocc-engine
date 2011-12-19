@@ -253,9 +253,11 @@ class Task_Base_Environment extends Task_Base_Target
         }
 
         // Initialisation de ces serveurs :
-        $aResults = $this->_oShell->sync("[]:$sBaseSymLink/", '[]:' . $sReleaseSymLink, $aServersToInit);
-        foreach ($aResults as $sResult) {
-            $this->_oLogger->log($sResult);
+        if (count($aServersToInit) > 0) {
+            $aResults = $this->_oShell->sync("[]:$sBaseSymLink/", '[]:' . $sReleaseSymLink, $aServersToInit);
+            foreach ($aResults as $sResult) {
+                $this->_oLogger->log($sResult);
+            }
         }
 
         $this->_oLogger->unindent();
