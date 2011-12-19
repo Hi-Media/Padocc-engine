@@ -22,11 +22,8 @@
 
     <target name="content">
         <externalproperty name="ref" description="Branch or tag to deploy" />
-        <externalproperty name="ref_tpl" description="Ref. widget_tmpl" />
         <gitexport repository="git@git.twenga.com:distribution/wtpn.git" ref="${REF}"
             destdir="${SERVERS}:${BASEDIR}" exclude="config.* dynconfig* config_application.php db.ini" />
-        <gitexport repository="git@git.twenga.com:distribution/widget_tmpl.git" ref="${REF_TPL}"
-            destdir="${SERVERS}:${BASEDIR}/public/widget" />
         <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
             destdir="${SERVERS}:/home/httpd/twenga-common" />
     </target>
