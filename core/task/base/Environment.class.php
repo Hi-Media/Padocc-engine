@@ -254,8 +254,9 @@ class Task_Base_Environment extends Task_Base_Target
 
         // Initialisation de ces serveurs :
         if (count($aServersToInit) > 0) {
-            $aResults = $this->_oShell->sync("[]:$sBaseSymLink/", '[]:' . $sReleaseSymLink, $aServersToInit,
-                array(), self::$_aSmartyRsyncExclude);
+            $aResults = $this->_oShell->sync(
+                "[]:$sBaseSymLink/", '[]:' . $sReleaseSymLink, $aServersToInit, array(), self::$_aSmartyRsyncExclude
+            );
             foreach ($aResults as $sResult) {
                 $this->_oLogger->log($sResult);
             }
