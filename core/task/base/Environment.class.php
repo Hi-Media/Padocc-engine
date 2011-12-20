@@ -187,7 +187,7 @@ class Task_Base_Environment extends Task_Base_Target
                                 . '/' . $this->_oProperties->getProperty('execution_id') . '_origin';
                 $this->_oLogger->log("Backup '$sDir' to '$sOriginRelease'.");
                 $this->_oLogger->indent();
-                $this->_oShell->sync($sDir, $sOriginRelease, array(), self::$_aSmartyRsyncExclude);
+                $this->_oShell->sync($sDir, $sOriginRelease, array(), array(), self::$_aSmartyRsyncExclude);
                 $this->_oShell->remove($sExpandedPath);
                 $this->_oShell->createLink($sExpandedPath, $sOriginRelease);
                 $this->_oLogger->unindent();
@@ -218,7 +218,7 @@ class Task_Base_Environment extends Task_Base_Target
                 $sMsg = "Remove symlink on '$sExpandedPath' base directory"
                       . " and initialize it with last release's content.";
                 $this->_oLogger->log($sMsg);
-                $this->_oShell->sync($sDir, $sTmpDest, array(), self::$_aSmartyRsyncExclude);
+                $this->_oShell->sync($sDir, $sTmpDest, array(), array(), self::$_aSmartyRsyncExclude);
                 $this->_oShell->remove($sExpandedPath);
                 $this->_oShell->execSSH("mv %s '" . $sRealPath . "'", $sTmpDest);
             }
@@ -254,7 +254,8 @@ class Task_Base_Environment extends Task_Base_Target
 
         // Initialisation de ces serveurs :
         if (count($aServersToInit) > 0) {
-            $aResults = $this->_oShell->sync("[]:$sBaseSymLink/", '[]:' . $sReleaseSymLink, $aServersToInit);
+            $aResults = $this->_oShell->sync("[]:$sBaseSymLink/", '[]:' . $sReleaseSymLink, $aServersToInit,
+                array(), self::$_aSmartyRsyncExclude);
             foreach ($aResults as $sResult) {
                 $this->_oLogger->log($sResult);
             }
