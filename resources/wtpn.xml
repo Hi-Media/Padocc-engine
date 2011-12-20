@@ -26,5 +26,6 @@
             destdir="${SERVERS}:${BASEDIR}" exclude="config.* dynconfig* config_application.php db.ini" />
         <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
             destdir="${SERVERS}:/home/httpd/twenga-common" />
+        <mkdir destdir="${SERVERS}:${BASEDIR}/cache/cmt" mode="777" />
     </target>
 </project>

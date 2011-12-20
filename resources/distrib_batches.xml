@@ -4,7 +4,7 @@
         name="qa"
         mailto="devaa@twenga.com, laurent.salomon@twenga.com, laurent.toussaint@twenga.com, romain.derocle@twenga.com"
         withsymlinks="true"
-        basedir="/home/httpd/distrib_demo"
+        basedir="/home/httpd/distrib_batches"
     >
         <property name="servers" value="www10" />
         <call target="content" />
@@ -14,7 +14,7 @@
         name="prod"
         mailto="devaa@twenga.com, laurent.salomon@twenga.com, laurent.toussaint@twenga.com, romain.derocle@twenga.com"
         withsymlinks="true"
-        basedir="/home/httpd/distrib_demo"
+        basedir="/home/httpd/distrib_batches"
     >
         <property name="servers" value="www46 www47" />
         <call target="content" />
