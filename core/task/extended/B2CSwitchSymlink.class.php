@@ -282,10 +282,19 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
             $this->_oLogger->log($aMsgs[0] . " '$sServer' server $aMsgs[1] the cluster.");
             $this->_oLogger->indent();
             $sCmd = "/home/prod/twenga/tools/wwwcluster -s $sServer $aMsgs[2]";
-            $aResult = $this->_oShell->exec($sCmd);
-            $sResult = implode("\n", $aResult);
+            try {
+                $aResult = $this->_oShell->exec($sCmd);
+                $sResult = implode("\n", $aResult);
+            } catch (RuntimeException $oException) {
+                if ($oException->getCode() == 2) {
+                    $sResult = '[WARNING] ' . $oException->getMessage();
+                } else {
+                    throw $oException;
+                }
+            }
+
             if ($sResult != '') {
-                $this->_oLogger->log(implode("\n", $aResult));
+                $this->_oLogger->log($sResult);
             }
             $this->_oLogger->unindent();
         } else {
