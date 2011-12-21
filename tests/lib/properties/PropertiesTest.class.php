@@ -8,9 +8,22 @@
 class PropertiesTest extends PHPUnit_Framework_TestCase
 {
 
+    /**
+     * Instance Log
+     * @var Logger_Interface
+     */
     private $oLogger;
+
+    /**
+     * Instance Shell
+     * @var Shell_Interface
+     */
     private $oShell;
 
+    /**
+     * Sets up the fixture, for example, open a network connection.
+     * This method is called before a test is executed.
+     */
     public function setUp ()
     {
         $oRawLogger = new Logger_Adapter(Logger_Interface::WARNING);
@@ -18,6 +31,10 @@ class PropertiesTest extends PHPUnit_Framework_TestCase
         $this->oShell = new Shell_Adapter($this->oLogger);
     }
 
+    /**
+     * Tears down the fixture, for example, close a network connection.
+     * This method is called after a test is executed.
+     */
     public function tearDown()
     {
         $this->oLogger = NULL;

@@ -128,7 +128,7 @@ abstract class Task
     /**
      * Constructeur.
      *
-     * @param SimpleXMLElement $oTask Contenu XML de la tâche.
+     * @param SimpleXMLElement $oXMLTask Contenu XML de la tâche.
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
@@ -154,6 +154,9 @@ abstract class Task
         $this->_fetchAttributes();
     }
 
+    /**
+     * Récupère les attributs XML du nœud $this->_oXMLTask et les enregistre dans $this->_aAttributes.
+     */
     protected function _fetchAttributes ()
     {
         $this->_aAttributes = array();
@@ -162,6 +165,15 @@ abstract class Task
         }
     }
 
+    /**
+     * Appels combinés à _expandPath() puis _reroutePaths()
+     *
+     * @param string $sPath chemin pouvant contenir des paramètres
+     * @return array liste de tous les chemins générés en remplaçant les paramètres par leurs valeurs
+     * et en reroutant ceux tombant dans 'basedir'.
+     * @see _expandPath()
+     * @see _reroutePaths()
+     */
     protected function _processPath ($sPath)
     {
         $aExpandedPaths = $this->_expandPath($sPath);
@@ -169,6 +181,16 @@ abstract class Task
         return $aReroutedPaths;
     }
 
+    /**
+     * Appel à _processPath(), puis retourne le premier chemin récupéré
+     * en s'assurant qu'il n'y en a pas d'autres.
+     *
+     * @param string $sPath chemin pouvant contenir des paramètres
+     * @return l'unique chemin généré en remplaçant les paramètres par leurs valeurs
+     * et en reroutant le chemin s'il tombe dans 'basedir'.
+     * @throws RuntimeException si plus d'un chemin a été généré
+     * @see _processPath()
+     */
     protected function _processSimplePath ($sPath)
     {
         $aProcessedPaths = $this->_processPath($sPath);
@@ -184,7 +206,7 @@ abstract class Task
      * du chemin spécifié par leurs valeurs.
      *
      * @param string $sPath chemin pouvant contenir des paramètres
-     * @return array liste de tous les chemins générés en remplaçant les paramètres par leurs valeurs
+     * @return array liste de tous les chemins générés en remplaçant les paramètres par leurs valeurs,
      */
     protected function _expandPath ($sPath)
     {
@@ -222,10 +244,12 @@ abstract class Task
      * Reroute de façon transparente tous les chemins système inclus ou égal à la valeur de la propriété 'basedir'
      * dans le répertoire de releases nommé de la valeur de 'basedir'
      * avec le suffixe DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX.
+     * Les autres chemins, ceux hors 'basedir', restent inchangés.
      *
-     * @param array $aPaths
+     * @param array $aPaths liste de chemins sans paramètres (par exemple provenant de _expandPath())
+     * @return array liste de ces mêmes chemins en reroutant ceux tombant dans 'basedir'.
      */
-    protected function _reroutePaths ($aPaths)
+    protected function _reroutePaths (array $aPaths)
     {
         if ($this->_oProperties->getProperty('with_symlinks') === 'true') {
             $sBaseSymLink = $this->_oProperties->getProperty('basedir');

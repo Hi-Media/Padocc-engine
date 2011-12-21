@@ -20,13 +20,29 @@ class TaskRenameTest extends PHPUnit_Framework_TestCase
      */
     private $oMockProject;
 
+    /**
+     * Tableau indexé contenant les commandes Shell de tous les appels effectués à Shell_Adapter::exec().
+     * @var array
+     * @see shellExecCallback()
+     */
     private $aShellExecCmds;
 
+    /**
+     * Callback déclenchée sur appel de Shell_Adapter::exec().
+     * Log tous les appels dans le tableau indexé $this->aShellExecCmds.
+     *
+     * @param string $sCmd commande Shell qui aurait dûe être exécutée.
+     * @see $aShellExecCmds
+     */
     public function shellExecCallback ($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
     }
 
+    /**
+     * Sets up the fixture, for example, open a network connection.
+     * This method is called before a test is executed.
+     */
     public function setUp ()
     {
         $oBaseLogger = new Logger_Adapter(Logger_Interface::WARNING);
@@ -59,6 +75,10 @@ class TaskRenameTest extends PHPUnit_Framework_TestCase
         $this->oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
     }
 
+    /**
+     * Tears down the fixture, for example, close a network connection.
+     * This method is called after a test is executed.
+     */
     public function tearDown()
     {
         $this->oServiceContainer = NULL;

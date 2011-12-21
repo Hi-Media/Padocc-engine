@@ -99,13 +99,13 @@ class Task_Extended_CVSExport extends Task
 
         $this->_oLogger->log("Export from '" . $this->_aAttributes['repository'] . "' CVS repository");
         $this->_oLogger->indent();
-        $result = $this->_oShell->exec(
+        $aResult = $this->_oShell->exec(
             DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/cvsexport.inc.sh'
             . ' "' . $this->_aAttributes['repository'] . '"'
             . ' "' . $this->_aAttributes['module'] . '"'
             . ' "' . $this->_aAttributes['srcdir'] . '"'
         );
-        $this->_oLogger->log(implode("\n", $result));
+        $this->_oLogger->log(implode("\n", $aResult));
         $this->_oLogger->unindent();
 
         $this->_oSyncTask->execute();

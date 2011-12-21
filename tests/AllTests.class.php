@@ -10,6 +10,11 @@ include_once(DEPLOYMENT_LIB_DIR . '/bootstrap.inc.php');
  */
 class AllTests {
 
+    /**
+     * Construction de la suite de tous les tests.
+     *
+     * @return PHPUnit_Framework_TestSuite
+     */
     public static function suite() {
         $files = self::getFiles(DEPLOYMENT_TESTS_DIR, '*Test.class.php');
         $suite = new PHPUnit_Framework_TestSuite('Deployment');

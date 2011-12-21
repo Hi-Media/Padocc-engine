@@ -61,7 +61,7 @@ class Minifier_TemplateMinifier
     {
         $this->_oMinifier = $oMinifier;
         $this->_oLogger = $oLogger;
-        $this->_aSubDomains = array('', 'c', 'cn');
+        $this->_aSubDomains = array('', 'c', 'cn', 'cs');
     }
 
     /**
@@ -111,6 +111,29 @@ class Minifier_TemplateMinifier
     }
 
     /**
+     * Retourne un couple de 2 listes de fichiers,
+     * la 1re étant la liste de fichiers fournie en entrée adaptée pour un appel à Minifier_Interface::minify(),
+     * la 2nde étant cette même liste de fichiers adaptée pour un appel à $this->_getHash().
+     *
+     * @param array $aPaths liste de fichiers JS ou CSS à minifier
+     * @param string $sParentDir répertoire source des JS ou CSS
+     * @return array couple de 2 listes de fichiers,
+     * la 1re étant la liste de fichiers fournie en entrée adaptée pour un appel à Minifier_Interface::minify(),
+     * la 2nde étant cette même liste de fichiers adaptée pour un appel à $this->_getHash().
+     */
+    private function _buildPaths (array $aPaths, $sParentDir)
+    {
+        $aPathsToMinify = array();
+        $aPathsToHash = array();
+        foreach ($aPaths as $sValue) {
+            $sValue = preg_replace('#^/#', '', $sValue);
+            $aPathsToMinify[] = $sParentDir . '/' . $sValue;
+            $aPathsToHash[] = '/' . $sValue;
+        }
+        return array($aPathsToMinify, $aPathsToHash);
+    }
+
+    /**
      * Minifie l'ensemble de fichiers JS $aPaths en un seul dans $sDestDir.
      *
      * @param array $aPaths liste de fichiers JS à minifier
@@ -121,15 +144,13 @@ class Minifier_TemplateMinifier
      */
     private function _minifyJS (array $aPaths, $sJSParentDir, $sDestDir, $sImgOutPath)
     {
-        foreach ($aPaths as $i => $sValue) {
-            $aPaths[$i] = $sJSParentDir . '/' . preg_replace('#^/#', '', $sValue);
-        }
+        list($aPathsToMinify, $aPathsToHash) = $this->_buildPaths($aPaths, $sJSParentDir);
 
-        $sHash = $this->_getHash(implode('', $aPaths));
+        $sHash = $this->_getHash(implode('', $aPathsToHash));
         $sPattern = $sDestDir . '/%s' . $sHash . '.js';
 
         $sTmpDestPath = sprintf($sPattern, 'tmp_');
-        $this->_oMinifier->minify($aPaths, $sTmpDestPath);
+        $this->_oMinifier->minify($aPathsToMinify, $sTmpDestPath);
 
         $iFilesSize = $this->_generateSubdomainsFiles($sPattern, $sTmpDestPath, $sImgOutPath);
         unlink($sTmpDestPath);
@@ -149,16 +170,14 @@ class Minifier_TemplateMinifier
      */
     private function _minifyCSS (array $aPaths, $sCSSParentDir, $sDestDir, $sImgOutPath, $sSrcTemplateFile)
     {
-        foreach ($aPaths as $i => $sValue) {
-            $aPaths[$i] = $sCSSParentDir . '/' . preg_replace('#^/#', '', $sValue);
-        }
+        list($aPathsToMinify, $aPathsToHash) = $this->_buildPaths($aPaths, $sCSSParentDir);
 
-        $sHash = $this->_getHash(implode('', $aPaths));
+        $sHash = $this->_getHash(implode('', $aPathsToHash));
         $sPattern = $sDestDir . '/%s' . $sHash . '.css';
 
         $sTmpDestPath = sprintf($sPattern, 'tmp_');
         try {
-            $this->_oMinifier->minify($aPaths, $sTmpDestPath);
+            $this->_oMinifier->minify($aPathsToMinify, $sTmpDestPath);
         } catch (RuntimeException $oException) {
             $sErrorMsg = $oException->getMessage();
             if (strpos($sErrorMsg, 'File not found: ') !== 0) {
@@ -306,8 +325,12 @@ class Minifier_TemplateMinifier
      */
     public static function getNewImgURL ($sDir, $sFilename, $sExtension, $sDomain, $sImgOutPath)
     {
-        $sNewImgPath = 's' . (crc32($sFilename) % 2) . $sDomain . '.c4tw.net'
-                     . $sImgOutPath . '/css/' . $sDir . '/' . $sFilename . '.' . $sExtension;
+        if ($sDomain == 'cs') {
+            $sNewImgPath = 'static.cycling-shopping.co.uk';
+        } else {
+            $sNewImgPath = 's' . (crc32($sFilename) % 2) . $sDomain . '.c4tw.net';
+        }
+        $sNewImgPath .= $sImgOutPath . '/css/' . $sDir . '/' . $sFilename . '.' . $sExtension;
         return $sNewImgPath;
     }
 

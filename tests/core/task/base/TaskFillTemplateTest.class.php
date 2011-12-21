@@ -20,20 +20,49 @@ class TaskFillTemplateTest extends PHPUnit_Framework_TestCase
      */
     private $oMockProject;
 
+    /**
+     * Tableau indexé contenant les commandes Shell de tous les appels effectués à Shell_Adapter::exec().
+     * @var array
+     * @see shellExecCallback()
+     */
     private $aShellExecCmds;
 
+    /**
+     * Callback déclenchée sur appel de Shell_Adapter::exec().
+     * Log tous les appels dans le tableau indexé $this->aShellExecCmds.
+     *
+     * @param string $sCmd commande Shell qui aurait dûe être exécutée.
+     * @see $aShellExecCmds
+     */
     public function shellExecCallback ($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
     }
 
+    /**
+     * Tableau de tous les messages de log interceptés, regroupés par priorité.
+     * @var array
+     * @see logCallback()
+     */
     private $aWarnMessages;
 
+    /**
+     * Callback déclenchée sur appel de Logger_IndentedDecorator::log().
+     * Log tous les appels dans le tableau indexé $this->aWarnMessages.
+     *
+     * @param string $sMsg message à logger.
+     * @param int $iLevel priorité du message.
+     * @see $aWarnMessages
+     */
     public function logCallback ($sMsg, $iLevel)
     {
         $this->aWarnMessages[$iLevel][] = $sMsg;
     }
 
+    /**
+     * Sets up the fixture, for example, open a network connection.
+     * This method is called before a test is executed.
+     */
     public function setUp ()
     {
         $oBaseLogger = new Logger_Adapter(Logger_Interface::ERROR);
@@ -69,6 +98,10 @@ class TaskFillTemplateTest extends PHPUnit_Framework_TestCase
         $this->oMockProject = $this->getMock('Task_Base_Project', array(), array(), '', false);
     }
 
+    /**
+     * Tears down the fixture, for example, close a network connection.
+     * This method is called after a test is executed.
+     */
     public function tearDown()
     {
         $this->oServiceContainer = NULL;
@@ -208,12 +241,46 @@ class TaskFillTemplateTest extends PHPUnit_Framework_TestCase
         $sExpectedResult = <<<'EOT'
 <?php
 
+/**
+ * bla bla...
+ * @var string
+ */
 define('PROJECT', 'my\\project');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('PROJECT_BIS', 'my\\project');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('ENV', 'my \"env\"');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('EXECUTION_ID', '01234\'5\'6789');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('BASEDIR', 'x');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('LOCAL_PROPERTY_SERVERS', 'y');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('TEST', 'z');
 
 EOT;
@@ -255,12 +322,46 @@ EOT;
         $sExpectedResult = <<<'EOT'
 <?php
 
+/**
+ * bla bla...
+ * @var string
+ */
 define('PROJECT', 'my project');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('PROJECT_BIS', 'my project');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('ENV', 'my env');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('EXECUTION_ID', '0123456789');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('BASEDIR', '${BASEDIR}');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('LOCAL_PROPERTY_SERVERS', '${SERVERS}');
+
+/**
+ * bla bla...
+ * @var string
+ */
 define('TEST', '${NOT_EXISTS}');
 
 EOT;
