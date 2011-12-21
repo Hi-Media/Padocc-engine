@@ -46,6 +46,91 @@ class Shell_Adapter implements Shell_Interface
     }
 
     /**
+     * Exécute dans des processus parallèles les déclinaisons du pattern spécifié en fonction des valeurs.
+     * Plusieurs lots de processus parallèles peuvent être générés si le nombre de valeurs
+     * dépasse la limite $iMax.
+     *
+     * Exemple : $this->parallelize(array('aai@aai-01', 'prod@aai-01'), "ssh [] /bin/bash <<EOF\nls -l\nEOF\n");
+     * Exemple : $this->parallelize(array('a', 'b'), 'cat /.../resources/[].txt');
+     *
+     * @param array $aValues liste de valeurs qui viendront remplacer le(s) '[]' du pattern
+     * @param string $sPattern pattern possédant une ou plusieurs occurences de paires de crochets vides '[]'
+     * qui seront remplacées dans les processus lancés en parallèle par l'une des valeurs spécifiées.
+     * @param int $iMax nombre maximal de processus lancés en parallèles
+     * @return array liste de tableau associatif : array(
+     *     array(
+     *         'value' => (string)"l'une des valeurs de $aValues",
+     *         'error_code' => (int)code de retour Shell,
+     *         'elapsed_time' => (int) temps approximatif en secondes,
+     *         'cmd' => (string) commande shell exécutée,
+     *         'output' => (string) sortie standard,
+     *         'error' => (string) sortie d'erreur standard,
+     *     ), ...
+     * )
+     * @throws RuntimeException si le moindre code de retour Shell non nul apparaît.
+     * @throws RuntimeException si une valeur hors de $aValues apparaît dans les entrées 'value'.
+     * @throws RuntimeException s'il manque des valeurs de $aValues dans le résultat final.
+     */
+    public function parallelize (array $aValues, $sPattern, $iMax=DEPLOYMENT_PARALLELIZATION_MAX_NB_PROCESSES)
+    {
+        // Segmentation de la demande de parallélisation en lots séquentiels de taille maîtrisée :
+        $aAllValues = $aValues;
+        $aAllResults = array();
+        while (count($aValues) > $iMax) {
+            $aSubset = array_slice($aValues, 0, $iMax);
+            $aAllResults = array_merge($aAllResults, $this->parallelize($aSubset, $sPattern, $iMax));
+            $aValues = array_slice($aValues, $iMax);
+        }
+
+        // Exécution de la demande de parallélisation :
+        $sCmdPattern = DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/parallelize.inc.sh "%s" "%s"';
+        $sCmd = sprintf($sCmdPattern, addcslashes(implode(' ', $aValues), '"'), addcslashes($sPattern, '"'));
+        $aExecResult = $this->exec($sCmd);
+
+        // Découpage du flux de retour d'exécution :
+        $sResult = implode("\n", $aExecResult) . "\n";
+        $sRegExp = '#^---\[(.*?)\]-->(\d+)\|(\d+)s\n\[CMD\]\n(.*?)\n\[OUT\]\n(.*?)\[ERR\]\n(.*?)///#ms';
+        preg_match_all($sRegExp, $sResult, $aMatches, PREG_SET_ORDER);
+
+        // Formatage des résultats :
+        $aResult = array();
+        foreach ($aMatches as $aSet) {
+            $aResult[] = array(
+                'value' => $aSet[1],
+                'error_code' => (int)$aSet[2],
+                'elapsed_time' => (int)$aSet[3],
+                'cmd' => $aSet[4],
+                'output' => (strlen($aSet[5]) > 0 ? substr($aSet[5], 0, -1) : ''),
+                'error' => (strlen($aSet[6]) > 0 ? substr($aSet[6], 0, -1) : '')
+            );
+        }
+
+        // Pas de code d'erreur shell ni de valeur non attendue ?
+        foreach ($aResult as $aSubResult) {
+            if ($aSubResult['error_code'] !== 0) {
+                $sMsg = $aSubResult['error'] . "\nParallel result:\n" . print_r($aResult, true);
+                throw new RuntimeException($sMsg, $aSubResult['error_code']);
+            } else if ( ! in_array($aSubResult['value'], $aValues)) {
+                $sMsg = "Not asked value: '" . $aSubResult['value'] . "'!\n"
+                      . "Aksed values: '" . implode("', '", $aValues) . "'\n"
+                      . "Parallel result:\n" . print_r($aResult, true);
+                throw new RuntimeException($sMsg, 1);
+            }
+        }
+
+        // Tous le monde est-il là ?
+        $aAllResults = array_merge($aAllResults, $aResult);
+        if (count($aAllResults) != count($aAllValues)) {
+            $sMsg = "Missing values!\n"
+                  . "Aksed values: '" . implode("', '", $aValues) . "'\n"
+                  . "Parallel result:\n" . print_r($aAllResults, true);
+            throw new RuntimeException($sMsg, 1);
+        }
+
+        return $aAllResults;
+    }
+
+    /**
      * Exécute la commande shell spécifiée et retourne la sortie découpée par ligne dans un tableau.
      * En cas d'erreur shell (code d'erreur <> 0), lance une exception incluant le message d'erreur.
      *
@@ -55,7 +140,7 @@ class Shell_Adapter implements Shell_Interface
      */
     public function exec ($sCmd)
     {
-        $this->_oLogger->log('[DEBUG] shell# ' . trim($sCmd), Logger_Interface::DEBUG);
+        $this->_oLogger->log('[DEBUG] shell# ' . trim($sCmd, " \t"), Logger_Interface::DEBUG);
         $sFullCmd = '( ' . $sCmd . ' ) 2>&1';
         exec($sFullCmd, $aResult, $iReturnCode);
         if ($iReturnCode !== 0) {
@@ -77,6 +162,24 @@ class Shell_Adapter implements Shell_Interface
      */
     public function execSSH ($sPatternCmd, $sParam)
     {
+        return $this->exec($this->buildSSHCmd($sPatternCmd, $sParam));
+    }
+
+    /**
+     * Retourne la commande Shell spécifiée envoyée à sprintf avec $sParam,
+     * et encapsule au besoin le tout dans une connexion SSH
+     * pour atteindre les hôtes distants (si $sParam est un hôte distant).
+     *
+     * @param string $sPatternCmd commande au format printf
+     * @param string $sParam paramètre du pattern $sPatternCmd, permettant en plus de décider si l'on
+     * doit encapsuler la commande dans un SSH (si serveur distant) ou non.
+     * @return string la commande Shell spécifiée envoyée à sprintf avec $sParam,
+     * et encapsule au besoin le tout dans une connexion SSH
+     * pour atteindre les hôtes distants (si $sParam est un hôte distant).
+     * @see isRemotePath()
+     */
+    public function buildSSHCmd ($sPatternCmd, $sParam)
+    {
         list($bIsRemote, $sServer, $sRealPath) = $this->isRemotePath($sParam);
         $sCmd = sprintf($sPatternCmd, $this->escapePath($sRealPath));
         //$sCmd = vsprintf($sPatternCmd, array_map(array(self, 'escapePath'), $mParams));
@@ -84,9 +187,9 @@ class Shell_Adapter implements Shell_Interface
             $sSSHOptions = ' -o StrictHostKeyChecking=no'
                          . ' -o ConnectTimeout=' . DEPLOYMENT_SSH_CONNECTION_TIMEOUT
                          . ' -o BatchMode=yes';
-            $sCmd = 'ssh' . $sSSHOptions . ' -T ' . $sServer . " /bin/bash <<EOF\n$sCmd\nEOF\n";
+            $sCmd = "ssh$sSSHOptions -T $sServer " . DEPLOYMENT_BASH_PATH . " <<EOF\n$sCmd\nEOF\n";
         }
-        return $this->exec($sCmd);
+        return $sCmd;
     }
 
     /**
@@ -115,13 +218,67 @@ class Shell_Adapter implements Shell_Interface
             $iStatus = $this->_aFileStatus[$sPath];
         } else {
             $sFormat = '[ -h %1$s ] && echo -n 1; [ -d %1$s ] && echo 2 || ([ -f %1$s ] && echo 1 || echo 0)';
-            $aResult = $this->execSSH($sFormat, $sPath);
+            //$aResult = $this->execSSH($sFormat, $sPath);
+            $aResult = $this->exec($this->buildSSHCmd($sFormat, $sPath));
             $iStatus = (int)$aResult[0];
             if ($iStatus !== 0) {
                 $this->_aFileStatus[$sPath] = $iStatus;
             }
         }
         return $iStatus;
+    }
+
+    /**
+     * Pour chaque serveur retourne l'une des constantes de Shell_PathStatus, indiquant pour le chemin spécifié
+     * s'il est inexistant, un fichier, un répertoire, un lien symbolique sur fichier
+     * ou encore un lien symbolique sur répertoire.
+     *
+     * Comme getPathStatus(), mais sur une liste de serveurs.
+     *
+     * Les éventuels slash terminaux sont supprimés.
+     * Si le statut est différent de inexistant, l'appel est mis en cache.
+     * Un appel à remove() s'efforce de maintenir cohérent ce cache.
+     *
+     * @param string $sPath chemin à tester, sans mention de serveur
+     * @param array $aServers liste de serveurs sur lesquels faire la demande de statut
+     * @return array tableau associatif listant par serveur (clé) le status (valeur, constante de Shell_PathStatus)
+     * @throws RuntimeException en cas d'erreur shell
+     * @see getPathStatus()
+     */
+    public function getParallelSSHPathStatus ($sPath, array $aServers)
+    {
+        if (substr($sPath, -1) === '/') {
+            $sPath = substr($sPath, 0, -1);
+        }
+
+        // Déterminer les serveurs pour lesquels nous n'avons pas la réponse en cache :
+        $aResult = array();
+        foreach ($aServers as $sServer) {
+            $sKey = $sServer . ':' . $sPath;
+            if (isset($this->_aFileStatus[$sKey])) {
+                $aResult[$sServer] = $this->_aFileStatus[$sKey];
+            }
+        }
+        $aServersToCheck = array_diff($aServers, array_keys($aResult));
+
+        // Paralléliser l'appel sur chacun des serveurs restants :
+        if (count($aServersToCheck) > 0) {
+            $sFormat = '[ -h %1$s ] && echo -n 1; [ -d %1$s ] && echo 2 || ([ -f %1$s ] && echo 1 || echo 0)';
+            $sPattern = $this->buildSSHCmd($sFormat, '[]:' . $sPath);
+            $aParallelResult = $this->parallelize($aServersToCheck, $sPattern);
+
+            // Traiter les résultats et MAJ le cache :
+            foreach ($aParallelResult as $aServerResult) {
+                $sServer = $aServerResult['value'];
+                $iStatus = (int)$aServerResult['output'];
+                if ($iStatus !== 0) {
+                    $this->_aFileStatus[$sServer . ':' . $sPath] = $iStatus;
+                }
+                $aResult[$sServer] = $iStatus;
+            }
+        }
+
+        return $aResult;
     }
 
     /**
@@ -155,10 +312,8 @@ class Shell_Adapter implements Shell_Interface
      * Par exemple copiera le contenu de $sSrcPath si celui-ci se termine par '/*'.
      * Si le chemin de destination n'existe pas, il sera créé.
      *
-     * TODO ajouter gestion tar/gz
-     *
-     * @param string $sSrcPath chemin source, au format [[user@sername_or_ip:]/path
-     * @param string $sDestPath chemin de destination, au format [[user@sername_or_ip:]/path
+     * @param string $sSrcPath chemin source, au format [[user@]hostname_or_ip:]/path
+     * @param string $sDestPath chemin de destination, au format [[user@]hostname_or_ip:]/path
      * @param bool $bIsDestFile précise si le chemin de destination est un simple fichier ou non,
      * information nécessaire si l'on doit créer une partie de ce chemin si inexistant
      * @return array tableau indexé du flux de sortie shell découpé par ligne
@@ -186,8 +341,8 @@ class Shell_Adapter implements Shell_Interface
     /**
      * Crée un lien symbolique de chemin $sLinkPath vers la cible $sTargetPath.
      *
-     * @param string $sLinkPath nom du lien, au format [[user@sername_or_ip:]/path
-     * @param string $sTargetPath cible sur laquelle faire pointer le lien, au format [[user@sername_or_ip:]/path
+     * @param string $sLinkPath nom du lien, au format [[user@]hostname_or_ip:]/path
+     * @param string $sTargetPath cible sur laquelle faire pointer le lien, au format [[user@]hostname_or_ip:]/path
      * @return array tableau indexé du flux de sortie shell découpé par ligne
      * @throws DomainException si les chemins référencent des serveurs différents
      * @throws RuntimeException en cas d'erreur shell
@@ -199,7 +354,10 @@ class Shell_Adapter implements Shell_Interface
         if ($sLinkServer != $sTargetServer) {
             throw new DomainException("Hosts must be equals. Link='$sLinkPath'. Target='$sTargetPath'.");
         }
-        return $this->execSSH('mkdir -p "$(dirname %1$s)" && ln -snf "' . $sTargetRealPath . '" %1$s', $sLinkPath);
+        $aResult = $this->execSSH('mkdir -p "$(dirname %1$s)" && ln -snf "' . $sTargetRealPath . '" %1$s', $sLinkPath);
+        // TODO optimisation possible :
+        // $this->_aFileStatus[$sPath] = Shell_PathStatus::STATUS_SYMLINKED_DIR ou STATUS_SYMLINKED_FILE;
+        return $aResult;
     }
 
     /**
@@ -221,7 +379,7 @@ class Shell_Adapter implements Shell_Interface
      * Supprime le chemin spécifié, répertoire ou fichier, distant ou local.
      * S'efforce de maintenir cohérent le cache de statut de chemins rempli par getPathStatus().
      *
-     * @param string $sPath chemin à supprimer, au format [[user@sername_or_ip:]/path
+     * @param string $sPath chemin à supprimer, au format [[user@]hostname_or_ip:]/path
      * @return array tableau indexé du flux de sortie shell découpé par ligne
      * @throws DomainException si chemin invalide (garde-fou)
      * @throws RuntimeException en cas d'erreur shell
@@ -247,6 +405,14 @@ class Shell_Adapter implements Shell_Interface
         return $this->execSSH('rm -rf %s', $sPath);
     }
 
+    /**
+     * Effectue un tar gzip du répertoire $sSrcPath dans $sBackupPath.
+     *
+     * @param string $sSrcPath au format [[user@]hostname_or_ip:]/path
+     * @param string $sBackupPath au format [[user@]hostname_or_ip:]/path
+     * @return array tableau indexé du flux de sortie shell découpé par ligne
+     * @throws RuntimeException en cas d'erreur shell
+     */
     public function backup ($sSrcPath, $sBackupPath)
     {
         list($bIsSrcRemote, $sSrcServer, $sSrcRealPath) = $this->isRemotePath($sSrcPath);
@@ -291,49 +457,76 @@ class Shell_Adapter implements Shell_Interface
     /**
      * Crée le chemin spécifié s'il n'existe pas déjà, avec les droits éventuellement transmis dans tous les cas.
      *
-     * @param string $sPath chemin à créer, au format [[user@sername_or_ip:]/path
-     * @param string $sMode droits utilisateur du chemin, par ex. '644', appliqués même si ce dernier existe déjà
+     * @param string $sPath chemin à créer, au format [[user@]hostname_or_ip:]/path
+     * @param string $sMode droits utilisateur du chemin appliqués même si ce dernier existe déjà.
+     * Par exemple '644'.
      * @return array tableau indexé du flux de sortie shell découpé par ligne
      * @throws RuntimeException en cas d'erreur shell
      */
-    public function mkdir ($sPath, $sMode='')
+    /*public function mkdir ($sPath, $sMode='')
     {
         // On passe par 'chmod' car 'mkdir -m xxx' exécuté ssi répertoire inexistant :
         if ($sMode !== '') {
             $sMode = " && chmod $sMode %1\$s";
         }
-        return $this->execSSH("mkdir -p %1\$s$sMode", $sPath);
+        $aResult = $this->execSSH("mkdir -p %1\$s$sMode", $sPath);
+        $this->_aFileStatus[$sPath] = Shell_PathStatus::STATUS_DIR;
+        return $aResult;
+    }*/
+    public function mkdir ($sPath, $sMode='', array $aValues=array())
+    {
+        // On passe par 'chmod' car 'mkdir -m xxx' exécuté ssi répertoire inexistant :
+        if ($sMode !== '') {
+            $sMode = " && chmod $sMode %1\$s";
+        }
+        $sPattern = "mkdir -p %1\$s$sMode";
+        $sCmd = $this->buildSSHCmd($sPattern, $sPath);
+        //var_dump($sPath, $sPattern, $sCmd);
+
+        if (strpos($sPath, '[]') !== false && count($aValues) > 0) {
+            $aParallelResult = $this->parallelize($aValues, $sCmd);
+
+            // Traiter les résultats et MAJ le cache :
+            $aResult = array();
+            foreach ($aParallelResult as $aServerResult) {
+                $sValue = $aServerResult['value'];
+                $sOutput = $aServerResult['output'];
+                $sFinalPath = str_replace('[]', $sValue, $sPath);
+                $this->_aFileStatus[$sFinalPath] = Shell_PathStatus::STATUS_DIR;
+                if (strlen($sOutput) > 0) {
+                    $aResult[] = "$sValue: $sOutput";
+                }
+            }
+        } else {
+            $aResult = $this->exec($sCmd);
+            $this->_aFileStatus[$sPath] = Shell_PathStatus::STATUS_DIR;
+        }
+        return $aResult;
     }
 
     /**
      * Synchronise une source avec une ou plusieurs destinations.
      *
-     * @param string $sSrcPath, au format [[user@sername_or_ip:]/path
-     * @param string|array $mDestPath, chaque destination au format [[user@sername_or_ip:]/path
+     * @param string $sSrcPath au format [[user@]hostname_or_ip:]/path
+     * @param string|array $mDestPath chaque destination au format [[user@]hostname_or_ip:]/path
+     * @param array $aValues liste de valeurs (string) optionnelles pour générer autant de demande de
+     * synchronisation en parallèle. Dans ce cas ces valeurs viendront remplacer l'une après l'autre
+     * les occurences de crochets vide '[]' présents dans $sSrcPath ou $sDestPath.
      * @param array $aIncludedPaths chemins à transmettre aux paramètres --include de la commande shell rsync.
      * Il précéderons les paramètres --exclude.
      * @param array $aExcludedPaths chemins à transmettre aux paramètres --exclude de la commande shell rsync
      * @return array tableau indexé du flux de sortie shell des commandes rsync exécutées,
      * découpé par ligne et analysé par _resumeSyncResult()
      * @throws RuntimeException en cas d'erreur shell
-     * @throws RuntimeException car non implémenté quand plusieurs $mDestPath et $sSrcPath est distant
+     * @throws RuntimeException car non implémenté quand plusieurs $mDestPath et $sSrcPath sont distants
      */
-    public function sync ($sSrcPath, $mDestPath, array $aIncludedPaths=array(), array $aExcludedPaths=array())
+    public function sync ($sSrcPath, $sDestPath, array $aValues=array(),
+            array $aIncludedPaths=array(), array $aExcludedPaths=array())
     {
-        $aDestPaths = (is_array($mDestPath) ? $mDestPath : array($mDestPath));
-
         // Cas non gérés :
         list($bIsSrcRemote, $sSrcServer, $sSrcRealPath) = $this->isRemotePath($sSrcPath);
-        list($bIsDestRemote, $sDestServer, $sDestRealPath) = $this->isRemotePath(reset($aDestPaths));
-        if (count($aDestPaths) > 1 && $bIsSrcRemote) {
-            throw new RuntimeException('Not yet implemented!');
-        }
-
-        $aAllResults = array();
-        for ($i=0; $i<count($aDestPaths); $i++) {
-            $aResult = $this->mkdir($aDestPaths[$i]);
-            $aAllResults = array_merge($aAllResults, $aResult);
-        }
+        list($bIsDestRemote, $sDestServer, $sDestRealPath) = $this->isRemotePath($sDestPath);
+        $this->mkdir($sDestPath, '', $aValues);
 
         // Inclusions / exclusions :
         $sIncludedPaths = (count($aIncludedPaths) === 0
@@ -345,35 +538,37 @@ class Shell_Adapter implements Shell_Interface
                               : '--exclude="' . implode('" --exclude="', $aExcludedPaths) . '" ');
 
         // Construction de la commande :
-        $sRsyncCmd = 'rsync -axz --delete ' . $sIncludedPaths . $sExcludedPaths . '--stats -e ssh %1$s %2$s';
+        $sRsyncCmd = sprintf(
+            'rsync -axz --delete %s%s--stats -e ssh %s %s',
+            $sIncludedPaths, $sExcludedPaths, '%s', '%s'
+        );
         if (substr($sSrcPath, -2) === '/*') {
             $sRsyncCmd = 'if ls -1 "' . substr($sSrcRealPath, 0, -2) . '" | grep -q .; then ' . $sRsyncCmd . '; fi';
         }
-
-        if (count($aDestPaths) === 1 && $bIsSrcRemote && $bIsDestRemote) {
-            $sDestPath = ($sSrcServer == $sDestServer ? $sDestRealPath : reset($aDestPaths));
-            $sCmd = sprintf($sRsyncCmd, '%1$s', $this->escapePath($sDestPath));
-            $aRawResult = $this->execSSH($sCmd, $sSrcPath);
-            $aResult = $this->_resumeSyncResult($aRawResult);
-            $aAllResults = array_merge($aAllResults, $aResult);
-
+        if ($bIsSrcRemote && $bIsDestRemote) {
+            $sFinalDestPath = ($sSrcServer == $sDestServer ? $sDestRealPath : $sDestPath);
+            $sRsyncCmd = sprintf($sRsyncCmd, '%s', $this->escapePath($sFinalDestPath));
+            $sRsyncCmd = $this->buildSSHCmd($sRsyncCmd, $sSrcPath);
         } else {
-            for ($i=0; $i<count($aDestPaths); $i++) {
-                $aCmds = array();
-                for ($j=$i; $j<count($aDestPaths) && $j<$i+DEPLOYMENT_RSYNC_MAX_NB_PROCESSES; $j++) {
-                    $aCmds[] = sprintf($sRsyncCmd, $this->escapePath($sSrcPath), $this->escapePath($aDestPaths[$j]));
-                }
+            $sRsyncCmd = sprintf($sRsyncCmd, $this->escapePath($sSrcPath), $this->escapePath($sDestPath));
+        }
 
-                $i = $j-1;
-                if (count($aCmds) > 1) {
-                    $sCmd = implode(" & \\\n", $aCmds) . " & \\\nwait";
-                } else {
-                    $sCmd = reset($aCmds);
-                }
-                $aRawResult = $this->exec($sCmd);
-                $aResult = $this->_resumeSyncResult($aRawResult);
-                $aAllResults = array_merge($aAllResults, $aResult);
+        if (count($aValues) === 0 || (count($aValues) === 1 && $aValues[0] == '')) {
+            $aValues=array('-');
+        }
+        $aParallelResult = $this->parallelize($aValues, $sRsyncCmd, DEPLOYMENT_RSYNC_MAX_NB_PROCESSES);
+        $aAllResults = array();
+        foreach ($aParallelResult as $aServerResult) {
+            if ($aServerResult['value'] == '-') {
+                $sHeader = '';
+            } else {
+                $sHeader = "Server: " . $aServerResult['value']
+                         . ' (~' . $aServerResult['elapsed_time'] . 's)' . "\n";
             }
+            $aRawOutput = explode("\n", $aServerResult['output']);
+            $aOutput = $this->_resumeSyncResult($aRawOutput);
+            $aOutput = array($sHeader . $aOutput[0]);
+            $aAllResults = array_merge($aAllResults, $aOutput);
         }
 
         return $aAllResults;
@@ -407,7 +602,7 @@ class Shell_Adapter implements Shell_Interface
      */
     private function _resumeSyncResult (array $aRawResult)
     {
-        if (count($aRawResult) === 0) {
+        if (count($aRawResult) === 0 || (count($aRawResult) === 1 && $aRawResult[0] == '')) {
             $aResult = array('Empty source directory.');
         } else {
             $aKeys = array(
@@ -449,7 +644,7 @@ class Shell_Adapter implements Shell_Interface
                 $aResult[] = 'Number of transferred files ( / total): ' . $aStats['number of files transferred']
                            . ' / ' . $aStats['number of files'] . "\n"
                            . 'Total transferred file size ( / total): '
-                           . $sTransferred . ' / ' . $sTotal . " $sUnit\n";
+                           . $sTransferred . ' / ' . $sTotal . " $sUnit";
             }
         }
         return $aResult;

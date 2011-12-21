@@ -7,26 +7,35 @@
  */
 class Deployment
 {
-
-    private $_oLogger;
+    /**
+     * Instance de services.
+     * @var ServiceContainer
+     */
     private $_oServiceContainer;
 
+    /**
+     * Constructeur.
+     */
     public function __construct ()
     {
-        $iDebugMode = (DEPLOYMENT_DEBUG_MODE === 1 ? Logger_Interface::DEBUG : Logger_Interface::INFO);
-        $oBaseLogger = new Logger_Adapter($iDebugMode);
-        $this->_oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
-        $oShell = new Shell_Adapter($this->_oLogger);
+        $oBaseLogger = new Logger_Adapter(Logger_Interface::DEBUG);
+        $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
+        $oShell = new Shell_Adapter($oLogger);
 
         $this->_oServiceContainer = new ServiceContainer();
         $this->_oServiceContainer
-            ->setLogAdapter($this->_oLogger)
+            ->setLogAdapter($oLogger)
             ->setShellAdapter($oShell)
             ->setPropertiesAdapter(new Properties_Adapter($oShell))
             ->setNumberingAdapter(new Numbering_Adapter());
     }
 
-    private function _setExternalProperties (array $aExternalProperties=array())
+    /**
+     * Enregistre les propriétés externes dans l'instance Properties_Interface.
+     *
+     * @param array $aExternalProperties tableau indexé des valeurs ordonnées des propriétés externes.
+     */
+    private function _setExternalProperties (array $aExternalProperties)
     {
         $oProperties = $this->_oServiceContainer->getPropertiesAdapter();
         foreach ($aExternalProperties as $i => $sValue) {
@@ -35,29 +44,46 @@ class Deployment
         }
     }
 
-    public function run ($sProjectName, $sEnvName, $sExecutionID, array $aExternalProperties=array())
+    /**
+     * Exécute le déploiement.
+     *
+     * @param string $sProjectName
+     * @param string $sEnvName
+     * @param string $sExecutionID au format YYYYMMDDHHMMSS_xxxxx, où x est un chiffre aléatoire,
+     * par exemple '20111026142342_07502'
+     * @param array $aExternalProperties tableau indexé des valeurs ordonnées des propriétés externes.
+     * @param string $sRollbackID identifiant de déploiement sur lequel effectuer un rollback,
+     * par exemple '20111026142342_07502'
+     */
+    public function run ($sProjectName, $sEnvName, $sExecutionID, array $aExternalProperties, $sRollbackID)
     {
-        $oProperties = $this->_oServiceContainer->getPropertiesAdapter();
-        $oProperties->setProperty('project_name', $sProjectName);
-        $oProperties->setProperty('environment_name', $sEnvName);
-        $oProperties->setProperty('execution_id', $sExecutionID);
-        $oProperties->setProperty('tmpdir', DEPLOYMENT_TMP_DIR . '/deploy_' . $sExecutionID);
+        $this->_oServiceContainer->getPropertiesAdapter()
+            ->setProperty('project_name', $sProjectName)
+            ->setProperty('environment_name', $sEnvName)
+            ->setProperty('execution_id', $sExecutionID)
+            ->setProperty('tmpdir', DEPLOYMENT_TMP_DIR . '/deploy_' . $sExecutionID)
+            ->setProperty('rollback_id', $sRollbackID);
 
         $this->_setExternalProperties($aExternalProperties);
 
         $sProjectPath = DEPLOYMENT_RESOURCES_DIR . '/' . $sProjectName . '.xml';
         $oProject = new Task_Base_Project($sProjectPath, $sEnvName, $this->_oServiceContainer);
-        $this->_oLogger->log('Check tasks:');
-        $this->_oLogger->indent();
+        $oLogger = $this->_oServiceContainer->getLogAdapter();
+        $oLogger->log('Check tasks:');
+        $oLogger->indent();
         $oProject->setUp();
-        $this->_oLogger->unindent();
-        $this->_oLogger->log('Execute tasks:');
-        $this->_oLogger->indent();
+        $oLogger->unindent();
+        $oLogger->log('Execute tasks:');
+        $oLogger->indent();
         $oProject->execute();
-        $this->_oLogger->unindent();
+        $oLogger->unindent();
     }
 
-    /* Structure :
+    /**
+     * Retourne la liste des environnements de chaque projet,
+     * avec pour chacun d'eux la liste des paramètres externes.
+     *
+     * Structure :
      * {
      * 		"rts":{"dev":[],"qa":[],"pre-prod":[]},
      * 		"tests":{
@@ -66,8 +92,11 @@ class Deployment
      * 			"all_tests":[]},
      * 		"ptpn":{"prod":[]}
      * }
+     *
+     * @return array la liste des environnements de chaque projet,
+     * avec pour chacun d'eux la liste des paramètres externes.
      */
-    public function getProjectsEnvsList ()
+    public static function getProjectsEnvsList ()
     {
         $aAllProjectsName = Task_Base_Project::getAllProjectsName(DEPLOYMENT_RESOURCES_DIR);
         $aEnvsByProject = array();

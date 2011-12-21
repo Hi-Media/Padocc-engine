@@ -2,7 +2,7 @@
 <project name="criteo">
     <env
         name="prod"
-        mailto="devaa@twenga.com, laurent.macret@twenga.com, yann.brigant@twenga.com"
+        mailto="devaa@twenga.com"
         withsymlinks="true"
         loadtwengaservers="true"
         basedir="/home/prod/twengaweb/sem/criteo"

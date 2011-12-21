@@ -44,15 +44,19 @@ class Task_Base_HTTP extends Task
     {
         parent::_centralExecute();
         $this->_oLogger->indent();
+        $this->_oLogger->log('Call URL: ' . $this->_aAttributes['url']);
+        $this->_oLogger->indent();
 
         $aURLs = $this->_processPath($this->_aAttributes['url']);
         foreach ($aURLs as $sURL) {
-            $aResults = $this->_oShell->exec('curl --silent --retry 2 --retry-delay 2 --max-time 5 "' . $sURL . '"');
+            $sCmd = '/usr/bin/curl --silent --retry 2 --retry-delay 2 --max-time 5 "' . $sURL . '"';
+            $aResults = $this->_oShell->exec($sCmd);
             if (count($aResults) > 0 && substr(end($aResults), 0, 7) === '[ERROR]') {
                 throw new RuntimeException(implode("\n", $aResults));
             }
         }
 
+        $this->_oLogger->unindent();
         $this->_oLogger->unindent();
     }
 }

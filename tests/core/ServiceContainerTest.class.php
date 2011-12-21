@@ -14,11 +14,19 @@ class ServiceContainerTest extends PHPUnit_Framework_TestCase
      */
     private $oServiceContainer;
 
+    /**
+     * Sets up the fixture, for example, open a network connection.
+     * This method is called before a test is executed.
+     */
     public function setUp ()
     {
         $this->oServiceContainer = new ServiceContainer();
     }
 
+    /**
+     * Tears down the fixture, for example, close a network connection.
+     * This method is called after a test is executed.
+     */
     public function tearDown()
     {
         $this->oServiceContainer = NULL;

@@ -2,7 +2,7 @@
 <project name="category_photo">
     <env
         name="prod"
-        mailto="devaa@twenga.com, fabien.bernard@twenga.com, laurent.macret@twenga.com"
+        mailto="devaa@twenga.com, fabien.bernard@twenga.com"
         withsymlinks="true"
         loadtwengaservers="true"
         basedir="/home/httpd/twengaproject/category_photo"

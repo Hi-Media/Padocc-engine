@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ebay">
+<project name="kelkoo">
 
     <env
         name="qa"
         mailto="devaa@twenga.com, francois.pasini@twenga.com, herve.gouchet@twenga.com"
         withsymlinks="true"
         loadtwengaservers="true"
-        basedir="/cluster/lib/php/ebay_qa"
+        basedir="/cluster/lib/php/kelkoo_qa"
     >
         <externalproperty name="ref" description="Branch or tag to deploy" />
-        <property name="servers" value="ebay@compute-01.eu1 ebay@compute-01.us1" />
-        <gitexport repository="git@git.twenga.com:feeds/ebay.git" ref="${REF}" destdir="${TMPDIR}" />
-        <rename src="${TMPDIR}/config_pool_qa.php" dest="${TMPDIR}/config.php" />
+        <property name="servers" value="ebay@compute-01.eu1" />
+        <gitexport repository="git@git.twenga.com:feeds/kelkoo.git" ref="${REF}" destdir="${TMPDIR}" />
+        <rename src="${TMPDIR}/config_qa.php" dest="${TMPDIR}/config.php" />
         <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" />
     </env>
 
@@ -20,12 +20,12 @@
         mailto="devaa@twenga.com, francois.pasini@twenga.com, herve.gouchet@twenga.com"
         withsymlinks="true"
         loadtwengaservers="true"
-        basedir="/cluster/lib/php/ebay"
+        basedir="/cluster/lib/php/kelkoo"
     >
         <externalproperty name="ref" description="Branch or tag to deploy" />
-        <property name="servers" value="ebay@compute-01.eu1 ebay@compute-01.us1" />
-        <gitexport repository="git@git.twenga.com:feeds/ebay.git" ref="${REF}" destdir="${TMPDIR}" />
-        <rename src="${TMPDIR}/config_pool.php" dest="${TMPDIR}/config.php" />
+        <property name="servers" value="ebay@compute-01.eu1" />
+        <gitexport repository="git@git.twenga.com:feeds/kelkoo.git" ref="${REF}" destdir="${TMPDIR}" />
+        <rename src="${TMPDIR}/config_prod.php" dest="${TMPDIR}/config.php" />
         <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" />
     </env>
 </project>

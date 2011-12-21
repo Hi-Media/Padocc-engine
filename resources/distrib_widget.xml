@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="distrib_widget">
+
+    <env
+        name="vm"
+        mailto="devaa@twenga.com, laurent.salomon@twenga.com, laurent.toussaint@twenga.com, romain.derocle@twenga.com"
+        withsymlinks="true"
+        basedir="/home/lsalomon/twengaweb/widgettpn"
+    >
+        <property name="servers" value="lsalomon@lsalomon.dev.twenga.local" />
+        <call target="content" />
+    </env>
+
+    <env
+        name="qa"
+        mailto="devaa@twenga.com, laurent.salomon@twenga.com, laurent.toussaint@twenga.com, romain.derocle@twenga.com"
+        withsymlinks="true"
+        basedir="/home/httpd/widgettpn"
+    >
+        <property name="servers" value="www10" />
+        <call target="content" />
+    </env>
+
+    <env
+        name="prod"
+        mailto="devaa@twenga.com, laurent.salomon@twenga.com, laurent.toussaint@twenga.com, romain.derocle@twenga.com"
+        withsymlinks="true"
+        basedir="/home/httpd/widgettpn"
+    >
+        <property name="servers" value="www46 www47" />
+        <call target="content" />
+    </env>
+
+    <target name="content">
+        <externalproperty name="ref" description="Branch or tag to deploy" />
+        <externalproperty name="ref_tpl" description="Ref. widget_tmpl" />
+        <gitexport repository="git@git.twenga.com:distribution/mldelivery.git" ref="${ref}"
+            srcsubdir="/widget"
+            destdir="${SERVERS}:${BASEDIR}" exclude="config.* dynconfig* config_application.php db.ini" />
+        <gitexport repository="git@git.twenga.com:distribution/widget_tmpl.git" ref="${REF_TPL}"
+            destdir="${SERVERS}:${BASEDIR}/public/widget" />
+        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
+            destdir="${SERVERS}:${BASEDIR}/common" />
+        <mkdir destdir="${SERVERS}:${BASEDIR}/public/templates/offer" mode="777" />
+    </target>
+</project>

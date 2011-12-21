@@ -69,6 +69,11 @@ class Task_Base_Link extends Task
                   . ' Src=' . $this->_aAttributes['src'] . ' Target=' . $this->_aAttributes['target'];
             throw new DomainException($sMsg);
         }
+
+        // Valeur par défaut :
+        if ( ! isset($this->_aAttributes['server'])) {
+            $this->_aAttributes['server'] = '';
+        }
     }
 
     /**
@@ -104,7 +109,9 @@ class Task_Base_Link extends Task
         if ( ! empty($this->_aAttributes['server'])) {
             $sRawTargetPath = $this->_aAttributes['server'] . ':' . $sRawTargetPath;
         }
+        $this->_oLogger->log("Create symlink from '$sPath' to '$sRawTargetPath'.");
 
+        $this->_oLogger->indent();
         $aTargetPaths = $this->_processPath($sRawTargetPath);
         foreach ($aTargetPaths as $sTargetPath) {
             list(, $sDestServer, ) = $this->_oShell->isRemotePath($sTargetPath);
@@ -115,6 +122,7 @@ class Task_Base_Link extends Task
             $sSrc = $this->_processSimplePath($sDestServer . $sSrcRealPath);
             $this->_oShell->createLink($sSrc, $sTargetPath);
         }
+        $this->_oLogger->unindent();
         $this->_oLogger->unindent();
     }
 }

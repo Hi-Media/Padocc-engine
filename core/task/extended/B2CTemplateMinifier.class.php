@@ -1,11 +1,13 @@
 <?php
 
 /**
+ * Spécifique B2C.
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
-class Task_Extended_TemplateMinifier extends Task
+class Task_Extended_B2CTemplateMinifier extends Task
 {
 
     /**
