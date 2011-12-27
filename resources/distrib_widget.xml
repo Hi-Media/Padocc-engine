@@ -3,11 +3,11 @@
 
     <env
         name="vm"
-        mailto="devaa@twenga.com, laurent.salomon@twenga.com, laurent.toussaint@twenga.com, romain.derocle@twenga.com"
+        mailto="devaa@twenga.com, laurent.toussaint@twenga.com, romain.derocle@twenga.com"
         withsymlinks="true"
-        basedir="/home/lsalomon/twengaweb/widgettpn"
+        basedir="/home/ltoussaint/twengaweb/widgettpn"
     >
-        <property name="servers" value="lsalomon@lsalomon.dev.twenga.local" />
+        <property name="servers" value="ltoussaint@ltoussaint.dev.twenga.local" />
         <call target="content" />
     </env>
 
