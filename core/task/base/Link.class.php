@@ -1,6 +1,18 @@
 <?php
 
 /**
+ * Crée un lien symbolique.
+ * À inclure dans une tâche env ou target.
+ *
+ * Attributs :
+ * - 'src'
+ * - 'target' : la cible n'a pas forcément besoin d'exister, ce qui créera un lien cassé.
+ *   Ceci peut-être intéressant lorsque l'on prépare un déploiement dans un fichier temporaire
+ *   avant d'effectuer la synchronisation finale vers tous les serveurs (cf. l'exemple ci-dessous).
+ * - 'server' : à utiliser si l'on doit créer des mêmes liens sur plusieurs serveurs
+ *
+ * Exemple : <link src="${TMPDIR}/inc/config.php" target="../../../config/www.twenga/config.php" />
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>

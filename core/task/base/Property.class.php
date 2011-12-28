@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * Définit une propriété interne, réutilisable dans les attributs possédant le flag ALLOW_PARAMETER.
+ * À inclure dans une tâche env ou target.
+ *
+ * Exemple : <property name="servers" value="${SERVER_ADMIN} ${SERVER_SCHED_DEPLOY}" />
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>

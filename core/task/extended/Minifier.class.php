@@ -1,6 +1,9 @@
 <?php
 
 /**
+ * Minifie/compacte un ou plusieurs fichiers soit JS soit CSS.
+ * À inclure dans une tâche ''env'' ou ''target''.
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>

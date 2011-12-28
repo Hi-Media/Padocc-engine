@@ -1,6 +1,12 @@
 <?php
 
 /**
+ * Effectue un appel cURL.
+ * À inclure dans une tâche env ou target.
+ * Une telle tâche est automatiquement créée par la tâche b2cswitchsymlink.
+ *
+ * Exemple : <http url="http://aai.twenga.com/push.php?server=${WEB_SERVERS}&amp;app=web" />
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>

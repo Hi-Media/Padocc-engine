@@ -1,6 +1,26 @@
 <?php
 
 /**
+ * Exporte tout ou partie du contenu d'un dépôt Git vers une ou plusieurs destinations.
+ * À inclure dans une tâche env ou target.
+ *
+ * Exploite le script DEPLOYMENT_LIB_DIR . '/cvsexport.inc.sh'.
+ * Réalise la synchronisation à l'aide d'une tâche sync avec la liste d'exclusion suivante
+ * (en plus des éventuels include et exclude spécifiés dans la tâche) : '.bzr/', '.cvsignore', '.git/',
+ * '.gitignore', '.svn/', 'cvslog.*', 'CVS', 'CVS.adm'.
+ *
+ * Attributs :
+ * - 'repository'
+ * - 'ref' : branche ou tag à déployer
+ * - 'localrepositorydir' : lieu temporaire d'extraction du contenu qui nous intéresse du dépôt avant de l'envoyer vers la destination ⇒ laisser à vide de manière générale, l'outil utilisera alors le répertoire DEPLOYMENT_REPOSITORIES_DIR
+ * - 'srcsubdir' : sous-répertoire du dépôt qui nous intéresse
+ * - 'destdir'
+ * - 'include' : si l'on veut filtrer
+ * - 'exclude' : si l'on veut filtrer
+ *
+ * Exemple : <gitexport repository="git@git.twenga.com:rts/rts.git" ref="${REF}"
+ *     destdir="${SERVERS}:${BASEDIR}" exclude="config.* /Tests" />
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>

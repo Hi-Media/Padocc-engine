@@ -1,6 +1,32 @@
 <?php
 
 /**
+ * Permet de générer des fichiers sur la base de templates texte incluant des propriétés.
+ * Exemple, ici PHP :
+ * <?php
+ *     define('DEPLOY_PROJECT', '${PROJECT_NAME}');
+ *     define('DEPLOY_ENV', '${ENVIRONMENT_NAME}');
+ *     define('DEPLOY_EXECUTION_ID', '${EXECUTION_ID}');
+ *     define('TWENGABUILD', '${EXECUTION_ID}');
+ *     define('DEPLOY_BASEDIR', '${BASEDIR}');
+ * Ce qui génèrera pour cet exemple :
+ * <?php
+ *     define('DEPLOY_PROJECT', 'front');
+ *     define('DEPLOY_ENV', 'prod');
+ *     define('DEPLOY_EXECUTION_ID', '20111221154051_01652');
+ *     define('TWENGABUILD', '20111221154051_01652');
+ *     define('DEPLOY_BASEDIR', '/home/httpd/www.twenga');
+ *
+ * N'importe quelle propriété y est adressable : celles de master_synchro.cfg si chargé,
+ * celles provenant des tags property et celles venant des externalproperty.
+ * À inclure dans une tâche env ou target.
+ *
+ * Exemple :
+ * <filltemplate
+ *     srcfile="${TMPDIR}/inc/deploy_config-template.inc.php"
+ *     destfile="${TMPDIR}/inc/deploy_config.inc.php"
+ * />
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>

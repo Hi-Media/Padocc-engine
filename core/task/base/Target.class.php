@@ -1,9 +1,10 @@
 <?php
 
 /**
+ * Définit une section (factorisation) adressable via la tâche call.
+ * À inclure dans une tâche project.
  *
- * Dérive Task_WithProperties et supporte donc les attributs XML 'loadtwengaservers', 'propertyshellfile'
- * et 'propertyinifile'.
+ * Exemple : <call target="static_content" />...<target name="static_content">...</target>
  *
  * @category TwengaDeploy
  * @package Core
