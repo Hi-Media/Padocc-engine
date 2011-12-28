@@ -1,6 +1,13 @@
 <?php
 
 /**
+ * Génère les fichiers de langue au format [geozoneId].php pour un projet donné.
+ * À inclure dans une tâche env ou target.
+ *
+ * Complètement recodé par rapport à la version précédente : environ 20 fois plus rapide !
+ *
+ * Exemples : <buildlanguage project="rts" destdir="${SERVERS}:${BASEDIR}/languages" />
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>

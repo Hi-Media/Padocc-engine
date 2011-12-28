@@ -1,6 +1,18 @@
 <?php
 
 /**
+ * Permute les liens symboliques de la dernière release vers la nouvelle à la fin du déploiement.
+ * Tâche ajoutée par défaut en tant que dernière tâche de l'environnement, si et seulement si aucune
+ * tâche Task_Extended_SwitchSymlink ou fille (comme Task_Extended_B2CSwitchSymlink) n'est spécifiée dans le XML,
+ * et si l'attribut withsymlinks de la tâche env vaut true. À inclure en toute fin de tâche env ou target.
+ *
+ * Attributs :
+ * - 'src' : laisser à vide à moins d'être bien conscient des conséquences
+ * - 'target' : laisser à vide à moins d'être bien conscient des conséquences
+ * - 'server' : laisser à vide à moins d'être bien conscient des conséquences
+ *
+ * Exemple : <switchsymlink />
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>

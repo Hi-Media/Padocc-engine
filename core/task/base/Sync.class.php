@@ -1,6 +1,21 @@
 <?php
 
 /**
+ * Synchronise efficacement (rsync Shell) et avec suppression le contenu d'un répertoire à l'intérieur d'un autre.
+ * À inclure dans une tâche env ou target.
+ *
+ * Attributs :
+ * - 'src'
+ * - 'destdir'
+ * - 'include'
+ * - 'exclude' : à noter que systématiquement sont exclus '.bzr/', '.cvsignore', '.git/', '.gitignore',
+ *   '.svn/', 'cvslog.*', 'CVS' et 'CVS.adm'
+ *
+ * Exemples :
+ * <sync src="${TMPDIR}/" destdir="${WEB_SERVERS}:${BASEDIR}" exclude="v3/css v3/js v4/css v4/js" />
+ * <sync src="prod@fs3:/home/prod/twenga_files/merchant_logos/"
+ *     destdir="${TMPDIR}/img/sites" include="*.png" exclude="*" />
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>

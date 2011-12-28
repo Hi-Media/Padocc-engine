@@ -1,6 +1,15 @@
 <?php
 
 /**
+ * Crée un répertoire.
+ * À inclure dans une tâche env ou target.
+ *
+ * Attributs :
+ * - 'destdir'
+ * - 'mode' : pour ajouter un chmod au mkdir
+ *
+ * Exemple : <mkdir destdir="${SERVERS}:${BASEDIR}/cache/smarty/templates_c" mode="777" />
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>

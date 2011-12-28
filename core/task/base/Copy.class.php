@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * Permet de copier un fichier ou un répertoire dans un autre.
+ * À inclure dans une tâche env ou target.
+ *
+ * Exemple : <copy src="/path/to/src" dest="${SERVERS}:/path/to/dest" />
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
