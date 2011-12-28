@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="dedicated_pages">
+    <env
+        name="qa"
+        mailto="devaa@twenga.com, francois.pasini@twenga.com, herve.gouchet@twenga.com"
+        withsymlinks="true"
+        loadtwengaservers="true"
+        basedir="/cluster/lib/php/keyword_qa"
+    >
+        <property name="servers" value="prod@compute-01.eu1 prod@compute-01.us1" />
+        <call target="content" />
+    </env>
+
+    <env
+        name="prod"
+        mailto="devaa@twenga.com, francois.pasini@twenga.com, herve.gouchet@twenga.com"
+        withsymlinks="true"
+        loadtwengaservers="true"
+        basedir="/cluster/lib/php/keyword"
+    >
+        <property name="servers" value="prod@compute-01.eu1 prod@compute-01.us1" />
+        <call target="content" />
+    </env>
+
+    <target name="content">
+        <externalproperty name="ref_common" description="Ref. php-common" />
+        <gitexport repository="git@git.twenga.com:php-common/php-common.git" ref="${REF_COMMON}"
+            destdir="${SERVERS}:${BASEDIR}/Twenga" exclude="/build.xml /CHANGELOG /dependancies.ini /phpunit.xml.dist /Tests" />
+        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
+            destdir="${SERVERS}:${BASEDIR}/twenga-common" />
+        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/twengaproject/pagekeyword"
+            destdir="${SERVERS}:${BASEDIR}/pagekeyword" />
+    </target>
+</project>
