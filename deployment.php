@@ -13,7 +13,14 @@
 // rm -rf /home/gaubry/deployment_backup/* && rm -rf /home/gaubry/deployment_test/*
 
 // MAJ de l'appli sur deploy-02 :
+//   En cas MAJ d'une branche déjà checkoutée :
 //     cd /home/aai/deployment && git reset --hard && git pull && chmod +x lib/minifier/jsmin/jsmin
+//   En cas de nouveau tag :
+//     cd /home/aai/deployment && git reset --hard && git fetch --prune && git checkout -b v1.0.0 && \
+//     chmod +x lib/minifier/jsmin/jsmin
+//   En cas de nouvelle branche :
+//     cd /home/aai/deployment && git reset --hard && git fetch --prune && git checkout --track -b release-1.1.0 && \
+//     chmod +x lib/minifier/jsmin/jsmin
 
 // Exemple de script backup préalable :
 /*
