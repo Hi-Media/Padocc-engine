@@ -1,6 +1,12 @@
 <?php
 
 /**
+ * Définit une propriété externe qu'il sera obligatoire de fournir lors de tout déploiement.
+ * Cette propriété est par la suite réutilisable dans les attributs possédant le flag ALLOW_PARAMETER.
+ * À inclure dans une tâche env ou target.
+ *
+ * Exemple : <externalproperty name="ref" description="Branch or tag to deploy" />
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>

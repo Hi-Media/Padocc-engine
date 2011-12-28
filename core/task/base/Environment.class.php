@@ -3,16 +3,28 @@
 /**
  * Sous-division d'une tâche projet, décrit ce qu'est un déploiement pour un environnement donné.
  *
- * Liste des attributs XML :
- * - 'name', obligatoire, précise la valeur à fournir lors d'un déploiement (par ex. 'qa', 'prod', ...).
- * - 'mailto', optionnel, permet d'ajouter des destinataires (séparés par ',') au mail de fin de déploiement.
- * - 'basedir', obligatoire, est le répertoire racine de déploiement sur le(s) serveur(s) cible(s).
- *      Par exemple : basedir="/home/httpd/my_app".
- * - 'withsymlinks', optionnel, "true" ou "false" (défaut), précise si l'on souhaite utiliser la technique
- *      des liens symboliques lors des déploiements ou non.
+ * Attributs :
+ * - 'name' : nom de l'environnement à préciser lors ddu déploiement
+ * - 'mailto' : liste d'adresses email séparées par une virgule à qui adresser le mail de fin de déploiement
+ *   en plus de l'instigateur
+ * - 'withsymlinks' : activer ou non la gestion de déploiement par lien symbolique (false par défaut)
+ * - 'basedir' : répertoire de base, accessible par la propriété ${BASEDIR}.
+ *   Tous les répertoires mentionnés dans le XML, quel que soit le serveur, et qui se trouvent à l'intérieur
+ *   dans celui-ci, seront automatiquement redirigés en cas de withsymlinks=“true”.
+ * - 'loadtwengaservers' : charger ou non les alias de serveurs définis dans master_synchro.cfg
+ *   afin qu'ils soient accessibles en tant que propriété. Par exemple si master_synchro.cfg contient
+ *   SERVER_QA_PHPWEB_DC_EU1="www17.eu1"
+ *   SERVER_QA_PHPWEB_DC_US1="www-07.us1"
+ *   SERVER_QA_PHPWEB_ALL="$SERVER_QA_PHPWEB_DC_EU1 $SERVER_QA_PHPWEB_DC_US1"
+ *   alors la propriété ${SERVER_QA_PHPWEB_ALL} permettra d'adresser ces 2 serveurs.
  *
- * Dérive Task_WithProperties et supporte donc les attributs XML 'loadtwengaservers', 'propertyshellfile'
- * et 'propertyinifile'.
+ * Exemple :
+ * <env name="prod"
+ *   mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com, sysops@twenga.com"
+ *   withsymlinks="true"
+ *   loadtwengaservers="true"
+ *   basedir="/home/httpd/www.twenga"
+ * >...</env>
  *
  * @category TwengaDeploy
  * @package Core
