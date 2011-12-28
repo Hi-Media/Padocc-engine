@@ -1,6 +1,24 @@
 <?php
 
 /**
+ * Exporte tout ou partie du contenu d'un dépôt CVS vers une ou plusieurs destinations.
+ * À inclure dans une tâche env ou target.
+ *
+ * Exploite le script DEPLOYMENT_LIB_DIR . '/cvsexport.inc.sh'.
+ * Réalise la synchronisation à l'aide d'une tâche ''sync''.
+ *
+ * Attributs :
+ * - 'repository'
+ * - 'module' : sous-répertoire du dépôt qui nous intéresse
+ * - 'src' : lieu temporaire d'extraction du contenu qui nous intéresse du dépôt avant de l'envoyer
+ *   vers la destination => laisser à vide de manière générale,
+ *   l'outil utilisera alors le répertoire DEPLOYMENT_REPOSITORIES_DIR
+ * - 'dest'
+ *
+ * Exemple :
+ * <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot"
+ *     module="twengaweb/common" destdir="${SERVERS}:${COMMONDIR}" />
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>

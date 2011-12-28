@@ -1,7 +1,42 @@
 <?php
 
 /**
- * Spécifique B2C.
+ * Concatène et compresse les fichiers JS et CSS selon les blocs {combine} présents dans les templates.
+ * Un seul template peut donc générer plusieurs compilations de JS et de CSS.
+ * Ces paquets sont ensuite dupliqués sur les différents sous-domaines (' ', 'c', 'cn').
+ * Enfin redistribue les URLs des images au format #s0.c4tw.net/([^\'”)]*)/([^\'”)]*)\.(png|gif|jpg)#i
+ * sur les serveurs de statique s0 et s1, en respectant les sous-domaines.
+ *
+ * Exemple de bloc {combine} de fichier .tpl :
+ * {combine compress=true}
+ *     <script type="text/javascript" src="/js/google/analytics_controllerv4.js"></script>
+ *     ...
+ * {/combine}
+ * Ou encore :
+ * {combine compress=true}
+ *     <link media="all" href="/css/search/noscript.css" rel="stylesheet" type="text/css" />
+ *     ...
+ * {/combine}
+ *
+ * Exemple d'URL modifiée, ici dans du CSS :
+ * - avant : background:url(http://s0.c4tw.net/images/sprites/search.png) no-repeat;
+ * - après : background:url(http://s1cn.c4tw.net/20110914184627_12723/webv4/css/images/sprites/search.png) no-repeat;
+ *
+ * Dans chaque archive JS ou CSS générée est inséré en tout début une ligne commentée
+ * renseignant sur les fichiers sources.
+ *
+ * À inclure dans une tâche env ou target.
+ *
+ * Attributs :
+ * - 'tpldir' : répertoire contenant les templates
+ * - 'cssparentdir' : répertoire hébergeant les CSS sources
+ * - 'jsparentdir' : répertoire hébergeant les JS sources
+ * - 'destdir' : répertoire de destination des JS et CSS compactés
+ * - 'imgoutpath' : sous-répertoire devant être inséré dans les URLs des images
+ *
+ * Exemples :
+ * <tplminify tpldir="${TMPDIR}/webv4/templates" cssparentdir="${TMPDIR}/webv4"
+ *     jsparentdir="${TMPDIR}/webv4" destdir="${TMPDIR}" imgoutpath="/${EXECUTION_ID}/webv4" />
  *
  * @category TwengaDeploy
  * @package Core
