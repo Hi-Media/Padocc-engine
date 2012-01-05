@@ -21,6 +21,7 @@
         <property name="web_servers" value="${SERVER_QA_PHPWEB_ALL}" />
         <property name="static_basedir" value="/home/static" />
         <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
+	<buildlanguage project="website" destdir="cache13.eu1:/home/prod/twenga_files/dev-common-files/languages/web" />
         <call target="web_content" />
         <b2cswitchsymlink
             sysopsnotifications="false"
