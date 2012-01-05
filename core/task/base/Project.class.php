@@ -1,9 +1,12 @@
 <?php
 
 /**
+ * Tâche mère d'un fichier XML.
+ * Contient des tags env ou target.
  *
- * Dérive Task_WithProperties et supporte donc les attributs XML 'loadtwengaservers', 'propertyshellfile'
- * et 'propertyinifile'.
+ * Attribut 'name' doit être identique au nom du fichier.
+ *
+ * Exemple : <project name="rts">...</project>
  *
  * @category TwengaDeploy
  * @package Core

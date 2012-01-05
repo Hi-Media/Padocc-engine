@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * Renomme un fichier ou un répertoire.
+ * À inclure dans une tâche env ou target.
+ *
+ * Exemple : <rename src="${TMPDIR}/v3" dest="${TMPDIR}/web" />
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>

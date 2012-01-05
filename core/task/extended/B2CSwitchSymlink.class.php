@@ -1,6 +1,42 @@
 <?php
 
 /**
+ * Si tous les attributs booléens sont à true, alors cette tâche qui se substitue à
+ * la tâche terminale Task_Extended_SwitchSymlink effectue dans l'ordre :
+ * - notification sur le téléphone des admins d'une procédure de sortie de serveurs du cluster
+ * - sort du cluster les serveurs web concernés par le déploiement
+ * - permute les liens symboliques
+ * - redémarre Apache
+ * - réinitialise les caches Smarty
+ * - réintègre les serveurs web dans le cluster
+ * - switch les liens symboliques des serveurs statiques
+ * - ajoute une ligne dans la table SQL TWENGABUILD
+ * - et enfin envoie une seconde notification sur le téléphone des admins pour indiquer la fin du processus
+ *
+ * Tâche adhoc pour le projet front.
+ * À inclure en toute fin de tâche env ou target.
+ *
+ * Attributs :
+ * - 'src' : laisser à vide à moins d'être bien conscient des conséquences
+ * - 'target' : laisser à vide à moins d'être bien conscient des conséquences
+ * - 'server' : laisser à vide à moins d'être bien conscient des conséquences
+ * - 'sysopsnotifications' : envoyer ou non une notification sur le téléphone des admins
+ *   (appelle le script /home/prod/twenga/tools/send_nsca_fs3.sh)
+ * - 'addSQLTwBuild' : insérer une ligne dans la table SQL TWENGABUILD
+ *   (appelle le script Shell /home/prod/twenga/tools/add_twengabuild)
+ * - 'clusterRemoving' : retire du cluster avant restart Apache les serveurs web concernés par le déploiement
+ *   (appelle le script /home/prod/twenga/tools/wwwcluster)
+ * - 'clusterReintegration' : réintègre dans le cluster après restart Apache les serveurs web
+ *   (appelle le script /home/prod/twenga/tools/wwwcluster)
+ *
+ * Exemple :
+ * <b2cswitchsymlink
+ *     sysopsnotifications="false"
+ *     addSQLTwBuild="true"
+ *     clusterRemoving="false"
+ *     clusterReintegration="false"
+ * />
+ *
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
@@ -282,10 +318,19 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
             $this->_oLogger->log($aMsgs[0] . " '$sServer' server $aMsgs[1] the cluster.");
             $this->_oLogger->indent();
             $sCmd = "/home/prod/twenga/tools/wwwcluster -s $sServer $aMsgs[2]";
-            $aResult = $this->_oShell->exec($sCmd);
-            $sResult = implode("\n", $aResult);
+            try {
+                $aResult = $this->_oShell->exec($sCmd);
+                $sResult = implode("\n", $aResult);
+            } catch (RuntimeException $oException) {
+                if ($oException->getCode() == 2) {
+                    $sResult = '[WARNING] ' . $oException->getMessage();
+                } else {
+                    throw $oException;
+                }
+            }
+
             if ($sResult != '') {
-                $this->_oLogger->log(implode("\n", $aResult));
+                $this->_oLogger->log($sResult);
             }
             $this->_oLogger->unindent();
         } else {
