@@ -21,6 +21,7 @@
         <property name="web_servers" value="${SERVER_QA_PHPWEB_ALL}" />
         <property name="static_basedir" value="/home/static" />
         <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
+	<buildlanguage project="website" destdir="cache13.eu1:/home/prod/twenga_files/dev-common-files/languages/web" />
         <call target="web_content" />
         <b2cswitchsymlink
             sysopsnotifications="false"
@@ -112,6 +113,8 @@
         basedir="/home/httpd/www.twenga"
     >
         <call target="dynamic_content_step1" />
+	<mkdir destdir="${TMPDIR}/v3/templates_c" mode="777" />
+        <mkdir destdir="${TMPDIR}/v4/templates_c" mode="777" />
         <sync src="${TMPDIR}/" destdir="${SERVER_SCHED_DEPLOY}:${BASEDIR}" exclude="inc/config.php inc/config-local" />
     </env>
 
