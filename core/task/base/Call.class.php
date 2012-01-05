@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * Permet d'appeler une tâche target du même fichier XML.
+ * À inclure dans une tâche env ou target.
+ *
+ * Exemple : <call target="web_content" />
  *
  * Dérive Task_WithProperties et supporte donc les attributs XML 'loadtwengaservers', 'propertyshellfile'
  * et 'propertyinifile'.

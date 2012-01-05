@@ -1,7 +1,20 @@
 <?php
 
 /**
- * Spécifique B2C.
+ * Initialise le contenu statique de la nouvelle release à partir de la précédente (via rsync),
+ * et met à jour le lien symbolique /last_deploy vers cette nouvelle release.
+ * À inclure dans une tâche env ou target.
+ *
+ * Tâche adhoc pour le projet front à cause de la logique différente dans la gestion des statiques.
+ *
+ * Contient une tâche sync :
+ * <sync src="${STATIC_SERVERS}:${STATIC_BASEDIR}/last_deploy"
+ *     destdir="${STATIC_SERVERS}:${STATIC_BASEDIR}/${EXECUTION_ID}" />
+ * et un link :
+ * <link src="${STATIC_BASEDIR}/last_deploy"
+ *     target="${STATIC_BASEDIR}/${EXECUTION_ID}" server="${STATIC_SERVERS}" />
+ *
+ * Exemple : <b2cpreparestaticcontent />
  *
  * @category TwengaDeploy
  * @package Core
