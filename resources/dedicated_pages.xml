@@ -33,7 +33,7 @@
 			destdir="${TMPDIR}/twenga-common" />
 		<cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/twengaproject/pagekeyword"
 			destdir="${TMPDIR}/pagekeyword" />
-		<rename src="${TMPDIR}/${config_file}" dest="${TMPDIR}/config.php"/>
+		<rename src="${TMPDIR}/pagekeyword/${config_file}" dest="${TMPDIR}/pagekeyword/config.php"/>
 		<sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}"/>
 	</target>
 </project>
