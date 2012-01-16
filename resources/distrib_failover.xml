@@ -1,0 +1,25 @@
+<project name="distrib_failover">
+	<env 
+		name="qa" mailto="devaa@twenga.com, laurent.toussaint@twenga.com, romain.derocle@twenga.com" 
+		withsymlinks="true" 
+		basedir="/home/httpd/distrib_failover"
+	>
+		<property name="servers" value="www10"/> 
+		<call target="content"/> 
+	</env> 
+	<env 
+		name="prod" 
+		mailto="devaa@twenga.com, laurent.toussaint@twenga.com, romain.derocle@twenga.com" 
+		withsymlinks="true" 
+		basedir="/home/httpd/distrib_failover"
+	>
+		<property name="servers" value="www46 www47"/>
+		<call target="content"/> 
+	</env>
+	<target name="content">
+		<externalproperty name="ref" description="Branch or tag to deploy"/>
+		<gitexport repository="git@git.twenga.com:distribution/failover.git" ref="${REF}" destdir="${SERVERS}:${BASEDIR}" exclude="config.* config_application.php db.ini"/>
+		<mkdir destdir="${SERVERS}:${BASEDIR}/cache/smarty" mode="777"/>
+	</target>
+</project>
+
