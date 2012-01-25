@@ -25,7 +25,7 @@
  *
  * @category TwengaDeploy
  * @package Lib
- * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
+ * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com> Tony CARON <caron.tony@twenga.com>
  */
 class Minifier_TemplateMinifier
 {
@@ -187,7 +187,7 @@ class Minifier_TemplateMinifier
                     "[WARNING] In template '$sSrcTemplateFile'. $sErrorMsg Files '$sPattern' not generated.",
                     Logger_Interface::WARNING
                 );
-                return 0;
+                return 1;
             }
         }
 
@@ -214,20 +214,8 @@ class Minifier_TemplateMinifier
         $iFilesSize = 0;
         foreach ($this->_aSubDomains as $sSubDomain) {
             $sDestPath = sprintf($sPattern, $sSubDomain);
-            if (file_exists($sDestPath)) {
-                continue;
-            }
-            try {
-                copy($sTmpDestPath, $sDestPath);
-            } catch (Exception $oException) {
-                throw new RuntimeException(
-                    "Copy from '$sTmpDestPath' to '$sDestPath' failed!",
-                    1,
-                    $oException
-                );
-            }
 
-            $sContents = file_get_contents($sDestPath);
+            $sContents = file_get_contents($sTmpDestPath);
             $sContents = preg_replace_callback(
                 '#s0.c4tw.net/([^\'")]*)/([^\'")]*)\.(png|gif|jpg)#i',
                 function (array $aMatches) use ($sSubDomain, $sImgOutPath)
@@ -239,6 +227,22 @@ class Minifier_TemplateMinifier
                 },
                 $sContents
             );
+
+	    // Fichier de destination déjà existant
+	    if (file_exists($sDestPath)) {
+                $iSizeOrigin = filesize($sDestPath);
+                $iNewSize = strlen($sContents);
+		
+		// Fichier de différente taille
+		if($iSizeOrigin != $iNewSize) 
+                 $this->_oLogger->log(
+                    "[WARNING] Duplicate ID for the file: '$sDestPath'. File not generated.",
+                    Logger_Interface::WARNING
+                );
+
+                continue;
+            }
+
             $iFileSize = file_put_contents($sDestPath, $sContents);
             $iFilesSize += $iFileSize;
         }
