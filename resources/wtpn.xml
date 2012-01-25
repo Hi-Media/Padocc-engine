@@ -22,8 +22,11 @@
 
     <target name="content">
         <externalproperty name="ref" description="Branch or tag to deploy" />
+	<externalproperty name="ref_common" description="Ref. php-common"/>
         <gitexport repository="git@git.twenga.com:distribution/wtpn.git" ref="${REF}"
             destdir="${SERVERS}:${BASEDIR}" exclude="config.* dynconfig* config_application.php db.ini" />
+	<gitexport repository="git@git.twenga.com:php-common/php-common.git" ref="${REF_COMMON}" 
+	    destdir="${SERVERS}:${BASEDIR}/Twenga" exclude="/build.xml /CHANGELOG /dependancies.ini /phpunit.xml.dist /Tests"/>
         <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
             destdir="${SERVERS}:/home/httpd/twenga-common" />
         <mkdir destdir="${SERVERS}:${BASEDIR}/cache/cmt" mode="777" />

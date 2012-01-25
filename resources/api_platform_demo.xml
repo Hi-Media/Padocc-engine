@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="distrib_api">
+
+    <env
+        name="wsplatform"
+        mailto="devaa@twenga.com"
+        withsymlinks="true"
+        basedir="/home/httpd/ws_platform_apis/api.demo.com"
+    >
+        <property name="servers" value="ws-01.eu1 ws-02.eu1" />
+        <call target="content" />
+    </env>
+
+    <target name="content">
+        <externalproperty name="ref" description="Branch or tag to deploy" />
+        <gitexport repository="git@git.twenga.com:aa/api_demo.git" ref="${ref}"
+            srcsubdir="/api"
+            destdir="${SERVERS}:${BASEDIR}" exclude="conf/" />
+    </target>
+</project>
