@@ -22,6 +22,7 @@
         <property name="static_basedir" value="/home/static" />
         <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
 	<buildlanguage project="website" destdir="cache13.eu1:/home/prod/twenga_files/dev-common-files/languages/web" />
+	<buildlanguage project="rts" destdir="cache13.eu1:/home/prod/twenga_files/dev-common-files/languages/rts" />
         <call target="web_content" />
         <b2cswitchsymlink
             sysopsnotifications="false"
@@ -95,8 +96,8 @@
         <property name="static_basedir" value="/home/static" />
         <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
         <call target="dynamic_content_step1" />
-        <sync src="${TMPDIR}/" destdir="${SERVER_SCHED_DEPLOY}:${BASEDIR}" exclude="inc/config.php inc/config-local" />
         <call target="dynamic_content_step2" />
+	<sync src="${TMPDIR}/" destdir="${SERVER_SCHED_DEPLOY}:${BASEDIR}" exclude="inc/config.php inc/config-local" />
         <call target="static_content" />
         <b2cswitchsymlink
             sysopsnotifications="true"
@@ -113,8 +114,7 @@
         basedir="/home/httpd/www.twenga"
     >
         <call target="dynamic_content_step1" />
-	<mkdir destdir="${TMPDIR}/v3/templates_c" mode="777" />
-        <mkdir destdir="${TMPDIR}/v4/templates_c" mode="777" />
+	<call target="dynamic_content_step2" />
         <sync src="${TMPDIR}/" destdir="${SERVER_SCHED_DEPLOY}:${BASEDIR}" exclude="inc/config.php inc/config-local" />
     </env>
 
@@ -136,6 +136,7 @@
         <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
             destdir="${TMPDIR}/twenga-common" />
         <buildlanguage project="website" destdir="${TMPDIR}/languages" />
+	<buildlanguage project="rts" destdir="${TMPDIR}/languages/rts" />
     </target>
 
     <target name="dynamic_content_step2">
@@ -145,7 +146,8 @@
         <link src="${TMPDIR}/inc/config_tracker.php" target="../../../config/www.twenga/config_tracker.php" />
         <mkdir destdir="${TMPDIR}/v3/templates_c" mode="777" />
         <mkdir destdir="${TMPDIR}/v4/templates_c" mode="777" />
-        <sync src="${TMPDIR}/" destdir="${WEB_SERVERS}:${BASEDIR}" exclude="v3/css v3/js v4/css v4/js" />
+	<mkdir destdir="${TMPDIR}/tpl_mobile/templates_c" mode="777"/>
+        <sync src="${TMPDIR}/" destdir="${WEB_SERVERS}:${BASEDIR}" exclude="v3/css v3/js v4/css v4/js tpl_mobile/css tpl_mobile/js" />
     </target>
 
     <target name="static_content">
@@ -160,10 +162,12 @@
             exclude="*" />
         <rename src="${TMPDIR}/v3" dest="${TMPDIR}/web" />
         <rename src="${TMPDIR}/v4" dest="${TMPDIR}/webv4" />
+	<rename src="${TMPDIR}/tpl_mobile" dest="${TMPDIR}/webmob"/>
         <tplminify tpldir="${TMPDIR}/web/templates" cssparentdir="${TMPDIR}/web"
             jsparentdir="${TMPDIR}/web" destdir="${TMPDIR}" imgoutpath="/${EXECUTION_ID}/web" />
         <tplminify tpldir="${TMPDIR}/webv4/templates" cssparentdir="${TMPDIR}/webv4"
             jsparentdir="${TMPDIR}/webv4" destdir="${TMPDIR}" imgoutpath="/${EXECUTION_ID}/webv4" />
+	<tplminify tpldir="${TMPDIR}/webmob/templates" cssparentdir="${TMPDIR}/webmob" jsparentdir="${TMPDIR}/webmob" destdir="${TMPDIR}" imgoutpath="/${EXECUTION_ID}/webmob"/>
         <sync src="${TMPDIR}/" destdir="${STATIC_SERVERS}:${STATIC_BASEDIR}/${EXECUTION_ID}"
             exclude="/Front /html /inc /languages /twenga-common /web/templates /webv4/templates" />
     </target>
