@@ -1,32 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="distrib_api">
-
-    <env
-        name="wsplatform"
-        mailto="devaa@twenga.com"
-        withsymlinks="true"
-        basedir="/home/httpd/ws_platform_apis/api.affinitad.com"
-    >
-        <property name="servers" value="ws-01.eu1 ws-02.eu1" />
-        <call target="content" />
-    </env>
-
-    <env
-        name="prod"
-        mailto="devaa@twenga.com, laurent.salomon@twenga.com, laurent.toussaint@twenga.com, romain.derocle@twenga.com"
-        withsymlinks="true"
-        basedir="/home/httpd/api.affinitad.com"
-    >
-        <property name="servers" value="www46 www47" />
-        <call target="content" />
+    
+    <env name="prod" mailto="devaa@twenga.com, devtpn@twenga.com" withsymlinks="true" basedir="/home/httpd/api.affinitad.com">
+        <property name="servers" value="www46 www47 ws-01.eu1 ws-02.eu1"/>
+        <call target="content"/>
     </env>
 
     <target name="content">
-        <externalproperty name="ref" description="Branch or tag to deploy" />
-        <gitexport repository="git@git.twenga.com:distribution/mldelivery.git" ref="${ref}"
-            srcsubdir="/api"
-            destdir="${SERVERS}:${BASEDIR}" exclude="conf/" />
-        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
-            destdir="${SERVERS}:${BASEDIR}/common" />
+        <externalproperty name="ref" description="Branch or tag to deploy"/>
+        <gitexport repository="git@git.twenga.com:distribution/mldelivery.git" ref="${ref}" srcsubdir="/api" destdir="${SERVERS}:${BASEDIR}" exclude="conf/"/>
+        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common" destdir="${SERVERS}:${BASEDIR}/common"/>
     </target>
 </project>
