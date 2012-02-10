@@ -160,15 +160,13 @@
             destdir="${TMPDIR}/img/brands"
             include="*.png"
             exclude="*" />
-        <rename src="${TMPDIR}/v3" dest="${TMPDIR}/web" />
-        <rename src="${TMPDIR}/v4" dest="${TMPDIR}/webv4" />
-	<rename src="${TMPDIR}/tpl_mobile" dest="${TMPDIR}/webmob"/>
-        <tplminify tpldir="${TMPDIR}/web/templates" cssparentdir="${TMPDIR}/web"
-            jsparentdir="${TMPDIR}/web" destdir="${TMPDIR}" imgoutpath="/${EXECUTION_ID}/web" />
-        <tplminify tpldir="${TMPDIR}/webv4/templates" cssparentdir="${TMPDIR}/webv4"
-            jsparentdir="${TMPDIR}/webv4" destdir="${TMPDIR}" imgoutpath="/${EXECUTION_ID}/webv4" />
-	<tplminify tpldir="${TMPDIR}/webmob/templates" cssparentdir="${TMPDIR}/webmob" jsparentdir="${TMPDIR}/webmob" destdir="${TMPDIR}" imgoutpath="/${EXECUTION_ID}/webmob"/>
+        <tplminify tpldir="${TMPDIR}/v3/templates" cssparentdir="${TMPDIR}"
+            jsparentdir="${TMPDIR}" destdir="${TMPDIR}" imgoutpath="/${EXECUTION_ID}/v3" />
+        <tplminify tpldir="${TMPDIR}/v4/templates" cssparentdir="${TMPDIR}"
+            jsparentdir="${TMPDIR}" destdir="${TMPDIR}" imgoutpath="/${EXECUTION_ID}/v4" />
+	<tplminify tpldir="${TMPDIR}/tpl_mobile/templates" cssparentdir="${TMPDIR}"
+	    jsparentdir="${TMPDIR}" destdir="${TMPDIR}" imgoutpath="/${EXECUTION_ID}/tpl_mobile"/>
         <sync src="${TMPDIR}/" destdir="${STATIC_SERVERS}:${STATIC_BASEDIR}/${EXECUTION_ID}"
-            exclude="/Front /html /inc /languages /twenga-common /web/templates /webv4/templates" />
+            exclude="/Front /html /inc /languages /twenga-common" />
     </target>
 </project>
