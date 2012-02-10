@@ -9,7 +9,7 @@
  *
  * @category TwengaDeploy
  * @package Core
- * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
+ * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>, Tony CARON <tony.caron@twenga.com>
  */
 class Task_Base_HTTP extends Task
 {
@@ -36,8 +36,25 @@ class Task_Base_HTTP extends Task
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);
         $this->_aAttrProperties = array(
-            'url' => AttributeProperties::ALLOW_PARAMETER | AttributeProperties::REQUIRED | AttributeProperties::URL
+            'url' => AttributeProperties::ALLOW_PARAMETER | AttributeProperties::REQUIRED | AttributeProperties::URL,
+            'destdir' => AttributeProperties::ALLOW_PARAMETER | AttributeProperties::DIR
         );
+    }
+
+    /**
+     * Vérifie au moyen de tests basiques que la tâche peut être exécutée.
+     * Lance une exception si tel n'est pas le cas.
+     *
+     * Comme toute les tâches sont vérifiées avant que la première ne soit exécutée,
+     * doit permettre de remonter au plus tôt tout dysfonctionnement.
+     * Appelé avant la méthode execute().
+     *
+     * @throws UnexpectedValueException en cas d'attribut ou fichier manquant
+     * @throws DomainException en cas de valeur non permise
+     */
+    public function check ()
+    {
+        parent::check();
     }
 
     /**
@@ -53,14 +70,29 @@ class Task_Base_HTTP extends Task
         $this->_oLogger->log('Call URL: ' . $this->_aAttributes['url']);
         $this->_oLogger->indent();
 
+
+        $sTmpDir = $this->_oProperties->getProperty('tmpdir').'/curl';
+        $this->_oShell->mkdir($sTmpDir);
+
         $aURLs = $this->_processPath($this->_aAttributes['url']);
         foreach ($aURLs as $sURL) {
-            $sCmd = '/usr/bin/curl --silent --retry 2 --retry-delay 2 --max-time 5 "' . $sURL . '"';
+            $sCmd = 'cd '.$sTmpDir.'; /usr/bin/curl --silent --retry 2 --retry-delay 2 --max-time 5 "' . $sURL . '"';
+            if( isset($this->_aAttributes['destdir'] )) $sCmd .= ' -O';
             $aResults = $this->_oShell->exec($sCmd);
             if (count($aResults) > 0 && substr(end($aResults), 0, 7) === '[ERROR]') {
                 throw new RuntimeException(implode("\n", $aResults));
             }
         }
+
+        if (isset($this->_aAttributes['destdir'])) {
+            $aDestDirs = $this->_processPath($this->_aAttributes['destdir']);
+            foreach ($aDestDirs as $sDestDir) {
+                $this->_oShell->copy($sTmpDir.'/*', $sDestDir, true);
+            }
+
+        }
+
+        $this->_oShell->remove($sTmpDir);
 
         $this->_oLogger->unindent();
         $this->_oLogger->unindent();
