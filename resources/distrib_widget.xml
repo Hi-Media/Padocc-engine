@@ -1,43 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="distrib_widget">
 
-    <env
-        name="vm"
-        mailto="devaa@twenga.com, laurent.toussaint@twenga.com, romain.derocle@twenga.com"
-        withsymlinks="true"
-        basedir="/home/ltoussaint/twengaweb/widgettpn"
-    >
-        <property name="servers" value="ltoussaint@ltoussaint.dev.twenga.local" />
-        <call target="content" />
+    <env name="vm" mailto="devaa@twenga.com, devtpn@twenga.com" withsymlinks="true" basedir="/home/ltoussaint/twengaweb/widgettpn">
+        <property name="servers" value="ltoussaint@ltoussaint.dev.twenga.local"/>
+        <call target="content"/>
     </env>
 
-    <env
-        name="qa"
-        mailto="devaa@twenga.com, laurent.salomon@twenga.com, laurent.toussaint@twenga.com, romain.derocle@twenga.com"
-        withsymlinks="true"
-        basedir="/home/httpd/widgettpn"
-    >
-        <property name="servers" value="www10" />
-        <call target="content" />
+    <env name="qa" mailto="devaa@twenga.com, devtpn@twenga.com" withsymlinks="true" basedir="/home/httpd/widgettpn">
+        <property name="servers" value="www10"/>
+        <call target="content"/>
     </env>
 
-    <env
-        name="prod"
-        mailto="devaa@twenga.com, laurent.salomon@twenga.com, laurent.toussaint@twenga.com, romain.derocle@twenga.com"
-        withsymlinks="true"
-        basedir="/home/httpd/widgettpn"
-    >
-        <property name="servers" value="www46 www47" />
-        <call target="content" />
+    <env name="prod" mailto="devaa@twenga.com, devtpn@twenga.com" withsymlinks="true" basedir="/home/httpd/widgettpn.twenga.com">
+        <property name="servers" value="www46 www47 ws-01.eu1 ws-02.eu1"/>
+        <call target="content"/>
     </env>
 
     <target name="content">
-        <externalproperty name="ref" description="Branch or tag to deploy" />
-        <gitexport repository="git@git.twenga.com:distribution/mldelivery.git" ref="${ref}"
-            srcsubdir="/widget"
-            destdir="${SERVERS}:${BASEDIR}" exclude="config.* dynconfig* config_application.php db.ini" />
-        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
-            destdir="${SERVERS}:${BASEDIR}/common" />
-        <mkdir destdir="${SERVERS}:${BASEDIR}/public/templates/offer" mode="777" />
+        <externalproperty name="ref" description="Branch or tag to deploy"/>
+        <gitexport repository="git@git.twenga.com:distribution/mldelivery.git" ref="${ref}" srcsubdir="/widget" destdir="${SERVERS}:${BASEDIR}" exclude="config.* dynconfig* config_application.php db.ini"/>
+        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common" destdir="${SERVERS}:${BASEDIR}/common"/>
+        <mkdir destdir="${SERVERS}:${BASEDIR}/public/templates/offer" mode="777"/>
     </target>
 </project>
