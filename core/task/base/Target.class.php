@@ -159,6 +159,9 @@ class Task_Base_Target extends Task_WithProperties
                 foreach ($sTaskPaths as $sTaskPath) {
                     $sClassName = strstr(substr(strrchr($sTaskPath, '/'), 1), '.', true);
                     $sFullClassName = 'Task_' . ucfirst($sTaskType) . '_' . $sClassName;
+                    if(!class_exists($sFullClassName)){
+                        throw new RuntimeException($sFullClassName." doesn't exist!");
+                    }
                     $sTag = $sFullClassName::getTagName();
                     if (isset($aAvailableTasks[$sTag])) {
                         throw new LogicException("Already defined task tag '$sTag' in '$aAvailableTasks[$sTag]'!");
