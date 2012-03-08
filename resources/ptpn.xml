@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="ptpn">
     <env name="qa" mailto="devaa@twenga.com, devtpn@twenga.com" withsymlinks="true" basedir="/home/httpd/ptpn">
-        <property name="servers" value="www10"/>
+        <property name="servers" value="${SERVER_DISTRIB_EXTRANET_QA}"/>
         <call target="content"/>
     </env>
-
     <env name="prod" mailto="devaa@twenga.com, devtpn@twenga.com" withsymlinks="true" basedir="/home/httpd/myaccount.affinitad.com">
-        <property name="servers" value="www46 www47"/>
+        <property name="servers" value="${SERVER_DISTRIB_EXTRANET}"/>
         <call target="content"/>
     </env>
-
     <target name="content">
         <externalproperty name="ref" description="Ref. to deploy"/>
         <externalproperty name="ref_common" description="Ref. php-common"/>
         <gitexport repository="git@git.twenga.com:distribution/ptpn.git" ref="${REF}" destdir="${SERVERS}:${BASEDIR}" exclude="config.* config_application.php db.ini vendors.php"/>
-        <gitexport repository="git@git.twenga.com:php-common/php-common.git" ref="${REF_COMMON}" destdir="${SERVERS}:${BASEDIR}/Twenga" exclude="/build.xml /CHANGELOG /dependancies.ini /phpunit.xml.dist /Tests"/>
+        <gitexport repository="git@git.twenga.com:php-common/php-common.git" ref="${REF_COMMON}" destdir="${SERVERS}:${BASEDIR}/Twenga" exclude="/build.xml/CHANGELOG/dependancies.ini/phpunit.xml.dist/Tests"/>
         <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common" destdir="${SERVERS}:/home/httpd/twenga-common"/>
         <mkdir destdir="${SERVERS}:${BASEDIR}/cache/smarty" mode="777"/>
         <mkdir destdir="${SERVERS}:${BASEDIR}/cache/cmt" mode="777"/>

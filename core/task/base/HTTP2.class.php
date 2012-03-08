@@ -9,9 +9,9 @@
  *
  * @category TwengaDeploy
  * @package Core
- * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>, Tony CARON <tony.caron@twenga.com>
+ * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
  */
-class Task_Base_HTTP extends Task
+class Task_Base_HTTP2 extends Task
 {
 
     /**
@@ -21,7 +21,7 @@ class Task_Base_HTTP extends Task
      */
     public static function getTagName ()
     {
-        return 'http';
+        return 'http2';
     }
 
     /**
@@ -87,7 +87,6 @@ class Task_Base_HTTP extends Task
         if (isset($this->_aAttributes['destdir'])) {
             $aDestDirs = $this->_processPath($this->_aAttributes['destdir']);
             foreach ($aDestDirs as $sDestDir) {
-                $this->_oLogger->log('Copy file(s) to: ' . $sDestDir);
                 $this->_oShell->copy($sTmpDir.'/*', $sDestDir, true);
             }
 

@@ -64,7 +64,7 @@ class Minifier_JSMinAdapter implements Minifier_Interface
 
         // La destination est-elle en accord avec les entrées ?
         if (strrchr($sDestPath, '.') !== $sFirstExtension) {
-            throw new UnexpectedValueException("Destination file must be same type of input files: '$sDestPath'");
+            throw new UnexpectedValueException("Destination file must be same type of input files: '$sDestPath' : Src :" . print_r($aSrcPaths, true));
         }
 
         // On redirige vers le service idoine :

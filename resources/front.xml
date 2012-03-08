@@ -1,172 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="front">
-    <env name="dev"
-        mailto="geoffroy.aubry@twenga.com"
-        withsymlinks="true"
-        loadtwengaservers="true"
-        basedir="/home/aai/deployment_test/www.twenga"
-    >
-        <property name="web_servers" value="aai@${SERVER_AAI}" />
-        <property name="static_basedir" value="${BASEDIR}_statics" />
-        <property name="static_servers" value="aai@${SERVER_AAI}" />
-        <call target="web_content" />
+    <env name="dev" mailto="geoffroy.aubry@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/aai/deployment_test/www.twenga">
+        <property name="web_servers" value="aai@${SERVER_AAI}"/>
+        <property name="static_basedir" value="${BASEDIR}_statics"/>
+        <property name="static_servers" value="aai@${SERVER_AAI}"/>
+        <call target="web_content"/>
     </env>
-
-    <env name="qa"
-        mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com"
-        withsymlinks="true"
-        loadtwengaservers="true"
-        basedir="/home/httpd-qa/www.twenga"
-    >
-        <property name="web_servers" value="${SERVER_QA_PHPWEB_ALL}" />
-        <property name="static_basedir" value="/home/static" />
-        <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
-	<buildlanguage project="website" destdir="cache13.eu1:/home/prod/twenga_files/dev-common-files/languages/web" />
-	<buildlanguage project="rts" destdir="cache13.eu1:/home/prod/twenga_files/dev-common-files/languages/rts" />
-        <call target="web_content" />
-        <b2cswitchsymlink
-            sysopsnotifications="false"
-            addSQLTwBuild="true"
-            clusterRemoving="false"
-            clusterReintegration="false"
-        />
+    <env name="qa" mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd-qa/www.twenga">
+        <property name="web_servers" value="${SERVER_QA_PHPWEB_ALL}"/>
+        <property name="static_basedir" value="/home/static"/>
+        <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}"/>
+        <buildlanguage project="website" destdir="cache13.eu1:/home/prod/twenga_files/dev-common-files/languages/web"/>
+        <buildlanguage project="rts" destdir="cache13.eu1:/home/prod/twenga_files/dev-common-files/languages/rts"/>
+        <call target="web_content"/>
+        <b2cswitchsymlink sysopsnotifications="false" addSQLTwBuild="true" clusterRemoving="false" clusterReintegration="false"/>
     </env>
-
-    <env name="bct"
-        mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com"
-        withsymlinks="true"
-        loadtwengaservers="true"
-        basedir="/home/httpd-bct/www.twenga"
-    >
-        <property name="web_servers" value="${SERVER_BCT_PHPWEB_ALL}" />
-        <property name="static_basedir" value="/home/static" />
-        <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
-        <call target="web_content" />
-        <b2cswitchsymlink
-            sysopsnotifications="false"
-            addSQLTwBuild="true"
-            clusterRemoving="false"
-            clusterReintegration="false"
-        />
+    <env name="bct" mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd-bct/www.twenga">
+        <property name="web_servers" value="${SERVER_BCT_PHPWEB_ALL}"/>
+        <property name="static_basedir" value="/home/static"/>
+        <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}"/>
+        <call target="web_content"/>
+        <b2cswitchsymlink sysopsnotifications="false" addSQLTwBuild="true" clusterRemoving="false" clusterReintegration="false"/>
     </env>
-
-    <env name="internal"
-        mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com"
-        withsymlinks="true"
-        loadtwengaservers="true"
-        basedir="/home/httpd/www.twenga"
-    >
-        <property name="web_servers" value="${SERVER_INT_PHPWEB_ALL}" />
-        <property name="static_basedir" value="/home/static" />
-        <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
-        <call target="web_content" />
-        <b2cswitchsymlink
-            sysopsnotifications="false"
-            addSQLTwBuild="true"
-            clusterRemoving="false"
-            clusterReintegration="false"
-        />
+    <env name="internal" mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/www.twenga">
+        <property name="web_servers" value="${SERVER_INT_PHPWEB_ALL}"/>
+        <property name="static_basedir" value="/home/static"/>
+        <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}"/>
+        <call target="web_content"/>
+        <b2cswitchsymlink sysopsnotifications="false" addSQLTwBuild="true" clusterRemoving="false" clusterReintegration="false"/>
     </env>
-
-    <env name="preprod"
-        mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com, sysops@twenga.com"
-        withsymlinks="true"
-        loadtwengaservers="true"
-        basedir="/home/httpd/www.twenga"
-    >
-        <property name="web_servers" value="www34.eu1 www36.eu1 www42.eu1 www49.eu1 www-01.us1 wwwtest1.eu1 wwwtest2.eu1" />
-        <property name="static_basedir" value="/home/static" />
-        <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
-        <call target="web_content" />
-        <b2cswitchsymlink
-            sysopsnotifications="true"
-            addSQLTwBuild="true"
-            clusterRemoving="true"
-            clusterReintegration="false"
-        />
+    <env name="preprod" mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com, sysops@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/www.twenga">
+        <property name="web_servers" value="${SERVER_PHPWEB_PREPROD}"/>
+        <property name="static_basedir" value="/home/static"/>
+        <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}"/>
+        <call target="web_content"/>
+        <b2cswitchsymlink sysopsnotifications="true" addSQLTwBuild="true" clusterRemoving="true" clusterReintegration="false"/>
     </env>
-
-    <env name="prod"
-        mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com, sysops@twenga.com"
-        withsymlinks="true"
-        loadtwengaservers="true"
-        basedir="/home/httpd/www.twenga"
-    >
-        <property name="web_servers" value="${SERVER_PHPWEB_ALL}" />
-        <property name="static_basedir" value="/home/static" />
-        <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}" />
-        <call target="dynamic_content_step1" />
-        <call target="dynamic_content_step2" />
-	<sync src="${TMPDIR}/" destdir="${SERVER_SCHED_DEPLOY}:${BASEDIR}" exclude="inc/config.php inc/config-local" />
-        <call target="static_content" />
-        <b2cswitchsymlink
-            sysopsnotifications="true"
-            addSQLTwBuild="true"
-            clusterRemoving="true"
-            clusterReintegration="true"
-        />
+    <env name="prod" mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com, sysops@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/www.twenga">
+        <property name="web_servers" value="${SERVER_PHPWEB_ALL}"/>
+        <property name="static_basedir" value="/home/static"/>
+        <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}"/>
+        <call target="dynamic_content_step1"/>
+        <call target="dynamic_content_step2"/>
+        <sync src="${TMPDIR}/" destdir="${SERVER_SCHED_DEPLOY}:${BASEDIR}" exclude="inc/config.php inc/config-local conf/config.php cache/"/>
+        <call target="static_content"/>
+        <b2cswitchsymlink sysopsnotifications="true" addSQLTwBuild="true" clusterRemoving="true" clusterReintegration="true"/>
     </env>
-
-    <env name="sched"
-        mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com, sysops@twenga.com"
-        withsymlinks="true"
-        loadtwengaservers="true"
-        basedir="/home/httpd/www.twenga"
-    >
-        <call target="dynamic_content_step1" />
-	<call target="dynamic_content_step2" />
-        <sync src="${TMPDIR}/" destdir="${SERVER_SCHED_DEPLOY}:${BASEDIR}" exclude="inc/config.php inc/config-local" />
+    <env name="sched" mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com, sysops@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/www.twenga">
+        <call target="dynamic_content_step1"/>
+        <rename src="${TMPDIR}/conf/config.inc" dest="${TMPDIR}/conf/config.php"/>
+        <mkdir destdir="${TMPDIR}/cache/smarty" mode="777"/>
+        <mkdir destdir="${TMPDIR}/cache/cmt" mode="777"/>
+        <sync src="${TMPDIR}/" destdir="${SERVER_SCHED_DEPLOY}:${BASEDIR}" exclude="inc/config.php inc/config-local"/>
     </env>
-
     <target name="web_content">
-        <call target="dynamic_content_step1" />
-        <call target="dynamic_content_step2" />
-        <call target="static_content" />
+        <call target="dynamic_content_step1"/>
+        <call target="dynamic_content_step2"/>
+        <call target="static_content"/>
     </target>
-
     <target name="dynamic_content_step1">
-        <externalproperty name="ref" description="Ref. to deploy" />
-        <externalproperty name="ref_common" description="Ref. php-common" />
-        <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${REF}" destdir="${TMPDIR}" />
-        <filltemplate
-            srcfile="${TMPDIR}/inc/deploy_config-template.inc.php"
-            destfile="${TMPDIR}/inc/deploy_config.inc.php" />
-        <gitexport repository="git@git.twenga.com:php-common/php-common.git" ref="${REF_COMMON}"
-            destdir="${TMPDIR}/Twenga" exclude="/build.xml /CHANGELOG /dependancies.ini /phpunit.xml.dist /Tests" />
-        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common"
-            destdir="${TMPDIR}/twenga-common" />
-        <buildlanguage project="website" destdir="${TMPDIR}/languages" />
-	<buildlanguage project="rts" destdir="${TMPDIR}/languages/rts" />
+        <externalproperty name="ref" description="Ref. to deploy"/>
+        <externalproperty name="ref_common" description="Ref. php-common"/>
+        <gitexport repository="git@git.twenga.com:b2c/web.git" ref="${REF}" destdir="${TMPDIR}"/>
+        <filltemplate srcfile="${TMPDIR}/inc/deploy_config-template.inc.php" destfile="${TMPDIR}/inc/deploy_config.inc.php"/>
+        <gitexport repository="git@git.twenga.com:php-common/php-common.git" ref="${REF_COMMON}" destdir="${TMPDIR}/Twenga" exclude="/build.xml/CHANGELOG/dependancies.ini/phpunit.xml.dist/Tests"/>
+        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common" destdir="${TMPDIR}/twenga-common"/>
+        <buildlanguage project="website" destdir="${TMPDIR}/languages"/>
+        <buildlanguage project="rts" destdir="${TMPDIR}/languages/rts"/>
     </target>
-
     <target name="dynamic_content_step2">
-        <link src="${TMPDIR}/html/shorturl/config_shorturl.php" target="../../../../config/www.twenga/config_shorturl.php" />
-        <link src="${TMPDIR}/inc/config.php" target="../../../config/www.twenga/config.php" />
-        <link src="${TMPDIR}/inc/config-local" target="../../../config/www.twenga/config-local" />
-        <link src="${TMPDIR}/inc/config_tracker.php" target="../../../config/www.twenga/config_tracker.php" />
-        <mkdir destdir="${TMPDIR}/v3/templates_c" mode="777" />
-        <mkdir destdir="${TMPDIR}/v4/templates_c" mode="777" />
-	<mkdir destdir="${TMPDIR}/tpl_mobile/templates_c" mode="777"/>
-        <sync src="${TMPDIR}/" destdir="${WEB_SERVERS}:${BASEDIR}" exclude="v3/css v3/js v4/css v4/js tpl_mobile/css tpl_mobile/js" />
+        <link src="${TMPDIR}/html/shorturl/config_shorturl.php" target="../../../../config/www.twenga/config_shorturl.php"/>
+        <link src="${TMPDIR}/inc/config-local" target="../../../config/www.twenga/config-local"/>
+        <link src="${TMPDIR}/inc/config_tracker.php" target="../../../config/www.twenga/config_tracker.php"/>
+        <rename src="${TMPDIR}/conf/config.inc" dest="${TMPDIR}/conf/config.php"/>
+        <mkdir destdir="${TMPDIR}/cache/smarty" mode="777"/>
+        <mkdir destdir="${TMPDIR}/cache/cmt" mode="777"/>
+        <sync src="${TMPDIR}/" destdir="${WEB_SERVERS}:${BASEDIR}" exclude="public/css public/js public/fonts public/images"/>
     </target>
-
     <target name="static_content">
-        <b2cpreparestaticcontent />
-        <sync src="prod@fs3:/home/prod/twenga_files/merchant_logos/"
-            destdir="${TMPDIR}/img/sites"
-            include="*.png"
-            exclude="*" />
-        <sync src="prod@fs3:/home/prod/twenga_files/brand_logos/"
-            destdir="${TMPDIR}/img/brands"
-            include="*.png"
-            exclude="*" />
-        <tplminify tpldir="${TMPDIR}/v3/templates" cssparentdir="${TMPDIR}"
-            jsparentdir="${TMPDIR}" destdir="${TMPDIR}" imgoutpath="/${EXECUTION_ID}/v3" />
-        <tplminify tpldir="${TMPDIR}/v4/templates" cssparentdir="${TMPDIR}"
-            jsparentdir="${TMPDIR}" destdir="${TMPDIR}" imgoutpath="/${EXECUTION_ID}/v4" />
-	<tplminify tpldir="${TMPDIR}/tpl_mobile/templates" cssparentdir="${TMPDIR}"
-	    jsparentdir="${TMPDIR}" destdir="${TMPDIR}" imgoutpath="/${EXECUTION_ID}/tpl_mobile"/>
-        <sync src="${TMPDIR}/" destdir="${STATIC_SERVERS}:${STATIC_BASEDIR}/${EXECUTION_ID}"
-            exclude="/Front /html /inc /languages /twenga-common" />
+        <b2cpreparestaticcontent/>
+        <sync src="prod@fs3:/home/prod/twenga_files/merchant_logos/" destdir="${TMPDIR}/public/img/sites" include="*.png" exclude="*"/>
+        <sync src="prod@fs3:/home/prod/twenga_files/brand_logos/" destdir="${TMPDIR}/public/img/brands" include="*.png" exclude="*"/>
+        <sync src="prod@fs3:/home/prod/twenga_files/merchant_logos/" destdir="${SERVER_STATIC_WEB_ALL}:/home/static/site_logo" include="*.png" exclude="*"/>
+        <updatesitelogo host="${SERVER_CACHE_L1_ALL}" port="11700"/>
+        <http url="http://www.google-analytics.com/ga.js" destdir="${TMPDIR}/public/js/default/web"/>
+        <tplminify tpldir="${TMPDIR}/templates" cssparentdir="${TMPDIR}/public" jsparentdir="${TMPDIR}/public" destdir="${TMPDIR}/public" imgoutpath="/${EXECUTION_ID}"/>
+        <sync src="${TMPDIR}/public/" destdir="${STATIC_SERVERS}:${STATIC_BASEDIR}/${EXECUTION_ID}" exclude="index.php"/>
     </target>
 </project>
