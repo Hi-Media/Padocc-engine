@@ -221,6 +221,9 @@ class Minifier_TemplateMinifier
                 function (array $aMatches) use ($sSubDomain, $sImgOutPath)
                 {
                     list(, $sDir, $sFilename, $sExtension) = $aMatches;
+
+                    file_put_contents("/tmp/totola", $sDir.' : '.$sFilename.' : '.$sExtension."\r\n", FILE_APPEND);
+
                     return Minifier_TemplateMinifier::getNewImgURL(
                         $sDir, $sFilename, $sExtension, $sSubDomain, $sImgOutPath
                     );
@@ -334,7 +337,10 @@ class Minifier_TemplateMinifier
         } else {
             $sNewImgPath = 's' . (crc32($sFilename) % 2) . $sDomain . '.c4tw.net';
         }
-        $sNewImgPath .= $sImgOutPath . '/css/' . $sDir . '/' . $sFilename . '.' . $sExtension;
+        $sNewImgPath .= $sImgOutPath . '/' . $sDir . '/' . $sFilename . '.' . $sExtension;
+
+        file_put_contents("/tmp/totola", $sNewImgPath."\r\n", FILE_APPEND);
+
         return $sNewImgPath;
     }
 
