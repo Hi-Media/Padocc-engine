@@ -223,7 +223,14 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
         $this->_oLogger->indent();
 
         if ($this->_aAttributes['addSQLTwBuild'] == 'true') {
-            $this->_addSQLTwBuild($sID, $sEnv);
+
+            $sRollbackID = $this->_oProperties->getProperty('rollback_id');
+
+            if ($sRollbackID !== '')
+                $this->_addSQLTwBuild($sID, $sEnv);
+            else
+                $this->_addSQLTwBuild($sRollbackID, $sEnv);
+
         }
         if ($this->_aAttributes['sysopsnotifications'] == 'true') {
             $this->_sendSysopsNotification('MEP-activation', 0, "Deploy to $sEnv servers (#$sID) finished.");
