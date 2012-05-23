@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="front_api">
-    
-    <env name="prod" mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com" withsymlinks="true" basedir="/home/httpd/api.twenga.com" loadtwengaservers="true">
+    <env name="prod" mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com" withsymlinks="true" basedir="/home/httpd/ws_platform_apis/api.twenga.com" loadtwengaservers="true">
         <property name="servers" value="${SERVER_WS}"/>
         <call target="content"/>
     </env>
-
     <target name="content">
         <externalproperty name="ref" description="Branch or tag to deploy"/>
-	<externalproperty name="ref_common" description="Ref. php-common"/>
-	<gitexport repository="git@git.twenga.com:b2c/api.git" ref="${REF}" destdir="${TMPDIR}"/>
-	<gitexport repository="git@git.twenga.com:php-common/php-common.git" ref="${REF_COMMON}" destdir="${TMPDIR}/Twenga" exclude="/build.xml /CHANGELOG /dependancies.ini /phpunit.xml.dist /Tests"/>
-	<sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" exclude="" />
+        <externalproperty name="ref_common" description="Ref. php-common"/>
+        <gitexport repository="git@git.twenga.com:b2c/api.git" ref="${REF}" destdir="${TMPDIR}"/>
+        <gitexport repository="git@git.twenga.com:php-common/php-common.git" ref="${REF_COMMON}" destdir="${TMPDIR}/Twenga" exclude="/build.xml/CHANGELOG/dependancies.ini/phpunit.xml.dist/Tests"/>
+        <mkdir destdir="${TMPDIR}/cache/cmt" mode="777"/>
+        <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" exclude=""/>
     </target>
 </project>
-
