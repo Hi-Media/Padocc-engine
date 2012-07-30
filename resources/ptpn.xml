@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="ptpn">
-    <env name="qa" mailto="devaa@twenga.com, devtpn@twenga.com" loadtwengaservers="true" withsymlinks="true" basedir="/home/httpd/myaccount.affinitad.qa">
+    <env name="qa" mailto="devaa@twenga.com, devtpn@twenga.com, qateam@twenga.com" loadtwengaservers="true" withsymlinks="true" basedir="/home/httpd/myaccount.affinitad.qa">
         <property name="servers" value="${SERVER_DISTRIB_EXTRANET_QA}"/>
         <call target="content"/>
     </env>
-    <env name="ofs.qa" mailto="devaa@twenga.com, devtpn@twenga.com" loadtwengaservers="true" withsymlinks="true" basedir="/home/qa/twengaweb/myaccount.affinitad.com">
+    <env name="ofs.qa" mailto="devaa@twenga.com, devtpn@twenga.com, qateam@twenga.com" loadtwengaservers="true" withsymlinks="true" basedir="/home/qa/twengaweb/myaccount.affinitad.com">
         <property name="servers" value="${SERVER_TPN_OFS_QA}"/>
         <call target="content"/>
     </env>
-    <env name="prod" mailto="devaa@twenga.com, devtpn@twenga.com" loadtwengaservers="true" withsymlinks="true" basedir="/home/httpd/myaccount.affinitad.com">
+    <env name="prod" mailto="devaa@twenga.com, devtpn@twenga.com, qateam@twenga.com" loadtwengaservers="true" withsymlinks="true" basedir="/home/httpd/myaccount.affinitad.com">
         <property name="servers" value="${SERVER_DISTRIB_EXTRANET}"/>
         <call target="content"/>
     </env>
@@ -21,8 +21,7 @@
         <gitexport repository="git@git.twenga.com:distribution/common.git" ref="${REF_DISTRIB_COMMON}" destdir="${SERVERS}:${BASEDIR}/Distrib" exclude="/build.xml/CHANGELOG/dependancies.ini/phpunit.xml.dist/Tests"/>
         <mkdir destdir="${SERVERS}:${BASEDIR}/cache/smarty" mode="777"/>
         <mkdir destdir="${SERVERS}:${BASEDIR}/cache/cmt" mode="777"/>
+        <mkdir destdir="${SERVERS}:${BASEDIR}/cache/documents" mode="777"/>
         <buildlanguage project="distribution" destdir="${SERVERS}:${BASEDIR}/i18n"/>
-        <mkdir destdir="${SERVERS}:/tmp/ptpn/media/contracts" mode="777"/>
-        <mkdir destdir="${SERVERS}:/tmp/ptpn/media/invoices" mode="777"/>
     </target>
 </project>

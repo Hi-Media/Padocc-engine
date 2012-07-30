@@ -1,9 +1,9 @@
 <project name="distrib_failover">
-    <env name="qa" mailto="devaa@twenga.com, devtpn@twenga.com" loadtwengaservers="true" withsymlinks="true" basedir="/home/httpd/primary.affinitad.com">
+    <env name="qa" mailto="devaa@twenga.com, devtpn@twenga.com, qateam@twenga.com" loadtwengaservers="true" withsymlinks="true" basedir="/home/httpd/primary.affinitad.com">
         <property name="servers" value="${SERVER_DISTRIB_WS_QA}"/>
         <call target="content"/>
     </env>
-    <env name="prod" mailto="devaa@twenga.com, devtpn@twenga.com" loadtwengaservers="true" withsymlinks="true" basedir="/home/httpd/primary.affinitad.com">
+    <env name="prod" mailto="devaa@twenga.com, devtpn@twenga.com, qateam@twenga.com" loadtwengaservers="true" withsymlinks="true" basedir="/home/httpd/primary.affinitad.com">
         <property name="servers" value="${SERVER_DISTRIB_WS}"/>
         <call target="content"/>
     </env>

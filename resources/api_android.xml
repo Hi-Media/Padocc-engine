@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="api_android">
+    <env name="qa" mailto="devaa@twenga.com, romain.riviere@twenga.com, guillaume.thomas@twenga.com" withsymlinks="true" basedir="/home/httpd/ws_platform_apis/api_android" loadtwengaservers="true">
+        <property name="servers" value="${SERVER_QA_WS}"/>
+        <call target="content"/>
+        <rename src="${TMPDIR}/conf/config.inc" dest="${TMPDIR}/conf/config.php"/>
+        <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" exclude=""/>
+    </env>
+    <env name="prod" mailto="devaa@twenga.com, romain.riviere@twenga.com, guillaume.thomas@twenga.com" withsymlinks="true" basedir="/home/httpd/ws_platform_apis/api_android" loadtwengaservers="true">
+        <property name="servers" value="${SERVER_WS}"/>
+        <call target="content"/>
+        <rename src="${TMPDIR}/conf/config.inc" dest="${TMPDIR}/conf/config.php"/>
+        <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" exclude=""/>
+    </env>
+    <target name="content">
+        <gitexport repository="git@git.twenga.com:extractrefs/api_android.git" ref="master" destdir="${TMPDIR}"/>
+    </target>
+</project>

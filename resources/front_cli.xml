@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="front_cli">
+    <env name="prod" mailto="devaa@twenga.com, boc@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/admin.twenga.com">
+        <property name="servers" value="${SERVER_ADMIN} ${SERVER_SCHED_DEPLOY}"/>
+        <gitexport repository="git@git.twenga.com:boc/boc.git" ref="master" destdir="${SERVERS}:${BASEDIR}" exclude="inc/config.php inc/config-db.php html/.htaccess html/bugdocs"/>
+        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common" destdir="${SERVERS}:${BASEDIR}/twenga-common"/>
+        <mkdir destdir="${SERVERS}:${BASEDIR}/smarty/templates_c" mode="777"/>
+    </env>
+    <env name="prod_showcase" mailto="devaa@twenga.com, boc@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/showcase_cli">
+        <property name="servers" value="${SERVER_BATCH_MQ}"/>
+        <call target="deploy_cli"/>
+    </env>
+    <env name="prod_sched" mailto="qateam@twenga.com, qateam@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/b2cweb_cli">
+        <property name="servers" value="${SERVER_SCHED_DEPLOY}"/>
+        <call target="deploy_cli"/>
+    </env>
+    <target name="deploy_cli">
+        <externalproperty name="ref" description="Branch or tag to deploy"/>
+        <externalproperty name="ref_common" description="Ref. php-common"/>
+        <externalproperty name="web_common" description="Ref. web-common"/>
+        <gitexport repository="git@git.twenga.com:b2c/cli.git" ref="${REF}" destdir="${TMPDIR}"/>
+        <gitexport repository="git@git.twenga.com:php-common/php-common.git" ref="${REF_COMMON}" destdir="${TMPDIR}/Twenga" exclude="/build.xml/CHANGELOG/dependancies.ini/phpunit.xml.dist/Tests"/>
+        <gitexport repository="git@git.twenga.com:b2c/common.git" ref="${WEB_COMMON}" destdir="${TMPDIR}/web-common" exclude="/build.xml/CHANGELOG/dependancies.ini/phpunit.xml.dist/Tests"/>
+        <rename src="${TMPDIR}/conf/config.inc" dest="${TMPDIR}/conf/config.php"/>
+        <link src="${TMPDIR}/inc/config-local" target="../../../config/www.twenga/config-local"/>
+        <rename src="${TMPDIR}/conf/dynconfig.sc.inc" dest="${TMPDIR}/conf/dynconfig.php"/>
+        <filltemplate srcfile="${TMPDIR}/inc/deploy_config-template.inc.php" destfile="${TMPDIR}/inc/deploy_config.inc.php"/>
+        <mkdir destdir="${TMPDIR}/cache/cmt" mode="777"/>
+        <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common" destdir="${TMPDIR}/common"/>
+        <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" exclude=""/>
+    </target>
+</project>

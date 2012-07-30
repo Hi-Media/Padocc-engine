@@ -1,15 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="front_api">
-    <env name="prod" mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com" withsymlinks="true" basedir="/home/httpd/ws_platform_apis/api.twenga.com" loadtwengaservers="true">
+    <env name="prod_proxy" mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com, fabien.bernard@twenga.com, julien.lefevre@twenga.com" withsymlinks="true" basedir="/home/httpd/ws_platform_apis/api.twenga.com" loadtwengaservers="true">
         <property name="servers" value="${SERVER_WS}"/>
         <call target="content"/>
+        <rename src="${TMPDIR}/conf/config.inc" dest="${TMPDIR}/conf/config.php"/>
+        <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" exclude=""/>
+    </env>
+    <env name="prod" mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com, fabien.bernard@twenga.com, julien.lefevre@twenga.com" withsymlinks="true" basedir="/home/httpd/ws_platform_apis/api.twenga.com" loadtwengaservers="true">
+        <property name="servers" value="${SERVER_PHPWEB_ALL}"/>
+        <call target="content"/>
+        <rename src="${TMPDIR}/conf/config.inc" dest="${TMPDIR}/conf/config.php"/>
+        <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" exclude=""/>
+    </env>
+    <env name="qa_proxy" mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com, fabien.bernard@twenga.com, julien.lefevre@twenga.com" withsymlinks="true" basedir="/home/httpd/ws_platform_apis/api.twenga.com" loadtwengaservers="true">
+        <property name="servers" value="${SERVER_QA_WS}"/>
+        <call target="content"/>
+        <rename src="${TMPDIR}/conf/config.qa.inc" dest="${TMPDIR}/conf/config.php"/>
+        <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" exclude=""/>
+    </env>
+    <env name="qa" mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com, fabien.bernard@twenga.com, julien.lefevre@twenga.com" withsymlinks="true" basedir="/home/httpd/ws_platform_apis/api.twenga.com" loadtwengaservers="true">
+        <property name="servers" value="${SERVER_QA_PHPWEB_ALL}"/>
+        <call target="content"/>
+        <rename src="${TMPDIR}/conf/config.qa.inc" dest="${TMPDIR}/conf/config.php"/>
+        <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" exclude=""/>
     </env>
     <target name="content">
         <externalproperty name="ref" description="Branch or tag to deploy"/>
         <externalproperty name="ref_common" description="Ref. php-common"/>
+        <externalproperty name="web_common" description="Ref. web-common"/>
         <gitexport repository="git@git.twenga.com:b2c/api.git" ref="${REF}" destdir="${TMPDIR}"/>
         <gitexport repository="git@git.twenga.com:php-common/php-common.git" ref="${REF_COMMON}" destdir="${TMPDIR}/Twenga" exclude="/build.xml/CHANGELOG/dependancies.ini/phpunit.xml.dist/Tests"/>
+        <gitexport repository="git@git.twenga.com:b2c/common.git" ref="${WEB_COMMON}" destdir="${TMPDIR}/web-common" exclude="/build.xml/CHANGELOG/dependancies.ini/phpunit.xml.dist/Tests"/>
         <mkdir destdir="${TMPDIR}/cache/cmt" mode="777"/>
-        <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}" exclude=""/>
     </target>
 </project>

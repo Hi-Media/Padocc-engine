@@ -65,6 +65,7 @@ class Task_Extended_B2CUpdateSiteLogo extends Task
     protected function _centralExecute ()
     {
         parent::_centralExecute();
+        return true;
         $this->_oLogger->indent();
         $this->_oLogger->log('Update SITE_LOGO (DB & MMCACHE)');
         $this->_oLogger->indent();
@@ -101,7 +102,9 @@ class Task_Extended_B2CUpdateSiteLogo extends Task
 
                 foreach($aMemCache as $oMmcache)
                 {
-                    $iIsSet = $oMmcache->set('SITE_LOGO_'.$k, $v, false, 0);
+                    $iIsSet = $oMmcache->set('5a171601_'.$k, $v, false, 0);
+                         $this->_oLogger->log("SET: ".'5a171601_'.$k.'=>'.$v);
+
                     if(!$iIsSet){
                         throw new Exception('Unable to set data for SITE_ID: ' . $k);
                     }

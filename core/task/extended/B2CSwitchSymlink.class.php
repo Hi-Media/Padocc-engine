@@ -219,19 +219,15 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
     protected function _postExecute ()
     {
         $sEnv = $this->_oProperties->getProperty('environment_name');
-        $sID = $this->_oProperties->getProperty('execution_id');
+        $sRollbackID = $this->_oProperties->getProperty('rollback_id');
+        $sID = $sRollbackID !== '' ? $sRollbackID : $this->_oProperties->getProperty('execution_id');
+
         $this->_oLogger->indent();
 
         if ($this->_aAttributes['addSQLTwBuild'] == 'true') {
-
-            $sRollbackID = $this->_oProperties->getProperty('rollback_id');
-
-            if ($sRollbackID !== '')
-                $this->_addSQLTwBuild($sID, $sEnv);
-            else
-                $this->_addSQLTwBuild($sRollbackID, $sEnv);
-
+            $this->_addSQLTwBuild($sID, $sEnv);
         }
+
         if ($this->_aAttributes['sysopsnotifications'] == 'true') {
             $this->_sendSysopsNotification('MEP-activation', 0, "Deploy to $sEnv servers (#$sID) finished.");
         }

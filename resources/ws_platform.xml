@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="ws_platform">
-
-    <env
-        name="prod"
-        mailto="devaa@twenga.com"
-        withsymlinks="true"
-        basedir="/home/httpd/ws.twenga.com"
-    >
-        <property name="servers" value="ws-01.eu1 ws-02.eu1" />
-        <call target="content" />
+    <env name="qa" mailto="devaa@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/ws.twenga.com">
+        <property name="servers" value="${SERVER_QA_WS}"/>
+        <call target="content"/>
     </env>
-
+    <env name="prod" mailto="devaa@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/ws.twenga.com">
+        <property name="servers" value="${SERVER_WS}"/>
+        <call target="content"/>
+    </env>
     <target name="content">
-        <externalproperty name="ref" description="Branch or tag to deploy" />
-        <gitexport repository="git@git.twenga.com:aa/ws_platform.git" ref="${REF}"
-            destdir="${SERVERS}:${BASEDIR}" exclude="conf/config.php" />
+        <externalproperty name="ref" description="Branch or tag to deploy"/>
+        <gitexport repository="git@git.twenga.com:aa/ws_platform.git" ref="${REF}" destdir="${SERVERS}:${BASEDIR}" exclude="conf/config.php"/>
     </target>
 </project>

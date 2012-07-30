@@ -6,7 +6,7 @@
         <property name="static_servers" value="aai@${SERVER_AAI}"/>
         <call target="web_content"/>
     </env>
-    <env name="qa" mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com, cedric.anes@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd-qa/www.twenga">
+    <env name="qa" mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd-qa/www.twenga">
         <property name="web_servers" value="${SERVER_QA_PHPWEB_ALL}"/>
         <property name="static_basedir" value="/home/static"/>
         <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}"/>
@@ -29,14 +29,14 @@
         <call target="web_content"/>
         <b2cswitchsymlink sysopsnotifications="false" addSQLTwBuild="true" clusterRemoving="false" clusterReintegration="false"/>
     </env>
-    <env name="preprod" mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com, sysops@twenga.com, cedric.anes@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/www.twenga">
+    <env name="preprod" mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com, sysops@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/www.twenga">
         <property name="web_servers" value="${SERVER_PHPWEB_PREPROD}"/>
         <property name="static_basedir" value="/home/static"/>
         <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}"/>
         <call target="web_content"/>
         <b2cswitchsymlink sysopsnotifications="true" addSQLTwBuild="true" clusterRemoving="true" clusterReintegration="false"/>
     </env>
-    <env name="prod" mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com, sysops@twenga.com, cedric.anes@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/www.twenga">
+    <env name="prod" mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com, sysops@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/www.twenga">
         <property name="web_servers" value="${SERVER_PHPWEB_ALL}"/>
         <property name="static_basedir" value="/home/static"/>
         <property name="static_servers" value="${SERVER_STATIC_WEB_ALL}"/>
@@ -46,7 +46,7 @@
         <call target="static_content"/>
         <b2cswitchsymlink sysopsnotifications="true" addSQLTwBuild="true" clusterRemoving="true" clusterReintegration="true"/>
     </env>
-    <env name="sched" mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com, sysops@twenga.com, cedric.anes@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/www.twenga">
+    <env name="sched" mailto="devaa@twenga.com, qateam@twenga.com, herve.gouchet@twenga.com, sysops@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/www.twenga">
         <call target="dynamic_content_step1"/>
         <rename src="${TMPDIR}/conf/config.inc" dest="${TMPDIR}/conf/config.php"/>
         <mkdir destdir="${TMPDIR}/cache/smarty" mode="777"/>
@@ -78,7 +78,7 @@
         <rename src="${TMPDIR}/conf/config.inc" dest="${TMPDIR}/conf/config.php"/>
         <mkdir destdir="${TMPDIR}/cache/smarty" mode="777"/>
         <mkdir destdir="${TMPDIR}/cache/cmt" mode="777"/>
-        <sync src="${TMPDIR}/" destdir="${WEB_SERVERS}:${BASEDIR}" exclude="public/css public/js public/fonts public/images"/>
+        <sync src="${TMPDIR}/" destdir="${WEB_SERVERS}:${BASEDIR}" exclude="public/css public/js public/fonts public/images cache/cmt/* cache/smarty/*"/>
     </target>
     <target name="static_content">
         <b2cpreparestaticcontent/>

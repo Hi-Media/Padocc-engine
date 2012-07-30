@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="aai">
     <env name="prod" mailto="devaa@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/aai">
-        <gitexport repository="git@git.twenga.com:aai/aai.git" ref="master" destdir="${SERVER_AAI}:${BASEDIR}" exclude="config* config-local"/>
+        <externalproperty name="ref" description="Branch or tag to deploy"/>
+        <gitexport repository="git@git.twenga.com:aai/aai.git" ref="${REF}" destdir="${SERVER_AAI}:${BASEDIR}" exclude="config* config-local"/>
         <gitexport repository="git@git.twenga.com:fwt/fwt.git" ref="aai" destdir="${SERVER_AAI}:${BASEDIR}/fwt" exclude="config.*"/>
         <mkdir destdir="${SERVER_AAI}:${BASEDIR}/smarty/templates_c" mode="777"/>
         <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common" destdir="${SERVER_AAI}:/home/httpd/twenga-common"/>

@@ -1,25 +1,13 @@
 <project name="wtpn">
-    <env name="QA" mailto="devaa@twenga.com, devtpn@twenga.com" loadtwengaservers="true" withsymlinks="true" basedir="/home/httpd/wtpn.twenga.com">
+    <env name="QA" mailto="devaa@twenga.com, devtpn@twenga.com, qateam@twenga.com" loadtwengaservers="true" withsymlinks="true" basedir="/home/httpd/wtpn.twenga.com">
         <property name="servers" value="${SERVER_DISTRIB_WS_QA}"/>
         <call target="content"/>
     </env>
-    <env name="www" mailto="devaa@twenga.com, devtpn@twenga.com" loadtwengaservers="true" withsymlinks="true" basedir="/home/httpd/wtpn.twenga.com">
-        <property name="servers" value="${SERVER_DISTRIB_EXTRANET}"/>
+    <env name="AB_47_03_04" mailto="devaa@twenga.com, devtpn@twenga.com, qateam@twenga.com" loadtwengaservers="true" withsymlinks="true" basedir="/home/httpd/wtpn.twenga.com">
+        <property name="servers" value="www47.eu1 ws-03.eu1 ws-04.eu1"/>
         <call target="content"/>
     </env>
-    <env name="ws" mailto="devaa@twenga.com, devtpn@twenga.com" loadtwengaservers="true" withsymlinks="true" basedir="/home/httpd/wtpn.twenga.com">
-        <property name="servers" value="${SERVER_WS}"/>
-        <call target="content"/>
-    </env>
-    <env name="new_ws" mailto="devaa@twenga.com, devtpn@twenga.com" loadtwengaservers="true" withsymlinks="true" basedir="/home/httpd/wtpn.twenga.com">
-        <property name="servers" value="ws-03.eu1 ws-04.eu1"/>
-        <call target="content"/>
-    </env>
-    <env name="w46" mailto="devaa@twenga.com, devtpn@twenga.com" loadtwengaservers="true" withsymlinks="true" basedir="/home/httpd/wtpn.twenga.com">
-        <property name="servers" value="www46.eu1"/>
-        <call target="content"/>
-    </env>
-    <env name="prod" mailto="devaa@twenga.com, devtpn@twenga.com" loadtwengaservers="true" withsymlinks="true" basedir="/home/httpd/wtpn.twenga.com">
+    <env name="prod" mailto="devaa@twenga.com, devtpn@twenga.com, qateam@twenga.com" loadtwengaservers="true" withsymlinks="true" basedir="/home/httpd/wtpn.twenga.com">
         <property name="servers" value="${SERVER_DISTRIB_WS}"/>
         <call target="content"/>
     </env>
@@ -33,6 +21,8 @@
         <gitexport repository="git@git.twenga.com:php-common/php-common.git" ref="${REF_COMMON}" destdir="${SERVERS}:${BASEDIR}/Twenga" exclude="/build.xml/CHANGELOG/dependancies.ini/phpunit.xml.dist/Tests"/>
         <gitexport repository="git@git.twenga.com:distribution/common.git" ref="${REF_DISTRIB_COMMON}" destdir="${SERVERS}:${BASEDIR}/Distrib" exclude="/build.xml/CHANGELOG/dependancies.ini/phpunit.xml.dist/Tests"/>
         <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common" destdir="${SERVERS}:/home/httpd/twenga-common"/>
+        <buildlanguage project="distribution" destdir="${SERVERS}:${BASEDIR}/i18n"/>
+        <mkdir destdir="${SERVERS}:${BASEDIR}/cache/smarty" mode="777"/>
         <mkdir destdir="${SERVERS}:${BASEDIR}/cache/cmt" mode="777"/>
     </target>
 </project>
