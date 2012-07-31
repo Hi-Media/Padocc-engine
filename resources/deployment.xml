@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="deployment">
-    <env name="prod" mailto="devaa@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/deployment">
-            <gitexport repository="git@git.twenga.com:aa/deployment.git" ref="stable" destdir="${SERVER_AAI}:${BASEDIR}" exclude="config* config-local"/>
-                </env>
-                </project>
-
+    <env name="prod" mailto="devaa@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/aai/deployment">
+        <gitexport repository="git@git.twenga.com:aa/deployment.git" ref="stable" destdir="aai-01:${BASEDIR}" exclude="config* config-local"/>
+    </env>
+</project>
