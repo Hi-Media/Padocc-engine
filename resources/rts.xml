@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="rts">
-    <env name="batch" mailto="devaa@twenga.com, devrts@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/cluster/lib/php/batch_rts">
-        <property name="servers" value="prod@compute-01.eu1"/>
-        <property name="config_file" value="config_batch.php"/>
-        <property name="commondir" value="/cluster/lib/php/batch_rts/twenga-common"/>
+    <env name="batch_prod" mailto="devaa@twenga.com, devrts@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/batch_rts_prod">
+        <property name="servers" value="${SERVER_EXTRANET_QA}"/>
+        <property name="config_file" value="config_prod_batch.php"/>
+        <property name="commondir" value="/home/httpd/twenga-common"/>
         <call target="content"/>
     </env>
-    <env name="batch_qa" mailto="devaa@twenga.com, devrts@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/batch_rts">
+    <env name="batch_qa" mailto="devaa@twenga.com, devrts@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/batch_rts_qa">
         <property name="servers" value="${SERVER_EXTRANET_QA}"/>
         <property name="config_file" value="config_qa_batch.php"/>
         <property name="commondir" value="/home/httpd/twenga-common"/>

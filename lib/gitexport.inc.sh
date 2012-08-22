@@ -38,6 +38,7 @@ if git branch -r --no-color | grep -q "$reponame/$ref"; then
 elif git tag | grep -q "$ref"; then
     if git branch --no-color | grep -q "$ref"; then
         echo "Git: tag '$ref' already checkouted."
+        git checkout --quiet "$ref" 1>/dev/null || exit $?
     else
         echo "Git: checkout tag '$ref'..."
         git checkout --quiet -fb "$ref" "$ref" 1>/dev/null || exit $?

@@ -21,6 +21,7 @@
         <gitexport repository="git@git.twenga.com:b2c/cli.git" ref="${REF}" destdir="${TMPDIR}"/>
         <gitexport repository="git@git.twenga.com:php-common/php-common.git" ref="${REF_COMMON}" destdir="${TMPDIR}/Twenga" exclude="/build.xml/CHANGELOG/dependancies.ini/phpunit.xml.dist/Tests"/>
         <gitexport repository="git@git.twenga.com:b2c/common.git" ref="${WEB_COMMON}" destdir="${TMPDIR}/web-common" exclude="/build.xml/CHANGELOG/dependancies.ini/phpunit.xml.dist/Tests"/>
+        <buildlanguage project="website" destdir="${TMPDIR}/languages"/>
         <rename src="${TMPDIR}/conf/config.inc" dest="${TMPDIR}/conf/config.php"/>
         <link src="${TMPDIR}/inc/config-local" target="../../../config/www.twenga/config-local"/>
         <rename src="${TMPDIR}/conf/dynconfig.sc.inc" dest="${TMPDIR}/conf/dynconfig.php"/>
