@@ -2,8 +2,11 @@
 <project name="aai">
     <env name="prod" mailto="devaa@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/aai">
         <externalproperty name="ref" description="Branch or tag to deploy"/>
+        <externalproperty name="ref_common" description="Ref. php-common"/>
+
         <gitexport repository="git@git.twenga.com:aai/aai.git" ref="${REF}" destdir="${SERVER_AAI}:${BASEDIR}" exclude="config* config-local"/>
         <gitexport repository="git@git.twenga.com:fwt/fwt.git" ref="aai" destdir="${SERVER_AAI}:${BASEDIR}/fwt" exclude="config.*"/>
+        <gitexport repository="git@git.twenga.com:php-common/php-common.git" ref="${REF_COMMON}" destdir="${SERVER_AAI}:${BASEDIR}/Twenga" exclude="/build.xml/CHANGELOG/dependancies.ini/phpunit.xml.dist/Tests"/>
         <mkdir destdir="${SERVER_AAI}:${BASEDIR}/smarty/templates_c" mode="777"/>
         <cvsexport repository=":extssh:gaubry@fs1.twenga.com:/home/cvsroot" module="twengaweb/common" destdir="${SERVER_AAI}:/home/httpd/twenga-common"/>
     </env>

@@ -65,7 +65,6 @@ class Task_Extended_B2CUpdateSiteLogo extends Task
     protected function _centralExecute ()
     {
         parent::_centralExecute();
-        return true;
         $this->_oLogger->indent();
         $this->_oLogger->log('Update SITE_LOGO (DB & MMCACHE)');
         $this->_oLogger->indent();
@@ -90,7 +89,7 @@ class Task_Extended_B2CUpdateSiteLogo extends Task
         // Try to find elements that needs to be updated
         $oQuery = mysql_query('SELECT * FROM twenga.SITE_LOGO_TM WHERE VERSION != VERSION_PROD || VERSION_PROD IS NULL', $oDb);
         while ($row = mysql_fetch_assoc($oQuery)) {
-            $aTmp[$row["SITE_ID"]] = serialize(array(array("SITE_ID"=>(int)$row["SITE_ID"], "VERSION"=>(int)$row["VERSION"])));
+            $aTmp[$row["SITE_ID"]] = serialize(array(array("SITE_ID"=>(string)$row["SITE_ID"], "VERSION"=>(string)$row["VERSION"])));
         }
 
         $iNbElement = count($aTmp);
@@ -102,11 +101,14 @@ class Task_Extended_B2CUpdateSiteLogo extends Task
 
                 foreach($aMemCache as $oMmcache)
                 {
-                    $iIsSet = $oMmcache->set('5a171601_'.$k, $v, false, 0);
+                    if($k=="3487141")
+                    {
+                        $iIsSet = $oMmcache->set('5a171601_'.$k, $v, false, 0);
                          $this->_oLogger->log("SET: ".'5a171601_'.$k.'=>'.$v);
-
+                    
                     if(!$iIsSet){
                         throw new Exception('Unable to set data for SITE_ID: ' . $k);
+                    }
                     }
                 }
             }

@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="rts">
+    <env name="fuel_batch_prod" mailto="devaa@twenga.com, devrts@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/fuel_rts_batch_prod">
+        <property name="servers" value="${SERVER_SCHED_DC_EU1}"/>
+        <property name="env_file" value="env_prod.php"/>
+        <call target="content_fuel"/>
+    </env>
+    <target name="content_fuel">
+        <externalproperty name="ref" description="Branch or tag to deploy"/>
+        <gitexport repository="git@git.twenga.com:rts/batch.git" ref="${REF}" destdir="${TMPDIR}"/>
+        <mkdir destdir="${TMPDIR}/fuel/app/cache" mode="777"/>
+        <mkdir destdir="${TMPDIR}/fuel/app/tmp" mode="777"/>
+        <rename src="${TMPDIR}/fuel/app/env/${env_file}" dest="${TMPDIR}/fuel/app/env/env.php"/>
+        <buildlanguage project="rts" destdir="${TMPDIR}/fuel/languages"/>
+        <sync src="${TMPDIR}/" destdir="${SERVERS}:${BASEDIR}"/>
+    </target>
     <env name="batch_prod" mailto="devaa@twenga.com, devrts@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/batch_rts_prod">
         <property name="servers" value="${SERVER_EXTRANET_QA}"/>
         <property name="config_file" value="config_prod_batch.php"/>
