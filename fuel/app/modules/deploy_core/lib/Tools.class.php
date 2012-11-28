@@ -1,5 +1,5 @@
 <?php
-
+namespace Fuel\Tasks;
 /**
  * Classe outil des inclassables.
  *
