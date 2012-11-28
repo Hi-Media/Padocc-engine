@@ -1,9 +1,11 @@
 <?php
+namespace Fuel\Tasks;
 
 /**
  * @category TwengaDeploy
  * @package Core
  * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
+ * @author Another Author Tony Caron <caron.tony@gmail.com>
  */
 class Task_Extended_TwengaServers extends Task
 {
@@ -37,7 +39,7 @@ class Task_Extended_TwengaServers extends Task
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject,
+    public function __construct (\SimpleXMLElement $oTask, Task_Base_Project $oProject,
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);
@@ -71,12 +73,14 @@ class Task_Extended_TwengaServers extends Task
     }
 
     /**
-     * Phase de traitements centraux de l'exécution de la tâche.
-     * Elle devrait systématiquement commencer par "parent::_centralExecute();".
-     * Appelé par _execute().
-     * @see execute()
+     * Vérifie au moyen de tests basiques que la tâche peut être exécutée.
+     * Lance une exception si tel n'est pas le cas.
+     *
+     * Comme toute les tâches sont vérifiées avant que la première ne soit exécutée,
+     * doit permettre de remonter au plus tôt tout dysfonctionnement.
+     * Appelé avant la méthode execute().
      */
-    protected function _centralExecute ()
+    protected function check ()
     {
         parent::_centralExecute();
         $this->_oLogger->indent();
@@ -88,5 +92,16 @@ class Task_Extended_TwengaServers extends Task
         $this->_oShell->remove($this->_sTmpDir);
         $this->_oLogger->unindent();
         $this->_oLogger->unindent();
+    }
+
+    /**
+     * Phase de traitements centraux de l'exécution de la tâche.
+     * Elle devrait systématiquement commencer par "parent::_centralExecute();".
+     * Appelé par _execute().
+     * @see execute()
+     */
+    protected function _centralExecute ()
+    {
+        parent::_centralExecute();
     }
 }
