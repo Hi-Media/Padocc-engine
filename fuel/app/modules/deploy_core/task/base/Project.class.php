@@ -1,16 +1,17 @@
 <?php
-
+namespace Fuel\Tasks;
 /**
  * Tâche mère d'un fichier XML.
  * Contient des tags env ou target.
  *
- * Attribut 'name' doit être identique au nom du fichier.
+ * Attribut 'name' doit être identique au nom contenu dans la configuration XML.
  *
  * Exemple : <project name="rts">...</project>
  *
  * @category TwengaDeploy
  * @package Core
- * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
+ * @author Original Author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
+ * @author Another Author Tony Caron <caron.tony@gmail.com>
  */
 class Task_Base_Project extends Task_WithProperties
 {
@@ -29,7 +30,7 @@ class Task_Base_Project extends Task_WithProperties
         $aProjectNames = array();
         $rHandle = @opendir($sRessourcesPath);
         if ($rHandle === false) {
-            throw new UnexpectedValueException("Resource path not found: '$sRessourcesPath'.");
+            throw new \UnexpectedValueException("Resource path not found: '$sRessourcesPath'.");
         } else {
             while ($file = readdir($rHandle)) {
                 clearstatcache();
@@ -38,7 +39,7 @@ class Task_Base_Project extends Task_WithProperties
                     try {
                         $oProject = new SimpleXMLElement($sProjectPath, NULL, true);
                     } catch (Exception $oException) {
-                        throw new UnexpectedValueException("Bad project definition: '$sProjectPath'", 1, $oException);
+                        throw new \UnexpectedValueException("Bad project definition: '$sProjectPath'", 1, $oException);
                     }
                     if (isset($oProject['name'])) {
                         $aProjectNames[] = (string)$oProject['name'];
@@ -54,20 +55,16 @@ class Task_Base_Project extends Task_WithProperties
     /**
      * Retourne une instance SimpleXMLElement du projet spécifié.
      *
-     * @param string $sProjectPath chemin menant au fichier de configuration XML du projet
-     * @throws UnexpectedValueException si fichier XML du projet non trouvé
+     * @param string $sXmlConfiguration $sXmlConfiguration string XML de la configuration du projet
      * @throws UnexpectedValueException si fichier XML du projet mal formaté
      * @return SimpleXMLElement instance du projet spécifié
      */
-    public static function getSXEProject ($sProjectPath)
+    public static function getSXEProject ($sXmlConfiguration)
     {
-        if ( ! file_exists($sProjectPath)) {
-            throw new UnexpectedValueException("Project definition not found: '$sProjectPath'!");
-        }
         try {
-            $oSXE = new SimpleXMLElement($sProjectPath, NULL, true);
+            $oSXE = new \SimpleXMLElement($sXmlConfiguration, NULL);
         } catch (Exception $oException) {
-            throw new UnexpectedValueException("Bad project definition: '$sProjectPath'", 1, $oException);
+            throw new \UnexpectedValueException("Bad project definition: '$sXmlConfiguration'", 1, $oException);
         }
         return $oSXE;
     }
@@ -91,15 +88,15 @@ class Task_Base_Project extends Task_WithProperties
     /**
      * Constructeur.
      *
-     * @param string $sProjectPath chemin menant au fichier de configuration XML du projet
+     * @param string $sXmlConfiguration string XML de la configuration du projet
      * @param string $sEnvName Environnement sélectionné.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      * @throws UnexpectedValueException si fichier XML du projet non trouvé
      * @throws UnexpectedValueException si environnement non trouvé ou non unique
      */
-    public function __construct ($sProjectPath, $sEnvName, ServiceContainer $oServiceContainer)
+    public function __construct ($sXmlConfiguration, $sEnvName, ServiceContainer $oServiceContainer)
     {
-        $oSXEProject = self::getSXEProject($sProjectPath);
+        $oSXEProject = self::getSXEProject($sXmlConfiguration);
         $this->sEnvName = $sEnvName;
 
         parent::__construct($oSXEProject, $this, $oServiceContainer);
@@ -111,7 +108,7 @@ class Task_Base_Project extends Task_WithProperties
         // Crée une instance de la tâche environnement appelée :
         $aTargets = $this->_oProject->getSXE()->xpath("env[@name='$sEnvName']");
         if (count($aTargets) !== 1) {
-            throw new UnexpectedValueException("Environment '$sEnvName' not found or not unique in this project!");
+            throw new \UnexpectedValueException("Environment '$sEnvName' not found or not unique in this project!");
         }
 
         $this->_oBoundTask = new Task_Base_Environment($aTargets[0], $this->_oProject, $this->_oServiceContainer);
