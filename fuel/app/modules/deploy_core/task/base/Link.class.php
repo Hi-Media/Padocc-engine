@@ -1,5 +1,5 @@
 <?php
-
+namespace Fuel\Tasks;
 /**
  * Crée un lien symbolique.
  * À inclure dans une tâche env ou target.
@@ -37,7 +37,7 @@ class Task_Base_Link extends Task
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject,
+    public function __construct (\SimpleXMLElement $oTask, Task_Base_Project $oProject,
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);
@@ -73,13 +73,13 @@ class Task_Base_Link extends Task
         ) {
             $sMsg = 'Servers must be equals!' . ' Src=' . $this->_aAttributes['src']
                   . ' Target=' . $this->_aAttributes['target'];
-            throw new DomainException($sMsg);
+            throw new \DomainException($sMsg);
         }
 
         if ( ! empty($this->_aAttributes['server']) && ($bIsSrcRemote || $bIsDestRemote)) {
             $sMsg = 'Multiple server declaration!' . ' Server=' . $this->_aAttributes['server']
                   . ' Src=' . $this->_aAttributes['src'] . ' Target=' . $this->_aAttributes['target'];
-            throw new DomainException($sMsg);
+            throw new \DomainException($sMsg);
         }
 
         // Valeur par défaut :
@@ -113,7 +113,7 @@ class Task_Base_Link extends Task
         foreach ($this->_expandPath($sPath) as $sExpandedPath) {
             if ( ! in_array($this->_oShell->getPathStatus($sExpandedPath), $aValidSources)) {
                 $sMsg = "Source attribute must be a symlink or not exist: '" . $sExpandedPath . "'";
-                throw new RuntimeException($sMsg);
+                throw new \RuntimeException($sMsg);
             }
         }
 

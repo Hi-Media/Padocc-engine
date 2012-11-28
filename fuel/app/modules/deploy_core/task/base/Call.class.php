@@ -1,4 +1,5 @@
 <?php
+namespace Fuel\Tasks;
 
 /**
  * Permet d'appeler une tâche target du même fichier XML.
@@ -39,7 +40,7 @@ class Task_Base_Call extends Task_WithProperties
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject,
+    public function __construct (\SimpleXMLElement $oTask, Task_Base_Project $oProject,
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);
@@ -53,7 +54,7 @@ class Task_Base_Call extends Task_WithProperties
             $aTargets = $this->_oProject->getSXE()->xpath("target[@name='" . $this->_aAttributes['target'] . "']");
             if (count($aTargets) !== 1) {
                 $sMsg = "Target '" . $this->_aAttributes['target'] . "' not found or not unique in this project!";
-                throw new UnexpectedValueException($sMsg);
+                throw new \UnexpectedValueException($sMsg);
             }
             $this->_oBoundTask = new Task_Base_Target($aTargets[0], $this->_oProject, $this->_oServiceContainer);
         }

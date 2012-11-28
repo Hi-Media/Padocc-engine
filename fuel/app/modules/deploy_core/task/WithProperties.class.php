@@ -1,5 +1,5 @@
 <?php
-
+namespace Fuel\Tasks;
 /**
  * Couche permettant aux tâches l'implémentant d'importer des propriétés issues de fichiers de configuration INI,
  * de fichiers de configuration shell ou encore de la liste des groupes de serveurs Twenga.
@@ -36,7 +36,7 @@ abstract class Task_WithProperties extends Task
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject,
+    public function __construct (\SimpleXMLElement $oTask, Task_Base_Project $oProject,
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);

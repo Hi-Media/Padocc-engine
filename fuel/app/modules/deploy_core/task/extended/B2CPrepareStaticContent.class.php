@@ -1,4 +1,5 @@
 <?php
+namespace Fuel\Tasks;
 
 /**
  * Initialise le contenu statique de la nouvelle release à partir de la précédente (via rsync),
@@ -52,7 +53,7 @@ class Task_Extended_B2CPrepareStaticContent extends Task
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject,
+    public function __construct (\SimpleXMLElement $oTask, Task_Base_Project $oProject,
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);

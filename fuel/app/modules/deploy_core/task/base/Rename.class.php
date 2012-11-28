@@ -1,4 +1,5 @@
 <?php
+namespace Fuel\Tasks;
 
 /**
  * Renomme un fichier ou un répertoire.
@@ -30,7 +31,7 @@ class Task_Base_Rename extends Task
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject,
+    public function __construct (\SimpleXMLElement $oTask, Task_Base_Project $oProject,
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);
@@ -61,7 +62,7 @@ class Task_Base_Rename extends Task
         list(, $sSrcServer, ) = $this->_oShell->isRemotePath($this->_aAttributes['src']);
         list(, $sDestServer, ) = $this->_oShell->isRemotePath($this->_aAttributes['dest']);
         if ($sSrcServer != $sDestServer) {
-            throw new DomainException('Paths must be local or on the same server!');
+            throw new \DomainException('Paths must be local or on the same server!');
         }
     }
 

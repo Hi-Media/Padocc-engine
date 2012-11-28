@@ -1,4 +1,5 @@
 <?php
+namespace Fuel\Tasks;
 
 /**
  * Si tous les attributs booléens sont à true, alors cette tâche qui se substitue à
@@ -67,7 +68,7 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject,
+    public function __construct (\SimpleXMLElement $oTask, Task_Base_Project $oProject,
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);
@@ -221,13 +222,11 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
         $sEnv = $this->_oProperties->getProperty('environment_name');
         $sRollbackID = $this->_oProperties->getProperty('rollback_id');
         $sID = $sRollbackID !== '' ? $sRollbackID : $this->_oProperties->getProperty('execution_id');
-
         $this->_oLogger->indent();
 
         if ($this->_aAttributes['addSQLTwBuild'] == 'true') {
             $this->_addSQLTwBuild($sID, $sEnv);
         }
-
         if ($this->_aAttributes['sysopsnotifications'] == 'true') {
             $this->_sendSysopsNotification('MEP-activation', 0, "Deploy to $sEnv servers (#$sID) finished.");
         }
@@ -264,7 +263,7 @@ class Task_Extended_B2CSwitchSymlink extends Task_Extended_SwitchSymlink
     {
         $aTypes = array('qa' => 'Q', 'bct' => 'B', 'internal' => 'I', 'preprod' => 'X', 'prod' => 'P');
         if ( ! isset($aTypes[$sEnv])) {
-            throw new DomainException("Environment not handled: '$sEnv'!");
+            throw new \DomainException("Environment not handled: '$sEnv'!");
         }
         $this->_oLogger->log("Add Twenga build number $sID into 'TWENGABUILD' SQL table.");
         $this->_oLogger->indent();

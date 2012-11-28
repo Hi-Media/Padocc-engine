@@ -1,4 +1,5 @@
 <?php
+namespace Fuel\Tasks;
 
 /**
  * Définit une section (factorisation) adressable via la tâche call.
@@ -39,7 +40,7 @@ class Task_Base_Target extends Task_WithProperties
      * @throws UnexpectedValueException si noeud <target /> non trouvé ou non unique mais référencé par un
      * 		noeud <call />.
      */
-    private static function _getSXEExternalProperties (SimpleXMLElement $oSXEProject, SimpleXMLElement $oNode)
+    private static function _getSXEExternalProperties (\SimpleXMLElement $oSXEProject, \SimpleXMLElement $oNode)
     {
         // Récupération du nom des balises XML :
         $sExtPropertyTagName = Task_Base_ExternalProperty::getTagName();
@@ -54,7 +55,7 @@ class Task_Base_Target extends Task_WithProperties
                 $aTargets = $oSXEProject->xpath("//{$sTargetTagName}[@name='$sTargetName']");
                 if (count($aTargets) !== 1) {
                     $sMsg = "Target '$sTargetName' not found or not unique in this project!";
-                    throw new UnexpectedValueException($sMsg);
+                    throw new \UnexpectedValueException($sMsg);
                 }
                 $aSXEExtProperties = array_merge(
                     $aSXEExtProperties,
@@ -93,7 +94,7 @@ class Task_Base_Target extends Task_WithProperties
         $oSXEProject = Task_Base_Project::getSXEProject($sProjectPath);
         $aTargets = $oSXEProject->xpath("//env");
         if (count($aTargets) === 0) {
-            throw new UnexpectedValueException("No environment found in '$sProjectPath'!");
+            throw new \UnexpectedValueException("No environment found in '$sProjectPath'!");
         }
         $aEnvsList = array();
         foreach ($aTargets as $oTarget) {
@@ -101,7 +102,7 @@ class Task_Base_Target extends Task_WithProperties
             $aExtProperties = array();
             foreach ($aSXEExtProperties as $oSXEExtProperty) {
                 if ( ! isset($oSXEExtProperty['name']) || ! isset($oSXEExtProperty['description'])) {
-                    throw new UnexpectedValueException("Invalid external property in '$sProjectPath'!");
+                    throw new \UnexpectedValueException("Invalid external property in '$sProjectPath'!");
                 }
                 $sName = (string)$oSXEExtProperty['name'];
                 $sDesc = (string)$oSXEExtProperty['description'];
@@ -122,7 +123,7 @@ class Task_Base_Target extends Task_WithProperties
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject,
+    public function __construct (\SimpleXMLElement $oTask, Task_Base_Project $oProject,
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);
@@ -158,13 +159,16 @@ class Task_Base_Target extends Task_WithProperties
                 $sTaskPaths = glob(DEPLOYMENT_TASKS_DIR . "/$sTaskType/*.class.php");
                 foreach ($sTaskPaths as $sTaskPath) {
                     $sClassName = strstr(substr(strrchr($sTaskPath, '/'), 1), '.', true);
-                    $sFullClassName = 'Task_' . ucfirst($sTaskType) . '_' . $sClassName;
+                    $sFullClassName = __NAMESPACE__.'\\'.'Task_' . ucfirst($sTaskType) . '_' . $sClassName;
+
                     if(!class_exists($sFullClassName)){
-                        throw new RuntimeException($sFullClassName." doesn't exist!");
-                    }
+                        throw new \RuntimeException($sFullClassName." doesn't exist!");
+                    }  
+
+                    //$sTag = call_user_func($sFullClassName.'::getTagName');
                     $sTag = $sFullClassName::getTagName();
                     if (isset($aAvailableTasks[$sTag])) {
-                        throw new LogicException("Already defined task tag '$sTag' in '$aAvailableTasks[$sTag]'!");
+                        throw new \LogicException("Already defined task tag '$sTag' in '$aAvailableTasks[$sTag]'!");
                     } else if ($sTag != 'project') {
                         $aAvailableTasks[$sTag] = $sFullClassName;
                     }
@@ -185,7 +189,7 @@ class Task_Base_Target extends Task_WithProperties
      * @throws Exception si tag XML inconnu.
      * @see Task
      */
-    private function _getTaskInstances (SimpleXMLElement $oTarget, Task_Base_Project $oProject)
+    private function _getTaskInstances (\SimpleXMLElement $oTarget, Task_Base_Project $oProject)
     {
         $this->_oLogger->log("Initialize tasks of target '" . $this->_aAttributes['name'] . "'.");
         $aAvailableTasks = self::_getAvailableTasks();
@@ -208,7 +212,7 @@ class Task_Base_Target extends Task_WithProperties
         foreach ($aTasks as $aTask) {
             list($sTag, $oTask) = $aTask;
             if ( ! isset($aAvailableTasks[$sTag])) {
-                throw new UnexpectedValueException("Unkown task tag: '$sTag'!");
+                throw new \UnexpectedValueException("Unkown task tag: '$sTag'!");
             } else {
                 $aTaskInstances[] = new $aAvailableTasks[$sTag]($oTask, $oProject, $this->_oServiceContainer);
             }

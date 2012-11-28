@@ -1,4 +1,5 @@
 <?php
+namespace Fuel\Tasks;
 
 /**
  * Effectue un appel cURL.
@@ -31,7 +32,7 @@ class Task_Base_HTTP extends Task
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject,
+    public function __construct (\SimpleXMLElement $oTask, Task_Base_Project $oProject,
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);
@@ -80,7 +81,7 @@ class Task_Base_HTTP extends Task
             if( isset($this->_aAttributes['destdir'] )) $sCmd .= ' -O';
             $aResults = $this->_oShell->exec($sCmd);
             if (count($aResults) > 0 && substr(end($aResults), 0, 7) === '[ERROR]') {
-                throw new RuntimeException(implode("\n", $aResults));
+                throw new \RuntimeException(implode("\n", $aResults));
             }
         }
 

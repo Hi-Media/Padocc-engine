@@ -1,4 +1,5 @@
 <?php
+namespace Fuel\Tasks;
 
 /**
  * Permet de générer des fichiers sur la base de templates texte incluant des propriétés.
@@ -51,7 +52,7 @@ class Task_Base_FillTemplate extends Task
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject,
+    public function __construct (\SimpleXMLElement $oTask, Task_Base_Project $oProject,
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);
@@ -82,7 +83,7 @@ class Task_Base_FillTemplate extends Task
         list($bIsSrcRemote, , ) = $this->_oShell->isRemotePath($this->_aAttributes['srcfile']);
         list($bIsDestRemote, , ) = $this->_oShell->isRemotePath($this->_aAttributes['destfile']);
         if ($bIsSrcRemote || $bIsDestRemote) {
-            throw new DomainException('Remote paths not yet handled.');
+            throw new \DomainException('Remote paths not yet handled.');
         }
     }
 

@@ -1,4 +1,5 @@
 <?php
+namespace Fuel\Tasks;
 
 /**
  * Exporte tout ou partie du contenu d'un dépôt CVS vers une ou plusieurs destinations.
@@ -49,7 +50,7 @@ class Task_Extended_CVSExport extends Task
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject,
+    public function __construct (\SimpleXMLElement $oTask, Task_Base_Project $oProject,
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);
@@ -94,7 +95,7 @@ class Task_Extended_CVSExport extends Task
         $this->_oLogger->indent();
         try {
             $this->_oSyncTask->setUp();
-        } catch (UnexpectedValueException $oException) {
+        } catch (\UnexpectedValueException $oException) {
             if ($oException->getMessage() !== "File or directory '" . $this->_aAttributes['srcdir']
                                             . '/' . $this->_aAttributes['module'] . '/' . "' not found!") {
                 throw $oException;

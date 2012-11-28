@@ -1,5 +1,5 @@
 <?php
-
+namespace Fuel\Tasks;
 /**
  * Met à jour la clé SITE_LOGO des serveurs mmcache si une nouvelle VERSION des LOGO est trouvée dans la base de donnée 
  * À inclure dans une tâche env ou target.
@@ -30,7 +30,7 @@ class Task_Extended_B2CUpdateSiteLogo extends Task
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject,
+    public function __construct (\SimpleXMLElement $oTask, Task_Base_Project $oProject,
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);
@@ -75,14 +75,14 @@ class Task_Extended_B2CUpdateSiteLogo extends Task
         $oDb = mysql_connect('mmas1.prod', 'twenga', 'topproducts');
         mysql_select_db('twenga', $oDb);
         if(!$oDb){
-            throw new Exception('MySQL Connection Database Error: ' . mysql_error());
+            throw new \Exception('MySQL Connection Database Error: ' . mysql_error());
         }
 
         foreach($this->_aAttributes['host'] as $v)
         {
-            $aMemCache[$v] = new Memcache();
+            $aMemCache[$v] = new \Memcache();
             if(!$aMemCache[$v]->connect($v, 11700)){
-                throw new Exception('Mmcache Connection Error: '.$v);
+                throw new \Exception('Mmcache Connection Error: '.$v);
             }
         }
 
@@ -107,7 +107,7 @@ class Task_Extended_B2CUpdateSiteLogo extends Task
                          $this->_oLogger->log("SET: ".'5a171601_'.$k.'=>'.$v);
                     
                     if(!$iIsSet){
-                        throw new Exception('Unable to set data for SITE_ID: ' . $k);
+                        throw new \Exception('Unable to set data for SITE_ID: ' . $k);
                     }
                     }
                 }
