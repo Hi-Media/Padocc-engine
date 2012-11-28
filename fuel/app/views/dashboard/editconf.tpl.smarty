@@ -1,0 +1,102 @@
+{* @desc Twenga Framework - Deployment. *}
+<script src="/javascript/prettydiff.js"></script>
+{literal}
+    <script>
+$j(document).ready(function() {
+        var sCode = $j("#beautyinput").attr("value");
+        var aArg = {source : sCode, mode : "beautify", lang : "javascript", diff:""}
+        aPretty=prettydiff(aArg);
+         $j("#beautyinput").attr("value", aPretty[0]);
+
+        var txt = $j('#beautyinput'),    
+hiddenDiv = $j(document.createElement('div')),
+content = null;
+
+txt.addClass('noscroll');
+hiddenDiv.addClass('hiddendiv');
+
+$j('body').append(hiddenDiv);
+
+txt.bind('keyup', function() {
+    content = txt.val();
+    content = htmlEntities(content);
+    content = content.replace(/\n/g, '<br>');
+    hiddenDiv.html(content);
+
+    txt.css('height', hiddenDiv.height());
+
+});
+txt.keyup();
+});
+function htmlEntities(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+</script>
+<style>
+textarea.autosize {
+width: 1075px;
+    min-height: 50px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    color: #444;
+    padding: 5px;
+}
+
+
+.noscroll {
+    overflow: hidden;
+}
+.hiddendiv {
+    display: none;
+    white-space: pre-wrap;
+    width: 1075px;
+    line-height: 16px;
+    min-height: 50px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    overflow: hidden;
+    padding: 5px;
+    word-wrap: break-word;
+}
+</style>
+{/literal}
+<div id="content" class="">
+	<div id="resume">
+		<div class="main-title">
+			<h1 class="center">{tr}Summary{/tr}</h1>
+		</div>
+	</div>
+
+	<div class="panel" id="panel-2">
+		<div class="box">
+			<div class="top">
+				<h2>Deployment configurations</h2>
+			</div>
+			<div class="content">
+                <form method="post">
+				<p class="choose">Please choose a project:<select name="project" id="projectChoice">{$sProjectChoiceOptions}</select></p>
+                <textarea name="xml" class="autosize" id="beautyinput" placeholder="You have to select a project" spellcheck="false">
+                    {$sConfigFile}
+                </textarea>
+                {if isset($sConfigFile)}
+                <div style="float:right">
+                <input type="submit" value="save"/>
+                {if isset($sSaved)}Saved!{/if}
+                </div>
+                <input type="hidden" name="m" value="Save"/>
+                {/if}
+                </form>
+
+			</div>
+			<div class="foot simple">
+			</div>
+		</div>
+	</div>
+
+
+</div>
+<div id="tpl">
+<script>
+projectConfigLinkTpl = _APP_ADDRESS+"/?action=deployment&m=GetConfig&project=#project";
+</script>
+</div>

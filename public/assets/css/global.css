@@ -1,0 +1,211 @@
+
+table td._ok{
+	background:url(/assets/img/icons/ok.png) no-repeat 5px 10px;
+	padding-left:25px;
+}
+table td._warning{
+	background:url(/assets/img/icons/warning.png) no-repeat 5px 10px;
+	padding-left:25px;
+}
+table td._failed{
+	background:url(/assets/img/icons/failure.png) no-repeat 5px 10px;
+	padding-left:25px;
+}
+
+
+div.in_progress {
+    background: url("/assets/img/icons/in_progress.gif") no-repeat scroll 4px top transparent;
+}
+
+
+/* Fix bug */
+.chzn-container .chzn-drop{
+	z-index: 1000000;
+}
+/*
+div#content {
+	background-color: #F8FAFB !important;
+}*/
+#panel-2 .box .content p {
+    font-size: 12px;
+    margin: 0 0 10px 0;
+}
+#panel-2 .box .content ul {
+	list-style: none outside url(/assets/img/icons/arrow.gif);
+    margin: 0 0 10px 0;
+    padding: 0 0 0 40px;
+}
+#panel-2 .box .content li {
+    margin: 0 0 4px 0;
+}
+#panel-2 .box .content h3 {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+    color: #5C6473;
+}
+#panel-2 .box .content h3 b {color: #000;}
+#panel-2 .box .content a.attach {
+	background: transparent url(/assets/img/icons/attach.png) no-repeat scroll left top;
+	padding-left: 20px;
+}
+#panel-2 .box .content a.rollback {
+	background: transparent url(/assets/img/icons/rollback.png) no-repeat scroll left top;
+	padding-left: 20px;
+}
+
+
+
+/* LATEST DEPLOYLMENTS BY ENV */
+#panel-2 .box .content a {color: #00f; display: inline-block; text-decoration: none; line-height: 16px;}
+#panel-2 .box .content a:HOVER {text-decoration: underline;}
+#panel-2 .box .content a.ok, #panel-2 .box .content div.ok {
+	background: transparent url(/assets/img/icons/ok.png) no-repeat scroll left top;
+	padding-left: 20px;
+}
+div.rollback-details {
+	background: transparent url(/assets/img/icons/arrow_right.png) no-repeat scroll left -1px;
+	padding-left: 20px;
+}
+#panel-2 .box .content a.ok-rollback, #panel-2 .box .content div.ok-rollback {
+	background: transparent url(/assets/img/icons/rollback.png) no-repeat scroll left top;
+	padding-left: 20px;
+}
+#panel-2 .box .content a.warning, #panel-2 .box .content div.warning {
+	background: transparent url(/assets/img/icons/warning.png) no-repeat scroll left top;
+	padding-left: 20px;
+}
+#panel-2 .box .content a.failed, #panel-2 .box .content div.failed {
+	background: transparent url(/assets/img/icons/failure.png) no-repeat scroll left top;
+	padding-left: 20px;
+}
+#panel-2 .box .content table._log_table {width: 100%; margin: 0 auto 0 auto;}
+#panel-2 .box .content table._log_table th {padding: 2px 6px 2px 4px; font-size: 11px; white-space: nowrap;}
+#panel-2 .box .content table._log_table th i {color: #aaa;}
+#panel-2 .box .content table._log_table td {
+	padding: 2px 6px 2px 4px;
+	line-height: 12px;
+}
+#panel-2 .box .content table._log_table td b.parameter {font-size: 9px; color: #aaa;}
+#panel-2 .box .content h3.latest_deployments {
+	background: transparent url(/assets/img/icons/tag_blue.png) no-repeat scroll left center;
+	padding-left: 20px;
+	margin-top: 30px;
+}
+
+
+
+/* LOGS */
+#DeployLogs {
+	color:grey;
+	font-family: "Courier New", Courier, monospace;
+	font-size: 12px;
+}
+#DeployLogs h2 {
+	background: transparent url(/assets/img/icons/script.png) no-repeat scroll left top;
+	padding-left: 20px;
+	font-size: 14px;
+	color: #595959;
+	margin: 10px 10px 10px 0;
+}
+#DeployLogs h2.failure {
+	background: transparent url(/assets/img/icons/failure.png) no-repeat scroll left top;
+	color: #b00;
+	margin-bottom: 4px;
+}
+#DeployLogs div.error_msg {color: #000; margin-left: 20px; font-family: "Courier New", Courier, monospace;}
+#DeployLogs ul {
+	list-style: none outside none;
+	padding: 0 0 0 20px;
+	margin: 0 0 20px 0;
+}
+#DeployLogs ul li {padding: 0; margin: 0 0 1px 0;}
+#DeployLogs span {font-size: 12px; color: #000; line-height: 16px; vertical-align: -1px;}
+#DeployLogs tr th {white-space: nowrap; vertical-align: top;}
+#DeployLogs tr.debug {display: none;}
+#DeployLogs tr.mail {display: none;}
+#DeployLogs tr.start td.text {font-weight: bold;}
+#DeployLogs tr.debug td.text {color: #669;}
+#DeployLogs tr.task_execute td.text {color: #585; font-weight: bold; xbackground-color: #EAEAEA;}
+#DeployLogs tr.task_check td.text {color: #585; font-weight: bold; xbackground-color: #EAEFEA;}
+#DeployLogs tr.ok td.text {color: #080; font-weight: bold;}
+#DeployLogs tr.mail td.text {color: #648FCC; font-style: italic;}
+#DeployLogs tr.warning td.text {color: #bb0; font-weight: bold;}
+#DeployLogs tr.failure td.text {color: #b00; font-weight: bold;}
+#DeployLogs .log_content table td.indent1 {padding-left: 25px;}
+#DeployLogs .log_content table td.indent2 {padding-left: 50px;}
+#DeployLogs .log_content table td.indent3 {padding-left: 75px;}
+#DeployLogs .log_content table td.indent4 {padding-left: 100px;}
+#DeployLogs .log_content table td.indent5 {padding-left: 125px;}
+#DeployLogs .log_content table td.indent6 {padding-left: 150px;}
+#DeployLogs .log_content table td.indent7 {padding-left: 175px;}
+#DeployLogs .log_content table td.indent8 {padding-left: 200px;}
+#DeployLogs .log_content table td.indent9 {padding-left: 225px;}
+#DeployLogs .log_content table td.indent10 {padding-left: 250px;}
+#DeployLogs .log_content table td.indent11 {padding-left: 275px;}
+#DeployLogs .log_content table td.indent12 {padding-left: 300px;}
+#DeployLogs .log_content table td.indent13 {padding-left: 325px;}
+#DeployLogs .log_content table td.indent14 {padding-left: 350px;}
+#DeployLogs .log_content table td.indent15 {padding-left: 375px;}
+#DeployLogs .log_content table th,
+#DeployLogs .log_content table td {padding: 1px 2px 1px 4px;}
+#DeployLogs .log_content table thead th {
+	text-align: center;
+	font-size: 11px;
+	padding: 2px 6px 2px 4px;
+	font-weight: bold;
+	
+	border-bottom: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	vertical-align: bottom;
+	min-width:70px;
+}
+
+#DeployLogs .log_content table{
+	width:100%;
+}
+
+#DeployLogs .log_content table th.section1 {color: #fcc;}
+#DeployLogs .log_content table th.section2 {color: #fbb;}
+#DeployLogs .log_content table th.section3 {color: #faa;}
+#DeployLogs .log_content table th.section4 {color: #f99;}
+#DeployLogs .log_content table th.section5 {color: #f88;}
+#DeployLogs .log_content table th.section6 {color: #f77;}
+#DeployLogs .log_content table th.section7 {color: #f66;}
+#DeployLogs .log_content table th.section8 {color: #f55;}
+#DeployLogs .log_content table th.section9{color: #f55;}
+#DeployLogs .log_content table th.section10 {color: #f44;}
+#DeployLogs .log_content table thead th.first {border-left: 0;}
+
+
+
+
+#DeployLogs .log_content table tbody th.icon {background: transparent url(/assets/img/icons/arrow16x16.gif) no-repeat scroll 4px top; width: 22px;}
+#DeployLogs .log_content table tbody tr.debug th.icon {background-image: url(/assets/img/icons/debug.png);}
+#DeployLogs .log_content table tbody tr.failure th.icon {background-image: url(/assets/img/icons/failure.png);}
+#DeployLogs .log_content table tbody tr.mail th.icon {background-image: url(/assets/img/icons/email.png);}
+#DeployLogs .log_content table tbody tr.normal th.icon {}
+#DeployLogs .log_content table tbody tr.normal th.in_progress {background: url("/assets/img/icons/in_progress.gif") no-repeat scroll 4px top transparent;}
+#DeployLogs .log_content table tbody tr.ok th.icon {background-image: url(/assets/img/icons/ok.png);}
+#DeployLogs .log_content table tbody tr.start th.icon {background-image: url(/assets/img/icons/timer.png);}
+#DeployLogs .log_content table tbody tr.warning th.icon {background-image: url(/assets/img/icons/warning.png);}
+
+
+#DeployLogs .log_content table td .exec{
+	color:#9900FF;
+}
+
+#DeployLogs div.log_buttons {
+	background-color: #eee;
+	border: 1px solid #999;
+	margin: 20px 0 10px;
+	padding: 8px;
+}
+#DeployLogs div.log_buttons label.debug {
+	padding-left: 20px;
+	background: transparent url(/assets/img/icons/debug.png) no-repeat scroll left center;
+}
+#DeployLogs div.log_buttons input {
+	margin: 2px 2px 2px 4px;
+}
+#DeployLogs {display: none;}

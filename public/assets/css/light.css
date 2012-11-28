@@ -1,0 +1,675 @@
+body {
+  background: #e8e8e8 url(/assets/img/background-pattern-light.gif);
+  color: #333;
+}
+.secondary-widget {
+  background: #222222;
+  background-image: linear-gradient(top, #3d3d3d, #222222);
+  color: #fff;
+  text-shadow: none;
+}
+.accordion .ui-accordion-content {
+  background: #fff;
+  color: #666;
+}
+.accordion .ui-accordion-header {
+  border-bottom: 1px solid #cccccc;
+}
+.search.primary-widget {
+  position: relative;
+}
+.search.primary-widget input[type=text] {
+  background: none;
+}
+.search.primary-widget input[type=text],
+.search.primary-widget:before,
+.search.primary-widget .selector {
+  z-index: 99;
+}
+.search.primary-widget > * {
+  position: relative;
+}
+.search.primary-widget .selector,
+.search.primary-widget select {
+  border-color: #ccc;
+}
+.search.primary-widget .selector:before,
+.search.primary-widget select:before {
+  color: #666;
+}
+.search.primary-widget .selector:hover,
+.search.primary-widget select:hover,
+.search.primary-widget .selector:hover:before,
+.search.primary-widget select:hover:before {
+  color: #333;
+}
+.search.primary-widget .selector:hover:before,
+.search.primary-widget select:hover:before {
+  color: #2b6893;
+}
+.search.primary-widget:after {
+  content: '';
+  display: block;
+  position: absolute;
+  background: #F0F0F0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  border: 1px solid #f7f7f7;
+  border-radius: 5px;
+}
+.tickets li article .reply a {
+  color: #ccc;
+}
+.tickets li article:hover .reply a,
+.tickets li article .reply a:hover .reply a {
+  color: #2b6893;
+}
+.tickets li article .info span {
+  color: #333;
+}
+.tickets li article .info span.high strong {
+  color: #bea20b;
+}
+.tickets li article .info span.low strong {
+  color: #666;
+}
+.events h2 {
+  color: #444;
+}
+.events h2:after {
+  background: #ffffff;
+  background-image: linear-gradient(top, #e5e5e5, #ffffff);
+  border-color: #fff;
+}
+.events li article {
+  border-color: #d7d7d7;
+}
+.links a:hover {
+  color: #333;
+}
+/*================
+    Task list
+================== */
+.tasks li article .actions .delete :hover {
+  color: #2b6893;
+}
+.tasks li article time {
+  background: #2b6893;
+}
+.tasks li article:hover .actions a {
+  color: #2b6893;
+}
+.primary-widget a:hover,
+.feedback a:hover {
+  color: #333;
+}
+.collapsable section .actions > li.with-submenu ul,
+article.item .actions > li.with-submenu ul {
+  background: #333;
+}
+.collapsable section .actions > li.with-submenu ul li a,
+article.item .actions > li.with-submenu ul li a {
+  background: #111111;
+  background-image: linear-gradient(top, #222222, #111111);
+  border-radius: 6px;
+  color: #fff;
+}
+.collapsable section .actions > li.with-submenu ul li a:hover,
+article.item .actions > li.with-submenu ul li a:hover {
+  background: #1f4c6c;
+  background-image: linear-gradient(top, #3176a7, #1f4c6c);
+}
+/*================
+    Table
+================== */
+.table thead th,
+.datatable thead th {
+  border-color: #1f4c6c;
+}
+.table thead th .sorticon,
+.datatable thead th .sorticon {
+  background-image: url(/assets/img/sprites.png);
+  background-image: url(/assets/img/sprites-light.png);
+  background-position: -9px -65px;
+  background-image: url(/assets/img/sprites.png);
+  background-image: url(/assets/img/sprites-light.png);
+  background-position: -9px -65px;
+}
+.table tbody td,
+.datatable tbody td {
+
+
+
+}
+.footer-table .dataTables_paginate a,
+.footer-table .paginate a {
+  color: #D9E9F4;
+  border-color: #1f4c6c;
+}
+.footer-table,
+.table thead th,
+.datatable thead th {
+ 
+
+}
+.widget {
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.15);
+}
+.widget.wizard > header .title span {
+  color: #666;
+}
+.widget.wizard > header .steps:after {
+  background: #d7d7d7;
+}
+.widget.wizard > header .steps li.active div {
+  background: #2b6893;
+  background-image: linear-gradient(top, #3176a7, #2b6893);
+}
+.widget.wizard > header .steps li.active span {
+  color: #2b6893;
+}
+.widget.wizard > header .steps li div {
+  background: #f6f6f6;
+  color: #666;
+  border: 2px solid #d7d7d7;
+}
+.widget.wizard > header .steps li span {
+  color: #444;
+}
+.widget.minimizable > header .minimize :hover {
+  color: #222;
+}
+.widget > header > .title {
+  color: #fff;
+}
+.widget > header > .icon {
+  
+}
+.widget > header > .icon:after {
+
+}
+.widget > header > .actions a {
+  background: #2b6893;
+}
+.widget > header > .actions a:hover {
+  background: #2b6893;
+  background-image: linear-gradient(top, #3784ba, #2b6893);
+}
+.widget > header > .tabs li {
+  border-left-color: #ccc;
+  border-right-color: #ddd;
+}
+.widget > header > .tabs li:first-child :before {
+  background: #f6f6f6;
+}
+.widget > header > .tabs li a {
+  display: block;
+  color: #888;
+}
+.widget > header > .tabs li a:hover {
+  color: #666;
+  background: #f8f8f8;
+}
+.widget > .content {
+  border-color: none;
+}
+.widget > .content .pane {
+  background: #111111;
+  background-image: linear-gradient(top, #1E1C1C, #111111);
+}
+.statistics ul li {
+  border-color: #e0e0e0;
+}
+.statistics ul li h2 {
+  color: #333;
+}
+.statistics ul li .sparkline {
+  position: relative;
+  top: 5px;
+  right: 10px;
+}
+.statistics ul li div {
+  color: #777;
+}
+.statistics ul li.active:after {
+  background: #222;
+}
+.statistics ul li.active:after,
+.statistics ul li:hover:after {
+  content: '';
+  display: block;
+  background: linear-gradient(top, #ffffff, #000000);
+  opacity: .1;
+  height: 10px;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+}
+.statistics ul li:first-child {
+  padding-left: 0;
+}
+.statistics ul li.last,
+.statistics ul li:last-child {
+  padding-right: 0;
+  border-right: none;
+}
+.statistics .charts {
+  background: url(/assets/img/light-chart-bg.gif);
+}
+.ui-widget .ui-widget-header {
+  background: #2b6893;
+  background: linear-gradient(top, #3176a7, #2b6893);
+}
+#wrapper .widget div.ui-multiselect .actions input[type=text],
+.page-status div.ui-multiselect .actions input[type=text] {
+  background: #255a7f;
+}
+#wrapper .widget .check-list.button-skin label.checked,
+.page-status .check-list.button-skin label.checked {
+  background: #2b6893;
+  background-image: linear-gradient(top, #3176a7, #2b6893);
+  border-color: #2b6893;
+}
+#wrapper .widget .check-list.button-skin label.disabled,
+.page-status .check-list.button-skin label.disabled {
+  opacity: .8;
+  cursor: default;
+}
+#wrapper .widget .check-list.button-skin label:first-child,
+.page-status .check-list.button-skin label:first-child {
+  border-bottom-left-radius: 7px;
+  border-top-left-radius: 7px;
+}
+#wrapper .widget .check-list.button-skin label.last,
+.page-status .check-list.button-skin label.last,
+#wrapper .widget .check-list.button-skin label:last-child,
+.page-status .check-list.button-skin label:last-child {
+  border-bottom-right-radius: 7px;
+  border-top-right-radius: 7px;
+  border-right: 1px solid #c0c0c0;
+}
+#wrapper .widget div.ui-multiselect .ui-element:hover:before,
+.page-status div.ui-multiselect .ui-element:hover:before,
+#wrapper .widget div.ui-multiselect .connected-list li .action:hover:before,
+.page-status div.ui-multiselect .connected-list li .action:hover:before {
+  color: #2b6893;
+}
+.widget > header,
+.accordion h3 {
+  background: #f8f8f8;
+  background-image: linear-gradient(bottom, #924589, #34224E);
+  border-color: #ccc;
+}
+.widget > header:before,
+.accordion h3:before {
+  background: rgba(255, 255, 255, 0.02);
+}
+.accordion.ui-accordion h3 a {
+  color: #444;
+}
+.accordion.ui-accordion h3 a:hover {
+  color: #2b6893;
+}
+.primary-widget,
+article.item .content,
+article.item .minimize,
+.page-status {
+  background: #F7F7F7;
+  border-color: #ccc;
+  color: #666;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.15);
+}
+.primary-widget input[type=text],
+article.item .content input[type=text],
+article.item .minimize input[type=text],
+.page-status input[type=text],
+.primary-widget input[type=password],
+article.item .content input[type=password],
+article.item .minimize input[type=password],
+.page-status input[type=password],
+.primary-widget .selector,
+article.item .content .selector,
+article.item .minimize .selector,
+.page-status .selector {
+  background: none;
+}
+.primary-widget input[type=text]:focus,
+article.item .content input[type=text]:focus,
+article.item .minimize input[type=text]:focus,
+.page-status input[type=text]:focus,
+.primary-widget input[type=password]:focus,
+article.item .content input[type=password]:focus,
+article.item .minimize input[type=password]:focus,
+.page-status input[type=password]:focus,
+.primary-widget .selector:focus,
+article.item .content .selector:focus,
+article.item .minimize .selector:focus,
+.page-status .selector:focus,
+.primary-widget input[type=text]:hover,
+article.item .content input[type=text]:hover,
+article.item .minimize input[type=text]:hover,
+.page-status input[type=text]:hover,
+.primary-widget input[type=password]:hover,
+article.item .content input[type=password]:hover,
+article.item .minimize input[type=password]:hover,
+.page-status input[type=password]:hover,
+.primary-widget .selector:hover,
+article.item .content .selector:hover,
+article.item .minimize .selector:hover,
+.page-status .selector:hover {
+  color: #333;
+}
+#me a {
+  color: #fff;
+  text-decoration: underline;
+}
+#me a:hover {
+  text-decoration: none;
+}
+#me li:before {
+  background: #111;
+  border-color: #444;
+}
+a {
+  color: #2b6893;
+}
+a:hover {
+  color: #1d3555;
+}
+/*================
+    Single: Login/password pages
+================== */
+.single nav li.active a {
+  background: #2b6893;
+}
+.single nav li.active a,
+.single nav li.active a:hover {
+  color: #fff;
+}
+.single nav li a:hover {
+  color: #333;
+}
+.single nav li a {
+  color: #666;
+}
+.single .fieldset label {
+  border-color: #ccc;
+}
+.single .check-container {
+  display: block;
+  background: rgba(255, 255, 255, 0.5);
+  color: #777;
+}
+.single .check-container:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+.single .full-bt {
+  border-color: #2b6893;
+  background: #2b6893;
+  background-image: linear-gradient(top, #3784ba, #2b6893);
+  color: #f6f6f6;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.65);
+}
+.single .full-bt:hover {
+  background: #3176a7;
+  background-image: linear-gradient(top, #4391c8, #3176a7);
+  color: #fff;
+}
+.menu > nav > ul > li.with-submenu nav li.active a {
+  color: #111;
+}
+.menu > nav > ul > li.with-submenu.open > a {
+  color: #2b6893;
+}
+.menu > nav > ul > li.active > a {
+  background: #2b6893;
+  color: #fff !important;
+}
+.menu > nav > ul > li.active > a:hover {
+  background: #2b6893;
+}
+.menu > nav > ul > li.active:before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  position: absolute;
+  top: 31px;
+  left: -6px;
+  background-image: url(/assets/img/sprites.png);
+  background-image: url(/assets/img/sprites-light.png);
+  background-position: -15px -93px;
+  background-image: url(/assets/img/sprites.png);
+  background-image: url(/assets/img/sprites-light.png);
+  background-position: -15px -93px;
+}
+.menu > nav > ul > li.active:after {
+  content: '';
+  width: 15px;
+  height: 31px;
+  position: absolute;
+  right: -17px;
+  top: 0;
+  background-image: url(/assets/img/sprites.png);
+  background-image: url(/assets/img/sprites-light.png);
+  background-position: 0 -93px;
+  background-image: url(/assets/img/sprites.png);
+  background-image: url(/assets/img/sprites-light.png);
+  background-position: 0 -93px;
+}
+.menu > nav > ul > li a {
+  color: #333;
+}
+.menu > nav > ul > li a:hover {
+  color: #111;
+  background: #EBEBEB;
+}
+/*================
+    Quick Actions
+================== */
+.quick-actions li a {
+  color: #eee;
+  background: #347cb1;
+  background-image: linear-gradient(top, #5697c9, #347cb1);
+  text-shadow: 0 -1px 0 #2b6893;
+  border: 1px solid #2b6893;
+}
+.quick-actions li a:before {
+  border-color: #78ACD4;
+}
+.quick-actions li a:hover {
+  background: #3682b9;
+  background-image: linear-gradient(top, #69a3cf, #3682b9);
+}
+.quick-actions li a:hover .glyph,
+.quick-actions li a:hover a {
+  color: #fff;
+}
+.quick-actions li a .glyph {
+  color: #eee;
+  border-color: #2b6893;
+}
+.quick-actions li a .glyph:after {
+  background: #599ACA;
+}
+.separator,
+.pagetitle h1:after,
+#error-page .content:after,
+#error-page .content:before,
+.single header:after,
+.single header:before {
+  background: #ccc;
+  border-bottom: 1px solid #ffffff;
+}
+.collapsable > li header:hover h3:after {
+  color: #2b6893;
+}
+.collapsable > li.open article header:hover a {
+  color: #2b6893;
+}
+/*================
+    Cool items
+================== */
+article.item header time {
+  background: #2b6893;
+  border-color: #1F4969;
+}
+article.item header figure {
+  background: #e9e9e9;
+  border: 1px solid #d7d7d7;
+}
+article.item header label {
+  color: #333;
+  border: 1px solid #d7d7d7;
+  background: #e9e9e9;
+}
+article.item header label:after {
+  background: #e9e9e9;
+  background-image: linear-gradient(top, #ffffff, #e9e9e9);
+  border-color: #e9e9e9;
+}
+article.item .content {
+  background: #e9e9e9;
+}
+article.item .content .inner {
+  background: #fff;
+}
+article.item .minimize-wrap .minimize {
+  color: #2b6893;
+}
+.page-status .pagination li a {
+  border-left: 1px solid #cccccc;
+  color: #2b6893;
+}
+.page-status .pagination li a:after {
+  background: #ffffff;
+  background-image: linear-gradient(top, #ebebeb, #ffffff);
+  border: 1px solid #ccc;
+}
+.feedback,
+.feedback-bar {
+  background: #e5e5e5;
+  box-shadow: 5px 5px 13px rgba(0, 0, 0, 0.25), -5px -5px 13px rgba(0, 0, 0, 0.25);
+}
+.feedback h1,
+.feedback-bar h1 {
+  color: #333;
+}
+.feedback {
+  border: 1px solid #999999;
+  text-shadow: 0 1px 0 #ffffff;
+}
+.feedback > .close,
+.feedback > .minus {
+  color: #2b6893;
+}
+.feedback > .close:hover,
+.feedback > .minus:hover {
+  color: #3784ba;
+}
+.feedback h1 {
+  border-bottom: 1px solid #cccccc;
+}
+.feedback h1:after {
+  background: #e9e9e9;
+  background-image: linear-gradient(top, #ffffff, #e9e9e9);
+}
+.feedback .more-less {
+  background: #ffffff;
+  background-image: linear-gradient(top, #e9e9e9, #ffffff);
+  color: #333;
+}
+.feedback .more-less:hover {
+  background: #ffffff;
+  background-image: linear-gradient(top, #f6f6f6, #ffffff);
+}
+.feedback.open ul li:last-child {
+  border-bottom: 1px solid #cccccc;
+}
+.feedback ul li {
+  border-color: #ccc;
+}
+.feedback ul li .close {
+  color: #999;
+}
+.feedback ul li .close:hover {
+  color: #3784ba;
+}
+.feedback ul li h2 {
+  color: #666;
+}
+.feedback ul li p {
+  color: #444;
+}
+.feedback ul li:hover {
+  background: #f1f1f1;
+  background-image: linear-gradient(top, #e9e9e9, #f1f1f1);
+}
+.feedback-bar {
+  background: #e9e9e9;
+  background-image: linear-gradient(top, #ffffff, #e9e9e9);
+}
+blockquote {
+  border-color: #2b6893;
+}
+/*================
+    Error page
+================== */
+#error-page header {
+  background: url(/assets/img/error-face.png) no-repeat;
+}
+#error-page header h1 {
+  font-size: 100px;
+  font-weight: bold;
+  color: #000;
+}
+#error-page .content a {
+  color: #2b6893;
+}
+#error-page .content a:hover {
+  color: #000;
+}
+.gallery-list li,
+.bin li {
+  background: #ccc;
+}
+.bin {
+  border-color: #ccc;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+.bin div,
+.bin a {
+  color: #999;
+}
+.bin > a:hover {
+  color: #2b6893;
+}
+.bin.ui-state-hover,
+.bin.ui-state-hover a,
+.bin.ui-state-hover h2 {
+  color: #2b6893;
+}
+.bin.ui-state-hover {
+  border: 7px dashed #2b6893 !important;
+}
+.fullcalendar .fc-content table {
+  background: #fff;
+}
+.fc-event-skin {
+  background-color: #2b6893;
+  border-color: #1f4c6c;
+  text-shadow: 0 1px 0 #1f4c6c;
+}
+/*================
+    Page title and Breadcrumbs
+================== */
+.pagetitle .breadcrumbs li a {
+  color: #444;
+}
+.pagetitle .breadcrumbs li a:hover {
+  color: #222;
+}
+.pagetitle .breadcrumbs li:before {
+  color: #666;
+}

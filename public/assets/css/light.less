@@ -1,0 +1,721 @@
+@import 'core.less';
+
+body {
+	background: #E8E8E8 url(/assets/img/background-pattern-light.gif);
+	color: #333;
+}
+
+.secondary-widget {
+    .gradient(#3D3D3D, #222);
+	color: #fff;
+	text-shadow: none;
+}
+
+.accordion {
+	.ui-accordion-content {
+		background: #fff;
+		color: #666;
+	}
+	.ui-accordion-header {
+		.border-bottom(#ccc);
+	}
+}
+
+.search.primary-widget {
+	position: relative;
+	input[type=text] {
+		background: none;
+	}
+	input[type=text], &:before, .selector { 
+		z-index: 99;
+	}
+	> * { 
+		position: relative;
+	}
+	.selector, select {
+		border-color: #ccc;
+		&:before {
+			color: #666;
+		}
+		&:hover, &:hover:before {
+			color: #333;
+		}
+		&:hover:before { color: @baseColor; }
+	}
+	&:after {
+		content: '';
+		display: block;
+		position: absolute;
+		background: #F0F0F0;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 50%;
+		border: 1px solid #f7f7f7;
+		.radius(5px);
+	}
+}
+.tickets {
+	li {
+		article {
+			.reply {
+				a {
+					color: #ccc;
+				}
+			}
+			&:hover, .reply a:hover {
+				.reply a { color: @baseColor; }
+			}
+			.info {
+				span {
+					color: #333;
+					&.high strong {
+						color: darken(#D6B70C, 5%);
+					}
+					&.low  strong{
+						color: #666;
+					}
+				}
+			}
+		}
+	}
+}
+
+.events {
+	h2 {
+		color: #444;
+		&:after{
+			.gradient(#e5e5e5, #fff);
+			border-color: #fff;
+		}
+	}
+	li {
+		article {
+			border-color: @lineColor;
+		}
+	}
+}
+.links a:hover{color:#333;}
+
+/*================
+    Task list
+================== */
+.tasks {
+	li {
+		article {
+			.actions .delete :hover { color: @baseColor; }
+			time {
+				background: @baseColor;
+			}
+			&:hover  .actions a { color: @baseColor; }
+		}
+	}
+}
+.primary-widget a, .feedback a{
+	&:hover { color: #333; }
+}
+
+
+.collapsable section .actions, article.item .actions {
+	> li {
+		&.with-submenu {
+			ul {
+				background: #333;
+				li {
+					 a{
+						.gradient(#222, #111);
+						.radius(6px);
+						color: #fff;
+						&:hover {
+							.gradient(lighten(@baseColor, 5%), darken(@baseColor, 10%));
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+/*================
+    Table
+================== */
+.table , .datatable{
+    thead {
+        th {
+            border-color: darken(@baseColor, 10%);
+            .sorticon {
+                .sprite(9px, 65px);
+            }
+        }
+    }
+    tbody {
+        td {
+            .shadow(#fff, bottom, 2px);
+            padding: 7px 10px;
+            .gradient(#fff, #f1f1f1);
+            .border(#C0C0C0);
+        }
+    }
+}
+
+.footer-table {
+    .dataTables_paginate, .paginate {
+        a {
+            color: #D9E9F4;
+            border-color: darken(@baseColor, 10%);
+        }
+    }
+}
+
+.footer-table, .table thead th, .datatable thead th {
+    .gradient(lighten(@baseColor, 5%), darken(@baseColor, 5%));
+}
+
+.widget {
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, .15);
+	&.wizard {
+		> header {
+			.title {
+				span {
+					color: #666;
+				}
+			}
+			.steps {
+				&:after {
+					background: @lineColor;
+				}
+				li {
+					&.active {
+						div {
+							.gradient(lighten(@baseColor, 5%), @baseColor);
+						}
+						span {
+							color: @baseColor;
+						}
+					}
+					div {
+						background: #f6f6f6;
+						color: #666;
+						border: 2px solid @lineColor;
+					}
+					span {
+						color: #444;
+					}
+				}
+			}
+		}
+	}
+    &.minimizable > header .minimize :hover {
+		color: #222;
+	}
+	> header {
+		> .title {
+			color: #444;
+		}
+        > .icon {
+            border-color: #ccc;
+            &:after{
+                background: #fff;
+            }
+        }
+		> .actions {
+			a {
+				background: @baseColor;
+				&:hover {
+					.gradient(lighten(@baseColor, 10%), @baseColor);
+				}
+			}
+		}
+		> .tabs {
+			li {
+				border-left-color: #ccc;
+				border-right-color: #ddd;
+				&:first-child :before{
+					background: #f6f6f6;
+				}
+				a {
+					display: block;
+					color: #888;
+					&:hover {
+						color: #666;
+						background: #f8f8f8;
+					}
+				}
+			}
+		}
+	}
+	> .content {
+		border-color: #ccc;
+        .pane {
+            .gradient(#222, #111);
+        }
+	}
+}
+
+
+.statistics {
+	ul {
+		li {
+			border-color: #e0e0e0;
+			h2 {
+				color: #333;
+			}
+			.sparkline {
+				position: relative;
+				top: 5px;
+				right: 10px;
+			}
+			div {
+				color: #777;
+			}
+			&.active:after { background: #222; }
+			&.active:after, &:hover:after {
+				content: '';
+				display: block;
+				background: linear-gradient(top, #fff, #000);
+				opacity: .1;
+				height: 10px;
+				width: 100%;
+				position: absolute;
+				bottom: 0;
+			}
+			&:first-child {
+				.nopadding-left();
+			}
+			&.last, &:last-child {
+				.nopadding-right();
+				.noborder-right();
+			}
+		}
+	}
+	.charts {
+		background: url(/assets/img/light-chart-bg.gif);
+	}
+}
+    
+.ui-widget {
+    .ui-widget-header {
+		background: @baseColor;
+        background: linear-gradient(top, lighten(@baseColor, 5%), @baseColor);
+	}
+}
+
+#wrapper .widget, .page-status {
+    div.ui-multiselect .actions input[type=text] {
+		background: darken(@baseColor, 5%);
+	}
+    .check-list.button-skin  label {
+		&.checked {
+			.gradient(lighten(@baseColor, 5%), @baseColor);
+			border-color: @baseColor;
+		}
+		&.disabled {
+			opacity: .8;
+			cursor: default;
+		}
+		&:first-child {
+			.radius-left(7px);
+		}
+		&.last, &:last-child {
+			.radius-right(7px);
+			.border-right(#c0c0c0);
+		}
+    }
+   div.ui-multiselect {
+		.ui-element, .connected-list li .action {
+			&:hover:before { color: @baseColor; }
+		}
+	}
+}
+
+.widget > header, .accordion h3 {
+    &:before {
+        background: rgba(255, 255, 255, .02);
+    }
+    .gradient(#e6e6e6, #f8f8f8, bottom);
+    border-color: #ccc;
+}
+
+.accordion.ui-accordion h3 a {
+	color: #444;
+	&:hover {
+		color: @baseColor;
+	}
+}
+
+.primary-widget, article.item .content, article.item .minimize, .page-status{
+	background: #F7F7F7;
+	border-color: #ccc;
+	color: #666;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, .15);
+	input[type=text], input[type=password], .selector {
+        background: none;
+        &:focus, &:hover {
+            color: #333;
+        }
+    }
+}
+
+#me {
+	a {
+		color: #fff;
+		text-decoration: underline;
+		&:hover {
+			text-decoration: none;
+		}
+	}
+	li:before {
+		background: #111;
+		border-color: #444;
+	}
+}
+
+a {
+	color: @baseColor;
+	&:hover {
+		color: #1d3555;
+	}
+}
+
+
+/*================
+    Single: Login/password pages
+================== */
+.single {
+	nav {
+		li {
+			&.active {
+				a { background: @baseColor; }
+			}
+			&.active a, &.active a:hover {
+				color: #fff;
+			}
+			a:hover {
+				color: #333;
+			}
+			a {
+				color: #666;
+			}
+		}
+	}
+	.fieldset {
+		label {
+			border-color: #ccc;
+		}
+	}
+	.check-container {
+		display: block;
+		background: rgba(255, 255, 255, .5);
+		color: #777;
+		&:hover {
+			background: rgba(255, 255, 255, .8);
+		}
+	}
+	
+	.full-bt {
+		border-color: @baseColor;
+		.gradient(lighten(@baseColor, 10%), @baseColor);
+		color: #f6f6f6;
+		.shadow(rgba(0, 0, 0, .65), top);
+		&:hover {
+		.gradient(lighten(@baseColor, 15%), lighten(@baseColor, 5%));
+			color: #fff;
+		}
+	}
+}
+
+.menu {
+    > nav > ul > li {
+        &.with-submenu {
+            nav li {
+				&.active a {
+					color: #111;
+				}
+            }
+            &.open {
+                > a {
+                    color: @baseColor;
+                }
+            }
+        }
+        &.active {
+            > a {
+                background: @baseColor;
+                color: #fff !important;
+                &:hover { background: @baseColor; }
+            }
+            &:before {
+                content: '';
+                width: 6px;
+                height: 6px;
+                position: absolute;
+                top: 31px;
+                left: -6px;
+				.sprite(15px, 93px);
+            }
+            &:after {
+                content: '';
+                width: 15px;
+                height: 31px;
+                position: absolute;
+                right: -17px;
+                top: 0;
+				.sprite(0, 93px);
+            }
+        }
+        a {
+            color: #333;
+            &:hover {
+                color: #111;
+                background: #EBEBEB;
+            }
+        }
+    }
+}
+
+/*================
+    Quick Actions
+================== */
+.quick-actions {
+    li {
+        a {
+            color: #eee;
+            .gradient(#5697C9, #347CB1);
+            .shadow(@baseColor, top);
+            .border(@baseColor);
+            &:before {
+                border-color: #78ACD4;
+            }
+            &:hover {
+                .gradient(lighten(#5697C9, 5%), lighten(#347CB1, 2%));
+                .glyph, a { color: #fff; }
+            }
+            .glyph {
+                &:after {
+                    background: #599ACA;
+                }
+                color: #eee;
+                border-color: @baseColor;
+            }
+        }
+    }
+}
+
+.separator, .pagetitle h1:after, #error-page .content:after, #error-page .content:before, .single header:after, .single header:before {
+	background: #ccc;
+	.border-bottom(#fff);
+}
+
+.collapsable {
+	> li {
+		header:hover {
+			 h3:after { color: @baseColor; }
+		}
+		
+		&.open {
+			article {
+				header {
+					&:hover {
+						a { color: @baseColor; }
+					}
+				}
+			}
+		}
+	}
+}
+
+/*================
+    Cool items
+================== */
+article.item {
+	header {
+		time {
+			background: @baseColor;
+			border-color: #1F4969;
+		}
+		
+		figure {
+			background: #e9e9e9;
+			.border(@lineColor);
+		}
+		label {
+			color: #333;
+			.border(@lineColor);
+			background: #e9e9e9;
+			&:after{
+				.gradient(#fff, #e9e9e9);
+				border-color: #e9e9e9
+			}
+		}
+	}
+	.content {
+		background: #e9e9e9;
+		.inner {
+			background: #fff;
+		}
+	}
+	.minimize-wrap{
+		.minimize {
+			color: @baseColor;
+		}
+	}
+}
+
+.page-status {
+	.pagination {
+		li {
+			a {
+				.border-left(#ccc);
+				color: @baseColor;
+				&:after {
+					.gradient(#ebebeb, #fff);
+					border: 1px solid #ccc;
+				}
+			}
+		}
+	}
+}
+
+
+.feedback, .feedback-bar {
+	background: #e5e5e5;
+	box-shadow: 5px 5px 13px rgba(0, 0, 0, .25), -5px -5px 13px rgba(0, 0, 0, .25);
+	h1 {
+		color: #333;
+	}
+}
+
+.feedback {
+	.border(#999);
+	.shadow(#fff, bottom);
+	> .close, > .minus {
+		color: @baseColor;
+		&:hover {
+			color: lighten(@baseColor, 10%);
+		}
+	}
+	h1 {
+		.border-bottom(#ccc);
+		&:after {
+			.gradient(#fff, #e9e9e9);
+		}
+	}
+	.more-less {
+		.gradient(#e9e9e9, #fff);
+		color: #333;
+		&:hover {
+			.gradient(lighten(#e9e9e9, 5%), #fff);
+		}
+	}
+	&.open ul li:last-child {
+		.border-bottom(#ccc)
+	}
+	ul {
+		li {
+			border-color: #ccc;
+			.close {
+				color: #999;
+				&:hover {
+					color: lighten(@baseColor, 10%);
+				}
+			}
+			h2 { color: #666; }
+			p {
+				color: #444;
+			}
+			&:hover {
+				.gradient(#e9e9e9, #f1f1f1);
+			}
+		}
+	}
+}
+
+.feedback-bar {
+	.gradient(#fff, #e9e9e9);
+}
+
+
+blockquote {
+	border-color: @baseColor;
+}
+
+/*================
+    Error page
+================== */
+#error-page {
+	header {
+		background: url(/assets/img/error-face.png) no-repeat;
+		h1 {
+			font-size: 100px;
+			font-weight: bold;
+			color: #000;
+		}
+	}
+	.content {
+		a {
+			color: @baseColor;
+			&:hover {
+				color: #000;
+			}
+		}
+	}
+}
+
+.gallery-list li, .bin li {
+	background: #ccc;
+}
+
+.bin {
+	border-color: #ccc;
+	background: rgba(255, 255, 255, .1) !important;
+	div, a {
+		color: #999;
+	}
+	> a {
+		&:hover {
+			color: @baseColor;
+		}
+	}
+	&.ui-state-hover, &.ui-state-hover a, &.ui-state-hover h2{
+		color: @baseColor;
+	}
+	&.ui-state-hover {
+		border: 7px dashed @baseColor !important;
+	}
+}
+
+.fullcalendar .fc-content table {
+    background: #fff;
+}
+.fc-event-skin {
+    background-color: @baseColor;
+    border-color: darken(@baseColor, 10%);
+    .shadow(darken(@baseColor, 10%), bottom);
+}
+
+/*================
+    Page title and Breadcrumbs
+================== */
+.pagetitle {
+    .breadcrumbs {
+        li {
+            a {
+				color: #444;
+				&:hover { color: #222; }
+            }
+            &:before {
+                color: #666;
+            }
+        }
+    }
+}
+
+@baseColor: #2B6893;
+.sprite () {
+    background-image: url(/assets/img/sprites-light.png);
+}
+
+.sprite (@x, @y) {
+    .sprite();
+    .sprite-position(@x, @y);
+}

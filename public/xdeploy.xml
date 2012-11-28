@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with Liquid XML Studio 2012 Developer Edition (Trial) 10.1.4.4197 (http://www.liquid-technologies.com) -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="D:\wamp\www\tw_deploy\public\xdeploy.xsd" name="string">
+    
+      <target name="string" mailto="string" withsymlinks="false" loadtwengaservers="0" basedir="string">
+        <buildlanguage project="string" destdir="string" />
+        <buildlanguage project="string" destdir="string" />
+        <buildlanguage project="string" destdir="string" />
+        <buildlanguage project="string" destdir="string" />
+        <call target="string" />
+        <sync src="string" destdir="string" exclude="string" />
+        <sync src="string" destdir="string" exclude="string" />
+        <sync src="string" destdir="string" exclude="string" />
+        <sync src="string" destdir="string" exclude="string" />
+    </target>
+    
+    <env name="string" mailto="string" withsymlinks="false" loadtwengaservers="0" basedir="string">
+        <buildlanguage project="string" destdir="string" />
+        <buildlanguage project="string" destdir="string" />
+        <buildlanguage project="string" destdir="string" />
+        <buildlanguage project="string" destdir="string" />
+        <call target="string" />
+        <sync src="string" destdir="string" exclude="string" />
+        <sync src="string" destdir="string" exclude="string" />
+        <sync src="string" destdir="string" exclude="string" />
+        <sync src="string" destdir="string" exclude="string" />
+    </env>
+   
+   
+    
+</project>
