@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project name="site_logo">
-    <env name="prod" mailto="devaa@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/static/site_logo">
-        <sync src="prod@fs3:/home/prod/twenga_files/merchant_logos/" destdir="${SERVER_STATIC_WEB_ALL}:${BASEDIR}" include="*.png" exclude="*"/>
-        <updatesitelogo host="${SERVER_CACHE_L1_ALL}" port="11700"/>
-    </env>
-</project>

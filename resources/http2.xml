@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project name="http2">
-    <env name="qad" mailto="devaa@twenga.com" basedir="/home/httpd/http2">
-        <property name="servers" value="www10"/>
-        <http url="http://www.google-analytics.com/ga.js" destdir=""/>
-        <sync src="/" destdir=":"/>
-    </env>
-</project>

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project name="kpi">
-    <env name="prod" mailto="devaa@twenga.com" withsymlinks="true" loadtwengaservers="true" basedir="/home/httpd/kpi">
-        <externalproperty name="ref" description="Branch or tag to deploy"/>
-        <property name="servers" value="${SERVER_AAI}"/>
-        <gitexport repository="git@git.twenga.com:aa/kpi.git" ref="${REF}" destdir="${SERVERS}:${BASEDIR}" exclude="/_config.php"/>
-    </env>
-</project>
