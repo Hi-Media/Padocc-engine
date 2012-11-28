@@ -1,4 +1,5 @@
 <?php
+namespace Fuel\Tasks;
 
 /**
  * Classe de log rudimentaire, pour loguer les messages à partir d'un seuil d'importance.
@@ -37,7 +38,7 @@ class Logger_Adapter implements Logger_Interface
     public function log ($sMessage, $iLevel=self::INFO)
     {
         if ($iLevel >= $this->_iMinMsgLevel) {
-            echo str_replace("\n", '\\\n', rtrim($sMessage)) . "\n";
+            \Cli::write(str_replace("\n", '\\\n', rtrim($sMessage)));
         }
         return $this;
     }
