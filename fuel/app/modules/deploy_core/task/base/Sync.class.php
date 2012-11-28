@@ -1,4 +1,5 @@
 <?php
+namespace Fuel\Tasks;
 
 /**
  * Synchronise efficacement (rsync Shell) et avec suppression le contenu d'un répertoire à l'intérieur d'un autre.
@@ -40,10 +41,10 @@ class Task_Base_Sync extends Task
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject,
+    public function __construct (\SimpleXMLElement $oTask, Task_Base_Project $oProject,
         ServiceContainer $oServiceContainer)
     {
-        parent::__construct($oTask, $oProject, $oServiceContainer);
+        parent::__construct($oTask, $oProject, $oServiceContainer);        
         $this->_aAttrProperties = array(
             'src' => AttributeProperties::SRC_PATH | AttributeProperties::FILEJOKER | AttributeProperties::REQUIRED
                 | AttributeProperties::ALLOW_PARAMETER,
@@ -70,12 +71,52 @@ class Task_Base_Sync extends Task
     public function check ()
     {
         parent::check();
+
         if (
                 preg_match('#\*|\?|/$#', $this->_aAttributes['src']) === 0
                 && $this->_oShell->getPathStatus($this->_aAttributes['src']) === Shell_PathStatus::STATUS_DIR
         ) {
             $this->_aAttributes['destdir'] .= '/' . substr(strrchr($this->_aAttributes['src'], '/'), 1);
             $this->_aAttributes['src'] .= '/';
+        }
+
+
+        list($bIsDestRemote, $sDestServer, $sDestRawPath) =
+                    $this->_oShell->isRemotePath($this->_aAttributes['src']);
+
+        // Check remote server
+        if(true === $bIsDestRemote)
+        {
+            $aServer = $this->_processPath($sDestServer);
+            $sDestRawPath = $this->_processSimplePath($sDestRawPath);
+
+            \Cli::write("START");
+            \Cli::write($sDestServer);
+            \Cli::write($sDestRawPath);
+            \Cli::write("END");
+
+
+
+            $aParallelResult = $this->_oShell->getParallelSSHPathStatus ($sDestRawPath, $aServer);
+            //var_dump($aParallelResult);
+        }
+
+        list($bIsDestRemote, $sDestServer, $sDestRawPath) =
+                    $this->_oShell->isRemotePath($this->_aAttributes['destdir']);
+
+        // Check remote server
+        if(true === $bIsDestRemote)
+        {
+            $aServer = $this->_processPath($sDestServer);
+            $sDestRawPath = $this->_processSimplePath($sDestRawPath);
+            
+            \Cli::write("START");
+            \Cli::write($sDestServer);
+            \Cli::write($sDestRawPath);
+            \Cli::write("END");
+
+            $aParallelResult = $this->_oShell->getParallelSSHPathStatus ($sDestRawPath, $aServer);
+            //var_dump($aParallelResult);
         }
     }
 
@@ -91,7 +132,7 @@ class Task_Base_Sync extends Task
         $this->_oLogger->indent();
         $sMsg = "Synchronize '" . $this->_aAttributes['src'] . "' with '" . $this->_aAttributes['destdir'] . "'";
         $this->_oLogger->log($sMsg);
-        $this->_oLogger->indent();
+        $this->_oLogger->indent();  
 
         // include / exclude :
         $aIncludedPaths = (empty($this->_aAttributes['include'])
