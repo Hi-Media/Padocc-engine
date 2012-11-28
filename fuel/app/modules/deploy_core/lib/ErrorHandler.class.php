@@ -1,5 +1,5 @@
 <?php
-
+namespace Fuel\Tasks;
 /**
  * Gestionnaire d'erreurs et d'exceptions, web ou CLI.
  *  - Transforme les erreurs en exceptions et bénéficie ainsi de la trace d'exécution.
@@ -80,13 +80,12 @@ class ErrorHandler
      * Constructeur.
      *
      * @param bool $bDisplayErrors affiche ou non les erreurs à l'écran ou dans le canal d'erreur en mode CLI
-     * @param string $sErrorLogPath chemin du fichier de log d'erreur
      * @param int $iErrorReporting Seuil de remontée d'erreur, transmis à error_reporting()
      */
-    public function __construct ($bDisplayErrors=true, $sErrorLogPath='', $iErrorReporting=-1)
+    public function __construct ($bDisplayErrors=true, $iErrorReporting=-1)
     {
         $this->_bDisplayErrors = $bDisplayErrors;
-        $this->_sErrorLogPath = $sErrorLogPath;
+        $this->_sErrorLogPath = 'php://stderr';
         $this->_aExcludedPaths = array();
         $this->_bIsRunningFromCLI = defined('STDIN');
 
@@ -95,9 +94,7 @@ class ErrorHandler
         ini_set('log_errors', true);
         ini_set('html_errors', false);
         ini_set('display_startup_errors', true);
-        if ($sErrorLogPath !== '') {
-            ini_set('error_log', $sErrorLogPath);
-        }
+        ini_set('error_log', $this->_sErrorLogPath);
         ini_set('ignore_repeated_errors', true);
         ini_set('max_execution_time', 0);
 
@@ -157,11 +154,13 @@ class ErrorHandler
         } else {
             $msg = "[from error handler] " . self::$aErrorTypes[$iErrNo]
                  . " -- $sErrStr, in file: '$sErrFile', line $iErrLine";
-            $oException = new ErrorException($msg, self::$_iDefaultErrorCode, $iErrNo, $sErrFile, $iErrLine);
+            $oException = new \ErrorException($msg, self::$_iDefaultErrorCode, $iErrNo, $sErrFile, $iErrLine);
+            //$this->log($msg);
+            file_put_contents('php://stdout', $msg . "\n", E_USER_ERROR);
             //if ( ! $this->display_errors && $errno != E_ERROR) {
             //	$this->error_log($e);
             //} else {
-                throw $oException;
+               // throw $oException;
             //}
         }
         return true;
@@ -174,7 +173,7 @@ class ErrorHandler
      * @param Exception $oException
      * @see log()
      */
-    public function internalExceptionHandler (Exception $oException)
+    public function internalExceptionHandler (\Exception $oException)
     {
         if ( ! $this->_bDisplayErrors && ini_get('error_log') !== '' && ! $this->_bIsRunningFromCLI) {
             echo '<div class="exception_handler_message">Une erreur d\'exécution est apparue.<br />'
@@ -195,7 +194,7 @@ class ErrorHandler
         if ($this->_bDisplayErrors) {
             if ($this->_bIsRunningFromCLI) {
                 file_put_contents('php://stderr', $mError . "\n", E_USER_ERROR);
-                $iErrorCode = ($mError instanceof Exception ? $mError->getCode() : self::$_iDefaultErrorCode);
+                $iErrorCode = ($mError instanceof \Exception ? $mError->getCode() : self::$_iDefaultErrorCode);
                 exit($iErrorCode);
             } else {
                 print_r($mError);
@@ -203,7 +202,7 @@ class ErrorHandler
         }
 
         if ( ! empty($this->_sErrorLogPath)) {
-            if (is_array($mError) || (is_object($mError) && ! ($mError instanceof Exception))) {
+            if (is_array($mError) || (is_object($mError) && ! ($mError instanceof  \Exception))) {
                 $mError = print_r($mError, true);
             }
             error_log($mError);
