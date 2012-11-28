@@ -1,5 +1,5 @@
 <?php
-
+namespace Fuel\Tasks;
 /**
  * @category TwengaDeploy
  * @package Core
@@ -121,7 +121,7 @@ abstract class Task
         }
         $sXML = '<' . static::getTagName() . $sAttributes . ' />';
 
-        $oXML = new SimpleXMLElement($sXML);
+        $oXML = new \SimpleXMLElement($sXML);
         return new static($oXML, $oProject, $oServiceContainer);
     }
 
@@ -132,7 +132,7 @@ abstract class Task
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oXMLTask, Task_Base_Project $oProject,
+    public function __construct (\SimpleXMLElement $oXMLTask, Task_Base_Project $oProject,
         ServiceContainer $oServiceContainer)
     {
         $this->_oXMLTask = $oXMLTask;
@@ -196,7 +196,7 @@ abstract class Task
         $aProcessedPaths = $this->_processPath($sPath);
         if (count($aProcessedPaths) !== 1) {
             $sMsg = "String '$sPath' should return a single path after process: " . print_r($aProcessedPaths, true);
-            throw new RuntimeException($sMsg);
+            throw new \RuntimeException($sMsg);
         }
         return reset($aProcessedPaths);
     }
