@@ -1,5 +1,5 @@
 <?php
-
+namespace Fuel\Tasks;
 /**
  * Collection des propriétés possibles pour un attribut de tâche.
  * Ces propriétés sont manipulées au sein de champs de bits dans la classe Task.
@@ -148,7 +148,7 @@ class AttributeProperties
         $aAvailablesAttr = array_keys($aProperties);
         $aUnknownAttributes = array_diff(array_keys($aValues), $aAvailablesAttr);
         if (count($aUnknownAttributes) > 0) {
-            throw new DomainException(
+            throw new \DomainException(
                 "Available attributes: " . print_r($aAvailablesAttr, true)
                 . " => Unknown attribute(s): " . print_r($aUnknownAttributes, true)
             );
@@ -229,16 +229,16 @@ class AttributeProperties
     private function _checkAttribute ($sName, $iProperties, $sValue)
     {
         if (empty($sValue) && ($iProperties & self::REQUIRED) > 0) {
-            throw new UnexpectedValueException("'$sName' attribute is required!");
+            throw new \UnexpectedValueException("'$sName' attribute is required!");
 
         } else if ( ! empty($sValue)) {
             if (($iProperties & self::BOOLEAN) > 0 && ! in_array($sValue, array('true', 'false'))) {
                 $sMsg = "Value of '$sName' attribute is restricted to 'true' or 'false'. Value: '$sValue'!";
-                throw new DomainException($sMsg);
+                throw new \DomainException($sMsg);
             }
 
             if (($iProperties & self::URL) > 0 && preg_match('#^http://#i', $sValue) === 0 ) {
-                throw new DomainException("Bad URL: '" . $sValue . "'");
+                throw new \DomainException("Bad URL: '" . $sValue . "'");
             }
 
             if (($iProperties & self::EMAIL) > 0
@@ -247,12 +247,12 @@ class AttributeProperties
                     $sValue
                 ) === 0
             ) {
-                throw new DomainException("Email invalid: '" . $sValue . "'");
+                throw new \DomainException("Email invalid: '" . $sValue . "'");
             }
 
             if (preg_match('#[*?].*/#', $sValue) !== 0 && ($iProperties & self::DIRJOKER) === 0) {
                 $sMsg = "'*' and '?' jokers are not authorized for directory in '$sName' attribute!";
-                throw new DomainException($sMsg);
+                throw new \DomainException($sMsg);
             }
 
             if (preg_match('#[*?](.*[^/])?$#', $sValue) !== 0
@@ -260,12 +260,12 @@ class AttributeProperties
                 && ($iProperties & self::URL) === 0
             ) {
                 $sMsg = "'*' and '?' jokers are not authorized for filename in '$sName' attribute!";
-                throw new DomainException($sMsg);
+                throw new \DomainException($sMsg);
             }
 
             if (preg_match('#\$\{[^}]*\}#', $sValue) !== 0 && ($iProperties & self::ALLOW_PARAMETER) === 0) {
                 $sMsg = "Parameters are not allowed in '$sName' attribute! Value: '$sValue'";
-                throw new DomainException($sMsg);
+                throw new \DomainException($sMsg);
             }
 
             // Vérification de présence de la source si chemin sans joker ni paramètre :
@@ -275,7 +275,7 @@ class AttributeProperties
                     && $this->_oServiceContainer->getShellAdapter()->getPathStatus($sValue)
                         === Shell_PathStatus::STATUS_NOT_EXISTS
             ) {
-                throw new UnexpectedValueException("File or directory '$sValue' not found!");
+                throw new \UnexpectedValueException("File or directory '$sValue' not found!");
             }
         }
     }
