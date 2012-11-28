@@ -1,4 +1,5 @@
 <?php
+namespace Fuel\Tasks;
 
 /**
  * Classe outil facilitant l'exécution des commandes shell.
@@ -109,12 +110,12 @@ class Shell_Adapter implements Shell_Interface
         foreach ($aResult as $aSubResult) {
             if ($aSubResult['error_code'] !== 0) {
                 $sMsg = $aSubResult['error'] . "\nParallel result:\n" . print_r($aResult, true);
-                throw new RuntimeException($sMsg, $aSubResult['error_code']);
+                throw new \RuntimeException($sMsg, $aSubResult['error_code']);
             } else if ( ! in_array($aSubResult['value'], $aValues)) {
                 $sMsg = "Not asked value: '" . $aSubResult['value'] . "'!\n"
                       . "Aksed values: '" . implode("', '", $aValues) . "'\n"
                       . "Parallel result:\n" . print_r($aResult, true);
-                throw new RuntimeException($sMsg, 1);
+                throw new \RuntimeException($sMsg, 1);
             }
         }
 
@@ -124,7 +125,7 @@ class Shell_Adapter implements Shell_Interface
             $sMsg = "Missing values!\n"
                   . "Aksed values: '" . implode("', '", $aValues) . "'\n"
                   . "Parallel result:\n" . print_r($aAllResults, true);
-            throw new RuntimeException($sMsg, 1);
+            throw new \RuntimeException($sMsg, 1);
         }
 
         return $aAllResults;
@@ -144,7 +145,7 @@ class Shell_Adapter implements Shell_Interface
         $sFullCmd = '( ' . $sCmd . ' ) 2>&1';
         exec($sFullCmd, $aResult, $iReturnCode);
         if ($iReturnCode !== 0) {
-            throw new RuntimeException(implode("\n", $aResult), $iReturnCode);
+            throw new \RuntimeException(implode("\n", $aResult), $iReturnCode);
         }
         return $aResult;
     }
@@ -352,7 +353,7 @@ class Shell_Adapter implements Shell_Interface
         list(, $sLinkServer, ) = $this->isRemotePath($sLinkPath);
         list(, $sTargetServer, $sTargetRealPath) = $this->isRemotePath($sTargetPath);
         if ($sLinkServer != $sTargetServer) {
-            throw new DomainException("Hosts must be equals. Link='$sLinkPath'. Target='$sTargetPath'.");
+            throw new \DomainException("Hosts must be equals. Link='$sLinkPath'. Target='$sTargetPath'.");
         }
         $aResult = $this->execSSH('mkdir -p "$(dirname %1$s)" && ln -snf "' . $sTargetRealPath . '" %1$s', $sLinkPath);
         // TODO optimisation possible :
@@ -391,7 +392,7 @@ class Shell_Adapter implements Shell_Interface
 
         // Garde-fou :
         if (empty($sPath) || strlen($sPath) < 4) {
-            throw new DomainException("Illegal path: '$sPath'");
+            throw new \DomainException("Illegal path: '$sPath'");
         }
 
         // Supprimer du cache de getPathStatus() :

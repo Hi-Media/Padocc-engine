@@ -1,4 +1,5 @@
 <?php
+namespace Fuel\Tasks;
 
 /**
  * Gestion d'une numérotation hiérarchique (1.1, 1.2, ...).

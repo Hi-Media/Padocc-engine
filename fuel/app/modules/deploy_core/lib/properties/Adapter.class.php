@@ -1,4 +1,5 @@
 <?php
+namespace Fuel\Tasks;
 
 /**
  * Gestionnaire de propriétés (table de hashage).
@@ -50,7 +51,7 @@ class Properties_Adapter implements Properties_Interface
     public function getProperty ($sPropertyName)
     {
         if ( ! isset($this->_aProperties[strtolower($sPropertyName)])) {
-            throw new UnexpectedValueException("Unknown property '$sPropertyName'!");
+            throw new \UnexpectedValueException("Unknown property '$sPropertyName'!");
         }
         return $this->_aProperties[strtolower($sPropertyName)];
     }
@@ -80,12 +81,12 @@ class Properties_Adapter implements Properties_Interface
     public function loadConfigIniFile ($sIniPath)
     {
         if ( ! file_exists($sIniPath)) {
-            throw new UnexpectedValueException("Property file '$sIniPath' not found!");
+            throw new \UnexpectedValueException("Property file '$sIniPath' not found!");
         }
 
         $aRawProperties = @parse_ini_file($sIniPath);
         if ($aRawProperties === false) {
-            throw new RuntimeException("Load property file '$sIniPath' failed: " . print_r(error_get_last(), true));
+            throw new \RuntimeException("Load property file '$sIniPath' failed: " . print_r(error_get_last(), true));
         }
 
         // Normalisation :
@@ -115,7 +116,7 @@ class Properties_Adapter implements Properties_Interface
     public function loadConfigShellFile ($sConfigShellPath)
     {
         if ( ! file_exists($sConfigShellPath)) {
-            throw new UnexpectedValueException("Property file '$sConfigShellPath' not found!");
+            throw new \UnexpectedValueException("Property file '$sConfigShellPath' not found!");
         }
         $sConfigIniPath = tempnam(DEPLOYMENT_TMP_DIR, 'deploy_configshell2ini_');
         $sCmd = DEPLOYMENT_BASH_PATH . ' ' . __DIR__ . "/cfg2ini.inc.sh '$sConfigShellPath' '$sConfigIniPath'";

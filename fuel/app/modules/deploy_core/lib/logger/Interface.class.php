@@ -1,4 +1,5 @@
 <?php
+namespace Fuel\Tasks;
 
 /**
  * Interface de log rudimentaire, pour loguer les messages à partir d'un seuil d'importance.

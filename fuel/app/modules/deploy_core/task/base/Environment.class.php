@@ -1,4 +1,5 @@
 <?php
+namespace Fuel\Tasks;
 
 /**
  * Sous-division d'une tâche projet, décrit ce qu'est un déploiement pour un environnement donné.
@@ -71,7 +72,7 @@ class Task_Base_Environment extends Task_Base_Target
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject,
+    public function __construct (\SimpleXMLElement $oTask, Task_Base_Project $oProject,
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);
@@ -130,7 +131,7 @@ class Task_Base_Environment extends Task_Base_Target
     {
         parent::check();
         if ($this->_aAttributes['basedir'][0] !== '/') {
-            throw new DomainException("Attribute 'basedir' must begin by a '/'!");
+            throw new \DomainException("Attribute 'basedir' must begin by a '/'!");
         }
 
         $aMsg = array();

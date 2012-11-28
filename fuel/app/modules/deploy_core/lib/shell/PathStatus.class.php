@@ -1,4 +1,5 @@
 <?php
+namespace Fuel\Tasks;
 
 /**
  * Collection des statuts possibles pour un chemin du système de fichiers.

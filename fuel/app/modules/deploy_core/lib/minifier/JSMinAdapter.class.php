@@ -50,7 +50,7 @@ class Minifier_JSMinAdapter implements Minifier_Interface
     public function minify (array $aSrcPaths, $sDestPath)
     {
         if (count($aSrcPaths) === 0) {
-            throw new BadMethodCallException('Source files missing!');
+            throw new \BadMethodCallException('Source files missing!');
         }
 
         // Est-ce que les fichiers en entrée sont tous des JS ou tous des CSS ?
@@ -58,13 +58,13 @@ class Minifier_JSMinAdapter implements Minifier_Interface
         foreach ($aSrcPaths as $sSrcPath) {
             $sExtension = strrchr($sSrcPath, '.');
             if ($sExtension !== $sFirstExtension) {
-                throw new UnexpectedValueException('All files must be either JS or CSS: ' . print_r($aSrcPaths, true));
+                throw new \UnexpectedValueException('All files must be either JS or CSS: ' . print_r($aSrcPaths, true));
             }
         }
 
         // La destination est-elle en accord avec les entrées ?
         if (strrchr($sDestPath, '.') !== $sFirstExtension) {
-            throw new UnexpectedValueException("Destination file must be same type of input files: '$sDestPath' : Src :" . print_r($aSrcPaths, true));
+            throw new \UnexpectedValueException("Destination file must be same type of input files: '$sDestPath' : Src :" . print_r($aSrcPaths, true));
         }
 
         // On redirige vers le service idoine :
@@ -79,7 +79,7 @@ class Minifier_JSMinAdapter implements Minifier_Interface
 
             default:
                 $sMsg = "All specified paths must finish either by '.js' or '.css': '$sFirstExtension'!";
-                throw new DomainException($sMsg);
+                throw new \DomainException($sMsg);
                 break;
         }
 
@@ -208,7 +208,7 @@ class Minifier_JSMinAdapter implements Minifier_Interface
             try {
                 $sContent .= file_get_contents($sPath);
             } catch (Exception $oException) {
-                throw new RuntimeException("File not found: '$sPath'!", 1, $oException);
+                throw new \RuntimeException("File not found: '$sPath'!", 1, $oException);
             }
         }
         return $sContent;
