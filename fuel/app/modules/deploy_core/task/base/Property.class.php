@@ -1,4 +1,5 @@
 <?php
+namespace Fuel\Tasks;
 
 /**
  * Définit une propriété interne, réutilisable dans les attributs possédant le flag ALLOW_PARAMETER.
@@ -29,7 +30,7 @@ class Task_Base_Property extends Task
      * @param Task_Base_Project $oProject Super tâche projet.
      * @param ServiceContainer $oServiceContainer Register de services prédéfinis (Shell_Interface, ...).
      */
-    public function __construct (SimpleXMLElement $oTask, Task_Base_Project $oProject,
+    public function __construct (\SimpleXMLElement $oTask, Task_Base_Project $oProject,
         ServiceContainer $oServiceContainer)
     {
         parent::__construct($oTask, $oProject, $oServiceContainer);
@@ -45,7 +46,7 @@ class Task_Base_Property extends Task
      * Appelé par _execute().
      * @see execute()
      */
-    protected function _centralExecute ()
+    protected function check ()
     {
         parent::_centralExecute();
         $this->_oLogger->indent();
