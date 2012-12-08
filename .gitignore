@@ -3,5 +3,5 @@
 /.project
 /resources
 /tags
-/tmp/
-/logs/
+fuel/app/tmp/
+fuel/app/logs/
