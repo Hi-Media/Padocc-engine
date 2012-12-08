@@ -1,0 +1,26 @@
+
+#### VHOST
+
+<Directory "YOUR_PATH/ede">
+AllowOverride ALL
+Allow from all
+</Directory>
+
+<VirtualHost *:80>
+    ServerName YOUR_HOST
+    DocumentRoot /YOUR_PATH/ede/public/
+	php_flag zlib.output_compression Off
+    RewriteEngine on
+
+    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_FILENAME} !-f
+    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_FILENAME} !-d
+	RewriteRule ^.*$ /index.php$1 [L]
+</VirtualHost>
+
+
+
+#### CONFIG
+Edit your base_url in /fuel/app/config/config.php
+
+#TIPS:
+http://blog.pagebakers.nl/2009/01/29/git-ignoring-changes-in-tracked-files/
