@@ -27,7 +27,7 @@ Autoloader::register();
 Fuel::$env = (isset($_SERVER['FUEL_ENV']) ? $_SERVER['FUEL_ENV'] : Fuel::DEVELOPMENT);
 \Config::load('dee', true);
 
-require APPPATH.'config/const.php';
+//require APPPATH.'config/const.php';
 
 // Initialize the framework with the config file.
 Fuel::init('config.php');

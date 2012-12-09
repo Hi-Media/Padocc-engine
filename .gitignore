@@ -3,3 +3,6 @@
 /.project
 /resources
 /tags
+fuel/app/tmp/
+fuel/app/logs/
+fuel/app/config
