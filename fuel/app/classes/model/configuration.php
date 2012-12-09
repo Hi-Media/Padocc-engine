@@ -1,38 +1,83 @@
 <?
+/**
+ * Management of the project's configuration
+ * @category Model
+ * @package Tony CARON <caron.tony@gmail.com>
+ */
 
 namespace Model;
 use DB;
 
 class Configuration extends \Model {
-
-	private static function getActive($iProjectId)
+    
+    /**
+     * Retrieve active configuration (last revision)
+     *
+     * @param int $iProjectId Project ident
+     * @return Logger_Interface $this
+     */
+	public static function getActive($iProjectId)
 	{
-		$aResult = DB::query('SELECT * FROM DEE_PROJECT_CONFIGURATION WHERE PROJECT_ID=:iProjectId AND STATUS = "ACTIVE"')
+		$aResult = DB::query('SELECT * FROM EDE_PROJECT_CONFIGURATION WHERE PROJECT_ID=:iProjectId AND STATUS = "ACTIVE"')
 		->bind('iProjectId', $iProjectId)->execute();
 
 		return $aResult;
-		//return count($aResult) ? true : false;
 	}
 
+    /**
+     * Retrieve all project's configurations
+     *
+     * @param int $iProjectId Project ident
+     * @return array Configuration data
+     */
     public static function getProjectConfigurations($iProjectId)
     {
-        $aResult = DB::query('SELECT * FROM DEE_PROJECT_CONFIGURATION WHERE PROJECT_ID=:iProjectId')
+        $aResult = DB::query('SELECT * FROM EDE_PROJECT_CONFIGURATION WHERE PROJECT_ID=:iProjectId')
         ->bind('iProjectId', $iProjectId)->execute()->as_array();
 
         return $aResult;
     }
 
+    /**
+     * Retrieve configuration's data
+     *
+     * @param int $iConfigurationId Configuration ident
+     * @return array Configuration data
+     */
     public static function getConfiguration($iConfigurationId)
     {
-        $aResult = DB::query('SELECT * FROM DEE_PROJECT_CONFIGURATION WHERE PROJECT_CONFIGURATION_ID=:iConfigurationId')
+        $aResult = DB::query('SELECT * FROM EDE_PROJECT_CONFIGURATION WHERE PROJECT_CONFIGURATION_ID=:iConfigurationId')
         ->bind('iConfigurationId', $iConfigurationId)->execute()->as_array();
 
         return $aResult;
     }
 
-    
+    /**
+     * Disable all configurations
+     *
+     * @param int $iProjectId Project Ident
+     */
+    public static function makeAllUnactive($iProjectId)
+    {
+        $aResult = DB::query('UPDATE EDE_PROJECT_CONFIGURATION SET STATUS="INACTIVE", DATE_UPDATE = NOW() WHERE PROJECT_ID=:iProjectId AND STATUS="ACTIVE"')
+        ->bind('iProjectId', $iProjectId)->execute();
+    }
 
-	// TODO TRANSACTION
+    // TODO
+    public static function deletelast10($iProjectId)
+    {
+
+    }
+
+    /**
+     * Add a new configuration for a project
+     *
+     * @param int $iProjectId Project ident
+     * @param int $iCreatorId Creator ident
+     * @param string Xml configuration file
+     * @todo Add transaction
+     * @todo Trash old revision => deletelast10
+     */
     public static function add($iProjectId, $iCreatorId, $sConfiguration)
     {
     	Configuration::checkXmlConfiguration($sConfiguration); 
@@ -43,6 +88,7 @@ class Configuration extends \Model {
         $aExternalProperty = array();
         $oEnv = Configuration::getXmlEnvironment($oXml);
         $oTarget = Configuration::getXmlTarget($oXml);
+
         foreach($oEnv as $env)
         {
             $aEnvName[] = array('NAME' => (string)$env->attributes()->name);
@@ -66,9 +112,9 @@ class Configuration extends \Model {
     	Configuration::makeAllUnactive($iProjectId);
 
         // prepare an insert statement
-		$sQuery = DB::insert('DEE_PROJECT_CONFIGURATION');
+		$sQuery = DB::insert('EDE_PROJECT_CONFIGURATION');
 
-		// Set the columns and vales
+		// Set the columns and values
 		$sQuery->set(array(
 		    'PROJECT_ID' => $iProjectId,
 		    'STATUS' => "ACTIVE",
@@ -81,64 +127,45 @@ class Configuration extends \Model {
 		))->execute();
     }
 
-    public static function listing($iProjectId)
+    
+    /**
+     * Check if the XML is validated by the XML Schema
+     *
+     * @param string $sConfiguration Xml configuration file
+     * @throws UnexpectedValueException when the XML is not valided by the schema
+     * @todo Rename xdeploy.xsd
+     */
+    protected static function checkXmlConfiguration($sConfiguration)
     {
-        return DB::query('SELECT * FROM `DEE_PROJECT` WHERE PROJECT_ID=:iProjectId ')
-        ->bind('iProjectId', $iProjectId)->execute()->as_array();
-    }
-
-    public static function makeAllUnactive($iProjectId)
-    {
-    	$aResult = DB::query('UPDATE DEE_PROJECT_CONFIGURATION SET STATUS="INACTIVE", DATE_UPDATE = NOW() WHERE PROJECT_ID=:iProjectId AND STATUS="ACTIVE"')
-		->bind('iProjectId', $iProjectId)->execute();
-    }
-
-    // TODO
-    public static function deletelast10($iProjectId)
-    {
-
-    }
-
-    public static function xgetActive($iProjectId)
-    {
-		$oActive = Configuration::getActive($iProjectId);
-    }
-
-
-    public static function checkXmlConfiguration($sConfiguration)
-    {
-
         $sOutput = "";
         // enable error handling
         libxml_use_internal_errors(true);
+
         $xdoc = new \DOMDocument;
+
         // load your XML document into DOMDocument object
         $xdoc->loadXML($sConfiguration);
+
         // validation part - add @ if you don't want to see the validation warnings
         if (!$xdoc->schemaValidate($_SERVER['DOCUMENT_ROOT'].'/xdeploy.xsd'))
         {
-
             $errors = libxml_get_errors();
             foreach($errors as $error)
             {
-            $sOutput.= 'Line: '.$error->line.' ===> '.$error->message.'<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                $sOutput.= 'Line: '.$error->line.' ===> '.$error->message.'<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
             }
-
             throw new \UnexpectedValueException($sOutput);
         }
-/*
-        return;
-        $oXml = Configuration::getXml($sConfiguration);
-    	$oEnv = Configuration::getXmlEnvironment($oXml);
-        $oTarget = Configuration::getXmlTarget($oXml);
-
-        foreach($oEnv as $env)
-        {
-            Configuration::getXmlExternalProperty($env, $oTarget);
-        }*/
     }
 
-    public static function getXml($sConfiguration)
+    /**
+     * Return an XmlElement from a string
+     *
+     * @param string $sConfiguration Xml configuration file
+     * @throws UnexpectedValueException when the XML is not valid
+     * @return SimpleXMLElement
+     */
+    protected static function getXml($sConfiguration)
     {
         try {
             @$oXml = new \SimpleXMLElement($sConfiguration);
@@ -149,7 +176,15 @@ class Configuration extends \Model {
         return $oXml;
     }
 
-    public static function getXmlEnvironment($oXml)
+    /**
+     * Return all Environement from a SimpleXMLElement
+     *
+     * @param  SimpleXMLElement $oXml
+     * @throws UnexpectedValueException when no environement is found
+     * @throws UnexpectedValueException when a name for an environement isn't found
+     * @return array of XMLElement environment
+     */
+    protected static function getXmlEnvironment($oXml)
     {
         $aEnv = $oXml->xpath("//env");
 
@@ -166,7 +201,14 @@ class Configuration extends \Model {
         return $aEnv;
     }
 
-    public static function getXmlTarget($oXml)
+    /**
+     * Return all Target from a SimpleXMLElement
+     *
+     * @param  SimpleXMLElement $oXml
+     * @throws UnexpectedValueException when a name for an target isn't found
+     * @return array of XMLElement target
+     */
+    protected static function getXmlTarget($oXml)
     {
         $aTarget = $oXml->xpath("//target");
         $aReturnTarget = array();
@@ -174,7 +216,7 @@ class Configuration extends \Model {
         foreach($aTarget as $k=>$target)
         {
             if(!isset($target->attributes()->name) || empty($target->attributes()->name))
-                throw new \UnexpectedValueException("Your environment must have a name!");
+                throw new \UnexpectedValueException("Your target must have a name!");
 
             $aReturnTarget[(string)$target->attributes()->name] = $target;        
         }
@@ -182,8 +224,16 @@ class Configuration extends \Model {
         return $aReturnTarget;
     }
 
-
-    public static function getXmlExternalProperty($oEnv, $aTarget)
+    /**
+     * Return all ExternalProperty from a environment
+     *
+     * @param  SimpleXMLElement $oEnv
+     * @param  array of SimpleXMLElement $aTarget
+     * @throws UnexpectedValueException when a name for an externalproperty isn't found
+     * @throws UnexpectedValueException when a description for an externalproperty isn't found
+     * @return array of XMLElement 
+     */
+    protected static function getXmlExternalProperty($oEnv, $aTarget)
     {
         $aExternalProperty = array();
 
@@ -207,7 +257,5 @@ class Configuration extends \Model {
         }        
 
         return $aExternalProperty;
-    }
-
-   
+    }   
 }
