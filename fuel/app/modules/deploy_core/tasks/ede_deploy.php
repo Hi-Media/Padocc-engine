@@ -23,7 +23,7 @@ class Ede_deploy
     {
         $sMyPath =  \Module::exists('deploy_core');
 
-        require_once $sMyPath.'config/config.inc.php';
+        require_once $sMyPath.'config/padocc-dist.php';
         $this->setAutoloader();
         $oBaseLogger = new Logger_Adapter(Logger_Interface::DEBUG);
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
@@ -60,7 +60,7 @@ class Ede_deploy
                     include_once($sPath);
                     return true;
                 }
-                    
+
             }
         );
     }
@@ -83,7 +83,7 @@ class Ede_deploy
             \Cli::write((array)$sValue);
             $oProperties->setProperty($sKey, str_replace('&#0160;', ' ', $sValue));
         }*/
-        
+
     }
 
     /**
@@ -104,7 +104,7 @@ class Ede_deploy
         /*\Config::load('ede_deploy_config', true);
         $sDeploymentTmpDir = \Config::get('ede_deploy_config.paths.deployment_tmp_dir');   */
 
-     
+
         // Patch temporaire pour Geoffroy
         if (!\Cli::option("param"))
         {
@@ -112,7 +112,7 @@ class Ede_deploy
 
             if(1)
             {
-                echo \Cli::color('Usage : php oil r deploy_core::ede_deploy name=rts environment="qa" external_property=\'{"ref":"stable","ref_common":"stable","ref_fuel_common":"stable"}\' configuration="/home/tony/projects/ede/rts.xml"'."\r\n", 'yellow'); 
+                echo \Cli::color('Usage : php oil r deploy_core::ede_deploy name=rts environment="qa" external_property=\'{"ref":"stable","ref_common":"stable","ref_fuel_common":"stable"}\' configuration="/home/tony/projects/ede/rts.xml"'."\r\n", 'yellow');
 
               die;
             }
@@ -131,7 +131,7 @@ class Ede_deploy
             $sParam = \Cli::option("param");
             $aParam = (array)json_decode(base64_decode($sParam));
         }
-        
+
 
         $this->_oServiceContainer->getPropertiesAdapter()
             ->setProperty('project_name', $aParam['NAME'])
