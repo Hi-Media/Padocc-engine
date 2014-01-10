@@ -6,3 +6,8 @@
 fuel/app/tmp/
 fuel/app/logs/
 fuel/app/config
+*~
+/vendor/
+/composer.phar
+/.twgit*
+/.idea/

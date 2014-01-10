@@ -1,0 +1,24 @@
+{
+    "name": "hi-media/padocc-engine",
+    "description": "Platform for Automatized Deployments with pOwerful Concise Configuration",
+    "keywords": ["deployment", "PHP"],
+    "require": {
+        "ext-PDO":                     "*",
+        "geoffroy-aubry/errorhandler": "1.*",
+        "geoffroy-aubry/helpers":      "1.*",
+        "geoffroy-aubry/logger":       "1.*",
+        "geoffroy-aubry/shell":        "1.*",
+        "geoffroy-aubry/supervisor":   "dev-release-1.4.0",
+        "php":                         ">=5.3.3",
+        "psr/log":                     "1.0.0",
+        "symfony/finder":              "~2.3"
+    },
+    "require-dev": {
+        "apigen/apigen":             "2.8.0",
+        "phpmd/phpmd":               "1.4.*",
+        "phpunit/phpunit":           ">=3.7",
+        "sebastian/phpcpd":          "*",
+        "squizlabs/php_codesniffer": "1.4.*"
+    },
+    "autoload": {"psr-0": {"Himedia": "src/"}}
+}
