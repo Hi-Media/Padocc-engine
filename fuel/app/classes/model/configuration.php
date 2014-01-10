@@ -9,7 +9,7 @@ namespace Model;
 use DB;
 
 class Configuration extends \Model {
-    
+
     /**
      * Retrieve active configuration (last revision)
      *
@@ -80,8 +80,8 @@ class Configuration extends \Model {
      */
     public static function add($iProjectId, $iCreatorId, $sConfiguration)
     {
-    	Configuration::checkXmlConfiguration($sConfiguration); 
-        $oXml = Configuration::getXml($sConfiguration);  
+    	Configuration::checkXmlConfiguration($sConfiguration);
+        $oXml = Configuration::getXml($sConfiguration);
 
         // Get Environment
         $aEnvName = array();
@@ -100,7 +100,7 @@ class Configuration extends \Model {
             {
                 $aExternalProperty[(string)$env->attributes()->name][] = array('NAME' => (string)$property->attributes()->name, 'DESCRIPTION' => (string)$property->attributes()->description);
             }
-        } 
+        }
 
     	$oActive = Configuration::getActive($iProjectId);
 
@@ -127,13 +127,12 @@ class Configuration extends \Model {
 		))->execute();
     }
 
-    
+
     /**
      * Check if the XML is validated by the XML Schema
      *
      * @param string $sConfiguration Xml configuration file
      * @throws UnexpectedValueException when the XML is not valided by the schema
-     * @todo Rename xdeploy.xsd
      */
     protected static function checkXmlConfiguration($sConfiguration)
     {
@@ -147,7 +146,7 @@ class Configuration extends \Model {
         $xdoc->loadXML($sConfiguration);
 
         // validation part - add @ if you don't want to see the validation warnings
-        if (!$xdoc->schemaValidate($_SERVER['DOCUMENT_ROOT'].'/xdeploy.xsd'))
+        if (!$xdoc->schemaValidate($_SERVER['DOCUMENT_ROOT'].'/project-configuration.xsd'))
         {
             $errors = libxml_get_errors();
             foreach($errors as $error)
@@ -218,7 +217,7 @@ class Configuration extends \Model {
             if(!isset($target->attributes()->name) || empty($target->attributes()->name))
                 throw new \UnexpectedValueException("Your target must have a name!");
 
-            $aReturnTarget[(string)$target->attributes()->name] = $target;        
+            $aReturnTarget[(string)$target->attributes()->name] = $target;
         }
 
         return $aReturnTarget;
@@ -231,17 +230,17 @@ class Configuration extends \Model {
      * @param  array of SimpleXMLElement $aTarget
      * @throws UnexpectedValueException when a name for an externalproperty isn't found
      * @throws UnexpectedValueException when a description for an externalproperty isn't found
-     * @return array of XMLElement 
+     * @return array of XMLElement
      */
     protected static function getXmlExternalProperty($oEnv, $aTarget)
     {
         $aExternalProperty = array();
 
         foreach($oEnv->xpath("call") as $target)
-        {   
+        {
             if(!isset($target->attributes()->target) || empty($target->attributes()->target))
                 throw new \UnexpectedValueException("Your call must have a target!");
-            
+
             $aExternalProperty = array_merge($aExternalProperty, Configuration::getXmlExternalProperty($aTarget[(string)$target->attributes()->target], $aTarget));
         }
 
@@ -254,8 +253,8 @@ class Configuration extends \Model {
                 throw new \UnexpectedValueException("Your externalproperty must have a description!");
 
             $aExternalProperty[] = $property;
-        }        
+        }
 
         return $aExternalProperty;
-    }   
+    }
 }
