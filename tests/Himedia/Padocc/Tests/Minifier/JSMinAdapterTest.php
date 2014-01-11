@@ -1,18 +1,22 @@
 <?php
 
+namespace Himedia\Padocc\Tests\Minifier;
+
+use GAubry\Shell\ShellAdapter;
+use Himedia\Padocc\Minifier\JSMinAdapter;
+use Himedia\Padocc\Tests\PadoccTestCase;
+use Psr\Log\NullLogger;
+
 /**
- * @category TwengaDeploy
- * @package Tests
- * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
+ * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
-class JSminAdapterTest extends PHPUnit_Framework_TestCase
+class JSminAdapterTest extends PadoccTestCase
 {
 
     /**
-     * Collection de services.
-     * @var ServiceContainer
+     * @var ShellAdapter
      */
-    private $oServiceContainer;
+    private $oShell;
 
     /**
      * Tableau indexé contenant les commandes Shell de tous les appels effectués à Shell_Adapter::exec().
@@ -31,7 +35,6 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
    public function shellExecCallback ($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
-        return array();
     }
 
     /**
@@ -40,34 +43,20 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
      */
     public function setUp ()
     {
-        $oBaseLogger = new Logger_Adapter(Logger_Interface::WARNING);
-        $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
-
-        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($oLogger));
-        $oMockShell->expects($this->any())->method('exec')->will(
-            $this->returnCallback(array($this, 'shellExecCallback'))
-        );
         $this->aShellExecCmds = array();
 
-        //$oShell = new Shell_Adapter($oLogger);
-        $oClass = new ReflectionClass('Shell_Adapter');
+        $this->oShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array(new NullLogger()));
+        $this->oShell->expects($this->any())->method('exec')->will(
+            $this->returnCallback(array($this, 'shellExecCallback'))
+        );
+
+        $oClass = new \ReflectionClass('\GAubry\Shell\ShellAdapter');
         $oProperty = $oClass->getProperty('_aFileStatus');
         $oProperty->setAccessible(true);
-        $oProperty->setValue($oMockShell, array(
-            '/path/to/srcdir' => 2,
+        $oProperty->setValue($this->oShell, array(
+            '/path/to/srcdir'  => 2,
             '/path/to/srcfile' => 1
         ));
-
-        //$oShell = new Shell_Adapter($oLogger);
-        $oProperties = new Properties_Adapter($oMockShell);
-        $oNumbering = new Numbering_Adapter();
-
-        $this->oServiceContainer = new ServiceContainer();
-        $this->oServiceContainer
-            ->setLogAdapter($oLogger)
-            ->setPropertiesAdapter($oProperties)
-            ->setShellAdapter($oMockShell)
-            ->setNumberingAdapter($oNumbering);
     }
 
     /**
@@ -76,21 +65,21 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
      */
     public function tearDown()
     {
-        $this->oServiceContainer = NULL;
+        $this->oShell = null;
     }
 
     /**
-     * @covers Minifier_JSMinAdapter::_getContent
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getContent
      */
     public function testGetContent_WithoutFiles ()
     {
-        $oJSminAdapter = new Minifier_JSMinAdapter(
+        $oJSminAdapter = new JSMinAdapter(
             DEPLOYMENT_JSMIN_BIN_PATH,
-            $this->oServiceContainer->getShellAdapter()
+            $this->oShell
         );
 
-        $class = new ReflectionClass($oJSminAdapter);
-        $method = $class->getMethod('_getContent');
+        $class = new \ReflectionClass($oJSminAdapter);
+        $method = $class->getMethod('getContent');
         $method->setAccessible(true);
 
         $sResult = $method->invokeArgs($oJSminAdapter, array(array()));
@@ -98,95 +87,98 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Minifier_JSMinAdapter::_getContent
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getContent
      */
     public function testGetContent_throwExceptionIfNotFound ()
     {
-        $oJSminAdapter = new Minifier_JSMinAdapter(
+        $oJSminAdapter = new JSMinAdapter(
             DEPLOYMENT_JSMIN_BIN_PATH,
-            $this->oServiceContainer->getShellAdapter()
+            $this->oShell
         );
 
-        $class = new ReflectionClass($oJSminAdapter);
-        $method = $class->getMethod('_getContent');
+        $class = new \ReflectionClass($oJSminAdapter);
+        $method = $class->getMethod('getContent');
         $method->setAccessible(true);
 
         $this->setExpectedException('RuntimeException', "File not found: '/unknow/file'!");
-        $sResult = $method->invokeArgs($oJSminAdapter, array(array('/unknow/file')));
+        $method->invokeArgs($oJSminAdapter, array(array('/unknow/file')));
     }
 
     /**
-     * @covers Minifier_JSMinAdapter::_getContent
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getContent
      */
     public function testGetContent_With1File ()
     {
-        $oJSminAdapter = new Minifier_JSMinAdapter(
+        $oJSminAdapter = new JSMinAdapter(
             DEPLOYMENT_JSMIN_BIN_PATH,
-            $this->oServiceContainer->getShellAdapter()
+            $this->oShell
         );
 
-        $class = new ReflectionClass($oJSminAdapter);
-        $method = $class->getMethod('_getContent');
+        $class = new \ReflectionClass($oJSminAdapter);
+        $method = $class->getMethod('getContent');
         $method->setAccessible(true);
 
-        $sResult = $method->invokeArgs($oJSminAdapter, array(array(__DIR__ . '/resources/a.txt')));
+        $sResult = $method->invokeArgs(
+            $oJSminAdapter,
+            array(array($this->aConfig['dir']['tests'] . '/resources/minifier/a.txt'))
+        );
         $this->assertEquals("a1\na2", $sResult);
     }
 
     /**
-     * @covers Minifier_JSMinAdapter::_getContent
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getContent
      */
     public function testGetContent_WithFiles ()
     {
-        $oJSminAdapter = new Minifier_JSMinAdapter(
+        $oJSminAdapter = new JSMinAdapter(
             DEPLOYMENT_JSMIN_BIN_PATH,
-            $this->oServiceContainer->getShellAdapter()
+            $this->oShell
         );
 
-        $class = new ReflectionClass($oJSminAdapter);
-        $method = $class->getMethod('_getContent');
+        $class = new \ReflectionClass($oJSminAdapter);
+        $method = $class->getMethod('getContent');
         $method->setAccessible(true);
 
         $sResult = $method->invokeArgs($oJSminAdapter, array(array(
-            __DIR__ . '/resources/a.txt',
-            __DIR__ . '/resources/b.txt'
+            $this->aConfig['dir']['tests'] . '/resources/minifier/a.txt',
+            $this->aConfig['dir']['tests'] . '/resources/minifier/b.txt'
         )));
         $this->assertEquals("a1\na2b1\nb2", $sResult);
     }
 
     /**
-     * @covers Minifier_JSMinAdapter::_getContent
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getContent
      */
     public function testGetContent_WithFileWithJoker ()
     {
-        $oJSminAdapter = new Minifier_JSMinAdapter(
+        $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
-            $this->oServiceContainer->getShellAdapter()
+            $this->oShell
         );
 
-        $class = new ReflectionClass($oJSminAdapter);
-        $method = $class->getMethod('_getContent');
+        $class = new \ReflectionClass($oJSminAdapter);
+        $method = $class->getMethod('getContent');
         $method->setAccessible(true);
 
-        $sResult = $method->invokeArgs($oJSminAdapter, array(array(__DIR__ . '/resources/*.txt')));
+        $sResult = $method->invokeArgs($oJSminAdapter, array(array($this->aConfig['dir']['tests'] . '/resources/minifier/*.txt')));
         $this->assertEquals("a1\na2b1\nb2", $sResult);
     }
 
     /**
-     * @covers Minifier_JSMinAdapter::__construct
-     * @covers Minifier_JSMinAdapter::_minifyJS
-     * @covers Minifier_JSMinAdapter::_getHeader
-     * @covers Minifier_JSMinAdapter::_getLargestCommonPrefix
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::__construct
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::minifyJS
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getHeader
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getLargestCommonPrefix
      */
     public function testMinifyJS_With1File ()
     {
-        $oJSminAdapter = new Minifier_JSMinAdapter(
+        $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
-            $this->oServiceContainer->getShellAdapter()
+            $this->oShell
         );
 
-        $class = new ReflectionClass($oJSminAdapter);
-        $method = $class->getMethod('_minifyJS');
+        $class = new \ReflectionClass($oJSminAdapter);
+        $method = $class->getMethod('minifyJS');
         $method->setAccessible(true);
 
         $method->invokeArgs($oJSminAdapter, array(array('/path/to/resources/a.txt'), '/dest/path'));
@@ -198,20 +190,20 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Minifier_JSMinAdapter::__construct
-     * @covers Minifier_JSMinAdapter::_minifyJS
-     * @covers Minifier_JSMinAdapter::_getHeader
-     * @covers Minifier_JSMinAdapter::_getLargestCommonPrefix
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::__construct
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::minifyJS
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getHeader
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getLargestCommonPrefix
      */
     public function testMinifyJS_WithFiles ()
     {
-        $oJSminAdapter = new Minifier_JSMinAdapter(
+        $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
-            $this->oServiceContainer->getShellAdapter()
+            $this->oShell
         );
 
-        $class = new ReflectionClass($oJSminAdapter);
-        $method = $class->getMethod('_minifyJS');
+        $class = new \ReflectionClass($oJSminAdapter);
+        $method = $class->getMethod('minifyJS');
         $method->setAccessible(true);
 
         $method->invokeArgs($oJSminAdapter, array(
@@ -226,20 +218,20 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Minifier_JSMinAdapter::__construct
-     * @covers Minifier_JSMinAdapter::_minifyJS
-     * @covers Minifier_JSMinAdapter::_getHeader
-     * @covers Minifier_JSMinAdapter::_getLargestCommonPrefix
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::__construct
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::minifyJS
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getHeader
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getLargestCommonPrefix
      */
     public function testMinifyJS_WithJoker ()
     {
-        $oJSminAdapter = new Minifier_JSMinAdapter(
+        $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
-            $this->oServiceContainer->getShellAdapter()
+            $this->oShell
         );
 
-        $class = new ReflectionClass($oJSminAdapter);
-        $method = $class->getMethod('_minifyJS');
+        $class = new \ReflectionClass($oJSminAdapter);
+        $method = $class->getMethod('minifyJS');
         $method->setAccessible(true);
 
         $method->invokeArgs($oJSminAdapter, array(array('/path/to/resources/*.txt'), '/dest/path'));
@@ -251,27 +243,30 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Minifier_JSMinAdapter::__construct
-     * @covers Minifier_JSMinAdapter::_minifyCSS
-     * @covers Minifier_JSMinAdapter::_getHeader
-     * @covers Minifier_JSMinAdapter::_getLargestCommonPrefix
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::__construct
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::minifyCSS
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getHeader
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getLargestCommonPrefix
      */
     public function testMinifyCSS_With1File ()
     {
-        $oJSminAdapter = new Minifier_JSMinAdapter(
+        $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
-            $this->oServiceContainer->getShellAdapter()
+            $this->oShell
         );
 
-        $method = new ReflectionMethod('Minifier_JSMinAdapter', '_minifyCSS');
+        $method = new \ReflectionMethod('\Himedia\Padocc\Minifier\JSMinAdapter', 'minifyCSS');
         $method->setAccessible(true);
 
         $sTmpPath = tempnam(DEPLOYMENT_TMP_DIR, 'deploy_unittest_');
-        $method->invokeArgs($oJSminAdapter, array(array(__DIR__ . '/resources/a.css'), $sTmpPath));
+        $method->invokeArgs(
+            $oJSminAdapter,
+            array(array($this->aConfig['dir']['tests'] . '/resources/minifier/a.css'), $sTmpPath)
+        );
         $sContent = file_get_contents($sTmpPath);
         unlink($sTmpPath);
         $this->assertContains("/* Contains: /", $sContent);
-        $this->assertContains("/tests/lib/minifier/resources/a.css */", $sContent);
+        $this->assertContains("/tests/resources/minifier/a.css */", $sContent);
         $this->assertContains(
             "\nbody { padding: 0; background-color:#ffffff;"
                 . " background:url('http://s0.twenga.com/background.gif') repeat-y 0% 0 fixed;} ",
@@ -280,14 +275,14 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Minifier_JSMinAdapter::__construct
-     * @covers Minifier_JSMinAdapter::minify
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::__construct
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::minify
      */
     public function testMinify_throwExceptionWhenNoSrc ()
     {
-        $oJSminAdapter = new Minifier_JSMinAdapter(
+        $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
-            $this->oServiceContainer->getShellAdapter()
+            $this->oShell
         );
 
         $this->setExpectedException('BadMethodCallException', 'Source files missing!');
@@ -295,14 +290,14 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Minifier_JSMinAdapter::__construct
-     * @covers Minifier_JSMinAdapter::minify
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::__construct
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::minify
      */
     public function testMinify_throwExceptionWhenDifferentSrcExtensions ()
     {
-        $oJSminAdapter = new Minifier_JSMinAdapter(
+        $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
-            $this->oServiceContainer->getShellAdapter()
+            $this->oShell
         );
 
         $this->setExpectedException('UnexpectedValueException', 'All files must be either JS or CSS: ');
@@ -310,14 +305,14 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Minifier_JSMinAdapter::__construct
-     * @covers Minifier_JSMinAdapter::minify
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::__construct
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::minify
      */
     public function testMinify_throwExceptionWhenNoCompatibleDest ()
     {
-        $oJSminAdapter = new Minifier_JSMinAdapter(
+        $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
-            $this->oServiceContainer->getShellAdapter()
+            $this->oShell
         );
 
         $this->setExpectedException('UnexpectedValueException', 'Destination file must be same type of input files: ');
@@ -325,14 +320,14 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Minifier_JSMinAdapter::__construct
-     * @covers Minifier_JSMinAdapter::minify
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::__construct
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::minify
      */
     public function testMinify_throwExceptionWhenNeitherJSNorCSS ()
     {
-        $oJSminAdapter = new Minifier_JSMinAdapter(
+        $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
-            $this->oServiceContainer->getShellAdapter()
+            $this->oShell
         );
 
         $this->setExpectedException('DomainException', "All specified paths must finish either by '.js' or '.css'");
@@ -340,66 +335,66 @@ class JSminAdapterTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Minifier_JSMinAdapter::__construct
-     * @covers Minifier_JSMinAdapter::minify
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::__construct
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::minify
      */
     public function testMinify_WithJS ()
     {
         $oMockJSminAdapter = $this->getMock(
-            'Minifier_JSMinAdapter',
-            array('_minifyJS'),
+            '\Himedia\Padocc\Minifier\JSMinAdapter',
+            array('minifyJS'),
             array(
                 '/path/to/jsmin',
-                $this->oServiceContainer->getShellAdapter()
+                $this->oShell
             )
         );
 
-        $oMockJSminAdapter->expects($this->any())->method('_minifyJS')
+        $oMockJSminAdapter->expects($this->any())->method('minifyJS')
             ->with($this->equalTo(array('/path/a.js')), $this->equalTo('/dest/path/b.js'));
-        $oMockJSminAdapter->expects($this->exactly(1))->method('_minifyJS');
+        $oMockJSminAdapter->expects($this->exactly(1))->method('minifyJS');
 
         $oResult = $oMockJSminAdapter->minify(array('/path/a.js'), '/dest/path/b.js');
         $this->assertEquals($oResult, $oMockJSminAdapter);
     }
 
     /**
-     * @covers Minifier_JSMinAdapter::__construct
-     * @covers Minifier_JSMinAdapter::minify
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::__construct
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::minify
      */
     public function testMinify_WithCSS ()
     {
         $oMockJSminAdapter = $this->getMock(
-            'Minifier_JSMinAdapter',
-            array('_minifyCSS'),
+            '\Himedia\Padocc\Minifier\JSMinAdapter',
+            array('minifyCSS'),
             array(
                 '/path/to/jsmin',
-                $this->oServiceContainer->getShellAdapter()
+                $this->oShell
             )
         );
 
-        $oMockJSminAdapter->expects($this->any())->method('_minifyCSS')
+        $oMockJSminAdapter->expects($this->any())->method('minifyCSS')
             ->with($this->equalTo(array('/path/a.css')), $this->equalTo('/dest/path/b.css'));
-        $oMockJSminAdapter->expects($this->exactly(1))->method('_minifyCSS');
+        $oMockJSminAdapter->expects($this->exactly(1))->method('minifyCSS');
 
         $oResult = $oMockJSminAdapter->minify(array('/path/a.css'), '/dest/path/b.css');
         $this->assertEquals($oResult, $oMockJSminAdapter);
     }
 
     /**
-     * @covers Minifier_JSMinAdapter::_getLargestCommonPrefix
+     * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getLargestCommonPrefix
      * @dataProvider dataProvider_testGetLargestCommonPrefix
      * @param array $aPaths liste de chaînes à comparer
      * @param string $sExpected le plus long préfixe commun aux chaînes fournies.
      */
     public function testGetLargestCommonPrefix (array $aPaths, $sExpected)
     {
-        $oJSminAdapter = new Minifier_JSMinAdapter(
+        $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
-            $this->oServiceContainer->getShellAdapter()
+            $this->oShell
         );
 
-        $class = new ReflectionClass($oJSminAdapter);
-        $method = $class->getMethod('_getLargestCommonPrefix');
+        $class = new \ReflectionClass($oJSminAdapter);
+        $method = $class->getMethod('getLargestCommonPrefix');
         $method->setAccessible(true);
 
         $sResult = $method->invokeArgs($oJSminAdapter, array($aPaths));

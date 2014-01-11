@@ -1,39 +1,43 @@
 <?php
 
+namespace Himedia\Padocc\Minifier;
+
+use GAubry\Shell\ShellAdapter;
+
 /**
  * Compresser les fichiers JS et CSS.
  *
- * @category TwengaDeploy
- * @package Lib
- * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
+ * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
-class Minifier_JSMinAdapter implements Minifier_Interface
+class JSMinAdapter implements MinifierInterface
 {
 
     /**
      * Shell adapter.
-     * @var Shell_Interface
-     * @see _minifyJS()
+     *
+     * @var ShellAdapter
+     * @see minifyJS()
      */
-    private $_oShell;
+    private $oShell;
 
     /**
      * Chemin du binaire JSMin
+     *
      * @var string
-     * @see _minifyJS()
+     * @see minifyJS()
      */
-    private $_sBinPath;
+    private $sBinPath;
 
     /**
      * Constructeur.
      *
-     * @param string chemin du binaire JSMin
-     * @param Shell_Interface $oShell instance utilisée pour exécuter le binaire jsmin
+     * @param string $sJSMinBinPath chemin du binaire JSMin
+     * @param ShellAdapter $oShell instance utilisée pour exécuter le binaire jsmin
      */
-    public function __construct ($sJSMinBinPath, Shell_Interface $oShell)
+    public function __construct ($sJSMinBinPath, ShellAdapter $oShell)
     {
-        $this->_sBinPath = $sJSMinBinPath;
-        $this->_oShell = $oShell;
+        $this->sBinPath = $sJSMinBinPath;
+        $this->oShell = $oShell;
     }
 
     /**
@@ -41,11 +45,11 @@ class Minifier_JSMinAdapter implements Minifier_Interface
      *
      * @param array $aSrcPaths liste de fichiers se finissant tous par '.js', ou tous par '.css'
      * @param string $sDestPath chemin/fichier dans lequel enregistrer le résultat du minify
-     * @return Minifier_Interface $this
-     * @throws BadMethodCallException si $aSrcPaths vide
-     * @throws UnexpectedValueException si les sources n'ont pas toutes la même extension de fichier
-     * @throws UnexpectedValueException si la destination est un CSS quand les sources sont des JS ou inversement
-     * @throws DomainException si des fichiers ne se terminent ni par '.js', ni par '.css'
+     * @return MinifierInterface $this
+     * @throws \BadMethodCallException si $aSrcPaths vide
+     * @throws \UnexpectedValueException si les sources n'ont pas toutes la même extension de fichier
+     * @throws \UnexpectedValueException si la destination est un CSS quand les sources sont des JS ou inversement
+     * @throws \DomainException si des fichiers ne se terminent ni par '.js', ni par '.css'
      */
     public function minify (array $aSrcPaths, $sDestPath)
     {
@@ -64,17 +68,19 @@ class Minifier_JSMinAdapter implements Minifier_Interface
 
         // La destination est-elle en accord avec les entrées ?
         if (strrchr($sDestPath, '.') !== $sFirstExtension) {
-            throw new \UnexpectedValueException("Destination file must be same type of input files: '$sDestPath' : Src :" . print_r($aSrcPaths, true));
+            $sMsg = "Destination file must be same type of input files: '$sDestPath' : Src :"
+                  . print_r($aSrcPaths, true);
+            throw new \UnexpectedValueException($sMsg);
         }
 
         // On redirige vers le service idoine :
         switch ($sFirstExtension) {
             case '.js':
-                $this->_minifyJS($aSrcPaths, $sDestPath);
+                $this->minifyJS($aSrcPaths, $sDestPath);
                 break;
 
             case '.css':
-                $this->_minifyCSS($aSrcPaths, $sDestPath);
+                $this->minifyCSS($aSrcPaths, $sDestPath);
                 break;
 
             default:
@@ -91,17 +97,17 @@ class Minifier_JSMinAdapter implements Minifier_Interface
      *
      * @param array $aSrcPaths liste de fichiers se finissant tous par '.js'
      * @param string $sDestPath chemin/fichier dans lequel enregistrer le résultat du minify
-     * @throws RuntimeException en cas d'erreur shell
+     * @throws \RuntimeException en cas d'erreur shell
      */
-    protected function _minifyJS (array $aSrcPaths, $sDestPath)
+    protected function minifyJS (array $aSrcPaths, $sDestPath)
     {
-        $sHeader = $this->_getHeader($aSrcPaths);
+        $sHeader = $this->getHeader($aSrcPaths);
         $sCmd = 'cat';
         foreach ($aSrcPaths as $sSrcPath) {
-            $sCmd .= ' ' . $this->_oShell->escapePath($sSrcPath);
+            $sCmd .= ' ' . $this->oShell->escapePath($sSrcPath);
         }
-        $sCmd .= " | $this->_sBinPath >'$sDestPath' && sed --in-place '1i$sHeader' '$sDestPath'";
-        $this->_oShell->exec($sCmd);
+        $sCmd .= " | $this->sBinPath >'$sDestPath' && sed --in-place '1i$sHeader' '$sDestPath'";
+        $this->oShell->exec($sCmd);
     }
 
     /**
@@ -109,11 +115,11 @@ class Minifier_JSMinAdapter implements Minifier_Interface
      *
      * @param array $aSrcPaths liste de fichiers se finissant tous par '.css'
      * @param string $sDestPath chemin/fichier dans lequel enregistrer le résultat du minify
-     * @throws RuntimeException si l'un des fichiers est introuvable
+     * @throws \RuntimeException si l'un des fichiers est introuvable
      */
-    protected function _minifyCSS (array $aSrcPaths, $sDestPath)
+    protected function minifyCSS (array $aSrcPaths, $sDestPath)
     {
-        $sContent = $this->_getContent($aSrcPaths);
+        $sContent = $this->getContent($aSrcPaths);
 
         // remove comments:
         $sContent = preg_replace('#/\*[^*]*\*+([^/][^*]*\*+)*/#', '', $sContent);
@@ -122,7 +128,7 @@ class Minifier_JSMinAdapter implements Minifier_Interface
         $sContent = str_replace(array("\r" , "\n" , "\t"), '', $sContent);
         $sContent = str_replace(array('    ' , '   ' , '  '), ' ', $sContent);
 
-        $sContent = $this->_getHeader($aSrcPaths) . $sContent;
+        $sContent = $this->getHeader($aSrcPaths) . $sContent;
         file_put_contents($sDestPath, $sContent);
     }
 
@@ -138,12 +144,12 @@ class Minifier_JSMinAdapter implements Minifier_Interface
      * @return string une ligne de commentaire, à insérer en 1re ligne d'un fichier CSS ou JS minifié,
      * énumérant tous les fichiers sources le constituant.
      */
-    private function _getHeader (array $aSrcPaths)
+    private function getHeader (array $aSrcPaths)
     {
         if (count($aSrcPaths) === 1) {
             $sHeader = "/* Contains: " . reset($aSrcPaths) . ' */' . "\n";
         } else {
-            $sCommonPrefix = $this->_getLargestCommonPrefix($aSrcPaths);
+            $sCommonPrefix = $this->getLargestCommonPrefix($aSrcPaths);
             $iPrefixLength = strlen($sCommonPrefix);
             $aShortPaths = array();
             foreach ($aSrcPaths as $sSrcPath) {
@@ -161,7 +167,7 @@ class Minifier_JSMinAdapter implements Minifier_Interface
      * @return string le plus long préfixe commun aux chaînes fournies.
      * @see http://stackoverflow.com/questions/1336207/finding-common-prefix-of-array-of-strings/1336357#1336357
      */
-    private function _getLargestCommonPrefix (array $aStrings)
+    private function getLargestCommonPrefix (array $aStrings)
     {
         // take the first item as initial prefix:
         $sPrefix = array_shift($aStrings);
@@ -189,10 +195,10 @@ class Minifier_JSMinAdapter implements Minifier_Interface
      *
      * @param array $aSrcPaths liste de chemins dont on veut concaténer le contenu
      * @return string la concaténation du contenu des fichiers spécifiés.
-     * @throws RuntimeException si l'un des fichiers est introuvable
-     * @see _minifyCSS()
+     * @throws \RuntimeException si l'un des fichiers est introuvable
+     * @see minifyCSS()
      */
-    private function _getContent (array $aSrcPaths)
+    private function getContent (array $aSrcPaths)
     {
         $aExpandedPaths = array();
         foreach ($aSrcPaths as $sPath) {
@@ -207,7 +213,7 @@ class Minifier_JSMinAdapter implements Minifier_Interface
         foreach ($aExpandedPaths as $sPath) {
             try {
                 $sContent .= file_get_contents($sPath);
-            } catch (Exception $oException) {
+            } catch (\Exception $oException) {
                 throw new \RuntimeException("File not found: '$sPath'!", 1, $oException);
             }
         }

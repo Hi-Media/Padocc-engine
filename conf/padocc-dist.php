@@ -66,7 +66,7 @@ define('DEPLOYMENT_SSH_CONNECTION_TIMEOUT', 10);
  * Chemin vers le binaire jsmin.
  * @var string
  */
-define('DEPLOYMENT_JSMIN_BIN_PATH', DEPLOYMENT_LIB_DIR . '/minifier/jsmin/jsmin');
+define('DEPLOYMENT_JSMIN_BIN_PATH', DEPLOYMENT_LIB_DIR . '/Minifier/jsmin/jsmin');
 
 /**
  * Chemin du répertoire temporaire système utilisable par l'application.
@@ -113,6 +113,7 @@ $aDirs = array(
     'lib'      => $sRootDir . '/lib',
     'src'      => $sRootDir . '/src',
     'inc'      => $sRootDir . '/src/inc',
+    'tests'    => $sRootDir . '/tests',
     'tmp'      => '/tmp/padocc',
     'locks'    => '/tmp/padocc/locks',
     'log'      => '/var/log/padocc',

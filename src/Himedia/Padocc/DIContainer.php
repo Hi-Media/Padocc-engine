@@ -64,7 +64,7 @@ class DIContainer
      * @param LoggerInterface $oLogger
      * @return DIContainer $this
      */
-    public function setLogAdapter (LoggerInterface $oLogger)
+    public function setLogger (LoggerInterface $oLogger)
     {
         $this->oLogger = $oLogger;
         return $this;
@@ -76,7 +76,7 @@ class DIContainer
      * @return LoggerInterface l'adapteur de log enregistré.
      * @throws \RuntimeException if no logger set.
      */
-    public function getLogAdapter ()
+    public function getLogger ()
     {
         if ($this->oLogger === null) {
             throw new \RuntimeException('No logger set!');
