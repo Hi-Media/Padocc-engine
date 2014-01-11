@@ -11,7 +11,7 @@ namespace Himedia\Padocc\Numbering;
  *
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
-class NumberingAdapter implements NumberingInterface
+class Adapter implements NumberingInterface
 {
 
     /**

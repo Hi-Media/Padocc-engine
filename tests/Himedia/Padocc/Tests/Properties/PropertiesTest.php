@@ -3,7 +3,7 @@
 namespace Himedia\Padocc\Tests\Properties;
 
 use GAubry\Shell\ShellAdapter;
-use Himedia\Padocc\Properties\PropertiesAdapter;
+use Himedia\Padocc\Properties\Adapter;
 use Himedia\Padocc\Properties\PropertiesInterface;
 use Himedia\Padocc\Tests\PadoccTestCase;
 use Psr\Log\NullLogger;
@@ -27,7 +27,7 @@ class PropertiesTest extends PadoccTestCase
     public function setUp ()
     {
         $oShell = new ShellAdapter(new NullLogger());
-        $this->oProperties = new PropertiesAdapter($oShell, $this->aConfig);
+        $this->oProperties = new Adapter($oShell, $this->aConfig);
     }
 
     /**
@@ -40,7 +40,7 @@ class PropertiesTest extends PadoccTestCase
     }
 
     /**
-     * @covers \Himedia\Padocc\Properties\PropertiesAdapter::getProperty
+     * @covers \Himedia\Padocc\Properties\Adapter::getProperty
      */
     public function testGetProperty_ThrowExceptionIfUnknownProperty ()
     {
@@ -49,8 +49,8 @@ class PropertiesTest extends PadoccTestCase
     }
 
     /**
-     * @covers \Himedia\Padocc\Properties\PropertiesAdapter::getProperty
-     * @covers \Himedia\Padocc\Properties\PropertiesAdapter::setProperty
+     * @covers \Himedia\Padocc\Properties\Adapter::getProperty
+     * @covers \Himedia\Padocc\Properties\Adapter::setProperty
      */
     public function testGetProperty_IfPropertyExists ()
     {
@@ -59,8 +59,8 @@ class PropertiesTest extends PadoccTestCase
     }
 
     /**
-     * @covers \Himedia\Padocc\Properties\PropertiesAdapter::getProperty
-     * @covers \Himedia\Padocc\Properties\PropertiesAdapter::setProperty
+     * @covers \Himedia\Padocc\Properties\Adapter::getProperty
+     * @covers \Himedia\Padocc\Properties\Adapter::setProperty
      */
     public function testGetProperty_With2SetProperty ()
     {
@@ -71,7 +71,7 @@ class PropertiesTest extends PadoccTestCase
     }
 
     /**
-     * @covers \Himedia\Padocc\Properties\PropertiesAdapter::loadConfigIniFile
+     * @covers \Himedia\Padocc\Properties\Adapter::loadConfigIniFile
      */
     public function testLoadConfigIniFile_ThrowExceptionIfFileNotExists ()
     {
@@ -80,7 +80,7 @@ class PropertiesTest extends PadoccTestCase
     }
 
     /**
-     * @covers \Himedia\Padocc\Properties\PropertiesAdapter::loadConfigIniFile
+     * @covers \Himedia\Padocc\Properties\Adapter::loadConfigIniFile
      */
     public function testLoadConfigIniFile_ThrowExceptionIfParseFailed ()
     {
@@ -104,7 +104,7 @@ class PropertiesTest extends PadoccTestCase
     }
 
     /**
-     * @covers \Himedia\Padocc\Properties\PropertiesAdapter::loadConfigIniFile
+     * @covers \Himedia\Padocc\Properties\Adapter::loadConfigIniFile
      */
     public function testLoadConfigIniFile_WithValues ()
     {
@@ -128,7 +128,7 @@ EOT;
     }
 
     /**
-     * @covers \Himedia\Padocc\Properties\PropertiesAdapter::loadConfigShellFile
+     * @covers \Himedia\Padocc\Properties\Adapter::loadConfigShellFile
      */
     public function testLoadConfigShellFile_ThrowExceptionIfFileNotExists ()
     {
@@ -137,7 +137,7 @@ EOT;
     }
 
     /**
-     * @covers \Himedia\Padocc\Properties\PropertiesAdapter::loadConfigShellFile
+     * @covers \Himedia\Padocc\Properties\Adapter::loadConfigShellFile
      */
     public function testLoadConfigShellFile_WithSimpleValues ()
     {
@@ -157,7 +157,7 @@ EOT;
     }
 
     /**
-     * @covers \Himedia\Padocc\Properties\PropertiesAdapter::loadConfigShellFile
+     * @covers \Himedia\Padocc\Properties\Adapter::loadConfigShellFile
      */
     public function testLoadConfigShellFile_WithRecursiveValues ()
     {

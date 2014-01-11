@@ -15,7 +15,7 @@ use GAubry\Shell\ShellAdapter;
  *
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
-class PropertiesAdapter implements PropertiesInterface
+class Adapter implements PropertiesInterface
 {
 
     /**

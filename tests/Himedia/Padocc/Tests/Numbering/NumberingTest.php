@@ -2,7 +2,7 @@
 
 namespace Himedia\Padocc\Tests\Numbering;
 
-use Himedia\Padocc\Numbering\NumberingAdapter;
+use Himedia\Padocc\Numbering\Adapter;
 use Himedia\Padocc\Numbering\NumberingInterface;
 
 /**
@@ -29,7 +29,7 @@ class NumberingTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp ()
     {
-        $this->oNumbering = new NumberingAdapter(self::SEPARATOR);
+        $this->oNumbering = new Adapter(self::SEPARATOR);
     }
 
     /**
@@ -42,7 +42,7 @@ class NumberingTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Himedia\Padocc\Numbering\NumberingAdapter::getNextCounterValue
+     * @covers \Himedia\Padocc\Numbering\Adapter::getNextCounterValue
      */
     public function testGetNextCounterValue_AtFirstCall ()
     {
@@ -51,8 +51,8 @@ class NumberingTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Himedia\Padocc\Numbering\NumberingAdapter::addCounterDivision
-     * @covers \Himedia\Padocc\Numbering\NumberingAdapter::getNextCounterValue
+     * @covers \Himedia\Padocc\Numbering\Adapter::addCounterDivision
+     * @covers \Himedia\Padocc\Numbering\Adapter::getNextCounterValue
      */
     public function testGetNextCounterValue_AfterAddCounterDivision ()
     {
@@ -61,9 +61,9 @@ class NumberingTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Himedia\Padocc\Numbering\NumberingAdapter::addCounterDivision
-     * @covers \Himedia\Padocc\Numbering\NumberingAdapter::getNextCounterValue
-     * @covers \Himedia\Padocc\Numbering\NumberingAdapter::removeCounterDivision
+     * @covers \Himedia\Padocc\Numbering\Adapter::addCounterDivision
+     * @covers \Himedia\Padocc\Numbering\Adapter::getNextCounterValue
+     * @covers \Himedia\Padocc\Numbering\Adapter::removeCounterDivision
      */
     public function testGetNextCounterValue_AfterAddAndRemoveCounterDivision ()
     {
@@ -72,8 +72,8 @@ class NumberingTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Himedia\Padocc\Numbering\NumberingAdapter::getNextCounterValue
-     * @covers \Himedia\Padocc\Numbering\NumberingAdapter::removeCounterDivision
+     * @covers \Himedia\Padocc\Numbering\Adapter::getNextCounterValue
+     * @covers \Himedia\Padocc\Numbering\Adapter::removeCounterDivision
      */
     public function testGetNextCounterValue_AfterRemoveCounterDivision ()
     {
@@ -82,9 +82,9 @@ class NumberingTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Himedia\Padocc\Numbering\NumberingAdapter::addCounterDivision
-     * @covers \Himedia\Padocc\Numbering\NumberingAdapter::getNextCounterValue
-     * @covers \Himedia\Padocc\Numbering\NumberingAdapter::removeCounterDivision
+     * @covers \Himedia\Padocc\Numbering\Adapter::addCounterDivision
+     * @covers \Himedia\Padocc\Numbering\Adapter::getNextCounterValue
+     * @covers \Himedia\Padocc\Numbering\Adapter::removeCounterDivision
      */
     public function testGetNextCounterValue_AfterMultipleCalls1 ()
     {
@@ -102,9 +102,9 @@ class NumberingTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Himedia\Padocc\Numbering\NumberingAdapter::addCounterDivision
-     * @covers \Himedia\Padocc\Numbering\NumberingAdapter::getNextCounterValue
-     * @covers \Himedia\Padocc\Numbering\NumberingAdapter::removeCounterDivision
+     * @covers \Himedia\Padocc\Numbering\Adapter::addCounterDivision
+     * @covers \Himedia\Padocc\Numbering\Adapter::getNextCounterValue
+     * @covers \Himedia\Padocc\Numbering\Adapter::removeCounterDivision
      */
     public function testGetNextCounterValue_AfterMultipleCalls2 ()
     {
