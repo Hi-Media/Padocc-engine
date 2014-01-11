@@ -1,5 +1,6 @@
 <?php
-namespace Fuel\Tasks;
+
+namespace Himedia\Padocc\Properties;
 
 /**
  * Gestionnaire de propriétés (table de hashage).
@@ -9,11 +10,9 @@ namespace Fuel\Tasks;
  *    PROPRIETE_1="chaîne"
  *    PROPRIETE_2="chaîne $PROPRIETE_1 chaîne"
  *
- * @category TwengaDeploy
- * @package Lib
- * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
+ * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
-interface Properties_Interface
+interface PropertiesInterface
 {
 
     /**
@@ -21,7 +20,7 @@ interface Properties_Interface
      *
      * @param string $sPropertyName propriété dont on recherche la valeur
      * @return string valeur de la propriété spécifiée.
-     * @throws UnexpectedValueException si propriété inconnue
+     * @throws \UnexpectedValueException si propriété inconnue
      */
     public function getProperty ($sPropertyName);
 
@@ -30,7 +29,7 @@ interface Properties_Interface
      *
      * @param string $sPropertyName propriété
      * @param string $sValue
-     * @return Properties_Interface $this
+     * @return PropertiesInterface $this
      */
     public function setProperty ($sPropertyName, $sValue);
 
@@ -39,9 +38,9 @@ interface Properties_Interface
      * Le nom des propriétés sont insensibles à la casse.
      *
      * @param string $sIniPath path du fichier INI à charger
-     * @return Properties_Interface cette instance
-     * @throws RuntimeException si erreur de chargement du fichier INI
-     * @throws UnexpectedValueException si fichier INI introuvable
+     * @return PropertiesInterface cette instance
+     * @throws \RuntimeException si erreur de chargement du fichier INI
+     * @throws \UnexpectedValueException si fichier INI introuvable
      */
     public function loadConfigIniFile ($sIniPath);
 
@@ -55,9 +54,9 @@ interface Properties_Interface
      *    ...
      *
      * @param string $sConfigShellPath path du fichier shell à charger
-     * @return Properties_Interface cette instance
-     * @throws RuntimeException si erreur de chargement du fichier
-     * @throws UnexpectedValueException si fichier shell introuvable
+     * @return PropertiesInterface cette instance
+     * @throws \RuntimeException si erreur de chargement du fichier
+     * @throws \UnexpectedValueException si fichier shell introuvable
      */
     public function loadConfigShellFile ($sConfigShellPath);
 }

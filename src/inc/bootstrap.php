@@ -33,7 +33,7 @@ if (file_exists(__DIR__ . '/../../conf/padocc.php')) {
 $aConfig = Helpers::arrayMergeRecursiveDistinct($aDefaultConfig, $aUserConfig);
 
 set_include_path(
-//    $aConfig['Himedia\DW']['dir']['root'] . PATH_SEPARATOR .
+//    $aConfig['Himedia\Padocc']['dir']['root'] . PATH_SEPARATOR .
 //    $aConfig['Himedia\DW']['dir']['lib'] . PATH_SEPARATOR .
     get_include_path()
 );
@@ -52,3 +52,10 @@ if (isset($argv) && count($argv) > 2 && preg_match('/\d{14}_\d{5}/', $argv[count
 $GLOBALS['oErrorHandler'] = new ErrorHandler($aConfig['GAubry\ErrorHandler']);
 
 date_default_timezone_set('UTC');
+
+// TODO à déplacer…
+// Check répertoires et fichiers de logs :
+//foreach (array('log', 'tmp', 'locks', 'archives') as $sDir) {
+//    $oShell->mkdir($aConfig['Himedia\Padocc']['dir'][$sDir]);
+//}
+

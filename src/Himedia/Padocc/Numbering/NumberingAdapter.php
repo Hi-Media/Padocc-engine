@@ -9,9 +9,7 @@ namespace Himedia\Padocc\Numbering;
  * L'inverse est également vrai si l'on n'est pas au niveau le plus haut.
  * Par exemple : 1.3.7 => 1.3 => 1.3.7
  *
- * @category TwengaDeploy
- * @package Lib
- * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
+ * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
 class NumberingAdapter implements NumberingInterface
 {
@@ -22,31 +20,32 @@ class NumberingAdapter implements NumberingInterface
      * la plus haute valeur atteinte du sous-niveau.
      * @var array
      */
-    private $_aCounter;
+    private $aCounter;
 
     /**
      * Chaîne intercalée entre chaque niveau hiérarchique.
      * @var string
      * @see getNextCounterValue()
      */
-    private $_sSeparator;
+    private $sSeparator;
 
     /**
      * Niveau hierarchique courant.
      * @var int
      */
-    private $_iCurrentDivision;
+    private $iCurrentDivision;
 
     /**
      * Constructeur.
      *
      * @param string $sSeparator chaîne intercalée entre chaque niveau hiérarchique
+     * @codeCoverageIgnore
      */
-    public function __construct ($sSeparator='.')
+    public function __construct ($sSeparator = '.')
     {
-        $this->_sSeparator = $sSeparator;
-        $this->_aCounter = array(0);
-        $this->_iCurrentDivision = 0;
+        $this->sSeparator = $sSeparator;
+        $this->aCounter = array(0);
+        $this->iCurrentDivision = 0;
     }
 
     /**
@@ -57,24 +56,24 @@ class NumberingAdapter implements NumberingInterface
      */
     public function getNextCounterValue ()
     {
-        $this->_aCounter[$this->_iCurrentDivision]++;
-        if (count($this->_aCounter) > $this->_iCurrentDivision+1) {
-            $this->_aCounter = array_slice($this->_aCounter, 0, $this->_iCurrentDivision+1);
+        $this->aCounter[$this->iCurrentDivision]++;
+        if (count($this->aCounter) > $this->iCurrentDivision+1) {
+            $this->aCounter = array_slice($this->aCounter, 0, $this->iCurrentDivision+1);
         }
-        return implode($this->_sSeparator, array_slice($this->_aCounter, 0, $this->_iCurrentDivision+1));
+        return implode($this->sSeparator, array_slice($this->aCounter, 0, $this->iCurrentDivision+1));
     }
 
     /**
      * Ajoute une nouvelle division hiérarchique et l'initialise à 0.
      * Par exemple : 1.1 => 1.1.0
      *
-     * @return Numbering_Interface $this
+     * @return NumberingInterface $this
      */
     public function addCounterDivision ()
     {
-        $this->_iCurrentDivision++;
-        if ($this->_iCurrentDivision >= count($this->_aCounter)) {
-            $this->_aCounter[] = 0;
+        $this->iCurrentDivision++;
+        if ($this->iCurrentDivision >= count($this->aCounter)) {
+            $this->aCounter[] = 0;
         }
         return $this;
     }
@@ -82,12 +81,12 @@ class NumberingAdapter implements NumberingInterface
     /**
      * Remonte d'un niveau hiérarchique.
      *
-     * @return Numbering_Interface $this
+     * @return NumberingInterface $this
      */
     public function removeCounterDivision ()
     {
-        if ($this->_iCurrentDivision > 0) {
-            $this->_iCurrentDivision--;
+        if ($this->iCurrentDivision > 0) {
+            $this->iCurrentDivision--;
         }
         return $this;
     }

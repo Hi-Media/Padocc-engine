@@ -9,9 +9,7 @@ namespace Himedia\Padocc\Numbering;
  * L'inverse est également vrai si l'on n'est pas au niveau le plus haut.
  * Par exemple : 1.3.7 => 1.3 => 1.3.7
  *
- * @category TwengaDeploy
- * @package Lib
- * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
+ * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
 interface NumberingInterface
 {
@@ -28,14 +26,14 @@ interface NumberingInterface
      * Ajoute une nouvelle division hiérarchique et l'initialise à 0.
      * Par exemple : 1.1 => 1.1.0
      *
-     * @return Numbering_Interface $this
+     * @return NumberingInterface $this
      */
     public function addCounterDivision ();
 
     /**
      * Remonte d'un niveau hiérarchique.
      *
-     * @return Numbering_Interface $this
+     * @return NumberingInterface $this
      */
     public function removeCounterDivision ();
 }

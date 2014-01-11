@@ -58,7 +58,7 @@ define('DEPLOYMENT_BASH_PATH', '/bin/bash');
 /**
  * Nombre de secondes avant timeout lors d'une connexion SSH.
  * @var int
- * @see Shell_Interface
+ * @see ShellInterface
  */
 define('DEPLOYMENT_SSH_CONNECTION_TIMEOUT', 10);
 
@@ -77,7 +77,7 @@ define('DEPLOYMENT_TMP_DIR', '/tmp');
 /**
  * Nombre maximal de processus lancés en parallèle par parallelize.inc.sh.
  * @var int
- * @see Shell_Interface::parallelize()
+ * @see ShellInterface::parallelize()
  */
 define('DEPLOYMENT_PARALLELIZATION_MAX_NB_PROCESSES', 10);
 
@@ -85,7 +85,7 @@ define('DEPLOYMENT_PARALLELIZATION_MAX_NB_PROCESSES', 10);
  * Nombre maximal d'exécutions shell rsync en parallèle.
  * Prioritaire sur DEPLOYMENT_PARALLELIZATION_MAX_NB_PROCESSES.
  * @var int
- * @see Shell_Interface::sync()
+ * @see ShellInterface::sync()
  * @see DEPLOYMENT_PARALLELIZATION_MAX_NB_PROCESSES
  */
 define('DEPLOYMENT_RSYNC_MAX_NB_PROCESSES', 5);
@@ -104,18 +104,6 @@ define('DEPLOYMENT_SYMLINK_MAX_NB_RELEASES', 20);
  */
 define('DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX', '_releases');
 
-/**
- * Login du web service de génération des fichiers de langue.
- * @var string
- */
-define('DEPLOYMENT_LANGUAGE_WS_LOGIN', 'translator');
-
-/**
- * Password du web service de génération des fichiers de langue.
- * @var string
- */
-define('DEPLOYMENT_LANGUAGE_WS_PASSWORD', '616DyKM3');
-
 
 
 $sRootDir = realpath(__DIR__ . '/..');
@@ -127,20 +115,29 @@ $aDirs = array(
     'inc'      => $sRootDir . '/src/inc',
     'tmp'      => '/tmp/padocc',
     'locks'    => '/tmp/padocc/locks',
-    'csv'      => '/var/padocc/csv',
     'log'      => '/var/log/padocc',
     'vendor'   => $sRootDir . '/vendor',
     'archives' => '/var/padocc/archives'
 );
 
 return array(
-    'Himedia\DW' => array(
+    'Himedia\Padocc' => array(
         /**
          * Identifiant unique d'exécution, optionnellement transmis en paramètre lors de l'appel du script.
          */
         'exec_id' => '',
 
         'dir' => $aDirs,
+
+        /**
+         * Suffixe concaténé au base directory pour obtenir le nom du répertoire regroupant les différentes releases.
+         */
+        'symlink_releases_dir_suffix' => '_releases',
+
+        /**
+         * Chemin vers le shell bash.
+         */
+        'bash_path' => '/bin/bash',
     ),
     'GAubry\ErrorHandler'     => array(
         'display_errors'      => true,

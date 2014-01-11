@@ -1,5 +1,8 @@
 <?php
-namespace Fuel\Tasks;
+
+namespace Himedia\Padocc\Properties;
+
+use GAubry\Shell\ShellAdapter;
 
 /**
  * Gestionnaire de propriétés (table de hashage).
@@ -10,35 +13,43 @@ namespace Fuel\Tasks;
  *    PROPRIETE_1="chaîne"
  *    PROPRIETE_2="chaîne $PROPRIETE_1 chaîne"
  *
- * @category TwengaDeploy
- * @package Lib
- * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
+ * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
-class Properties_Adapter implements Properties_Interface
+class PropertiesAdapter implements PropertiesInterface
 {
 
     /**
      * Table de hashage des propriétés (clé => valeur).
      * @var array
      */
-    private $_aProperties;
+    private $aProperties;
 
     /**
      * Shell adapter.
-     * @var Shell_Interface
+     *
+     * @var ShellAdapter
      * @see loadConfigShellFile()
      */
-    private $_oShell;
+    private $oShell;
+
+    /**
+     * Application config.
+     *
+     * @var array
+     */
+    private $aConfig;
 
     /**
      * Constructeur.
      *
-     * @param Shell_Interface $oShell instance utilisée pour charger les fichiers de configuration shell
+     * @param ShellAdapter $oShell instance utilisée pour charger les fichiers de configuration shell
+     * @param array $aConfig
      */
-    public function __construct (Shell_Interface $oShell)
+    public function __construct (ShellAdapter $oShell, array $aConfig)
     {
-        $this->_aProperties = array();
-        $this->_oShell = $oShell;
+        $this->aProperties = array();
+        $this->oShell = $oShell;
+        $this->aConfig = $aConfig;
     }
 
     /**
@@ -46,14 +57,14 @@ class Properties_Adapter implements Properties_Interface
      *
      * @param string $sPropertyName propriété dont on recherche la valeur
      * @return string valeur de la propriété spécifiée.
-     * @throws UnexpectedValueException si propriété inconnue
+     * @throws \UnexpectedValueException si propriété inconnue
      */
     public function getProperty ($sPropertyName)
     {
-        if ( ! isset($this->_aProperties[strtolower($sPropertyName)])) {
+        if (! isset($this->aProperties[strtolower($sPropertyName)])) {
             throw new \UnexpectedValueException("Unknown property '$sPropertyName'!");
         }
-        return $this->_aProperties[strtolower($sPropertyName)];
+        return $this->aProperties[strtolower($sPropertyName)];
     }
 
     /**
@@ -61,11 +72,11 @@ class Properties_Adapter implements Properties_Interface
      *
      * @param string $sPropertyName propriété
      * @param string $sValue
-     * @return Properties_Interface $this
+     * @return PropertiesInterface $this
      */
     public function setProperty ($sPropertyName, $sValue)
     {
-        $this->_aProperties[strtolower($sPropertyName)] = (string)$sValue;
+        $this->aProperties[strtolower($sPropertyName)] = (string)$sValue;
         return $this;
     }
 
@@ -74,19 +85,20 @@ class Properties_Adapter implements Properties_Interface
      * Le nom des propriétés sont insensibles à la casse.
      *
      * @param string $sIniPath path du fichier INI à charger
-     * @return Properties_Interface cette instance
-     * @throws RuntimeException si erreur de chargement du fichier INI
-     * @throws UnexpectedValueException si fichier INI introuvable
+     * @return PropertiesInterface cette instance
+     * @throws \RuntimeException si erreur de chargement du fichier INI
+     * @throws \UnexpectedValueException si fichier INI introuvable
      */
     public function loadConfigIniFile ($sIniPath)
     {
-        if ( ! file_exists($sIniPath)) {
+        if (! file_exists($sIniPath)) {
             throw new \UnexpectedValueException("Property file '$sIniPath' not found!");
         }
 
-        $aRawProperties = @parse_ini_file($sIniPath);
-        if ($aRawProperties === false) {
-            throw new \RuntimeException("Load property file '$sIniPath' failed: " . print_r(error_get_last(), true));
+        try {
+            $aRawProperties = parse_ini_file($sIniPath);
+        } catch (\ErrorException $oException) {
+            throw new \RuntimeException("Load property file '$sIniPath' failed: " . $oException->getMessage());
         }
 
         // Normalisation :
@@ -95,7 +107,7 @@ class Properties_Adapter implements Properties_Interface
             $aProperties[strtolower($sProperty)] = $sValue;
         }
 
-        $this->_aProperties = array_merge($this->_aProperties, $aProperties);
+        $this->aProperties = array_merge($this->aProperties, $aProperties);
         return $this;
     }
 
@@ -109,18 +121,19 @@ class Properties_Adapter implements Properties_Interface
      *    ...
      *
      * @param string $sConfigShellPath path du fichier shell à charger
-     * @return Properties_Interface cette instance
-     * @throws RuntimeException si erreur de chargement du fichier
-     * @throws UnexpectedValueException si fichier shell introuvable
+     * @return PropertiesInterface cette instance
+     * @throws \RuntimeException si erreur de chargement du fichier
+     * @throws \UnexpectedValueException si fichier shell introuvable
      */
     public function loadConfigShellFile ($sConfigShellPath)
     {
-        if ( ! file_exists($sConfigShellPath)) {
+        if (! file_exists($sConfigShellPath)) {
             throw new \UnexpectedValueException("Property file '$sConfigShellPath' not found!");
         }
-        $sConfigIniPath = tempnam(DEPLOYMENT_TMP_DIR, 'deploy_configshell2ini_');
-        $sCmd = DEPLOYMENT_BASH_PATH . ' ' . __DIR__ . "/cfg2ini.inc.sh '$sConfigShellPath' '$sConfigIniPath'";
-        $this->_oShell->exec($sCmd);
+        $sConfigIniPath = tempnam($this->aConfig['dir']['tmp'], 'deploy_configshell2ini_');
+        $sCmd = $this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['inc']
+              . "/cfg2ini.sh '$sConfigShellPath' '$sConfigIniPath'";
+        $this->oShell->exec($sCmd);
         $this->loadConfigIniFile($sConfigIniPath);
         unlink($sConfigIniPath);
         return $this;

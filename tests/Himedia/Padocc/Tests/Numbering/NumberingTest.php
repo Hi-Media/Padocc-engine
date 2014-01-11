@@ -6,9 +6,7 @@ use Himedia\Padocc\Numbering\NumberingAdapter;
 use Himedia\Padocc\Numbering\NumberingInterface;
 
 /**
- * @category TwengaDeploy
- * @package Tests
- * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
+ * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
 class NumberingTest extends \PHPUnit_Framework_TestCase
 {
@@ -40,7 +38,7 @@ class NumberingTest extends \PHPUnit_Framework_TestCase
      */
     public function tearDown()
     {
-        $this->oNumbering = NULL;
+        $this->oNumbering = null;
     }
 
     /**
