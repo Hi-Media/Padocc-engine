@@ -2,7 +2,6 @@
 /**
  * Management of the project's configuration
  * @category Model
- * @package Tony CARON <caron.tony@gmail.com>
  */
 
 namespace Model;
@@ -14,7 +13,7 @@ class Configuration extends \Model {
      * Retrieve active configuration (last revision)
      *
      * @param int $iProjectId Project ident
-     * @return Logger_Interface $this
+     * @return LoggerInterface $this
      */
 	public static function getActive($iProjectId)
 	{
@@ -132,7 +131,7 @@ class Configuration extends \Model {
      * Check if the XML is validated by the XML Schema
      *
      * @param string $sConfiguration Xml configuration file
-     * @throws UnexpectedValueException when the XML is not valided by the schema
+     * @throws \UnexpectedValueException when the XML is not valided by the schema
      */
     protected static function checkXmlConfiguration($sConfiguration)
     {
@@ -161,7 +160,7 @@ class Configuration extends \Model {
      * Return an XmlElement from a string
      *
      * @param string $sConfiguration Xml configuration file
-     * @throws UnexpectedValueException when the XML is not valid
+     * @throws \UnexpectedValueException when the XML is not valid
      * @return SimpleXMLElement
      */
     protected static function getXml($sConfiguration)
@@ -179,8 +178,8 @@ class Configuration extends \Model {
      * Return all Environement from a SimpleXMLElement
      *
      * @param  SimpleXMLElement $oXml
-     * @throws UnexpectedValueException when no environement is found
-     * @throws UnexpectedValueException when a name for an environement isn't found
+     * @throws \UnexpectedValueException when no environement is found
+     * @throws \UnexpectedValueException when a name for an environement isn't found
      * @return array of XMLElement environment
      */
     protected static function getXmlEnvironment($oXml)
@@ -204,7 +203,7 @@ class Configuration extends \Model {
      * Return all Target from a SimpleXMLElement
      *
      * @param  SimpleXMLElement $oXml
-     * @throws UnexpectedValueException when a name for an target isn't found
+     * @throws \UnexpectedValueException when a name for an target isn't found
      * @return array of XMLElement target
      */
     protected static function getXmlTarget($oXml)
@@ -228,8 +227,8 @@ class Configuration extends \Model {
      *
      * @param  SimpleXMLElement $oEnv
      * @param  array of SimpleXMLElement $aTarget
-     * @throws UnexpectedValueException when a name for an externalproperty isn't found
-     * @throws UnexpectedValueException when a description for an externalproperty isn't found
+     * @throws \UnexpectedValueException when a name for an externalproperty isn't found
+     * @throws \UnexpectedValueException when a description for an externalproperty isn't found
      * @return array of XMLElement
      */
     protected static function getXmlExternalProperty($oEnv, $aTarget)

@@ -2,7 +2,6 @@
 /**
  * Management of projects
  * @category Model
- * @package Tony CARON <caron.tony@gmail.com>
  */
 
 namespace Model;
@@ -17,7 +16,7 @@ class Project extends \Model {
      * @param string $sProjectGroup Project group
      * @param int $iOwnerID UserId owner
      * @param int $iCreatorId UserId creator
-     * @return array 
+     * @return array
      */
     public static function add($sProjectName, $sProjectGroup, $iOwnerID, $iCreatorId)
     {
@@ -64,7 +63,7 @@ class Project extends \Model {
      * @param string $sProjectGroup Project group
      * @param int $iOwnerID UserId owner
      * @param int $iCreatorId UserId creator
-     * @return bool 
+     * @return bool
      */
 	public static function exist($sProjectName)
 	{
@@ -80,13 +79,13 @@ class Project extends \Model {
      * Return project's datas
      *
      * @param int $iProjectId optional Project Ident
-     * @return array of projects data 
+     * @return array of projects data
      */
-	public static function listing($iProjectId = NULL)
+	public static function listing($iProjectId = null)
 	{
 		$sQuery = 'SELECT * FROM `EDE_PROJECT` ';
 
-		if(!NULL == $iProjectId)
+		if(!null == $iProjectId)
 		{
 			$sQuery = $sQuery.' WHERE PROJECT_ID = :iProjectId';
 			return DB::query($sQuery.' ORDER BY NAME ASC')->bind('iProjectId', $iProjectId)->execute()->current();
@@ -99,14 +98,14 @@ class Project extends \Model {
      * Return extended project's datas
      *
      * @param int $iProjectId optional Project Ident
-     * @return array of extended projects data 
+     * @return array of extended projects data
      */
-	public static function listingEx($iProjectId = NULL)
+	public static function listingEx($iProjectId = null)
 	{
 		$sQuery = '
-			SELECT *, 
-			du.FIRSTNAME as OWNER_FIRSTNAME, du.LASTNAME as OWNER_LASTNAME , 
-			du2.FIRSTNAME as CREATOR_FIRSTNAME, du2.LASTNAME as CREATOR_LASTNAME  
+			SELECT *,
+			du.FIRSTNAME as OWNER_FIRSTNAME, du.LASTNAME as OWNER_LASTNAME ,
+			du2.FIRSTNAME as CREATOR_FIRSTNAME, du2.LASTNAME as CREATOR_LASTNAME
 			FROM EDE_PROJECT dp
 			JOIN EDE_USER du ON du.USER_ID = dp.OWNER_ID
 			JOIN EDE_USER du2 ON du2.USER_ID = dp.CREATOR_ID
@@ -115,7 +114,7 @@ class Project extends \Model {
 
 		$sOrder = ' ORDER BY dp.NAME ASC';
 
-		if(!NULL == $iProjectId)
+		if(!null == $iProjectId)
 		{
 			$sQuery = $sQuery.' WHERE dp.PROJECT_ID = :iProjectId';
 			return DB::query($sQuery.$sOrder)->bind('iProjectId', $iProjectId)->execute()->current();

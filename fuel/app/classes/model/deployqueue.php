@@ -2,7 +2,6 @@
 /**
  * Management of projects to deploy (supervisor)
  * @category Model
- * @package Tony CARON <caron.tony@gmail.com>
  */
 
 namespace Model;
@@ -13,11 +12,11 @@ class DeployQueue extends \Model {
      * Return project's statistics
      *
      * @param int $iProjectId Project Ident
-     * @return array 
+     * @return array
      */
     public static function statByProject($iProjectId)
     {
-        $oQuery = DB::select(   
+        $oQuery = DB::select(
                 DB::expr('MONTHNAME(DATE_START) as "MONTHNAME"'),
                 DB::expr('YEAR(DATE_START) as "YEAR"'),
                 DB::expr('MONTH(DATE_START) as "MONTH"'),
@@ -27,7 +26,7 @@ class DeployQueue extends \Model {
                 'ENVIRONMENT',
                  DB::expr('count(*) as NB'))
             ->from('EDE_DEPLOY_QUEUE')
-            ->join('EDE_PROJECT','INNER')->on('EDE_PROJECT.PROJECT_ID', '=', 'EDE_DEPLOY_QUEUE.PROJECT_ID')  
+            ->join('EDE_PROJECT','INNER')->on('EDE_PROJECT.PROJECT_ID', '=', 'EDE_DEPLOY_QUEUE.PROJECT_ID')
             ->where('EDE_DEPLOY_QUEUE.PROJECT_ID',$iProjectId)
             ->order_by('EDE_DEPLOY_QUEUE.DATE_START', 'asc')
             ->group_by(DB::expr('YEAR(DATE_START)'), DB::expr('MONTH(DATE_START)'), 'EDE_DEPLOY_QUEUE.PROJECT_ID', 'ENVIRONMENT');
@@ -39,11 +38,11 @@ class DeployQueue extends \Model {
      * Return projects statistics
      *
      * @param int $iProjectId Project Ident
-     * @return array 
+     * @return array
      */
     public static function stat()
     {
-        $oQuery = DB::select(   
+        $oQuery = DB::select(
                 DB::expr('MONTHNAME(DATE_START) as "MONTHNAME"'),
                 DB::expr('YEAR(DATE_START) as "YEAR"'),
                 DB::expr('MONTH(DATE_START) as "MONTH"'),
@@ -53,7 +52,7 @@ class DeployQueue extends \Model {
                 'ENVIRONMENT',
                  DB::expr('count(*) as NB'))
             ->from('EDE_DEPLOY_QUEUE')
-            ->join('EDE_PROJECT','INNER')->on('EDE_PROJECT.PROJECT_ID', '=', 'EDE_DEPLOY_QUEUE.PROJECT_ID')  
+            ->join('EDE_PROJECT','INNER')->on('EDE_PROJECT.PROJECT_ID', '=', 'EDE_DEPLOY_QUEUE.PROJECT_ID')
             ->order_by('EDE_DEPLOY_QUEUE.DATE_START', 'asc')
             ->group_by(DB::expr('YEAR(DATE_START)'), DB::expr('MONTH(DATE_START)'), 'EDE_DEPLOY_QUEUE.PROJECT_ID');
 
@@ -65,11 +64,11 @@ class DeployQueue extends \Model {
      *
      * @param int $iProjectId Project Ident
      * @param int $iLimit Sql limit
-     * @return array 
+     * @return array
      */
-    public static function listing($iProjectId = NULL, $iLimit=NULL)
+    public static function listing($iProjectId = null, $iLimit=null)
     {
-        $oQuery = DB::select('*', 
+        $oQuery = DB::select('*',
             DB::expr('EDE_DEPLOY_QUEUE.ENVIRONMENT as "ENVIRONMENT"'),
             DB::expr('EDE_DEPLOY_QUEUE.EXTERNAL_PROPERTY as "EXTERNAL_PROPERTY"'))
             ->from('EDE_DEPLOY_QUEUE')
@@ -77,14 +76,14 @@ class DeployQueue extends \Model {
             ->join('EDE_USER','INNER')->on('EDE_USER.USER_ID', '=', 'EDE_DEPLOY_QUEUE.INSTIGATOR_ID')
             ->join('EDE_PROJECT_CONFIGURATION','INNER')->on('EDE_DEPLOY_QUEUE.PROJECT_CONFIGURATION_ID', '=', 'EDE_PROJECT_CONFIGURATION.PROJECT_CONFIGURATION_ID');
 
-        if(NULL != $iProjectId)
+        if(null != $iProjectId)
             $oQuery->where('EDE_DEPLOY_QUEUE.PROJECT_ID', $iProjectId);
 
-        if(NULL != $iLimit)
+        if(null != $iLimit)
              $oQuery->limit($iLimit);
 
           $oQuery->order_by('DATE_START','DESC');
-        
+
         return $oQuery->execute()->as_array();
     }
 
@@ -96,7 +95,7 @@ class DeployQueue extends \Model {
      * @param string $sEnvironment Selected environment
      * @param array $aExternalProperty User property (like branch name)
      * @param int $iInstigatorId UserId
-     * @return array 
+     * @return array
      */
 	public static function add($iProjectId, $iProjectConfigurationId, $sEnvironment, $aExternalProperty, $iInstigatorId)
     {
@@ -113,14 +112,14 @@ class DeployQueue extends \Model {
             'DATE_INSERT' => DB::expr('NOW()')
         ))->execute();
 
-        return $aReturn[0]; 
+        return $aReturn[0];
     }
 
     /**
      * Return if a deploy is currently in progress for a given project
      *
      * @param int $iProjectId Project Ident
-     * @return bool 
+     * @return bool
      */
     public static function isInProgress($iProjectId)
     {
@@ -133,7 +132,7 @@ class DeployQueue extends \Model {
     /**
      * Find the next project in queue to deploy
      *
-     * @return mixed 
+     * @return mixed
      */
     public static function getNextToLaunch()
     {
@@ -150,7 +149,7 @@ class DeployQueue extends \Model {
      * Tag a queued project as "In PROGRESS"
      *
      * @param int $iDeployQueueId Queue Ident
-     * @return bool 
+     * @return bool
      */
     public static function setInProgess($iDeployQueueId)
     {
@@ -168,7 +167,7 @@ class DeployQueue extends \Model {
      *
      * @param int $iDeployQueueId Queue Ident
      * @param int $iDeployQueueId Queue Ident
-     * @return bool 
+     * @return bool
      */
     public static function setEnd($iDeployQueueId, $sEndStatus)
     {
@@ -183,7 +182,7 @@ class DeployQueue extends \Model {
      * Return an queued entry
      *
      * @param int $iDeployQueueId Queue Ident
-     * @return mixed 
+     * @return mixed
      */
     public static function get($iDeployQueueId)
     {
@@ -201,4 +200,4 @@ class DeployQueue extends \Model {
 
 
 }
-  
+

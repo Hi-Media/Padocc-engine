@@ -5,8 +5,7 @@
  *
  * A basic controller example.  Has examples of how to set the
  * response body and status.
- * 
- * @package  app
+ *
  * @extends  Controller
  */
 
@@ -17,7 +16,7 @@ class Controller_User extends Controller
 
 	/**
 	 * The basic welcome message
-	 * 
+	 *
 	 * @access  public
 	 * @return  Response
 	 */
@@ -33,7 +32,7 @@ class Controller_User extends Controller
 		$sFirstName = Input::post('FIRSTNAME');
 		$sLastName = Input::post('LASTNAME');
 		$sEmail = Input::post('EMAIL');
-		
+
 		$val = Validation::forge();
 		$val->add('FIRSTNAME', 'Your username')->add_rule('required');
 		$val->add('LASTNAME', 'Your username')->add_rule('required');
@@ -45,7 +44,7 @@ class Controller_User extends Controller
 		$iUserId = \Model\User::add($sFirstName, $sLastName, $sEmail);
 
 		//Message::addAir($sFirstName.' is born !');
-		
+
 		return json_encode(true);
 
 	}
@@ -57,8 +56,8 @@ class Controller_User extends Controller
 		return json_encode(!$iUserExist);
 		//return new Response();
 	}
-	
 
 
-	
+
+
 }

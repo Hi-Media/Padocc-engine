@@ -2,15 +2,13 @@
 
 namespace ede_deploy_core;
 /**
- * @category TwengaDeploy
- * @package Core
- * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
+ * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
 class ede_deploy_core
 {
     /**
      * Instance de services.
-     * @var ServiceContainer
+     * @var DIContainer
      */
     private $_oServiceContainer;
 
@@ -19,7 +17,7 @@ class ede_deploy_core
      */
     public function __construct ()
     {
-        $oBaseLogger = new Logger_Adapter(Logger_Interface::DEBUG);
+        $oBaseLogger = new Logger_Adapter(LoggerInterface::DEBUG);
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
         $oShell = new Shell_Adapter($oLogger);
 
@@ -32,7 +30,7 @@ class ede_deploy_core
     }
 
     /**
-     * Enregistre les propriétés externes dans l'instance Properties_Interface.
+     * Enregistre les propriétés externes dans l'instance PropertiesInterface.
      *
      * @param array $aExternalProperties tableau indexé des valeurs ordonnées des propriétés externes.
      */
@@ -68,7 +66,7 @@ class ede_deploy_core
         $this->_setExternalProperties($aExternalProperties);
 
         $sProjectPath = DEPLOYMENT_RESOURCES_DIR . '/' . $sProjectName . '.xml';
-        $oProject = new Task_Base_Project($sProjectPath, $sEnvName, $this->_oServiceContainer);
+        $oProject = new Project($sProjectPath, $sEnvName, $this->_oServiceContainer);
         $oLogger = $this->_oServiceContainer->getLogAdapter();
         $oLogger->log('Check tasks:');
         $oLogger->indent();
@@ -99,9 +97,9 @@ class ede_deploy_core
      */
     public static function getProjectsEnvsList ()
     {
-        $aAllProjectsName = Task_Base_Project::getAllProjectsName(DEPLOYMENT_RESOURCES_DIR);
+        $aAllProjectsName = Project::getAllProjectsName(DEPLOYMENT_RESOURCES_DIR);
         $aEnvsByProject = array();
-        if ( ! empty($aAllProjectsName)) {
+        if (! empty($aAllProjectsName)) {
             foreach ($aAllProjectsName as $sProjectName) {
                 $sProjectPath = DEPLOYMENT_RESOURCES_DIR . '/' . $sProjectName . '.xml';
                 $aEnvsByProject[$sProjectName] = Task_Base_Target::getAvailableEnvsList($sProjectPath);

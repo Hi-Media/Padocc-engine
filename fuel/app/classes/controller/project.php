@@ -5,8 +5,7 @@
  *
  * A basic controller example.  Has examples of how to set the
  * response body and status.
- * 
- * @package  app
+ *
  * @extends  Controller
  */
 
@@ -20,7 +19,7 @@ class Controller_Project extends Controller
 
 	/**
 	 * The basic welcome message
-	 * 
+	 *
 	 * @access  public
 	 * @return  Response
 	 */
@@ -37,7 +36,7 @@ class Controller_Project extends Controller
 		$view->set('aUserList', $aUserList);
 		$view->set('aProjectGroup', $aProjectGroup);
 		$view->set('USER_ID', User::getLoggedUserId());
-	
+
 
 		return Response::forge($view);
 	}
@@ -56,7 +55,7 @@ class Controller_Project extends Controller
 		$view->set('aProjectGroup', $aProjectGroup);
 
 		$iProjectId = Input::get('PROJECT_ID');
-		
+
 		$aProject= Project::listingEx($iProjectId);
 		$view->set('aProject', $aProject);
 
@@ -100,7 +99,7 @@ class Controller_Project extends Controller
 
 		Project::update($iProjectId, $sProjectGroup, $iOwnerId);
 
-		$aProject= Project::listingEx($iProjectId);		
+		$aProject= Project::listingEx($iProjectId);
 		if($aProject["CONFIGURATION"] != $sConfiguration)
 			Configuration::add($iProjectId, $iCreatorId, $sConfiguration);
 
@@ -125,8 +124,8 @@ class Controller_Project extends Controller
 		$iProjectId = Project::add($sProjectName, $sProjectGroup, $iOwnerId, $iCreatorId);
 
 		Configuration::add($iProjectId, $iCreatorId, $sConfiguration);
-		
-	
+
+
 
 	}
 
@@ -153,5 +152,5 @@ class Controller_Project extends Controller
 	}
 
 
-	
+
 }

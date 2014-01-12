@@ -1,14 +1,15 @@
 <?php
-namespace Fuel\Tasks;
+
+namespace Himedia\Padocc;
+
+use GAubry\Helpers\Helpers;
 
 /**
  * Classe outil facilitant l'exécution des commandes shell.
  *
- * @category TwengaDeploy
- * @package Lib
- * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
+ * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
-class Shell_Adapter implements Shell_Interface
+class Shell_Adapter implements ShellInterface
 {
 
     /**
@@ -30,7 +31,7 @@ class Shell_Adapter implements Shell_Interface
 
     /**
      * Log adapter, utilisé pour loguer les commandes exécutées.
-     * @var Logger_Interface
+     * @var LoggerInterface
      * @see exec()
      */
     private $_oLogger;
@@ -38,9 +39,9 @@ class Shell_Adapter implements Shell_Interface
     /**
      * Constructeur.
      *
-     * @param Logger_Interface $oLogger Instance utilisée pour loguer les commandes exécutées
+     * @param LoggerInterface $oLogger Instance utilisée pour loguer les commandes exécutées
      */
-    public function __construct (Logger_Interface $oLogger)
+    public function __construct (LoggerInterface $oLogger)
     {
         $this->_oLogger = $oLogger;
         $this->_aFileStatus = array();
@@ -68,9 +69,9 @@ class Shell_Adapter implements Shell_Interface
      *         'error' => (string) sortie d'erreur standard,
      *     ), ...
      * )
-     * @throws RuntimeException si le moindre code de retour Shell non nul apparaît.
-     * @throws RuntimeException si une valeur hors de $aValues apparaît dans les entrées 'value'.
-     * @throws RuntimeException s'il manque des valeurs de $aValues dans le résultat final.
+     * @throws \RuntimeException si le moindre code de retour Shell non nul apparaît.
+     * @throws \RuntimeException si une valeur hors de $aValues apparaît dans les entrées 'value'.
+     * @throws \RuntimeException s'il manque des valeurs de $aValues dans le résultat final.
      */
     public function parallelize (array $aValues, $sPattern, $iMax=DEPLOYMENT_PARALLELIZATION_MAX_NB_PROCESSES)
     {
@@ -111,7 +112,7 @@ class Shell_Adapter implements Shell_Interface
             if ($aSubResult['error_code'] !== 0) {
                 $sMsg = $aSubResult['error'] . "\nParallel result:\n" . print_r($aResult, true);
                 throw new \RuntimeException($sMsg, $aSubResult['error_code']);
-            } else if ( ! in_array($aSubResult['value'], $aValues)) {
+            } elseif (! in_array($aSubResult['value'], $aValues)) {
                 $sMsg = "Not asked value: '" . $aSubResult['value'] . "'!\n"
                       . "Aksed values: '" . implode("', '", $aValues) . "'\n"
                       . "Parallel result:\n" . print_r($aResult, true);
@@ -137,11 +138,11 @@ class Shell_Adapter implements Shell_Interface
      *
      * @param string $sCmd
      * @return array tableau indexé du flux de sortie shell découpé par ligne
-     * @throws RuntimeException en cas d'erreur shell
+     * @throws \RuntimeException en cas d'erreur shell
      */
     public function exec ($sCmd)
     {
-        $this->_oLogger->log('[DEBUG] shell# ' . trim($sCmd, " \t"), Logger_Interface::DEBUG);
+        $this->_oLogger->log('[DEBUG] shell# ' . trim($sCmd, " \t"), LoggerInterface::DEBUG);
         $sFullCmd = '( ' . $sCmd . ' ) 2>&1';
         exec($sFullCmd, $aResult, $iReturnCode);
         if ($iReturnCode !== 0) {
@@ -158,7 +159,7 @@ class Shell_Adapter implements Shell_Interface
      * @param string $sParam paramètre du pattern $sPatternCmd, permettant en plus de décider si l'on
      * doit encapsuler la commande dans un SSH (si serveur distant) ou non.
      * @return array tableau indexé du flux de sortie shell découpé par ligne
-     * @throws RuntimeException en cas d'erreur shell
+     * @throws \RuntimeException en cas d'erreur shell
      * @see isRemotePath()
      */
     public function execSSH ($sPatternCmd, $sParam)
@@ -206,7 +207,7 @@ class Shell_Adapter implements Shell_Interface
      *
      * @param string $sPath chemin à tester, de la forme [user@server:]/path
      * @return int l'une des constantes de Shell_PathStatus
-     * @throws RuntimeException en cas d'erreur shell
+     * @throws \RuntimeException en cas d'erreur shell
      * @see Shell_PathStatus
      * @see _aFileStatus
      */
@@ -243,7 +244,7 @@ class Shell_Adapter implements Shell_Interface
      * @param string $sPath chemin à tester, sans mention de serveur
      * @param array $aServers liste de serveurs sur lesquels faire la demande de statut
      * @return array tableau associatif listant par serveur (clé) le status (valeur, constante de Shell_PathStatus)
-     * @throws RuntimeException en cas d'erreur shell
+     * @throws \RuntimeException en cas d'erreur shell
      * @see getPathStatus()
      */
     public function getParallelSSHPathStatus ($sPath, array $aServers)
@@ -318,7 +319,7 @@ class Shell_Adapter implements Shell_Interface
      * @param bool $bIsDestFile précise si le chemin de destination est un simple fichier ou non,
      * information nécessaire si l'on doit créer une partie de ce chemin si inexistant
      * @return array tableau indexé du flux de sortie shell découpé par ligne
-     * @throws RuntimeException en cas d'erreur shell
+     * @throws \RuntimeException en cas d'erreur shell
      */
     public function copy ($sSrcPath, $sDestPath, $bIsDestFile=false)
     {
@@ -345,8 +346,8 @@ class Shell_Adapter implements Shell_Interface
      * @param string $sLinkPath nom du lien, au format [[user@]hostname_or_ip:]/path
      * @param string $sTargetPath cible sur laquelle faire pointer le lien, au format [[user@]hostname_or_ip:]/path
      * @return array tableau indexé du flux de sortie shell découpé par ligne
-     * @throws DomainException si les chemins référencent des serveurs différents
-     * @throws RuntimeException en cas d'erreur shell
+     * @throws \DomainException si les chemins référencent des serveurs différents
+     * @throws \RuntimeException en cas d'erreur shell
      */
     public function createLink ($sLinkPath, $sTargetPath)
     {
@@ -382,8 +383,8 @@ class Shell_Adapter implements Shell_Interface
      *
      * @param string $sPath chemin à supprimer, au format [[user@]hostname_or_ip:]/path
      * @return array tableau indexé du flux de sortie shell découpé par ligne
-     * @throws DomainException si chemin invalide (garde-fou)
-     * @throws RuntimeException en cas d'erreur shell
+     * @throws \DomainException si chemin invalide (garde-fou)
+     * @throws \RuntimeException en cas d'erreur shell
      * @see getPathStatus()
      */
     public function remove ($sPath)
@@ -412,7 +413,7 @@ class Shell_Adapter implements Shell_Interface
      * @param string $sSrcPath au format [[user@]hostname_or_ip:]/path
      * @param string $sBackupPath au format [[user@]hostname_or_ip:]/path
      * @return array tableau indexé du flux de sortie shell découpé par ligne
-     * @throws RuntimeException en cas d'erreur shell
+     * @throws \RuntimeException en cas d'erreur shell
      */
     public function backup ($sSrcPath, $sBackupPath)
     {
@@ -462,7 +463,7 @@ class Shell_Adapter implements Shell_Interface
      * @param string $sMode droits utilisateur du chemin appliqués même si ce dernier existe déjà.
      * Par exemple '644'.
      * @return array tableau indexé du flux de sortie shell découpé par ligne
-     * @throws RuntimeException en cas d'erreur shell
+     * @throws \RuntimeException en cas d'erreur shell
      */
     /*public function mkdir ($sPath, $sMode='')
     {
@@ -518,8 +519,8 @@ class Shell_Adapter implements Shell_Interface
      * @param array $aExcludedPaths chemins à transmettre aux paramètres --exclude de la commande shell rsync
      * @return array tableau indexé du flux de sortie shell des commandes rsync exécutées,
      * découpé par ligne et analysé par _resumeSyncResult()
-     * @throws RuntimeException en cas d'erreur shell
-     * @throws RuntimeException car non implémenté quand plusieurs $mDestPath et $sSrcPath sont distants
+     * @throws \RuntimeException en cas d'erreur shell
+     * @throws \RuntimeException car non implémenté quand plusieurs $mDestPath et $sSrcPath sont distants
      */
     public function sync ($sSrcPath, $sDestPath, array $aValues=array(),
             array $aIncludedPaths=array(), array $aExcludedPaths=array())
@@ -615,12 +616,12 @@ class Shell_Adapter implements Shell_Interface
             $aEmptyStats = array_fill_keys($aKeys, '?');
 
             $aAllStats = array();
-            $aStats = NULL;
+            $aStats = null;
             foreach ($aRawResult as $sLine) {
                 if (preg_match('/^([^:]+):\s(\d+)\b/i', $sLine, $aMatches) === 1) {
                     $sKey = strtolower($aMatches[1]);
                     if ($sKey === 'number of files') {
-                        if ($aStats !== NULL) {
+                        if ($aStats !== null) {
                             $aAllStats[] = $aStats;
                         }
                         $aStats = $aEmptyStats;
@@ -630,17 +631,14 @@ class Shell_Adapter implements Shell_Interface
                     }
                 }
             }
-            if ($aStats !== NULL) {
+            if ($aStats !== null) {
                 $aAllStats[] = $aStats;
             }
 
             $aResult = array();
             foreach ($aAllStats as $aStats) {
-                list($sTransferred, ) = Tools::convertFileSize2String(
-                    $aStats['total transferred file size'],
-                    $aStats['total file size']
-                );
-                list($sTotal, $sUnit) = Tools::convertFileSize2String($aStats['total file size']);
+                list($sTransferred, ) = Helpers::intToMultiple($aStats['total transferred file size'], true);
+                list($sTotal, $sUnit) = Helpers::intToMultiple($aStats['total file size'], true);
 
                 $aResult[] = 'Number of transferred files ( / total): ' . $aStats['number of files transferred']
                            . ' / ' . $aStats['number of files'] . "\n"

@@ -4,15 +4,13 @@ namespace Fuel\Tasks;
 
 
 /**
- * @category TwengaDeploy
- * @package Core
- * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
+ * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
 class Ede_deploy
 {
     /**
      * Instance de services.
-     * @var ServiceContainer
+     * @var DIContainer
      */
     private $_oServiceContainer;
 
@@ -25,7 +23,7 @@ class Ede_deploy
 
         require_once $sMyPath.'config/padocc-dist.php';
         $this->setAutoloader();
-        $oBaseLogger = new Logger_Adapter(Logger_Interface::DEBUG);
+        $oBaseLogger = new Logger_Adapter(LoggerInterface::DEBUG);
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
         $oShell = new Shell_Adapter($oLogger);
 
@@ -66,7 +64,7 @@ class Ede_deploy
     }
 
     /**
-     * Enregistre les propriétés externes dans l'instance Properties_Interface.
+     * Enregistre les propriétés externes dans l'instance PropertiesInterface.
      *
      * @param array $aExternalProperties tableau indexé des valeurs ordonnées des propriétés externes.
      */
@@ -79,7 +77,7 @@ class Ede_deploy
             $oProperties->setProperty($k, str_replace('&#0160;', ' ', $sValue));
         }
        /* foreach ($aExternalProperties as $i => $sValue) {
-            $sKey = Task_Base_ExternalProperty::EXTERNAL_PROPERTY_PREFIX . ($i+1);
+            $sKey = ExternalProperty::EXTERNAL_PROPERTY_PREFIX . ($i+1);
             \Cli::write((array)$sValue);
             $oProperties->setProperty($sKey, str_replace('&#0160;', ' ', $sValue));
         }*/
@@ -143,7 +141,7 @@ class Ede_deploy
 
         $this->_setExternalProperties((array)json_decode($aParam['EXTERNAL_PROPERTY']));
 
-        $oProject = new Task_Base_Project($aParam['CONFIGURATION'], $aParam['ENVIRONMENT'], $this->_oServiceContainer);
+        $oProject = new Project($aParam['CONFIGURATION'], $aParam['ENVIRONMENT'], $this->_oServiceContainer);
         $oLogger = $this->_oServiceContainer->getLogAdapter();
         $oLogger->log('Check tasks:');
         $oLogger->indent();

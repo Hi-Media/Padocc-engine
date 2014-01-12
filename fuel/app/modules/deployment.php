@@ -22,7 +22,7 @@ class Deployment
         $sFullCmd = '( ' . $sCmd . ' ) 2>&1';
         /*$sErrorMsg = exec($sFullCmd, $aResult, $iReturnCode);
         if ($iReturnCode !== 0) {
-            throw new RuntimeException(implode("\n", $aResult), $iReturnCode);
+            throw new \RuntimeException(implode("\n", $aResult), $iReturnCode);
         }*/
 
         $sResult = $this->oSsh->exec($sFullCmd, '');
@@ -38,7 +38,7 @@ class Deployment
 
         return $sResult;
     }
-                    
+
 
     private function _callDBSupervisor (array $aParameters) {
 		$sParameters = base64_encode(serialize($aParameters));
@@ -52,7 +52,7 @@ class Deployment
         	//var_dump($sResult);
         	//var_dump(base64_decode($sResult));
         	//var_dump(unserialize(base64_decode($sResult)));
-        	throw new RuntimeException(
+        	throw new \RuntimeException(
         		'Parameters: ' . print_r($aParameters, true)
         		. "\nRaw result: '" . $sResult . "'"
         	);
@@ -98,10 +98,10 @@ class Deployment
         }
         return $sConfig;
     }
-   
+
     public function setProjectConfig($sProjectName, $sXml) {
         $sConfigFileName = $sProjectName.'.xml';
-        
+
         if(!empty($sProjectName) && !empty($sXml))
         {
             $sTmpFile = tempnam("/tmp", "");
@@ -125,7 +125,7 @@ class Deployment
         $iSum = 0;
         $iLastTs = 0;
         foreach ($aRawLogs as $sLine) {
-            if ( ! empty($sLine)) {
+            if (! empty($sLine)) {
                 preg_match('/^([^;]+);(.*)$/', $sLine, $aMatches);
                 $sTimestamp = $aMatches[1];
                 $sMsg = $aMatches[2];
@@ -203,27 +203,27 @@ class Deployment
             // Gestion du type de la ligne :
             if (preg_match('/^\s*\[START\]|START/', $msg) === 1) {
                 $sClass = 'start';
-            } else if (preg_match('/^\s*(?:\[DEBUG\]|DEBUG )(.*)$/', $msg, $aM2) === 1) {
+            } elseif (preg_match('/^\s*(?:\[DEBUG\]|DEBUG )(.*)$/', $msg, $aM2) === 1) {
                 $sClass = 'debug';
                 $msg = $aM2[1];
-            } else if (preg_match('/^\s*(?:\[OK\]|OK)/', $msg) === 1) {
+            } elseif (preg_match('/^\s*(?:\[OK\]|OK)/', $msg) === 1) {
                 $sClass = 'ok';
-            } else if (preg_match('/^\s*(?:\[MAILTO\]|MAILTO )(.*)/', $msg, $aM2) === 1) {
+            } elseif (preg_match('/^\s*(?:\[MAILTO\]|MAILTO )(.*)/', $msg, $aM2) === 1) {
                 $sClass = 'mail';
                 $msg = 'mailto: ' . $aM2[1];
-            } else if (preg_match('/^\s*(?:\[WARNING\]|WARNING)(.*)$/', $msg, $aMatches) === 1) {
+            } elseif (preg_match('/^\s*(?:\[WARNING\]|WARNING)(.*)$/', $msg, $aMatches) === 1) {
                 $sClass = 'warning';
-                if ( ! empty($aMatches[1])) {
+                if (! empty($aMatches[1])) {
                     $iNbWarnings++;
                     $msg = $aMatches[1];
                 } else {
                     $msg = "Completed with $iNbWarnings warning" . ($iNbWarnings > 1 ? 's' : '') . '.';
                 }
-            } else if (preg_match('/^\s*(?:\[ERROR\]|ERROR)/', $msg) === 1) {
+            } elseif (preg_match('/^\s*(?:\[ERROR\]|ERROR)/', $msg) === 1) {
                 $sClass = 'failure';
-            } else if (preg_match('/^\s*Execute( tasks|\s+\'\d+(\.\d+)*_Task[^\']*\'\s+task)/i', $msg) === 1) {
+            } elseif (preg_match('/^\s*Execute( tasks|\s+\'\d+(\.\d+)*_Task[^\']*\'\s+task)/i', $msg) === 1) {
                 $sClass = 'task_execute';
-            } else if (preg_match('/^\s*Check( tasks|\s+\'\d+(\.\d+)*_Task[^\']*\'\s+task)/i', $msg) === 1) {
+            } elseif (preg_match('/^\s*Check( tasks|\s+\'\d+(\.\d+)*_Task[^\']*\'\s+task)/i', $msg) === 1) {
                 $sClass = 'task_check';
             } else {
                 $sClass = 'normal';
@@ -234,7 +234,7 @@ class Deployment
 
             if ($aRow['sum'] < 5) {
                 $sum = '~0';
-            } else if ($aRow['sum'] < 10*100) {
+            } elseif ($aRow['sum'] < 10*100) {
                 $sum = number_format($aRow['sum']/100, 1, '.', ' ') . 's';
             } else {
                 $sum = ($aRow['sum']>=60*100 ? floor($aRow['sum']/100/60) . 'min ' : '') . round(($aRow['sum']%6000)/100) . 's';
@@ -242,7 +242,7 @@ class Deployment
 
             if ($aRow['section'] < 5) {
                 $section = '~0';
-            } else if ($aRow['section'] < 10*100) {
+            } elseif ($aRow['section'] < 10*100) {
                 $section = number_format($aRow['section']/100, 1, '.', ' ') . 's';
             } else {
                 $section = ($aRow['section']>=60*100 ? floor($aRow['section']/100/60) . 'min ' : '') . round(($aRow['section']%6000)/100) . 's';
@@ -294,7 +294,7 @@ class Deployment
 
         if (empty($sProject)) {
             throw new Exception('Aucun projet défini');
-        } else if ( ! isset($aProjetsEnvsList[$sProject])) {
+        } elseif (! isset($aProjetsEnvsList[$sProject])) {
             throw new Exception('Aucune configuration n\'a été trouvé pour le projet' . $sProject);
         }
 
@@ -320,7 +320,7 @@ class Deployment
     	$aProjectsEnvsList = json_decode($this->getProjectsEnvsList(), true);
         if (empty($sProject) || empty($sEnv)) {
             throw new Exception('Projet ou env non défini !');
-        } else if ( ! isset($aProjectsEnvsList[$sProject][$sEnv])) {
+        } elseif (! isset($aProjectsEnvsList[$sProject][$sEnv])) {
             throw new Exception("Aucune configuration n'a été trouvé pour le projet '$sProject' et l'environnement '$sEnv' !");
         }
 
@@ -339,7 +339,7 @@ class Deployment
         	// Status:
         	if ($aRow['supervisor_demand_status_id'] == self::SUPERVISOR_STATUS_END_OK) {
         		$sStatusClass = 'ok';
-        	} else if ($aRow['supervisor_demand_status_id'] == self::SUPERVISOR_STATUS_END_WARNING) {
+        	} elseif ($aRow['supervisor_demand_status_id'] == self::SUPERVISOR_STATUS_END_WARNING) {
         		$sStatusClass = 'warning';
         	} else {
         		throw new Exception("Invalid status: '" . $aRow['supervisor_demand_status_id'] . "'!");

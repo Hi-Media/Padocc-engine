@@ -20,18 +20,18 @@ class Controller_Deployment extends Controller
 		//$jsonProjectsEnvsList = $this->_filterProjectEnvList($jsonProjectsEnvsList, $oUser->getEmail());
 		$jsonProjectsEnvsList = $this->_filterProjectEnvList($jsonProjectsEnvsList, "tony.caron@twenga.com");
 
-		
+
 
 		$view->set('aProjectsEnvsList', $jsonProjectsEnvsList, false);
 		$view->set('sInstigatorEmail', "tony.caron@twenga.com");
 		//$this->oSmarty->assign('sInstigatorEmail', $oUser->getEmail());
-		
+
 		return Response::forge($view);
-		
+
 	}
 
 	public function xdoAddDemand($sInstigatorEmail, $sProject, $sEnv, array $aExternalProperties=array()) {
-		
+
 
 
 		$sProject = Input::get('Project');
@@ -58,7 +58,7 @@ if (count($aAdditionalParameters) > 0) {
 		Cookie::set('dashboard_last_selected_project', $sProject);
 
 
-		
+
         $aParameters = array_merge(array($sProjectName, $sEnvName), $aExternalProperties);
         foreach ($aParameters as $i => $sValue) {
             $aParameters[$i] = str_replace(' ', '&#0160;', $sValue);
@@ -81,7 +81,7 @@ if (count($aAdditionalParameters) > 0) {
 			$sConfig = $oDeployement->addDemand($sInstigatorEmail, $sProject, $sEnv, $aExternalProperties);
 			header('Location: /?action=queue&mode=add&project=' . $sProject . '&env=' . $sEnv);
 			exit;
-		} catch(Exception $Ex) {
+		} catch(\Exception $Ex) {
 			// TODO
 			$this->oSmarty->assign('sStatus', 'Error');
 			$this->oSmarty->assign('sProject', $sProject);
@@ -133,7 +133,7 @@ function addDemand () {
 					} else {
 						$aAuthEnvs = $ACL['*']['*'];
 					}
-				} else if (isset($ACL['*'][$sProject])) {
+				} elseif (isset($ACL['*'][$sProject])) {
 					$aAuthEnvs = $ACL['*'][$sProject];
 				}
 			}
@@ -146,7 +146,7 @@ function addDemand () {
 					} else {
 						$aAuthEnvs = array_merge($aAuthEnvs, $ACL[$sShortEmail]['*']);
 					}
-				} else if (isset($ACL[$sShortEmail][$sProject])) {
+				} elseif (isset($ACL[$sShortEmail][$sProject])) {
 					$aAuthEnvs = array_merge($aAuthEnvs, $ACL[$sShortEmail][$sProject]);
 				}
 			}
@@ -181,7 +181,7 @@ function addDemand () {
 			header("content-type: application/xml");
 			echo $sConfig;
 		}
-		catch(Exception $Ex)
+		catch(\Exception $Ex)
 		{
 			header("HTTP/1.1 404 Not found");
 			header("Status: 404 Not Found");
@@ -201,7 +201,7 @@ function addDemand () {
 
 		list($aLogs, $sErrors) = $oDeployement->getLogs($sExecutionId);
 		$sInfos = $oDeployement->formatLogs($aLogs);
-		if ( ! empty($sErrors)) {
+		if (! empty($sErrors)) {
 			$sErrors = '<h2 class="failure">Error message:</h3><div class="error_msg">' . "\n" . $sErrors . '</div>' . "\n";
 		}
 		$sOut = $sInfos . $sErrors;
@@ -223,7 +223,7 @@ function addDemand () {
 			$sConfig = $oDeployement->addDemand($sInstigatorEmail, $sProject, $sEnv, $aExternalProperties);
 			header('Location: /?action=queue&mode=add&project=' . $sProject . '&env=' . $sEnv);
 			exit;
-		} catch(Exception $Ex) {
+		} catch(\Exception $Ex) {
 			// TODO
 			$this->oSmarty->assign('sStatus', 'Error');
 			$this->oSmarty->assign('sProject', $sProject);

@@ -5,8 +5,7 @@
  *
  * A basic controller example.  Has examples of how to set the
  * response body and status.
- * 
- * @package  app
+ *
  * @extends  Controller
  */
 
@@ -18,7 +17,7 @@ class Controller_Dashboard extends Controller
 
 	/**
 	 * The basic welcome message
-	 * 
+	 *
 	 * @access  public
 	 * @return  Response
 	 */
@@ -31,9 +30,9 @@ class Controller_Dashboard extends Controller
 		foreach($aProjectListByGroup as $aProject)
 		{
 			$aProjectGroupList[$aProject['GROUP']][] = $aProject;
-		}		
+		}
 
-		
+
 		$view->set('aProjectGroupList', $aProjectGroupList);
 
 		$aDeployQueue = DeployQueue::listing();
@@ -46,14 +45,14 @@ class Controller_Dashboard extends Controller
 	public static function action_get_queue()
 	{
 		$iProjectId = Input::post('PROJECT_ID');
-		if(NULL !==  $iProjectId && "NULL" != $iProjectId)
+		if(null !==  $iProjectId && "null" != $iProjectId)
 			$aDeployQueue = DeployQueue::listing($iProjectId);
 		else
 			$aDeployQueue = DeployQueue::listing();
-		
-		$aReturn = array();	
 
-		foreach ($aDeployQueue as $key => $v) 
+		$aReturn = array();
+
+		foreach ($aDeployQueue as $key => $v)
 		{
 			$aReturn["aaData"][] = array(
 				$v["NAME"],
@@ -73,7 +72,7 @@ class Controller_Dashboard extends Controller
 	public static function action_get_graph()
 	{
 		$iProjectId = Input::post('PROJECT_ID');
-		if(NULL !==  $iProjectId && "NULL" != $iProjectId)
+		if(null !==  $iProjectId && "null" != $iProjectId)
 		{
 			$aStat = DeployQueue::statByProject($iProjectId);
 			$sDbRowOrder = "ENVIRONMENT";
@@ -86,7 +85,7 @@ class Controller_Dashboard extends Controller
 		$iNbEntries = count($aStat);
 
 		if(!$iNbEntries) return json_encode(false);
-		
+
 		$aReturn = $aTmp = array();
 
 		// GET MIN & MAX DATE + INTERVAL
@@ -95,7 +94,7 @@ class Controller_Dashboard extends Controller
 		$oMinDate = date_create(Date::forge($iMinDate)->format("%Y-%m-01"));
 		$oMaxDate = date_create(Date::forge($iMaxDate)->format("%Y-%m-01"));
 		$interval = $oMinDate->diff($oMaxDate);
-		$iNbMonth = ($interval->y * 12) + $interval->m; 
+		$iNbMonth = ($interval->y * 12) + $interval->m;
 
 		$aMonth = array();
 		$aMonth[$oMinDate->format('Ym')] = 0;
@@ -104,9 +103,9 @@ class Controller_Dashboard extends Controller
 		{
 			$oDate = $oMinDate->add(new DateInterval('P1M'));
 			$aMonth[$oDate->format('Ym')] = 0;
-			$aResult["categories"][] = $oMinDate->format('F Y');			
-		}	 
-	
+			$aResult["categories"][] = $oMinDate->format('F Y');
+		}
+
 		foreach($aStat as $k=>$v)
 		{
 			if(!isset($aResult["series"][$v[$sDbRowOrder]]["data"]))
@@ -119,7 +118,7 @@ class Controller_Dashboard extends Controller
 		}
 
 		foreach($aTmp as $k => $v)
-		{		
+		{
 			ksort($aTmp[$k]);
 			$aTmp[$k] = array_values($aTmp[$k]);
 		}

@@ -1,5 +1,7 @@
 <?php
-namespace Fuel\Tasks;
+
+namespace Himedia\Padocc;
+
 
 
 
@@ -30,7 +32,7 @@ class Supervisor
  		if(!is_dir($sLogPath))
 		if(false === @mkdir($sLogPath, 0777, true))
 			   throw new \RuntimeException ("Unable to create the deploy log directory : ".$sLogPath);
-    	
+
 	}
 
 	protected static function logDeployInfo($sExecutionId, $sContent)
@@ -70,42 +72,42 @@ class Supervisor
 	{
 		$pPhp = \Config::get('dee.bin.php');
 
-		if(NULL === $pPhp || false !== stristr($pPhp, 'auto'))
+		if(null === $pPhp || false !== stristr($pPhp, 'auto'))
 		{
 			$pPhp = exec('which php');
 
 			if(0 == strlen($pPhp))
 				throw new \RuntimeException ("Unable to find PHP binary. Update your Dee config.");
 		}
-		
+
 		if(false === is_executable($pPhp))
 		{
 			throw new \RuntimeException ("Unable to execute PHP binary in".$pPhp);
 		}
 
-		return $pPhp;	
+		return $pPhp;
 	}
 
 	// TODO
 	// On exception: Remettre le déploy en WAITING
 	public static function run()
 	{
-		
+
     	Supervisor::folderInit();
     	$pPhp = Supervisor::getPhp();
 
-    	
-  	
+
+
 		$aNextDeploy = DeployQueue::getNextToLaunch();
 
 		if(false !== $aNextDeploy)
 		{
-			
+
 			$iDeployQueueId 	= $aNextDeploy['DEPLOY_QUEUE_ID'];
 			$iResult 			= DeployQueue::setInProgess($iDeployQueueId);
 
 			if($iResult)
-			{	
+			{
 				$aNextDeploy 	= DeployQueue::get($iDeployQueueId);
 				$iExecutionId 	= $aNextDeploy['EXECUTION_ID'];
 
@@ -116,16 +118,16 @@ class Supervisor
 				if($iSuccess)
 				{
 					DeployQueue::setEnd($iDeployQueueId, "END_OK");
-					Supervisor::mail('tony.caron@twenga.com', 'Deployment finished', "Deployment finished");	
+					Supervisor::mail('tony.caron@twenga.com', 'Deployment finished', "Deployment finished");
 				}
 				else
 				{
 					DeployQueue::setEnd($iDeployQueueId,"END_ERROR");
 					Supervisor::mail('tony.caron@twenga.com', 'Deployment in Error', "Error : ".Supervisor::$sErrorBuffer);
 				}
-					
+
 			}
-			
+
 		}
 		else
 		{
@@ -143,24 +145,24 @@ class Supervisor
 		$aDeployInfo['ROLLBACK_ID']='';
 		$sParam = ' --param='.base64_encode(json_encode($aDeployInfo));
 		\Cli::write($sCmd.$sParam);
-		$oProc = proc_open($sCmd.$sParam, Supervisor::$aDescriptor, $aPipe, NULL, $_ENV);
+		$oProc = proc_open($sCmd.$sParam, Supervisor::$aDescriptor, $aPipe, null, $_ENV);
 
 		$sBuffer = $sErrbuf = "";
-		while (($sBuffer = fgets($aPipe[FD_READ], BUF_SIZ)) != NULL || ($sErrbuf = fgets($aPipe[FD_ERR], BUF_SIZ)) != NULL) 
+		while (($sBuffer = fgets($aPipe[FD_READ], BUF_SIZ)) != null || ($sErrbuf = fgets($aPipe[FD_ERR], BUF_SIZ)) != null)
 		{
 
 			if (strlen($sBuffer))
 				Supervisor::onMessage($aDeployInfo, $sBuffer);
-            	
+
 
         	if (strlen($sErrbuf))
         	{
 				Supervisor::$sErrorBuffer.=$sErrbuf;
         		Supervisor::onError($aDeployInfo, $sErrbuf);
         	}
-        		
-            	
-		} 
+
+
+		}
 
 		foreach ($aPipe as $pipe)
         	fclose($pipe);
@@ -169,7 +171,7 @@ class Supervisor
 
         return (0 == strlen(Supervisor::$sErrorBuffer));
 
-        	
+
 	}
 
 	protected static function onMessage($aDeployInfo, $sBuffer)
@@ -184,7 +186,7 @@ class Supervisor
 	}
 
 
-    	
+
 
 
 }

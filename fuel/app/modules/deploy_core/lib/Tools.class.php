@@ -1,11 +1,11 @@
 <?php
-namespace Fuel\Tasks;
+
+namespace Himedia\Padocc;
+
 /**
  * Classe outil des inclassables.
  *
- * @category TwengaDeploy
- * @package Lib
- * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
+ * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
 class Tools
 {
@@ -25,7 +25,7 @@ class Tools
         if ($iFileSize < 1024) {
             $iUnit = 1;
             $sUnit = 'o';
-        } else if ($iFileSize < 1024*1024) {
+        } elseif ($iFileSize < 1024*1024) {
             $iUnit = 1024;
             $sUnit = 'Kio';
         } else {

@@ -5,8 +5,7 @@
  *
  * A basic controller example.  Has examples of how to set the
  * response body and status.
- * 
- * @package  app
+ *
  * @extends  Controller
  */
 
@@ -21,7 +20,7 @@ class Controller_Deploy extends Controller
 
 	/**
 	 * The basic welcome message
-	 * 
+	 *
 	 * @access  public
 	 * @return  Response
 	 */
@@ -37,13 +36,13 @@ class Controller_Deploy extends Controller
 		foreach($aProjectListByGroup as $aProject)
 		{
 			$aProjectGroupList[$aProject['GROUP']][] = $aProject;
-		}		
+		}
 
 		$aUserList = User::listing();
 		$view->set('aProjectGroupList', $aProjectGroupList);
-		$view->set('USER_ID', User::getLoggedUserId());		
+		$view->set('USER_ID', User::getLoggedUserId());
 
-		
+
 
 
 
@@ -68,12 +67,12 @@ class Controller_Deploy extends Controller
 
 		// TODO message waring AIR
 		if(DeployQueue::isInProgress($iProjectId) === true) die;
-		
+
 
 		$iDeployQueueId = DeployQueue::add($iProjectId, $iProjectConfigurationId, $sEnvironment, $aExternalProperty, $iInstigatorId);
 
 		return json_encode($iDeployQueueId);
-	
+
 	}
 
 	public function action_get_project_configurations()
@@ -96,7 +95,7 @@ class Controller_Deploy extends Controller
 	{
 		$sLogPath = \Config::get('log_path');
 		$aDeploy = DeployQueue::get($iDeployQueueId);
-		
+
 		if(empty($aDeploy['EXECUTION_ID']))
 			return false;
 
@@ -108,7 +107,7 @@ class Controller_Deploy extends Controller
 
 		//TODO s'occuper d'afficher les erreur
 		$sError = "";
-		
+
 		$sRawLogs = file_get_contents($sFile);
 		$aRawLogs = explode("\n", (string)$sRawLogs);
         $sErrors = nl2br((string)$sError, true);
@@ -117,7 +116,7 @@ class Controller_Deploy extends Controller
         $iSum = 0;
         $iLastTs = 0;
         foreach ($aRawLogs as $sLine) {
-            if ( ! empty($sLine)) {
+            if (! empty($sLine)) {
                 preg_match('/^([^;]+);(.*)$/', $sLine, $aMatches);
                 $sTimestamp = $aMatches[1];
                 $sMsg = $aMatches[2];
@@ -175,12 +174,12 @@ class Controller_Deploy extends Controller
 
         return array($aLogs, $sErrors);
 	}
-	
+
 	//public function action_get_logs ($sProject, $sEnv, $sExecutionId)
 	public function action_get_logs ()
 	{
 		$iDeployQueueId = Input::post('DEPLOY_QUEUE_ID');
-		if(NULL == $iDeployQueueId) return json_encode('error');
+		if(null == $iDeployQueueId) return json_encode('error');
 
 		$aLog = self::getLogs($iDeployQueueId);
 
@@ -188,10 +187,10 @@ class Controller_Deploy extends Controller
 
 		$sErrors = $aLog[1];
 		$aLogs = $aLog[0];
-		
+
 		$sInfos = self::formatLogs($aLogs);
-		
-		if ( ! empty($sErrors)) {
+
+		if (! empty($sErrors)) {
 			$sErrors = '<h2 class="failure">Error message:</h3><div class="error_msg">' . "\n" . $sErrors . '</div>' . "\n";
 		}
 		 $sOut = $sInfos . $sErrors;
@@ -219,27 +218,27 @@ class Controller_Deploy extends Controller
             // Gestion du type de la ligne :
             if (preg_match('/^\s*\[START\]|START/', $msg) === 1) {
                 $sClass = 'start';
-            } else if (preg_match('/^\s*(?:\[DEBUG\]|DEBUG )(.*)$/', $msg, $aM2) === 1) {
+            } elseif (preg_match('/^\s*(?:\[DEBUG\]|DEBUG )(.*)$/', $msg, $aM2) === 1) {
                 $sClass = 'debug';
                 $msg = $aM2[1];
-            } else if (preg_match('/^\s*(?:\[OK\]|OK)/', $msg) === 1) {
+            } elseif (preg_match('/^\s*(?:\[OK\]|OK)/', $msg) === 1) {
                 $sClass = 'ok';
-            } else if (preg_match('/^\s*(?:\[MAILTO\]|MAILTO )(.*)/', $msg, $aM2) === 1) {
+            } elseif (preg_match('/^\s*(?:\[MAILTO\]|MAILTO )(.*)/', $msg, $aM2) === 1) {
                 $sClass = 'mail';
                 $msg = 'mailto: ' . $aM2[1];
-            } else if (preg_match('/^\s*(?:\[WARNING\]|WARNING)(.*)$/', $msg, $aMatches) === 1) {
+            } elseif (preg_match('/^\s*(?:\[WARNING\]|WARNING)(.*)$/', $msg, $aMatches) === 1) {
                 $sClass = 'warning';
-                if ( ! empty($aMatches[1])) {
+                if (! empty($aMatches[1])) {
                     $iNbWarnings++;
                     $msg = $aMatches[1];
                 } else {
                     $msg = "Completed with $iNbWarnings warning" . ($iNbWarnings > 1 ? 's' : '') . '.';
                 }
-            } else if (preg_match('/^\s*(?:\[ERROR\]|ERROR)/', $msg) === 1) {
+            } elseif (preg_match('/^\s*(?:\[ERROR\]|ERROR)/', $msg) === 1) {
                 $sClass = 'failure';
-            } else if (preg_match('/^\s*Execute( tasks|\s+\'\d+(\.\d+)*_Task[^\']*\'\s+task)/i', $msg) === 1) {
+            } elseif (preg_match('/^\s*Execute( tasks|\s+\'\d+(\.\d+)*_Task[^\']*\'\s+task)/i', $msg) === 1) {
                 $sClass = 'task_execute';
-            } else if (preg_match('/^\s*Check( tasks|\s+\'\d+(\.\d+)*_Task[^\']*\'\s+task)/i', $msg) === 1) {
+            } elseif (preg_match('/^\s*Check( tasks|\s+\'\d+(\.\d+)*_Task[^\']*\'\s+task)/i', $msg) === 1) {
                 $sClass = 'task_check';
             } else {
                 $sClass = 'normal';
@@ -250,7 +249,7 @@ class Controller_Deploy extends Controller
 
             if ($aRow['sum'] < 5) {
                 $sum = '~0';
-            } else if ($aRow['sum'] < 10*100) {
+            } elseif ($aRow['sum'] < 10*100) {
                 $sum = number_format($aRow['sum']/100, 1, '.', ' ') . 's';
             } else {
                 $sum = ($aRow['sum']>=60*100 ? floor($aRow['sum']/100/60) . 'min ' : '') . round(($aRow['sum']%6000)/100) . 's';
@@ -258,7 +257,7 @@ class Controller_Deploy extends Controller
 
             if ($aRow['section'] < 5) {
                 $section = '~0';
-            } else if ($aRow['section'] < 10*100) {
+            } elseif ($aRow['section'] < 10*100) {
                 $section = number_format($aRow['section']/100, 1, '.', ' ') . 's';
             } else {
                 $section = ($aRow['section']>=60*100 ? floor($aRow['section']/100/60) . 'min ' : '') . round(($aRow['section']%6000)/100) . 's';

@@ -1,14 +1,14 @@
 <?php
-namespace Fuel\Tasks;
+
+namespace Himedia\Padocc;
+
 
 /**
  * Pour faciliter l'exécution des commandes shell.
  *
- * @category TwengaDeploy
- * @package Lib
- * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
+ * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
-interface Shell_Interface
+interface ShellInterface
 {
 
     /**
@@ -33,9 +33,9 @@ interface Shell_Interface
      *         'error' => (string) sortie d'erreur standard,
      *     ), ...
      * )
-     * @throws RuntimeException si le moindre code de retour Shell non nul apparaît.
-     * @throws RuntimeException si une valeur hors de $aValues apparaît dans les entrées 'value'.
-     * @throws RuntimeException s'il manque des valeurs de $aValues dans le résultat final.
+     * @throws \RuntimeException si le moindre code de retour Shell non nul apparaît.
+     * @throws \RuntimeException si une valeur hors de $aValues apparaît dans les entrées 'value'.
+     * @throws \RuntimeException s'il manque des valeurs de $aValues dans le résultat final.
      */
     public function parallelize (array $aValues, $sPattern, $iMax=DEPLOYMENT_PARALLELIZATION_MAX_NB_PROCESSES);
 
@@ -45,7 +45,7 @@ interface Shell_Interface
      *
      * @param string $sCmd
      * @return array tableau indexé du flux de sortie shell découpé par ligne
-     * @throws RuntimeException en cas d'erreur shell
+     * @throws \RuntimeException en cas d'erreur shell
      */
     public function exec ($sCmd);
 
@@ -57,7 +57,7 @@ interface Shell_Interface
      * @param string $sParam paramètre du pattern $sPatternCmd, permettant en plus de décider si l'on
      * doit encapsuler la commande dans un SSH (si serveur distant) ou non.
      * @return array tableau indexé du flux de sortie shell découpé par ligne
-     * @throws RuntimeException en cas d'erreur shell
+     * @throws \RuntimeException en cas d'erreur shell
      * @see isRemotePath()
      */
     public function execSSH ($sPatternCmd, $sParam);
@@ -90,7 +90,7 @@ interface Shell_Interface
      *
      * @param string $sPath chemin à tester, de la forme [user@server:]/path
      * @return int l'une des constantes de Shell_PathStatus
-     * @throws RuntimeException en cas d'erreur shell
+     * @throws \RuntimeException en cas d'erreur shell
      * @see Shell_PathStatus
      * @see _aFileStatus
      */
@@ -110,7 +110,7 @@ interface Shell_Interface
      * @param string $sPath chemin à tester, sans mention de serveur
      * @param array $aServers liste de serveurs sur lesquels faire la demande de statut
      * @return array tableau associatif listant par serveur (clé) le status (valeur, constante de Shell_PathStatus)
-     * @throws RuntimeException en cas d'erreur shell
+     * @throws \RuntimeException en cas d'erreur shell
      * @see getPathStatus()
      */
     public function getParallelSSHPathStatus ($sPath, array $aServers);
@@ -124,7 +124,7 @@ interface Shell_Interface
      * @return array triplet dont la 1re valeur (bool) indique si le chemin spécifié commence par
      * '[user@]servername_or_ip:', la 2e (string) est le serveur (ou chaîne vide si $sPath est local),
      * et la 3e (string) est le chemin dépourvu de l'éventuel serveur.
-     * @throws DomainException si syntaxe invalide (s'il reste des paramètres non résolus par exemple)
+     * @throws \DomainException si syntaxe invalide (s'il reste des paramètres non résolus par exemple)
      */
     public function isRemotePath ($sPath);
 
@@ -141,7 +141,7 @@ interface Shell_Interface
      * @param bool $bIsDestFile précise si le chemin de destination est un simple fichier ou non,
      * information nécessaire si l'on doit créer une partie de ce chemin si inexistant
      * @return array tableau indexé du flux de sortie shell découpé par ligne
-     * @throws RuntimeException en cas d'erreur shell
+     * @throws \RuntimeException en cas d'erreur shell
      */
     public function copy ($sSrcPath, $sDestPath, $bIsDestFile=false);
 
@@ -151,8 +151,8 @@ interface Shell_Interface
      * @param string $sLinkPath nom du lien, au format [[user@]hostname_or_ip:]/path
      * @param string $sTargetPath cible sur laquelle faire pointer le lien, au format [[user@]hostname_or_ip:]/path
      * @return array tableau indexé du flux de sortie shell découpé par ligne
-     * @throws DomainException si les chemins référencent des serveurs différents
-     * @throws RuntimeException en cas d'erreur shell
+     * @throws \DomainException si les chemins référencent des serveurs différents
+     * @throws \RuntimeException en cas d'erreur shell
      */
     public function createLink ($sLinkPath, $sTargetPath);
 
@@ -172,8 +172,8 @@ interface Shell_Interface
      *
      * @param string $sPath chemin à supprimer, au format [[user@]hostname_or_ip:]/path
      * @return array tableau indexé du flux de sortie shell découpé par ligne
-     * @throws DomainException si chemin invalide (garde-fou)
-     * @throws RuntimeException en cas d'erreur shell
+     * @throws \DomainException si chemin invalide (garde-fou)
+     * @throws \RuntimeException en cas d'erreur shell
      * @see getPathStatus()
      */
     public function remove ($sPath);
@@ -184,7 +184,7 @@ interface Shell_Interface
      * @param string $sSrcPath au format [[user@]hostname_or_ip:]/path
      * @param string $sBackupPath au format [[user@]hostname_or_ip:]/path
      * @return array tableau indexé du flux de sortie shell découpé par ligne
-     * @throws RuntimeException en cas d'erreur shell
+     * @throws \RuntimeException en cas d'erreur shell
      */
     public function backup ($sSrcPath, $sBackupPath);
 
@@ -195,7 +195,7 @@ interface Shell_Interface
      * @param string $sMode droits utilisateur du chemin appliqués même si ce dernier existe déjà.
      * Par exemple '644'.
      * @return array tableau indexé du flux de sortie shell découpé par ligne
-     * @throws RuntimeException en cas d'erreur shell
+     * @throws \RuntimeException en cas d'erreur shell
      */
     public function mkdir ($sPath, $sMode='');
 
@@ -212,8 +212,8 @@ interface Shell_Interface
      * @param array $aExcludedPaths chemins à transmettre aux paramètres --exclude de la commande shell rsync
      * @return array tableau indexé du flux de sortie shell des commandes rsync exécutées,
      * découpé par ligne et analysé par _resumeSyncResult()
-     * @throws RuntimeException en cas d'erreur shell
-     * @throws RuntimeException car non implémenté quand plusieurs $mDestPath et $sSrcPath sont distants
+     * @throws \RuntimeException en cas d'erreur shell
+     * @throws \RuntimeException car non implémenté quand plusieurs $mDestPath et $sSrcPath sont distants
      */
     public function sync ($sSrcPath, $sDestPath, array $aValues=array(),
             array $aIncludedPaths=array(), array $aExcludedPaths=array());

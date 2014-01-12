@@ -1,13 +1,13 @@
 <?php
-namespace Fuel\Tasks;
+
+namespace Himedia\Padocc;
+
 
 /**
  * Collection des statuts possibles pour un chemin du système de fichiers.
  *
- * @category TwengaDeploy
- * @package Lib
- * @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
- * @see Shell_Interface::getPathStatus()
+ * @author Geoffroy AUBRY <gaubry@hi-media.com>
+ * @see ShellInterface::getPathStatus()
  */
 final class Shell_PathStatus
 {

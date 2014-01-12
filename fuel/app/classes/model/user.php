@@ -2,7 +2,6 @@
 /**
  * Management of users
  * @category Model
- * @package Tony CARON <caron.tony@gmail.com>
  */
 
 namespace Model;
@@ -16,7 +15,7 @@ class User extends \Model {
      * @param string $sFirstName First name
      * @param string $sLastname Last name
      * @param string $sEmail User's email
-     * @return array 
+     * @return array
      */
     public static function add($sFirstName, $sLastname, $sEmail)
     {
@@ -49,8 +48,8 @@ class User extends \Model {
 
     /**
      * Returen if a uers is logged
-     *    
-     * @return bool 
+     *
+     * @return bool
      */
     public static function isLogged()
     {
@@ -60,7 +59,7 @@ class User extends \Model {
     /**
      * Return current logged user User_Id
      *
-     * @return int 
+     * @return int
      */
     public static function getLoggedUserId()
     {
@@ -99,7 +98,7 @@ class User extends \Model {
     }*/
 
     /**
-     * Return if an user exists 
+     * Return if an user exists
      *
      * @param string $sEmail User's mail
      */
