@@ -5,7 +5,6 @@ namespace Himedia\Padocc\Task\Base;
 use Himedia\Padocc\AttributeProperties;
 use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Task;
-use Psr\Log\LoggerInterface;
 
 /**
  * Permet de générer des fichiers sur la base de templates texte incluant des propriétés.

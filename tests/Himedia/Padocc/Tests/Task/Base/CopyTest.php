@@ -2,12 +2,15 @@
 
 namespace Himedia\Padocc\Tests\Task\Base;
 
+use GAubry\Shell\ShellAdapter;
 use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
 use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
+use Himedia\Padocc\Properties\Adapter;
 use Himedia\Padocc\Task\Base\Copy;
 use Himedia\Padocc\Task\Base\Project;
 use Himedia\Padocc\Tests\PadoccTestCase;
+use Psr\Log\NullLogger;
 
 /**
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
@@ -41,10 +44,9 @@ class CopyTest extends PadoccTestCase
      * @param string $sCmd commande Shell qui aurait dûe être exécutée.
      * @see $aShellExecCmds
      */
-   public function shellExecCallback ($sCmd)
+    public function shellExecCallback ($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
-        return array();
     }
 
     /**
@@ -53,9 +55,9 @@ class CopyTest extends PadoccTestCase
      */
     public function setUp ()
     {
-        $oBaseLogger = new Logger_Adapter(LoggerInterface::WARNING);
-        $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
+        $oLogger = new NullLogger();
 
+        /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
         $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
@@ -164,7 +166,12 @@ class CopyTest extends PadoccTestCase
      */
     public function testExecute_WithSrcFile ()
     {
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array($this->oDIContainer->getShellAdapter(), $this->aConfig)
+        );
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
@@ -191,7 +198,12 @@ class CopyTest extends PadoccTestCase
      */
     public function testExecute_WithSrcDir ()
     {
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array($this->oDIContainer->getShellAdapter(), $this->aConfig)
+        );
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
@@ -218,7 +230,12 @@ class CopyTest extends PadoccTestCase
      */
     public function testExecute_WithSrcFileAndJoker ()
     {
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array($this->oDIContainer->getShellAdapter(), $this->aConfig)
+        );
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
@@ -245,7 +262,12 @@ class CopyTest extends PadoccTestCase
      */
     public function testExecute_WithSrcDirAndSymLinks ()
     {
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array($this->oDIContainer->getShellAdapter(), $this->aConfig)
+        );
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('true'));
@@ -270,11 +292,13 @@ class CopyTest extends PadoccTestCase
         $oTaskCopy = Copy::getNewInstance(array('src' => '/path/to/srcdir', 'destdir' => 'user@server:/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
         $oTaskCopy->setUp();
         $oTaskCopy->execute();
+
+        $sSshOptions = $GLOBALS['aConfig']['GAubry\Shell']['ssh_options'];
         $this->assertEquals(array(
-            'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
+            "ssh $sSshOptions -T user@server /bin/bash <<EOF\n"
                 . 'mkdir -p "/path/to/destdir_releases/12345/srcdir"' . "\n"
                 . 'EOF' . "\n",
-            'scp -rpq "/path/to/srcdir/"* "user@server:/path/to/destdir_releases/12345/srcdir"'
+            "scp $sSshOptions -rpq \"/path/to/srcdir/\"* \"user@server:/path/to/destdir_releases/12345/srcdir\""
         ), $this->aShellExecCmds);
     }
 }

@@ -2,11 +2,13 @@
 
 namespace Himedia\Padocc\Tests\Task\Base;
 
+use GAubry\Shell\ShellAdapter;
 use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
 use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
 use Himedia\Padocc\Task\Base\Project;
 use Himedia\Padocc\Tests\PadoccTestCase;
+use Psr\Log\NullLogger;
 
 /**
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
@@ -51,9 +53,9 @@ class RenameTest extends PadoccTestCase
      */
     public function setUp ()
     {
-        $oBaseLogger = new Logger_Adapter(LoggerInterface::WARNING);
-        $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
+        $oLogger = new NullLogger();
 
+        /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
         $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();

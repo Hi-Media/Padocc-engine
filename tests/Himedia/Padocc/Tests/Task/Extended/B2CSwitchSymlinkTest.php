@@ -2,6 +2,7 @@
 
 namespace Himedia\Padocc\Tests\Task\Extended;
 
+use GAubry\Shell\ShellAdapter;
 use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
 use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
@@ -76,6 +77,7 @@ class B2CSwitchSymlinkTest extends PadoccTestCase
         $oLogger->expects($this->any())->method('log')->will($this->returnCallback(array($this, 'logCallback')));
         $this->aMessages = array();
 
+        /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
         $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
@@ -131,7 +133,7 @@ class B2CSwitchSymlinkTest extends PadoccTestCase
             'RuntimeException',
             'bla bla'
         );
-        $sResult = $oMethod->invokeArgs($oTask, array('server1', false));
+        $oMethod->invokeArgs($oTask, array('server1', false));
     }
 
     /**
@@ -157,7 +159,7 @@ class B2CSwitchSymlinkTest extends PadoccTestCase
         $oMethod = $oClass->getMethod('_setCluster');
         $oMethod->setAccessible(true);
 
-        $sResult = $oMethod->invokeArgs($oTask, array('server1', false));
+        $oMethod->invokeArgs($oTask, array('server1', false));
         $this->assertEquals(
             array("Remove 'server1' server from the cluster.", "[WARNING] bla bla"),
             $this->aMessages[LoggerInterface::INFO]
