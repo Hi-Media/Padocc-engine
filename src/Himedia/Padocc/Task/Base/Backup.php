@@ -41,14 +41,14 @@ class Backup extends Task
     /**
      * Phase de traitements centraux de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function centralExecute ()
     {
         parent::centralExecute();
         $this->oLogger->info('+++');
-        $this->oShell->backup($this->aAttributes['src'], $this->aAttributes['destfile']);
+        $this->oShell->backup($this->aAttValues['src'], $this->aAttValues['destfile']);
         $this->oLogger->info('---');
     }
 }

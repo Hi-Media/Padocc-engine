@@ -48,7 +48,7 @@ class ExternalProperty extends Task
     /**
      * Phase de traitements centraux de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function centralExecute ()
@@ -56,15 +56,15 @@ class ExternalProperty extends Task
         parent::centralExecute();
         $this->oLogger->info('+++');
         try {
-            $sValue = $this->oProperties->getProperty($this->aAttributes['name']);
+            $sValue = $this->oProperties->getProperty($this->aAttValues['name']);
         } catch (\UnexpectedValueException $oException) {
-            $sMsg = "Property '" . $this->aAttributes['name'] . "' undefined!";
+            $sMsg = "Property '" . $this->aAttValues['name'] . "' undefined!";
             throw new \UnexpectedValueException($sMsg, 1, $oException);
         }
-        $sMsg = "Set external property '" . $this->aAttributes['name'] . "' (description: '"
-              . $this->aAttributes['description'] . "') to '$sValue'.";
+        $sMsg = "Set external property '" . $this->aAttValues['name'] . "' (description: '"
+              . $this->aAttValues['description'] . "') to '$sValue'.";
         $this->oLogger->info($sMsg);
-        $this->oProperties->setProperty($this->aAttributes['name'], $sValue);
+        $this->oProperties->setProperty($this->aAttValues['name'], $sValue);
         $this->oLogger->info('---');
     }
 }

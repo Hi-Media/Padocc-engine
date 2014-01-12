@@ -50,7 +50,7 @@ class SwitchSymlinkTest extends \PHPUnit_Framework_TestCase
         $oBaseLogger = new Logger_Adapter(LoggerInterface::WARNING);
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
 
-        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($oLogger));
+        $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
         $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
@@ -68,14 +68,14 @@ class SwitchSymlinkTest extends \PHPUnit_Framework_TestCase
 
         $oNumbering = new Numbering_Adapter();
 
-        $this->oDIContainer = new ServiceContainer();
+        $this->oDIContainer = new DIContainer();
         $this->oDIContainer
-            ->setLogAdapter($oLogger)
+            ->setLogger($oLogger)
             ->setPropertiesAdapter($oProperties)
             ->setShellAdapter($oMockShell)
             ->setNumberingAdapter($oNumbering);
 
-        $this->oMockProject = $this->getMock('Project', array(), array(), '', false);
+        $this->oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
     }
 
     /**
@@ -237,7 +237,7 @@ class SwitchSymlinkTest extends \PHPUnit_Framework_TestCase
             'target' => $oPropertiesAdapter->getProperty('basedir') . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX
                       . '/' . $oPropertiesAdapter->getProperty('execution_id'),
             'server' => '${' . Task_Base_Environment::SERVERS_CONCERNED_WITH_BASE_DIR . '}'
-        ), 'aAttributes', $oTask);
+        ), 'aAttValues', $oTask);
     }
 
     /**
@@ -265,7 +265,7 @@ class SwitchSymlinkTest extends \PHPUnit_Framework_TestCase
             'target' => $oPropertiesAdapter->getProperty('basedir') . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX
                       . '/' . $oPropertiesAdapter->getProperty('rollback_id'),
             'server' => '${' . Task_Base_Environment::SERVERS_CONCERNED_WITH_BASE_DIR . '}'
-        ), 'aAttributes', $oTask);
+        ), 'aAttValues', $oTask);
     }
 
     /**

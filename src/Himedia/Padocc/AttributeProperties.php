@@ -2,6 +2,8 @@
 
 namespace Himedia\Padocc;
 
+use GAubry\Shell\PathStatus;
+
 /**
  * Collection des propriétés possibles pour un attribut de tâche.
  * Ces propriétés sont manipulées au sein de champs de bits dans la classe Task.
@@ -274,7 +276,7 @@ class AttributeProperties
                     ($iProperties & self::SRC_PATH) > 0
                     && preg_match('#\*|\?|\$\{[^}]*\}#', $sValue) === 0
                     && $this->oDIContainer->getShellAdapter()->getPathStatus($sValue)
-                        === Shell_PathStatus::STATUS_NOT_EXISTS
+                        === PathStatus::STATUS_NOT_EXISTS
             ) {
                 throw new \UnexpectedValueException("File or directory '$sValue' not found!");
             }

@@ -45,15 +45,15 @@ class Property extends Task
     /**
      * Phase de traitements centraux de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function check ()
     {
         parent::centralExecute();
-        $sMsg = "+++Set internal property '" . $this->aAttributes['name'] . "' to '"
-              . $this->aAttributes['value'] . "'.---";
+        $sMsg = "+++Set internal property '" . $this->aAttValues['name'] . "' to '"
+              . $this->aAttValues['value'] . "'.---";
         $this->oLogger->info($sMsg);
-        $this->oProperties->setProperty($this->aAttributes['name'], $this->aAttributes['value']);
+        $this->oProperties->setProperty($this->aAttValues['name'], $this->aAttValues['value']);
     }
 }

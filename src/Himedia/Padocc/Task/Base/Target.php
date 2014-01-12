@@ -195,7 +195,7 @@ class Target extends WithProperties
      */
     private function getTaskInstances (\SimpleXMLElement $oTarget, Project $oProject)
     {
-        $this->oLogger->info("Initialize tasks of target '" . $this->aAttributes['name'] . "'.");
+        $this->oLogger->info("Initialize tasks of target '" . $this->aAttValues['name'] . "'.");
         $aAvailableTasks = self::getAvailableTasks();
 
         // Mise à plat des tâches car SimpleXML regroupe celles successives de même nom
@@ -240,14 +240,14 @@ class Target extends WithProperties
     {
         parent::check();
 
-        if (! empty($this->aAttributes['mailto'])) {
+        if (! empty($this->aAttValues['mailto'])) {
             $aSplittedValues = preg_split(
                 AttributeProperties::$sMultiValuedSep,
-                trim($this->aAttributes['mailto']),
+                trim($this->aAttValues['mailto']),
                 -1,
                 PREG_SPLIT_NO_EMPTY
             );
-            $this->aAttributes['mailto'] = implode(' ', $aSplittedValues);
+            $this->aAttValues['mailto'] = implode(' ', $aSplittedValues);
         }
     }
 
@@ -267,21 +267,21 @@ class Target extends WithProperties
     /**
      * Phase de pré-traitements de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::preExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function preExecute ()
     {
         parent::preExecute();
-        if (! empty($this->aAttributes['mailto'])) {
-            $this->oLogger->info('+++[MAILTO] ' . $this->aAttributes['mailto'] . '---');
+        if (! empty($this->aAttValues['mailto'])) {
+            $this->oLogger->info('+++[MAILTO] ' . $this->aAttValues['mailto'] . '---');
         }
     }
 
     /**
      * Phase de traitements centraux de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function centralExecute ()

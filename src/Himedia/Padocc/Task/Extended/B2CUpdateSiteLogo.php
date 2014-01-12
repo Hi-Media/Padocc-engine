@@ -63,7 +63,7 @@ class B2CUpdateSiteLogo extends Task
     /**
      * Phase de traitements centraux de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function centralExecute ()
@@ -71,7 +71,7 @@ class B2CUpdateSiteLogo extends Task
         parent::centralExecute();
         $this->oLogger->info('+++Update SITE_LOGO (DB & MMCACHE)+++');
 
-        $this->aAttributes['host'] = $this->expandPath($this->aAttributes['host']);
+        $this->aAttValues['host'] = $this->expandPath($this->aAttValues['host']);
         $aMemCache = $aTmp = array();
 
         $oDb = mysql_connect('mmas1.prod', 'twenga', 'topproducts');
@@ -80,7 +80,7 @@ class B2CUpdateSiteLogo extends Task
             throw new \Exception('MySQL Connection Database Error: ' . mysql_error());
         }
 
-        foreach($this->aAttributes['host'] as $v)
+        foreach($this->aAttValues['host'] as $v)
         {
             $aMemCache[$v] = new \Memcache();
             if(!$aMemCache[$v]->connect($v, 11700)){

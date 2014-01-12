@@ -115,8 +115,8 @@ class B2CSwitchSymlink extends SwitchSymlink
 
         $aAttrToInit = array('sysopsnotifications', 'addSQLTwBuild', 'clusterRemoving', 'clusterReintegration');
         foreach ($aAttrToInit as $sAttrName) {
-            if (! isset($this->aAttributes[$sAttrName])) {
-                $this->aAttributes[$sAttrName] = 'false';
+            if (! isset($this->aAttValues[$sAttrName])) {
+                $this->aAttValues[$sAttrName] = 'false';
             }
         }
     }
@@ -124,7 +124,7 @@ class B2CSwitchSymlink extends SwitchSymlink
     /**
      * Phase de pré-traitements de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::preExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function preExecute ()
@@ -132,7 +132,7 @@ class B2CSwitchSymlink extends SwitchSymlink
         parent::preExecute();
 
         $this->oLogger->info('+++');
-        if ($this->aAttributes['sysopsnotifications'] == 'true') {
+        if ($this->aAttValues['sysopsnotifications'] == 'true') {
             $sEnv = $this->oProperties->getProperty('environment_name');
             $sID = $this->oProperties->getProperty('execution_id');
             $this->_sendSysopsNotification('MEP-activation', 2, "Deploy to $sEnv servers (#$sID) is switching...");
@@ -143,7 +143,7 @@ class B2CSwitchSymlink extends SwitchSymlink
     /**
      * Phase de traitements centraux de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function centralExecute ()
@@ -161,14 +161,14 @@ class B2CSwitchSymlink extends SwitchSymlink
                 foreach ($aServers as $sServer) {
                     $this->oLogger->info("Switch '$sServer' server:+++");
 
-                    if ($this->aAttributes['clusterRemoving'] == 'true') {
+                    if ($this->aAttValues['clusterRemoving'] == 'true') {
                         $this->_setCluster($sServer, false);
                     }
 
                     // Switch du lien symbolique :
                     $aAttributes = array(
-                        'src' => $this->aAttributes['src'],
-                        'target' => $this->aAttributes['target'],
+                        'src' => $this->aAttValues['src'],
+                        'target' => $this->aAttValues['target'],
                         'server' => $sServer
                     );
                     $oLinkTask = Link::getNewInstance(
@@ -179,7 +179,7 @@ class B2CSwitchSymlink extends SwitchSymlink
 
                     $this->_restartServerApache($sServer);
                     $this->_clearServerSmartyCaches($sServer);
-                    if ($this->aAttributes['clusterReintegration'] == 'true') {
+                    if ($this->aAttValues['clusterReintegration'] == 'true') {
                         $this->_setCluster($sServer, true);
                     }
                     $this->oLogger->info('---');
@@ -188,14 +188,14 @@ class B2CSwitchSymlink extends SwitchSymlink
                 // Switch des symlinks
                 // des éventuels serveurs de Task_Base_Environment::SERVERS_CONCERNED_WITH_BASE_DIR
                 // non inclus dans ${WEB_SERVERS}, comme les schedulers par exemple...
-                $aAllServers = $this->expandPath($this->aAttributes['server']);
+                $aAllServers = $this->expandPath($this->aAttValues['server']);
                 $aDiff = array_diff($aAllServers, $aServers);
                 if (count($aDiff) > 0) {
                     $this->oLogger->info('Switch other servers: ' . implode(', ', $aDiff) . '.+++');
                     $this->oProperties->setProperty('remaining_servers_to_switch', implode(' ', $aDiff));
                     $aAttributes = array(
-                        'src' => $this->aAttributes['src'],
-                        'target' => $this->aAttributes['target'],
+                        'src' => $this->aAttValues['src'],
+                        'target' => $this->aAttValues['target'],
                         'server' => '${remaining_servers_to_switch}'
                     );
                     $oLinkTask = Link::getNewInstance(
@@ -217,7 +217,7 @@ class B2CSwitchSymlink extends SwitchSymlink
     /**
      * Phase de post-traitements de l'exécution de la tâche.
      * Elle devrait systématiquement finir par "parent::postExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function postExecute ()
@@ -227,10 +227,10 @@ class B2CSwitchSymlink extends SwitchSymlink
         $sID = $sRollbackID !== '' ? $sRollbackID : $this->oProperties->getProperty('execution_id');
         $this->oLogger->info('+++');
 
-        if ($this->aAttributes['addSQLTwBuild'] == 'true') {
+        if ($this->aAttValues['addSQLTwBuild'] == 'true') {
             $this->_addSQLTwBuild($sID, $sEnv);
         }
-        if ($this->aAttributes['sysopsnotifications'] == 'true') {
+        if ($this->aAttValues['sysopsnotifications'] == 'true') {
             $this->_sendSysopsNotification('MEP-activation', 0, "Deploy to $sEnv servers (#$sID) finished.");
         }
         $this->_oHTTPTask->execute();

@@ -78,16 +78,16 @@ class Sync extends Task
         parent::check();
 
         if (
-                preg_match('#\*|\?|/$#', $this->aAttributes['src']) === 0
-                && $this->oShell->getPathStatus($this->aAttributes['src']) === PathStatus::STATUS_DIR
+                preg_match('#\*|\?|/$#', $this->aAttValues['src']) === 0
+                && $this->oShell->getPathStatus($this->aAttValues['src']) === PathStatus::STATUS_DIR
         ) {
-            $this->aAttributes['destdir'] .= '/' . substr(strrchr($this->aAttributes['src'], '/'), 1);
-            $this->aAttributes['src'] .= '/';
+            $this->aAttValues['destdir'] .= '/' . substr(strrchr($this->aAttValues['src'], '/'), 1);
+            $this->aAttValues['src'] .= '/';
         }
 
 
         list($bIsDestRemote, $sDestServer, $sDestRawPath) =
-                    $this->oShell->isRemotePath($this->aAttributes['src']);
+                    $this->oShell->isRemotePath($this->aAttValues['src']);
 
         // Check remote server
         if(true === $bIsDestRemote)
@@ -107,7 +107,7 @@ class Sync extends Task
         }
 
         list($bIsDestRemote, $sDestServer, $sDestRawPath) =
-                    $this->oShell->isRemotePath($this->aAttributes['destdir']);
+                    $this->oShell->isRemotePath($this->aAttValues['destdir']);
 
         // Check remote server
         if(true === $bIsDestRemote)
@@ -128,29 +128,29 @@ class Sync extends Task
     /**
      * Phase de traitements centraux de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function centralExecute ()
     {
         parent::centralExecute();
-        $sMsg = "+++Synchronize '" . $this->aAttributes['src'] . "' with '" . $this->aAttributes['destdir'] . "'+++";
+        $sMsg = "+++Synchronize '" . $this->aAttValues['src'] . "' with '" . $this->aAttValues['destdir'] . "'+++";
         $this->oLogger->info($sMsg);
 
         // include / exclude :
-        $aIncludedPaths = (empty($this->aAttributes['include'])
+        $aIncludedPaths = (empty($this->aAttValues['include'])
                           ? array()
-                          : explode(' ', $this->aAttributes['include']));
-        $aExcludedPaths = (empty($this->aAttributes['exclude'])
+                          : explode(' ', $this->aAttValues['include']));
+        $aExcludedPaths = (empty($this->aAttValues['exclude'])
                           ? array()
-                          : explode(' ', $this->aAttributes['exclude']));
+                          : explode(' ', $this->aAttValues['exclude']));
 
         list($bIsDestRemote, $sDestServer, $sDestRawPath) =
-            $this->oShell->isRemotePath($this->aAttributes['destdir']);
+            $this->oShell->isRemotePath($this->aAttValues['destdir']);
         $sDestPath = ($bIsDestRemote ? '[]:' . $sDestRawPath : $sDestRawPath);
         foreach ($this->processPath($sDestPath) as $sDestRealPath) {
             $aResults = $this->oShell->sync(
-                $this->processSimplePath($this->aAttributes['src']),
+                $this->processSimplePath($this->aAttValues['src']),
                 $this->processSimplePath($sDestRealPath),
                 $this->processPath($sDestServer),
                 $aIncludedPaths,

@@ -70,7 +70,7 @@ class B2CSwitchSymlinkTest extends \PHPUnit_Framework_TestCase
         $oLogger->expects($this->any())->method('log')->will($this->returnCallback(array($this, 'logCallback')));
         $this->aMessages = array();
 
-        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($oLogger));
+        $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
         $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
@@ -78,14 +78,14 @@ class B2CSwitchSymlinkTest extends \PHPUnit_Framework_TestCase
 
         $oNumbering = new Numbering_Adapter();
 
-        $this->oDIContainer = new ServiceContainer();
+        $this->oDIContainer = new DIContainer();
         $this->oDIContainer
-            ->setLogAdapter($oLogger)
+            ->setLogger($oLogger)
             ->setPropertiesAdapter($oProperties)
             ->setShellAdapter($oMockShell)
             ->setNumberingAdapter($oNumbering);
 
-        $this->oMockProject = $this->getMock('Project', array(), array(), '', false);
+        $this->oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
     }
 
     /**
@@ -108,7 +108,7 @@ class B2CSwitchSymlinkTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo('/home/prod/twenga/tools/wwwcluster -s server1 -d'))
             ->will($this->throwException(new \RuntimeException('bla bla', 1)));
 
-        $oMockProperties = $this->getMock('Adapter', array('getProperty'), array($oMockShell));
+        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($oMockShell));
         $oMockProperties->expects($this->any())->method('getProperty')
             ->will($this->returnValue('-'));
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
@@ -138,7 +138,7 @@ class B2CSwitchSymlinkTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo('/home/prod/twenga/tools/wwwcluster -s server1 -d'))
             ->will($this->throwException(new \RuntimeException('bla bla', 2)));
 
-        $oMockProperties = $this->getMock('Adapter', array('getProperty'), array($oMockShell));
+        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($oMockShell));
         $oMockProperties->expects($this->any())->method('getProperty')
             ->will($this->returnValue('-'));
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);

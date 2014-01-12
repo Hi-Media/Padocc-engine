@@ -69,33 +69,33 @@ class Link extends Task
     {
         parent::check();
 
-        list($bIsSrcRemote, $sSrcServer, ) = $this->oShell->isRemotePath($this->aAttributes['src']);
-        list($bIsDestRemote, $sDestServer, ) = $this->oShell->isRemotePath($this->aAttributes['target']);
+        list($bIsSrcRemote, $sSrcServer, ) = $this->oShell->isRemotePath($this->aAttValues['src']);
+        list($bIsDestRemote, $sDestServer, ) = $this->oShell->isRemotePath($this->aAttValues['target']);
         if (
             ($bIsSrcRemote XOR $bIsDestRemote)
             || ($bIsSrcRemote && $bIsDestRemote && $sSrcServer != $sDestServer)
         ) {
-            $sMsg = 'Servers must be equals!' . ' Src=' . $this->aAttributes['src']
-                  . ' Target=' . $this->aAttributes['target'];
+            $sMsg = 'Servers must be equals!' . ' Src=' . $this->aAttValues['src']
+                  . ' Target=' . $this->aAttValues['target'];
             throw new \DomainException($sMsg);
         }
 
-        if (! empty($this->aAttributes['server']) && ($bIsSrcRemote || $bIsDestRemote)) {
-            $sMsg = 'Multiple server declaration!' . ' Server=' . $this->aAttributes['server']
-                  . ' Src=' . $this->aAttributes['src'] . ' Target=' . $this->aAttributes['target'];
+        if (! empty($this->aAttValues['server']) && ($bIsSrcRemote || $bIsDestRemote)) {
+            $sMsg = 'Multiple server declaration!' . ' Server=' . $this->aAttValues['server']
+                  . ' Src=' . $this->aAttValues['src'] . ' Target=' . $this->aAttValues['target'];
             throw new \DomainException($sMsg);
         }
 
         // Valeur par défaut :
-        if (! isset($this->aAttributes['server'])) {
-            $this->aAttributes['server'] = '';
+        if (! isset($this->aAttValues['server'])) {
+            $this->aAttValues['server'] = '';
         }
     }
 
     /**
      * Phase de traitements centraux de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function centralExecute ()
@@ -104,9 +104,9 @@ class Link extends Task
         $this->oLogger->info('+++');
 
         // La source doit être un lien symbolique ou ne pas exister :
-        $sPath = $this->aAttributes['src'];
-        if (! empty($this->aAttributes['server'])) {
-            $sPath = $this->aAttributes['server'] . ':' . $sPath;
+        $sPath = $this->aAttValues['src'];
+        if (! empty($this->aAttValues['server'])) {
+            $sPath = $this->aAttValues['server'] . ':' . $sPath;
         }
         $aValidSources = array(
             PathStatus::STATUS_NOT_EXISTS,
@@ -121,9 +121,9 @@ class Link extends Task
             }
         }
 
-        $sRawTargetPath = $this->aAttributes['target'];
-        if (! empty($this->aAttributes['server'])) {
-            $sRawTargetPath = $this->aAttributes['server'] . ':' . $sRawTargetPath;
+        $sRawTargetPath = $this->aAttValues['target'];
+        if (! empty($this->aAttValues['server'])) {
+            $sRawTargetPath = $this->aAttValues['server'] . ':' . $sRawTargetPath;
         }
         $this->oLogger->info("Create symlink from '$sPath' to '$sRawTargetPath'.+++");
 
@@ -133,7 +133,7 @@ class Link extends Task
             if (! empty($sDestServer)) {
                 $sDestServer .= ':';
             }
-            list(, , $sSrcRealPath) = $this->oShell->isRemotePath($this->aAttributes['src']);
+            list(, , $sSrcRealPath) = $this->oShell->isRemotePath($this->aAttValues['src']);
             $sSrc = $this->processSimplePath($sDestServer . $sSrcRealPath);
             $this->oShell->createLink($sSrc, $sTargetPath);
         }

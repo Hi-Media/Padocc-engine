@@ -90,9 +90,9 @@ class Environment extends Target
         );
 
         // Positionnement des 2 propriétés basedir et withsymlinks :
-        $sBaseDir = (empty($this->aAttributes['basedir']) ? '[setUp() will failed]' : $this->aAttributes['basedir']);
+        $sBaseDir = (empty($this->aAttValues['basedir']) ? '[setUp() will failed]' : $this->aAttValues['basedir']);
         $this->oProperties->setProperty('basedir', $sBaseDir);
-        $sWithSymlinks = (empty($this->aAttributes['withsymlinks']) ? 'false' : $this->aAttributes['withsymlinks']);
+        $sWithSymlinks = (empty($this->aAttValues['withsymlinks']) ? 'false' : $this->aAttValues['withsymlinks']);
         $this->oProperties->setProperty('with_symlinks', $sWithSymlinks);
 
         $this->addSwithSymlinkTask();
@@ -133,12 +133,12 @@ class Environment extends Target
     public function check ()
     {
         parent::check();
-        if ($this->aAttributes['basedir'][0] !== '/') {
+        if ($this->aAttValues['basedir'][0] !== '/') {
             throw new \DomainException("Attribute 'basedir' must begin by a '/'!");
         }
 
         $aMsg = array();
-        foreach ($this->aAttributes as $sAttribute => $sValue) {
+        foreach ($this->aAttValues as $sAttribute => $sValue) {
             if (! empty($sValue) && $sAttribute !== 'name') {
                 $aMsg[] = "Attribute: $sAttribute = '$sValue'";
             }
@@ -382,7 +382,7 @@ class Environment extends Target
     /**
      * Phase de pré-traitements de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::preExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function preExecute ()

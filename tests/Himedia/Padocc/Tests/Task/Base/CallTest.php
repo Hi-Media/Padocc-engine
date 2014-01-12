@@ -42,12 +42,12 @@ class CallTest extends \PHPUnit_Framework_TestCase
         $oBaseLogger = new Logger_Adapter(LoggerInterface::WARNING);
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
 
-        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($oLogger));
+        $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
         $oMockShell->expects($this->any())->method('exec')
             ->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
-        //$oShell = new Shell_Adapter($oLogger);
+        //$oShell = new ShellAdapter($oLogger);
         $oClass = new ReflectionClass('Shell_Adapter');
         $oProperty = $oClass->getProperty('_aFileStatus');
         $oProperty->setAccessible(true);
@@ -56,13 +56,13 @@ class CallTest extends \PHPUnit_Framework_TestCase
             '/path/to/srcfile' => 1
         ));
 
-        //$oShell = new Shell_Adapter($oLogger);
+        //$oShell = new ShellAdapter($oLogger);
         $oProperties = new Properties_Adapter($oMockShell);
         $oNumbering = new Numbering_Adapter();
 
-        $this->oDIContainer = new ServiceContainer();
+        $this->oDIContainer = new DIContainer();
         $this->oDIContainer
-            ->setLogAdapter($oLogger)
+            ->setLogger($oLogger)
             ->setPropertiesAdapter($oProperties)
             ->setShellAdapter($oMockShell)
             ->setNumberingAdapter($oNumbering);
@@ -84,7 +84,7 @@ class CallTest extends \PHPUnit_Framework_TestCase
     public function testNew_ThrowExceptionIfTargetNotFound ()
     {
         $sXML = '<target name="my_target"></target>';
-        $oMockProject = $this->getMock('Project', array('getSXE'), array(), '', false);
+        $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array('getSXE'), array(), '', false);
         $oMockProject->expects($this->any())->method('getSXE')
             ->will($this->returnValue(new SimpleXMLElement($sXML)));
 
@@ -105,7 +105,7 @@ class CallTest extends \PHPUnit_Framework_TestCase
     public function testNew_ThrowExceptionIfTargetNotUnique ()
     {
         $sXML = '<project><target name="my_target"></target><target name="my_target"></target></project>';
-        $oMockProject = $this->getMock('Project', array('getSXE'), array(), '', false);
+        $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array('getSXE'), array(), '', false);
         $oMockProject->expects($this->any())->method('getSXE')
             ->will($this->returnValue(new SimpleXMLElement($sXML)));
 
@@ -126,7 +126,7 @@ class CallTest extends \PHPUnit_Framework_TestCase
     public function testNew ()
     {
         $sXML = '<project><target name="my_target"></target></project>';
-        $oMockProject = $this->getMock('Project', array('getSXE'), array(), '', false);
+        $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array('getSXE'), array(), '', false);
         $oMockProject->expects($this->any())->method('getSXE')
             ->will($this->returnValue(new SimpleXMLElement($sXML)));
 
@@ -141,6 +141,6 @@ class CallTest extends \PHPUnit_Framework_TestCase
             $this->oDIContainer
         );
 
-        $this->assertAttributeEquals(array('name' => 'my_target'), 'aAttributes', $oTargetTask);
+        $this->assertAttributeEquals(array('name' => 'my_target'), 'aAttValues', $oTargetTask);
     }
 }

@@ -12,7 +12,7 @@ class Ede_deploy
      * Instance de services.
      * @var DIContainer
      */
-    private $_oServiceContainer;
+    private $oDIContainer;
 
     /**
      * Constructeur.
@@ -25,11 +25,11 @@ class Ede_deploy
         $this->setAutoloader();
         $oBaseLogger = new Logger_Adapter(LoggerInterface::DEBUG);
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
-        $oShell = new Shell_Adapter($oLogger);
+        $oShell = new ShellAdapter($oLogger);
 
-        $this->_oServiceContainer = new ServiceContainer();
-        $this->_oServiceContainer
-            ->setLogAdapter($oLogger)
+        $this->oDIContainer = new DIContainer();
+        $this->oDIContainer
+            ->setLogger($oLogger)
             ->setShellAdapter($oShell)
             ->setPropertiesAdapter(new Properties_Adapter($oShell))
             ->setNumberingAdapter(new Numbering_Adapter());
@@ -71,7 +71,7 @@ class Ede_deploy
     private function _setExternalProperties (Array $aExternalProperties)
     {
         var_dump($aExternalProperties);
-        $oProperties = $this->_oServiceContainer->getPropertiesAdapter();
+        $oProperties = $this->oDIContainer->getPropertiesAdapter();
         foreach ($aExternalProperties as $k => $sValue) {
             //\Cli::write((array)$sValue);
             $oProperties->setProperty($k, str_replace('&#0160;', ' ', $sValue));
@@ -131,7 +131,7 @@ class Ede_deploy
         }
 
 
-        $this->_oServiceContainer->getPropertiesAdapter()
+        $this->oDIContainer->getPropertiesAdapter()
             ->setProperty('project_name', $aParam['NAME'])
             ->setProperty('environment_name', $aParam['ENVIRONMENT'])
             ->setProperty('execution_id', $aParam['EXECUTION_ID'])
@@ -141,8 +141,8 @@ class Ede_deploy
 
         $this->_setExternalProperties((array)json_decode($aParam['EXTERNAL_PROPERTY']));
 
-        $oProject = new Project($aParam['CONFIGURATION'], $aParam['ENVIRONMENT'], $this->_oServiceContainer);
-        $oLogger = $this->_oServiceContainer->getLogAdapter();
+        $oProject = new Project($aParam['CONFIGURATION'], $aParam['ENVIRONMENT'], $this->oDIContainer);
+        $oLogger = $this->oDIContainer->getLogger();
         $oLogger->log('Check tasks:');
         $oLogger->indent();
         $oProject->setUp();

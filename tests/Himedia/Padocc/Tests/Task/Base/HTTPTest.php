@@ -48,11 +48,11 @@ class HTTPTest extends \PHPUnit_Framework_TestCase
         $oBaseLogger = new Logger_Adapter(LoggerInterface::WARNING);
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
 
-        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($oLogger));
+        $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
         $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
-        //$oShell = new Shell_Adapter($oLogger);
+        //$oShell = new ShellAdapter($oLogger);
         $oClass = new ReflectionClass('Shell_Adapter');
         $oProperty = $oClass->getProperty('_aFileStatus');
         $oProperty->setAccessible(true);
@@ -61,18 +61,18 @@ class HTTPTest extends \PHPUnit_Framework_TestCase
             '/path/to/srcfile' => 1
         ));
 
-        //$oShell = new Shell_Adapter($oLogger);
+        //$oShell = new ShellAdapter($oLogger);
         $oProperties = new Properties_Adapter($oMockShell);
         $oNumbering = new Numbering_Adapter();
 
-        $this->oDIContainer = new ServiceContainer();
+        $this->oDIContainer = new DIContainer();
         $this->oDIContainer
-            ->setLogAdapter($oLogger)
+            ->setLogger($oLogger)
             ->setPropertiesAdapter($oProperties)
             ->setShellAdapter($oMockShell)
             ->setNumberingAdapter($oNumbering);
 
-        $this->oMockProject = $this->getMock('Project', array(), array(), '', false);
+        $this->oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
     }
 
     /**
@@ -94,8 +94,8 @@ class HTTPTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute_ThrowExceptionIfCURLReturnErrorMsg ()
     {
-        $oLogger = $this->oDIContainer->getLogAdapter();
-        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($oLogger));
+        $oLogger = $this->oDIContainer->getLogger();
+        $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
         $oMockShell->expects($this->any())->method('exec')->will($this->returnValue(array('[ERROR] blabla')));
         $this->oDIContainer->setShellAdapter($oMockShell);
 
@@ -137,7 +137,7 @@ class HTTPTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute_WithMultiURL ()
     {
-        $oMockProperties = $this->getMock('Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('servers'))
             ->will($this->returnValue('www01 www02 www03'));

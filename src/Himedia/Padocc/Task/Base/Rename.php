@@ -62,8 +62,8 @@ class Rename extends Task
         parent::check();
 
         // Pour l'instant ne gère pas les chemins distants :
-        list(, $sSrcServer, ) = $this->oShell->isRemotePath($this->aAttributes['src']);
-        list(, $sDestServer, ) = $this->oShell->isRemotePath($this->aAttributes['dest']);
+        list(, $sSrcServer, ) = $this->oShell->isRemotePath($this->aAttValues['src']);
+        list(, $sDestServer, ) = $this->oShell->isRemotePath($this->aAttValues['dest']);
         if ($sSrcServer != $sDestServer) {
             throw new \DomainException('Paths must be local or on the same server!');
         }
@@ -72,14 +72,14 @@ class Rename extends Task
     /**
      * Phase de traitements centraux de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function centralExecute ()
     {
         parent::centralExecute();
-        $aSrcPath = $this->processSimplePath($this->aAttributes['src']);
-        $aDestPath = $this->processSimplePath($this->aAttributes['dest']);
+        $aSrcPath = $this->processSimplePath($this->aAttValues['src']);
+        $aDestPath = $this->processSimplePath($this->aAttValues['dest']);
         $this->oLogger->info("+++Rename '$aSrcPath' to '$aDestPath'.");
         $this->oShell->execSSH("mv %s '" . $aDestPath . "'", $aSrcPath);
         $this->oLogger->info('---');

@@ -82,7 +82,7 @@ abstract class Task
      * Tableau ((string) clé, (string) valeur).
      * @var array
      */
-    protected $aAttributes;
+    protected $aAttValues;
 
     /**
      * Liste des propriétés des attributs déclarés de la tâche.
@@ -134,7 +134,6 @@ abstract class Task
 
     /**
      * Constructeur.
-     *
      * @param \SimpleXMLElement $oXMLTask Contenu XML de la tâche.
      * @param Project $oProject Super tâche projet.
      * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
@@ -150,6 +149,7 @@ abstract class Task
         $this->oProperties = $this->oDIContainer->getPropertiesAdapter();
         $this->oNumbering = $this->oDIContainer->getNumberingAdapter();
 
+        // TODO à injecter :
         $this->oAttrProperties = new AttributeProperties($this->oDIContainer);
 
         $sCounter = $this->oNumbering->getNextCounterValue();
@@ -161,13 +161,13 @@ abstract class Task
     }
 
     /**
-     * Récupère les attributs XML du nœud $this->oXMLTask et les enregistre dans $this->aAttributes.
+     * Récupère les attributs XML du nœud $this->oXMLTask et les enregistre dans $this->aAttValues.
      */
     protected function fetchAttributes ()
     {
-        $this->aAttributes = array();
+        $this->aAttValues = array();
         foreach ($this->oXMLTask->attributes() as $key => $val) {
-            $this->aAttributes[$key] = (string)$val;
+            $this->aAttValues[$key] = (string)$val;
         }
     }
 
@@ -293,9 +293,9 @@ abstract class Task
         foreach ($this->aAttrProperties as $sAttribute => $iProperties) {
             if (
                 (($iProperties & AttributeProperties::DIR) > 0 || ($iProperties & AttributeProperties::FILE) > 0)
-                && isset($this->aAttributes[$sAttribute])
+                && isset($this->aAttValues[$sAttribute])
             ) {
-                self::$aRegisteredPaths[$this->aAttributes[$sAttribute]] = true;
+                self::$aRegisteredPaths[$this->aAttValues[$sAttribute]] = true;
             }
         }
         ksort(self::$aRegisteredPaths);
@@ -325,25 +325,25 @@ abstract class Task
     protected function check ()
     {
         $sMsg = "Check '" . $this->sName . "' task";
-        if (! empty($this->aAttributes['name'])) {
-            $sMsg .= ': \'' . $this->aAttributes['name'] . '\'';
+        if (! empty($this->aAttValues['name'])) {
+            $sMsg .= ': \'' . $this->aAttValues['name'] . '\'';
         }
         $this->oLogger->info($sMsg . '+++');
-        $this->oAttrProperties->checkAttributes($this->aAttrProperties, $this->aAttributes);
+        $this->oAttrProperties->checkAttributes($this->aAttrProperties, $this->aAttValues);
         $this->oLogger->info('---');
     }
 
     /**
      * Phase de pré-traitements de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::preExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function preExecute ()
     {
         $sMsg = "Execute '" . $this->sName . "' task";
-        if (! empty($this->aAttributes['name'])) {
-            $sMsg .= ': \'' . $this->aAttributes['name'] . '\'';
+        if (! empty($this->aAttValues['name'])) {
+            $sMsg .= ': \'' . $this->aAttValues['name'] . '\'';
         }
         $this->oLogger->info($sMsg);
     }
@@ -351,7 +351,7 @@ abstract class Task
     /**
      * Phase de traitements centraux de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function centralExecute ()
@@ -361,7 +361,7 @@ abstract class Task
     /**
      * Phase de post-traitements de l'exécution de la tâche.
      * Elle devrait systématiquement finir par "parent::postExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function postExecute ()

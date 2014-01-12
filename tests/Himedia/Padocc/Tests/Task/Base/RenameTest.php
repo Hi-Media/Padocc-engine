@@ -48,7 +48,7 @@ class RenameTest extends \PHPUnit_Framework_TestCase
         $oBaseLogger = new Logger_Adapter(LoggerInterface::WARNING);
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
 
-        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($oLogger));
+        $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
         $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
@@ -65,14 +65,14 @@ class RenameTest extends \PHPUnit_Framework_TestCase
 
         $oNumbering = new Numbering_Adapter();
 
-        $this->oDIContainer = new ServiceContainer();
+        $this->oDIContainer = new DIContainer();
         $this->oDIContainer
-            ->setLogAdapter($oLogger)
+            ->setLogger($oLogger)
             ->setPropertiesAdapter($oProperties)
             ->setShellAdapter($oMockShell)
             ->setNumberingAdapter($oNumbering);
 
-        $this->oMockProject = $this->getMock('Project', array(), array(), '', false);
+        $this->oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
     }
 
     /**

@@ -135,7 +135,7 @@ class Project extends WithProperties
     {
         parent::check();
         $this->oLogger->info('+++');
-        foreach ($this->aAttributes as $sAttribute => $sValue) {
+        foreach ($this->aAttValues as $sAttribute => $sValue) {
             if (! empty($sValue) && $sAttribute !== 'name') {
                 $this->oLogger->info("Attribute: $sAttribute = '$sValue'");
             }
@@ -155,7 +155,7 @@ class Project extends WithProperties
     /**
      * Phase de pré-traitements de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::preExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function preExecute ()
@@ -169,7 +169,7 @@ class Project extends WithProperties
     /**
      * Phase de traitements centraux de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function centralExecute ()
@@ -181,7 +181,7 @@ class Project extends WithProperties
     /**
      * Phase de post-traitements de l'exécution de la tâche.
      * Elle devrait systématiquement finir par "parent::postExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function postExecute()

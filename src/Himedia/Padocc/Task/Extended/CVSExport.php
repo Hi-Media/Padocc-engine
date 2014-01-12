@@ -65,23 +65,23 @@ class CVSExport extends Task
                 | AttributeProperties::ALLOW_PARAMETER
         );
 
-        if (empty($this->aAttributes['srcdir'])) {
-            $this->aAttributes['srcdir'] =
+        if (empty($this->aAttValues['srcdir'])) {
+            $this->aAttValues['srcdir'] =
                 DEPLOYMENT_REPOSITORIES_DIR . '/cvs/'
                 . $this->oProperties->getProperty('project_name') . '_'
                 . $this->oProperties->getProperty('environment_name') . '_'
                 . $this->sCounter;
         } else {
-            $this->aAttributes['srcdir'] =
-                preg_replace('#/$#', '', $this->aAttributes['srcdir']);
+            $this->aAttValues['srcdir'] =
+                preg_replace('#/$#', '', $this->aAttValues['srcdir']);
         }
 
         // Création de la tâche de synchronisation sous-jacente :
         $this->oNumbering->addCounterDivision();
         $this->_oSyncTask = Task\Base\Sync::getNewInstance(
             array(
-                'src' => $this->aAttributes['srcdir'] . '/' . $this->aAttributes['module'] . '/',
-                'destdir' => $this->aAttributes['destdir']
+                'src' => $this->aAttValues['srcdir'] . '/' . $this->aAttValues['module'] . '/',
+                'destdir' => $this->aAttValues['destdir']
             ),
             $oProject,
             $oDIContainer
@@ -99,8 +99,8 @@ class CVSExport extends Task
         try {
             $this->_oSyncTask->setUp();
         } catch (\UnexpectedValueException $oException) {
-            if ($oException->getMessage() !== "File or directory '" . $this->aAttributes['srcdir']
-                                            . '/' . $this->aAttributes['module'] . '/' . "' not found!") {
+            if ($oException->getMessage() !== "File or directory '" . $this->aAttValues['srcdir']
+                                            . '/' . $this->aAttValues['module'] . '/' . "' not found!") {
                 throw $oException;
             }
         }
@@ -111,7 +111,7 @@ class CVSExport extends Task
     /**
      * Phase de traitements centraux de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function centralExecute ()
@@ -119,12 +119,12 @@ class CVSExport extends Task
         parent::centralExecute();
         $this->oLogger->info('+++');
 
-        $this->oLogger->info("Export from '" . $this->aAttributes['repository'] . "' CVS repository+++");
+        $this->oLogger->info("Export from '" . $this->aAttValues['repository'] . "' CVS repository+++");
         $aResult = $this->oShell->exec(
             DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/cvsexport.inc.sh'
-            . ' "' . $this->aAttributes['repository'] . '"'
-            . ' "' . $this->aAttributes['module'] . '"'
-            . ' "' . $this->aAttributes['srcdir'] . '"'
+            . ' "' . $this->aAttValues['repository'] . '"'
+            . ' "' . $this->aAttValues['module'] . '"'
+            . ' "' . $this->aAttValues['srcdir'] . '"'
         );
         $this->oLogger->info(implode("\n", $aResult) . '---');
 

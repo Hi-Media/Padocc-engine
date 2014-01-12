@@ -54,18 +54,18 @@ class Minifier extends Task
     /**
      * Phase de traitements centraux de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function centralExecute ()
     {
         parent::centralExecute();
 
-        $sMsg = "+++Minify '" . $this->aAttributes['srcfile'] . "' into '" . $this->aAttributes['destfile'] . "'.";
+        $sMsg = "+++Minify '" . $this->aAttValues['srcfile'] . "' into '" . $this->aAttValues['destfile'] . "'.";
         $this->oLogger->info($sMsg);
 
-        $aSrcPaths = $this->processPath($this->aAttributes['srcfile']);
-        $sDestPaths = $this->processSimplePath($this->aAttributes['destfile']);
+        $aSrcPaths = $this->processPath($this->aAttValues['srcfile']);
+        $sDestPaths = $this->processSimplePath($this->aAttValues['destfile']);
         $this->_oMinifier->minify($aSrcPaths, $sDestPaths);
 
         $this->oLogger->info('---');

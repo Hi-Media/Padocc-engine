@@ -51,16 +51,16 @@ class MkDir extends Task
     /**
      * Phase de traitements centraux de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function centralExecute ()
     {
         parent::centralExecute();
-        $this->oLogger->info("+++Create directory '" . $this->aAttributes['destdir'] . "'.+++");
-        $sMode = (empty($this->aAttributes['mode']) ? '' : $this->aAttributes['mode']);
+        $this->oLogger->info("+++Create directory '" . $this->aAttValues['destdir'] . "'.+++");
+        $sMode = (empty($this->aAttValues['mode']) ? '' : $this->aAttValues['mode']);
 
-        $aDestDirs = $this->processPath($this->aAttributes['destdir']);
+        $aDestDirs = $this->processPath($this->aAttValues['destdir']);
         foreach ($aDestDirs as $sDestDir) {
             $this->oShell->mkdir($sDestDir, $sMode);
         }

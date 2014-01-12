@@ -62,21 +62,21 @@ class Copy extends Task
         parent::check();
 
         // Suppression de l'éventuel slash terminal :
-        $this->aAttributes['src'] = preg_replace('#/$#', '', $this->aAttributes['src']);
+        $this->aAttValues['src'] = preg_replace('#/$#', '', $this->aAttValues['src']);
 
         if (
-                preg_match('/\*|\?/', $this->aAttributes['src']) === 0
-                && $this->oShell->getPathStatus($this->aAttributes['src']) === PathStatus::STATUS_DIR
+                preg_match('/\*|\?/', $this->aAttValues['src']) === 0
+                && $this->oShell->getPathStatus($this->aAttValues['src']) === PathStatus::STATUS_DIR
         ) {
-                $this->aAttributes['destdir'] .= '/' . substr(strrchr($this->aAttributes['src'], '/'), 1);
-                $this->aAttributes['src'] .= '/*';
+                $this->aAttValues['destdir'] .= '/' . substr(strrchr($this->aAttValues['src'], '/'), 1);
+                $this->aAttValues['src'] .= '/*';
         }
     }
 
     /**
      * Phase de traitements centraux de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function centralExecute ()
@@ -84,8 +84,8 @@ class Copy extends Task
         parent::centralExecute();
         $this->oLogger->info('+++');
 
-        $aSrcPath = $this->processSimplePath($this->aAttributes['src']);
-        $aDestDirs = $this->processPath($this->aAttributes['destdir']);
+        $aSrcPath = $this->processSimplePath($this->aAttValues['src']);
+        $aDestDirs = $this->processPath($this->aAttValues['destdir']);
         foreach ($aDestDirs as $sDestDir) {
             $this->oShell->copy($aSrcPath, $sDestDir);
         }

@@ -63,30 +63,30 @@ class HTTP extends Task
     /**
      * Phase de traitements centraux de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function centralExecute ()
     {
         parent::centralExecute();
-        $this->oLogger->info('+++Call URL: ' . $this->aAttributes['url'] . '+++');
+        $this->oLogger->info('+++Call URL: ' . $this->aAttValues['url'] . '+++');
 
 
         $sTmpDir = $this->oProperties->getProperty('tmpdir').'/curl';
         $this->oShell->mkdir($sTmpDir);
 
-        $aURLs = $this->processPath($this->aAttributes['url']);
+        $aURLs = $this->processPath($this->aAttValues['url']);
         foreach ($aURLs as $sURL) {
             $sCmd = 'cd '.$sTmpDir.'; /usr/bin/curl --silent --retry 2 --retry-delay 2 --max-time 5 "' . $sURL . '"';
-            if( isset($this->aAttributes['destdir'] )) $sCmd .= ' -O';
+            if( isset($this->aAttValues['destdir'] )) $sCmd .= ' -O';
             $aResults = $this->oShell->exec($sCmd);
             if (count($aResults) > 0 && substr(end($aResults), 0, 7) === '[ERROR]') {
                 throw new \RuntimeException(implode("\n", $aResults));
             }
         }
 
-        if (isset($this->aAttributes['destdir'])) {
-            $aDestDirs = $this->processPath($this->aAttributes['destdir']);
+        if (isset($this->aAttValues['destdir'])) {
+            $aDestDirs = $this->processPath($this->aAttValues['destdir']);
             foreach ($aDestDirs as $sDestDir) {
                 $this->oLogger->info('Copy file(s) to: ' . $sDestDir);
                 $this->oShell->copy($sTmpDir.'/*', $sDestDir, true);

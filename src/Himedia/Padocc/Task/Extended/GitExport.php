@@ -73,33 +73,33 @@ class GitExport extends Task
         );
 
         // Valeur par défaut de l'attribut localrepositorydir :
-        if (empty($this->aAttributes['localrepositorydir'])) {
-            $this->aAttributes['localrepositorydir'] =
+        if (empty($this->aAttValues['localrepositorydir'])) {
+            $this->aAttValues['localrepositorydir'] =
                 DEPLOYMENT_REPOSITORIES_DIR . '/git/'
                 . $this->oProperties->getProperty('project_name') . '_'
                 . $this->oProperties->getProperty('environment_name') . '_'
                 . $this->sCounter;
         } else {
-            $this->aAttributes['localrepositorydir'] =
-                preg_replace('#/$#', '', $this->aAttributes['localrepositorydir']);
+            $this->aAttValues['localrepositorydir'] =
+                preg_replace('#/$#', '', $this->aAttValues['localrepositorydir']);
         }
 
         // Création de la tâche de synchronisation sous-jacente :
         $this->oNumbering->addCounterDivision();
-        if (empty($this->aAttributes['srcsubdir'])) {
-            $this->aAttributes['srcsubdir'] = '';
+        if (empty($this->aAttValues['srcsubdir'])) {
+            $this->aAttValues['srcsubdir'] = '';
         } else {
-            $this->aAttributes['srcsubdir'] = '/' . preg_replace('#^/|/$#', '', $this->aAttributes['srcsubdir']);
+            $this->aAttValues['srcsubdir'] = '/' . preg_replace('#^/|/$#', '', $this->aAttValues['srcsubdir']);
         }
         $aSyncAttributes = array(
-            'src' => $this->aAttributes['localrepositorydir'] . $this->aAttributes['srcsubdir'] . '/',
-            'destdir' => $this->aAttributes['destdir'],
+            'src' => $this->aAttValues['localrepositorydir'] . $this->aAttValues['srcsubdir'] . '/',
+            'destdir' => $this->aAttValues['destdir'],
         );
-        if (! empty($this->aAttributes['include'])) {
-            $aSyncAttributes['include'] = $this->aAttributes['include'];
+        if (! empty($this->aAttValues['include'])) {
+            $aSyncAttributes['include'] = $this->aAttValues['include'];
         }
-        if (! empty($this->aAttributes['exclude'])) {
-            $aSyncAttributes['exclude'] = $this->aAttributes['exclude'];
+        if (! empty($this->aAttValues['exclude'])) {
+            $aSyncAttributes['exclude'] = $this->aAttValues['exclude'];
         }
         $this->_oSyncTask = Sync::getNewInstance($aSyncAttributes, $oProject, $oDIContainer);
         $this->oNumbering->removeCounterDivision();
@@ -115,8 +115,8 @@ class GitExport extends Task
         try {
             $this->_oSyncTask->setUp();
         } catch (\UnexpectedValueException $oException) {
-            if ($oException->getMessage() !== "File or directory '" . $this->aAttributes['localrepositorydir']
-                                            . $this->aAttributes['srcsubdir'] . '/' . "' not found!") {
+            if ($oException->getMessage() !== "File or directory '" . $this->aAttValues['localrepositorydir']
+                                            . $this->aAttValues['srcsubdir'] . '/' . "' not found!") {
                 throw $oException;
             }
         }
@@ -126,7 +126,7 @@ class GitExport extends Task
     /**
      * Phase de traitements centraux de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function centralExecute ()
@@ -134,16 +134,16 @@ class GitExport extends Task
         parent::centralExecute();
         $this->oLogger->info('+++');
 
-        $aRef = $this->processPath($this->aAttributes['ref']);
+        $aRef = $this->processPath($this->aAttValues['ref']);
         $sRef = $aRef[0];
 
-        $sMsg = "Export '$sRef' reference from '" . $this->aAttributes['repository'] . "' git repository+++";
+        $sMsg = "Export '$sRef' reference from '" . $this->aAttValues['repository'] . "' git repository+++";
         $this->oLogger->info($sMsg);
         $aResult = $this->oShell->exec(
             DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/gitexport.inc.sh'
-            . ' "' . $this->aAttributes['repository'] . '"'
+            . ' "' . $this->aAttValues['repository'] . '"'
             . ' "' . $sRef . '"'
-            . ' "' . $this->aAttributes['localrepositorydir'] . '"'
+            . ' "' . $this->aAttValues['localrepositorydir'] . '"'
         );
         $this->oLogger->info(implode("\n", $aResult) . '---');
 

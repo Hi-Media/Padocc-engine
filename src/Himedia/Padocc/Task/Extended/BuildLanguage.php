@@ -50,7 +50,7 @@ class BuildLanguage extends Task
     /**
      * Phase de traitements centraux de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function centralExecute ()
@@ -63,7 +63,7 @@ class BuildLanguage extends Task
             $this->oProperties->getProperty('execution_id') . '_languages_'
         );
         $sURL = 'https://xyz/translation_tool/build_language_files.php?project='
-              . $this->aAttributes['project'];
+              . $this->aAttValues['project'];
         $this->oLogger->info('Generate language archive from web service: ' . $sURL);
         if (! copy($sURL, $sLanguagesPath)) {
             throw new \RuntimeException("Copy of '$sURL' to '$sLanguagesPath' failed!");
@@ -71,7 +71,7 @@ class BuildLanguage extends Task
 
         // Diffusion de l'archive :
         $this->oLogger->info('Send language archive to all servers+++');
-        $aDestDirs = $this->processPath($this->aAttributes['destdir']);
+        $aDestDirs = $this->processPath($this->aAttValues['destdir']);
         foreach ($aDestDirs as $sDestDir) {
             $aResult = $this->oShell->copy($sLanguagesPath, $sDestDir);
             $sResult = implode("\n", $aResult);

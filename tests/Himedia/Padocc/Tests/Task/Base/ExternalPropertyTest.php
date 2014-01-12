@@ -42,7 +42,7 @@ class ExternalPropertyTest extends \PHPUnit_Framework_TestCase
         $oBaseLogger = new Logger_Adapter(LoggerInterface::WARNING);
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
 
-        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($oLogger));
+        $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
         $oMockShell->expects($this->any())->method('exec')
             ->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
@@ -50,9 +50,9 @@ class ExternalPropertyTest extends \PHPUnit_Framework_TestCase
         $oProperties = new Properties_Adapter($oMockShell);
         $oNumbering = new Numbering_Adapter();
 
-        $this->oDIContainer = new ServiceContainer();
+        $this->oDIContainer = new DIContainer();
         $this->oDIContainer
-            ->setLogAdapter($oLogger)
+            ->setLogger($oLogger)
             ->setPropertiesAdapter($oProperties)
             ->setShellAdapter($oMockShell)
             ->setNumberingAdapter($oNumbering);
@@ -75,7 +75,7 @@ class ExternalPropertyTest extends \PHPUnit_Framework_TestCase
     public function testCentralExecute_throwExceptionIfPropertyNotFound ()
     {
         $sXML = '<project></project>';
-        $oMockProject = $this->getMock('Project', array('getSXE'), array(), '', false);
+        $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array('getSXE'), array(), '', false);
         $oMockProject->expects($this->any())->method('getSXE')
             ->will($this->returnValue(new SimpleXMLElement($sXML)));
 
@@ -109,7 +109,7 @@ class ExternalPropertyTest extends \PHPUnit_Framework_TestCase
         $this->oDIContainer->setPropertiesAdapter($oPropertiesAdapter);
 
         $sXML = '<project></project>';
-        $oMockProject = $this->getMock('Project', array('getSXE'), array(), '', false);
+        $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array('getSXE'), array(), '', false);
         $oMockProject->expects($this->any())->method('getSXE')
             ->will($this->returnValue(new SimpleXMLElement($sXML)));
 
@@ -149,7 +149,7 @@ class ExternalPropertyTest extends \PHPUnit_Framework_TestCase
         $this->oDIContainer->setPropertiesAdapter($oPropertiesAdapter);
 
         $sXML = '<project></project>';
-        $oMockProject = $this->getMock('Project', array('getSXE'), array(), '', false);
+        $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array('getSXE'), array(), '', false);
         $oMockProject->expects($this->any())->method('getSXE')
             ->will($this->returnValue(new SimpleXMLElement($sXML)));
 

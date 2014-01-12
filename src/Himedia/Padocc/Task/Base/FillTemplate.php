@@ -83,8 +83,8 @@ class FillTemplate extends Task
         parent::check();
 
         // Pour l'instant ne gère pas les chemins distants :
-        list($bIsSrcRemote, , ) = $this->oShell->isRemotePath($this->aAttributes['srcfile']);
-        list($bIsDestRemote, , ) = $this->oShell->isRemotePath($this->aAttributes['destfile']);
+        list($bIsSrcRemote, , ) = $this->oShell->isRemotePath($this->aAttValues['srcfile']);
+        list($bIsDestRemote, , ) = $this->oShell->isRemotePath($this->aAttValues['destfile']);
         if ($bIsSrcRemote || $bIsDestRemote) {
             throw new \DomainException('Remote paths not yet handled.');
         }
@@ -93,17 +93,17 @@ class FillTemplate extends Task
     /**
      * Phase de traitements centraux de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function centralExecute ()
     {
         parent::centralExecute();
-        $sMsg = "+++Generate '" . $this->aAttributes['destfile'] . "' from '" . $this->aAttributes['srcfile'] . "'.";
+        $sMsg = "+++Generate '" . $this->aAttValues['destfile'] . "' from '" . $this->aAttValues['srcfile'] . "'.";
         $this->oLogger->info($sMsg);
 
-        $sSrcFile = $this->processSimplePath($this->aAttributes['srcfile']);
-        $sDestFile = $this->processSimplePath($this->aAttributes['destfile']);
+        $sSrcFile = $this->processSimplePath($this->aAttValues['srcfile']);
+        $sDestFile = $this->processSimplePath($this->aAttValues['destfile']);
         $sContent = file_get_contents($sSrcFile);
 
         preg_match_all('/\$\{[^}]+\}/i', $sContent, $aMatches);

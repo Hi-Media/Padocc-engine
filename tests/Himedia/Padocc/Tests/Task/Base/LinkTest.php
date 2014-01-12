@@ -48,7 +48,7 @@ class LinkTest extends \PHPUnit_Framework_TestCase
         $oBaseLogger = new Logger_Adapter(LoggerInterface::WARNING);
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
 
-        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($oLogger));
+        $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
         $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
@@ -66,14 +66,14 @@ class LinkTest extends \PHPUnit_Framework_TestCase
 
         $oNumbering = new Numbering_Adapter();
 
-        $this->oDIContainer = new ServiceContainer();
+        $this->oDIContainer = new DIContainer();
         $this->oDIContainer
-            ->setLogAdapter($oLogger)
+            ->setLogger($oLogger)
             ->setPropertiesAdapter($oProperties)
             ->setShellAdapter($oMockShell)
             ->setNumberingAdapter($oNumbering);
 
-        $this->oMockProject = $this->getMock('Project', array(), array(), '', false);
+        $this->oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
     }
 
     /**
@@ -222,7 +222,7 @@ class LinkTest extends \PHPUnit_Framework_TestCase
             'src' => '/path/to/link',
             'target' => '/path/to/destdir',
             'server' => ''
-        ), 'aAttributes', $oTask);
+        ), 'aAttValues', $oTask);
     }
 
     /**
@@ -241,7 +241,7 @@ class LinkTest extends \PHPUnit_Framework_TestCase
             'src' => '/path/to/link',
             'target' => '/path/to/destdir',
             'server' => 'user@server'
-        ), 'aAttributes', $oTask);
+        ), 'aAttValues', $oTask);
     }
 
     /**
@@ -256,7 +256,7 @@ class LinkTest extends \PHPUnit_Framework_TestCase
             'src' => 'user@server:/path/to/link',
             'target' => 'user@server:/path/to/destdir',
             'server' => ''
-        ), 'aAttributes', $oTask);
+        ), 'aAttValues', $oTask);
     }
 
     /**
@@ -267,7 +267,7 @@ class LinkTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute_WithoutAttrServer ()
     {
-        $oMockProperties = $this->getMock('Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
@@ -298,7 +298,7 @@ class LinkTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute_WithoutAttrServerAndLocal ()
     {
-        $oMockProperties = $this->getMock('Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
@@ -351,7 +351,7 @@ class LinkTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute_WithAttrServer ()
     {
-        $oMockProperties = $this->getMock('Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
         $oMockProperties->expects($this->any())->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
@@ -380,7 +380,7 @@ class LinkTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute_WithAttrServerAndSymlink ()
     {
-        $oMockProperties = $this->getMock('Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('true'));
@@ -424,7 +424,7 @@ class LinkTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute_WithoutAttrServerWithSymlink ()
     {
-        $oMockProperties = $this->getMock('Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('true'));

@@ -52,7 +52,7 @@ abstract class WithProperties extends Task
         );
 
         // Création de la tâche de chargement des listes de serveurs Twenga sous-jacente :
-        if (! empty($this->aAttributes['loadtwengaservers']) && $this->aAttributes['loadtwengaservers'] == 'true') {
+        if (! empty($this->aAttValues['loadtwengaservers']) && $this->aAttValues['loadtwengaservers'] == 'true') {
             $this->oNumbering->addCounterDivision();
             $this->oTwengaServersTask = TwengaServers::getNewInstance(
                 array(), $oProject, $oDIContainer
@@ -69,17 +69,17 @@ abstract class WithProperties extends Task
      */
     private function loadProperties ()
     {
-        if (! empty($this->aAttributes['loadtwengaservers']) && $this->aAttributes['loadtwengaservers'] == 'true') {
+        if (! empty($this->aAttValues['loadtwengaservers']) && $this->aAttValues['loadtwengaservers'] == 'true') {
             $this->oTwengaServersTask->execute();
         }
-        if (! empty($this->aAttributes['propertyshellfile'])) {
-            $this->oLogger->info('Load shell properties: ' . $this->aAttributes['propertyshellfile'] . '+++');
-            $this->oProperties->loadConfigShellFile($this->aAttributes['propertyshellfile']);
+        if (! empty($this->aAttValues['propertyshellfile'])) {
+            $this->oLogger->info('Load shell properties: ' . $this->aAttValues['propertyshellfile'] . '+++');
+            $this->oProperties->loadConfigShellFile($this->aAttValues['propertyshellfile']);
             $this->oLogger->info('---');
         }
-        if (! empty($this->aAttributes['propertyinifile'])) {
-            $this->oLogger->info('Load ini properties: ' . $this->aAttributes['propertyinifile']);
-            $this->oProperties->loadConfigIniFile($this->aAttributes['propertyinifile']);
+        if (! empty($this->aAttValues['propertyinifile'])) {
+            $this->oLogger->info('Load ini properties: ' . $this->aAttValues['propertyinifile']);
+            $this->oProperties->loadConfigIniFile($this->aAttValues['propertyinifile']);
         }
     }
 
@@ -99,7 +99,7 @@ abstract class WithProperties extends Task
     /**
      * Phase de pré-traitements de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::preExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function preExecute ()

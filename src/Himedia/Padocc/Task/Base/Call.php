@@ -52,10 +52,10 @@ class Call extends WithProperties
         );
 
         // Crée une instance de la tâche target appelée :
-        if (! empty($this->aAttributes['target'])) {
-            $aTargets = $this->oProject->getSXE()->xpath("target[@name='" . $this->aAttributes['target'] . "']");
+        if (! empty($this->aAttValues['target'])) {
+            $aTargets = $this->oProject->getSXE()->xpath("target[@name='" . $this->aAttValues['target'] . "']");
             if (count($aTargets) !== 1) {
-                $sMsg = "Target '" . $this->aAttributes['target'] . "' not found or not unique in this project!";
+                $sMsg = "Target '" . $this->aAttValues['target'] . "' not found or not unique in this project!";
                 throw new \UnexpectedValueException($sMsg);
             }
             $this->oBoundTask = new Target($aTargets[0], $this->oProject, $this->oDIContainer);
@@ -74,7 +74,7 @@ class Call extends WithProperties
     /**
      * Phase de traitements centraux de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function centralExecute ()

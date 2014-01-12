@@ -48,7 +48,7 @@ class MkDirTest extends \PHPUnit_Framework_TestCase
         $oBaseLogger = new Logger_Adapter(LoggerInterface::WARNING);
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
 
-        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($oLogger));
+        $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
         $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
@@ -63,14 +63,14 @@ class MkDirTest extends \PHPUnit_Framework_TestCase
 
         $oNumbering = new Numbering_Adapter();
 
-        $this->oDIContainer = new ServiceContainer();
+        $this->oDIContainer = new DIContainer();
         $this->oDIContainer
-            ->setLogAdapter($oLogger)
+            ->setLogger($oLogger)
             ->setPropertiesAdapter($oProperties)
             ->setShellAdapter($oMockShell)
             ->setNumberingAdapter($oNumbering);
 
-        $this->oMockProject = $this->getMock('Project', array(), array(), '', false);
+        $this->oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
     }
 
     /**
@@ -93,7 +93,7 @@ class MkDirTest extends \PHPUnit_Framework_TestCase
         $oTask->setUp();
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir'
-        ), 'aAttributes', $oTask);
+        ), 'aAttValues', $oTask);
     }
 
     /**
@@ -107,7 +107,7 @@ class MkDirTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir',
             'mode' => '755'
-        ), 'aAttributes', $oTask);
+        ), 'aAttValues', $oTask);
     }
 
     /**
@@ -118,7 +118,7 @@ class MkDirTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute_WithoutMode ()
     {
-        $oMockProperties = $this->getMock('Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
         $oMockProperties->expects($this->any())->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
@@ -141,7 +141,7 @@ class MkDirTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute_WithMode ()
     {
-        $oMockProperties = $this->getMock('Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
         $oMockProperties->expects($this->any())->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
@@ -162,7 +162,7 @@ class MkDirTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute_WithModeAndSymLinks ()
     {
-        $oMockProperties = $this->getMock('Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('true'));

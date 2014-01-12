@@ -49,7 +49,7 @@ class SyncTest extends \PHPUnit_Framework_TestCase
         $oBaseLogger = new Logger_Adapter(LoggerInterface::WARNING);
         $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
 
-        $oMockShell = $this->getMock('Shell_Adapter', array('exec'), array($oLogger));
+        $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
         //$oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         //$this->aShellExecCmds = array();
 
@@ -64,14 +64,14 @@ class SyncTest extends \PHPUnit_Framework_TestCase
         $oProperties = new Properties_Adapter($oMockShell);
         $oNumbering = new Numbering_Adapter();
 
-        $this->oDIContainer = new ServiceContainer();
+        $this->oDIContainer = new DIContainer();
         $this->oDIContainer
-            ->setLogAdapter($oLogger)
+            ->setLogger($oLogger)
             ->setPropertiesAdapter($oProperties)
             ->setShellAdapter($oMockShell)
             ->setNumberingAdapter($oNumbering);
 
-        $this->oMockProject = $this->getMock('Project', array(), array(), '', false);
+        $this->oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
     }
 
     /**
@@ -95,7 +95,7 @@ class SyncTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir',
             'src' => '/path/to/srcfile'
-        ), 'aAttributes', $oTaskCopy);
+        ), 'aAttValues', $oTaskCopy);
     }
 
     /**
@@ -109,7 +109,7 @@ class SyncTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir/srcdir',
             'src' => '/path/to/srcdir/'
-        ), 'aAttributes', $oTaskCopy);
+        ), 'aAttValues', $oTaskCopy);
     }
 
     /**
@@ -123,7 +123,7 @@ class SyncTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir',
             'src' => '/path/to/srcdir/'
-        ), 'aAttributes', $oTaskCopy);
+        ), 'aAttValues', $oTaskCopy);
     }
 
     /**
@@ -137,7 +137,7 @@ class SyncTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir',
             'src' => '/path/to/srcdir/*'
-        ), 'aAttributes', $oTaskCopy);
+        ), 'aAttValues', $oTaskCopy);
     }
 
     /**
@@ -166,7 +166,7 @@ class SyncTest extends \PHPUnit_Framework_TestCase
             '[ERR]', '///',
         );
 
-        $oMockProperties = $this->getMock('Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
         $oMockProperties->expects($this->any())->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
@@ -216,7 +216,7 @@ class SyncTest extends \PHPUnit_Framework_TestCase
             '[ERR]', '///',
         );
 
-        $oMockProperties = $this->getMock('Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
         $oMockProperties->expects($this->any())->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
@@ -266,7 +266,7 @@ class SyncTest extends \PHPUnit_Framework_TestCase
             '[ERR]', '///',
         );
 
-        $oMockProperties = $this->getMock('Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
         $oMockProperties->expects($this->any())->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));

@@ -88,9 +88,9 @@ class SwitchSymlink extends Link
     public function check ()
     {
         if (
-            ! isset($this->aAttributes['src'])
-            && ! isset($this->aAttributes['target'])
-            && ! isset($this->aAttributes['server'])
+            ! isset($this->aAttValues['src'])
+            && ! isset($this->aAttValues['target'])
+            && ! isset($this->aAttValues['server'])
         ) {
             $sBaseSymLink = $this->oProperties->getProperty('basedir');
             $sRollbackID = $this->oProperties->getProperty('rollback_id');
@@ -102,9 +102,9 @@ class SwitchSymlink extends Link
             }
             $sReleaseSymLink = $sBaseSymLink . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX . '/' . $sID;
 
-            $this->aAttributes['src'] = $sBaseSymLink;
-            $this->aAttributes['target'] = $sReleaseSymLink;
-            $this->aAttributes['server'] = '${' . Environment::SERVERS_CONCERNED_WITH_BASE_DIR . '}';
+            $this->aAttValues['src'] = $sBaseSymLink;
+            $this->aAttValues['target'] = $sReleaseSymLink;
+            $this->aAttValues['server'] = '${' . Environment::SERVERS_CONCERNED_WITH_BASE_DIR . '}';
         }
 
         parent::check();
@@ -113,7 +113,7 @@ class SwitchSymlink extends Link
     /**
      * Phase de traitements centraux de l'exécution de la tâche.
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
-     * Appelé par _execute().
+     * Appelé par execute().
      * @see execute()
      */
     protected function centralExecute ()
@@ -151,8 +151,8 @@ class SwitchSymlink extends Link
             PathStatus::STATUS_SYMLINKED_DIR
         );
 
-        $sPath = $this->aAttributes['target'];
-        $aServers = $this->expandPath($this->aAttributes['server']);
+        $sPath = $this->aAttValues['target'];
+        $aServers = $this->expandPath($this->aAttValues['server']);
         $aPathStatusResult = $this->oShell->getParallelSSHPathStatus($sPath, $aServers);
         foreach ($aServers as $sServer) {
             $sExpandedPath = $sServer . ':' . $sPath;
