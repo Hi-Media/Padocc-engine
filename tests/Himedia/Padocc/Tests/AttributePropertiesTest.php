@@ -2,14 +2,12 @@
 
 namespace Himedia\Padocc\Tests;
 
-use GAubry\Logger\MinimalLogger;
 use GAubry\Shell\ShellAdapter;
 use Himedia\Padocc\AttributeProperties;
 use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
 use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
 use Himedia\Padocc\Task;
-use Himedia\Padocc\Task\Base\Copy;
 use Psr\Log\NullLogger;
 
 /**

@@ -3,11 +3,15 @@
 namespace Himedia\Padocc\Tests\Task\Extended;
 
 use Himedia\Padocc\DIContainer;
+use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
+use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
+use Himedia\Padocc\Task\Base\Project;
+use Himedia\Padocc\Tests\PadoccTestCase;
 
 /**
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
-class SwitchSymlinkTest extends \PHPUnit_Framework_TestCase
+class SwitchSymlinkTest extends PadoccTestCase
 {
 
     /**
@@ -54,7 +58,7 @@ class SwitchSymlinkTest extends \PHPUnit_Framework_TestCase
         $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
-        $oClass = new ReflectionClass('Shell_Adapter');
+        $oClass = new \ReflectionClass('\GAubry\Shell\ShellAdapter');
         $oProperty = $oClass->getProperty('_aFileStatus');
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockShell, array(
@@ -64,9 +68,9 @@ class SwitchSymlinkTest extends \PHPUnit_Framework_TestCase
             'user@server:/path/to/destdir/link' => 12
         ));
 
-        $oProperties = new Properties_Adapter($oMockShell);
+        $oProperties = new PropertiesAdapter($oMockShell, $this->aConfig);
 
-        $oNumbering = new Numbering_Adapter();
+        $oNumbering = new NumberingAdapter();
 
         $this->oDIContainer = new DIContainer();
         $this->oDIContainer
@@ -218,7 +222,7 @@ class SwitchSymlinkTest extends \PHPUnit_Framework_TestCase
      */
     public function testCheck_WithoutAttributes ()
     {
-        $oClass = new ReflectionClass('Adapter');
+        $oClass = new \ReflectionClass('Adapter');
         $oProperty = $oClass->getProperty('aProperties');
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();
@@ -246,7 +250,7 @@ class SwitchSymlinkTest extends \PHPUnit_Framework_TestCase
      */
     public function testCheck_WithoutAttributesWithRollback ()
     {
-        $oClass = new ReflectionClass('Adapter');
+        $oClass = new \ReflectionClass('Adapter');
         $oProperty = $oClass->getProperty('aProperties');
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();

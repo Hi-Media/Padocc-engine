@@ -3,11 +3,14 @@
 namespace Himedia\Padocc\Tests\Task\Base;
 
 use Himedia\Padocc\DIContainer;
+use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
+use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
+use Himedia\Padocc\Tests\PadoccTestCase;
 
 /**
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
-class ProjectTest extends \PHPUnit_Framework_TestCase
+class ProjectTest extends PadoccTestCase
 {
     /**
      * Collection de services.
@@ -47,16 +50,16 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
         $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
-        $oClass = new ReflectionClass('Shell_Adapter');
+        $oClass = new \ReflectionClass('\GAubry\Shell\ShellAdapter');
         $oProperty = $oClass->getProperty('_aFileStatus');
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockShell, array(
             '/path/to/file' => 1
         ));
 
-        $oProperties = new Properties_Adapter($oMockShell);
+        $oProperties = new PropertiesAdapter($oMockShell, $this->aConfig);
 
-        $oNumbering = new Numbering_Adapter();
+        $oNumbering = new NumberingAdapter();
 
         $this->oDIContainer = new DIContainer();
         $this->oDIContainer
@@ -137,7 +140,7 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
     public function testGetSXEProject ()
     {
         $oSXE = Project::getSXEProject(__DIR__ . '/resources/1/ebay.xml');
-        $this->assertEquals($oSXE, new SimpleXMLElement(__DIR__ . '/resources/1/ebay.xml', null, true));
+        $this->assertEquals($oSXE, new \SimpleXMLElement(__DIR__ . '/resources/1/ebay.xml', null, true));
     }
 
     /**
@@ -245,7 +248,7 @@ EOT;
         $oProject->setUp();
         unlink($sTmpPath);
 
-        $oClass = new ReflectionClass('Project');
+        $oClass = new \ReflectionClass('Project');
         $oProperty = $oClass->getProperty('oBoundTask');
         $oProperty->setAccessible(true);
         $oEnv = $oProperty->getValue($oProject);

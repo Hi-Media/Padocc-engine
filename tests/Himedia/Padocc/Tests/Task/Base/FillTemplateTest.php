@@ -2,10 +2,16 @@
 
 namespace Himedia\Padocc\Tests\Task\Base;
 
+use Himedia\Padocc\DIContainer;
+use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
+use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
+use Himedia\Padocc\Task\Base\Project;
+use Himedia\Padocc\Tests\PadoccTestCase;
+
 /**
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
-class FillTemplateTest extends \PHPUnit_Framework_TestCase
+class FillTemplateTest extends PadoccTestCase
 {
 
     /**
@@ -76,7 +82,7 @@ class FillTemplateTest extends \PHPUnit_Framework_TestCase
         $this->aShellExecCmds = array();
 
         //$oShell = new ShellAdapter($oLogger);
-        $oClass = new ReflectionClass('Shell_Adapter');
+        $oClass = new \ReflectionClass('\GAubry\Shell\ShellAdapter');
         $oProperty = $oClass->getProperty('_aFileStatus');
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockShell, array(
@@ -85,8 +91,8 @@ class FillTemplateTest extends \PHPUnit_Framework_TestCase
         ));
 
         //$oShell = new ShellAdapter($oLogger);
-        $oProperties = new Properties_Adapter($oMockShell);
-        $oNumbering = new Numbering_Adapter();
+        $oProperties = new PropertiesAdapter($oMockShell, $this->aConfig);
+        $oNumbering = new NumberingAdapter();
 
         $this->oDIContainer = new DIContainer();
         $this->oDIContainer
@@ -144,7 +150,7 @@ class FillTemplateTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute_ThrowExceptionIfMultipleSrcfile ()
     {
-        $oClass = new ReflectionClass('Adapter');
+        $oClass = new \ReflectionClass('Adapter');
         $oProperty = $oClass->getProperty('aProperties');
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();
@@ -177,7 +183,7 @@ class FillTemplateTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute_ThrowExceptionIfMultipleDestfile ()
     {
-        $oClass = new ReflectionClass('Adapter');
+        $oClass = new \ReflectionClass('Adapter');
         $oProperty = $oClass->getProperty('aProperties');
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();
@@ -210,7 +216,7 @@ class FillTemplateTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute_Simple ()
     {
-        $oClass = new ReflectionClass('Adapter');
+        $oClass = new \ReflectionClass('Adapter');
         $oProperty = $oClass->getProperty('aProperties');
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();
@@ -294,7 +300,7 @@ EOT;
      */
     public function testExecute_WithWarning ()
     {
-        $oClass = new ReflectionClass('Adapter');
+        $oClass = new \ReflectionClass('Adapter');
         $oProperty = $oClass->getProperty('aProperties');
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();

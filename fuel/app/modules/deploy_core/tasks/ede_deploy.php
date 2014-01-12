@@ -31,8 +31,8 @@ class Ede_deploy
         $this->oDIContainer
             ->setLogger($oLogger)
             ->setShellAdapter($oShell)
-            ->setPropertiesAdapter(new Properties_Adapter($oShell))
-            ->setNumberingAdapter(new Numbering_Adapter());
+            ->setPropertiesAdapter(new PropertiesAdapter($oShell))
+            ->setNumberingAdapter(new NumberingAdapter());
     }
 
     public function setAutoloader()

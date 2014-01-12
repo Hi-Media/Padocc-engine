@@ -2,10 +2,16 @@
 
 namespace Himedia\Padocc\Tests\Task\Base;
 
+use Himedia\Padocc\DIContainer;
+use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
+use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
+use Himedia\Padocc\Task\Base\Project;
+use Himedia\Padocc\Tests\PadoccTestCase;
+
 /**
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
-class RenameTest extends \PHPUnit_Framework_TestCase
+class RenameTest extends PadoccTestCase
 {
 
     /**
@@ -52,7 +58,7 @@ class RenameTest extends \PHPUnit_Framework_TestCase
         $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
-        $oClass = new ReflectionClass('Shell_Adapter');
+        $oClass = new \ReflectionClass('\GAubry\Shell\ShellAdapter');
         $oProperty = $oClass->getProperty('_aFileStatus');
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockShell, array(
@@ -61,9 +67,9 @@ class RenameTest extends \PHPUnit_Framework_TestCase
             '/path/to/src' => 2,
         ));
 
-        $oProperties = new Properties_Adapter($oMockShell);
+        $oProperties = new PropertiesAdapter($oMockShell, $this->aConfig);
 
-        $oNumbering = new Numbering_Adapter();
+        $oNumbering = new NumberingAdapter();
 
         $this->oDIContainer = new DIContainer();
         $this->oDIContainer
@@ -125,7 +131,7 @@ class RenameTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute_ThrowExceptionIfMultipleSrc ()
     {
-        $oClass = new ReflectionClass('Adapter');
+        $oClass = new \ReflectionClass('Adapter');
         $oProperty = $oClass->getProperty('aProperties');
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();
@@ -158,7 +164,7 @@ class RenameTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute_ThrowExceptionIfMultipleDest ()
     {
-        $oClass = new ReflectionClass('Adapter');
+        $oClass = new \ReflectionClass('Adapter');
         $oProperty = $oClass->getProperty('aProperties');
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();
@@ -191,7 +197,7 @@ class RenameTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute_Simple ()
     {
-        $oClass = new ReflectionClass('Adapter');
+        $oClass = new \ReflectionClass('Adapter');
         $oProperty = $oClass->getProperty('aProperties');
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();

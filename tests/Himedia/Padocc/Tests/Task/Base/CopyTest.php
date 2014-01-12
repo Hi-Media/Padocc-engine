@@ -2,12 +2,17 @@
 
 namespace Himedia\Padocc\Tests\Task\Base;
 
+use Himedia\Padocc\DIContainer;
+use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
+use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
 use Himedia\Padocc\Task\Base\Copy;
+use Himedia\Padocc\Task\Base\Project;
+use Himedia\Padocc\Tests\PadoccTestCase;
 
 /**
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
-class CopyTest extends \PHPUnit_Framework_TestCase
+class CopyTest extends PadoccTestCase
 {
 
     /**
@@ -55,7 +60,7 @@ class CopyTest extends \PHPUnit_Framework_TestCase
         $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
-        $oClass = new ReflectionClass('Shell_Adapter');
+        $oClass = new \ReflectionClass('\GAubry\Shell\ShellAdapter');
         $oProperty = $oClass->getProperty('_aFileStatus');
 
         $oProperty->setAccessible(true);
@@ -64,9 +69,8 @@ class CopyTest extends \PHPUnit_Framework_TestCase
             '/path/to/srcfile' => 1
         ));
 
-        //$oShell = new ShellAdapter($oLogger);
-        $oProperties = new Properties_Adapter($oMockShell);
-        $oNumbering = new Numbering_Adapter();
+        $oProperties = new PropertiesAdapter($oMockShell, $this->aConfig);
+        $oNumbering = new NumberingAdapter();
 
         $this->oDIContainer = new DIContainer();
         $this->oDIContainer
@@ -89,12 +93,12 @@ class CopyTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Task_Base_Copy::__construct
-     * @covers Task_Base_Copy::check
+     * @covers \Himedia\Padocc\Task\Base\Copy::__construct
+     * @covers \Himedia\Padocc\Task\Base\Copy::check
      */
     public function testCheck_WithSrcFile ()
     {
-        $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/srcfile', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
+        $oTaskCopy = Copy::getNewInstance(array('src' => '/path/to/srcfile', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
         $oTaskCopy->setUp();
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir',
@@ -103,12 +107,12 @@ class CopyTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Task_Base_Copy::__construct
-     * @covers Task_Base_Copy::check
+     * @covers \Himedia\Padocc\Task\Base\Copy::__construct
+     * @covers \Himedia\Padocc\Task\Base\Copy::check
      */
     public function testCheck_WithSrcFileAndJoker ()
     {
-        $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/src*file?', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
+        $oTaskCopy = Copy::getNewInstance(array('src' => '/path/to/src*file?', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
         $oTaskCopy->setUp();
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir',
@@ -117,12 +121,12 @@ class CopyTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Task_Base_Copy::__construct
-     * @covers Task_Base_Copy::check
+     * @covers \Himedia\Padocc\Task\Base\Copy::__construct
+     * @covers \Himedia\Padocc\Task\Base\Copy::check
      */
     public function testCheck_WithSrcDirWithoutLeadingSlash ()
     {
-        $oTaskCopy = Task_Base_Copy::getNewInstance(
+        $oTaskCopy = Copy::getNewInstance(
             array('src' => '/path/to/srcdir', 'destdir' => '/path/to/destdir'),
             $this->oMockProject,
             $this->oDIContainer
@@ -135,12 +139,12 @@ class CopyTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Task_Base_Copy::__construct
-     * @covers Task_Base_Copy::check
+     * @covers \Himedia\Padocc\Task\Base\Copy::__construct
+     * @covers \Himedia\Padocc\Task\Base\Copy::check
      */
     public function testCheck_WithSrcDirWithLeadingSlash ()
     {
-        $oTaskCopy = Task_Base_Copy::getNewInstance(
+        $oTaskCopy = Copy::getNewInstance(
             array('src' => '/path/to/srcdir/', 'destdir' => '/path/to/destdir'),
             $this->oMockProject,
             $this->oDIContainer
@@ -153,10 +157,10 @@ class CopyTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Task_Base_Copy::execute
-     * @covers Task_Base_Copy::preExecute
-     * @covers Task_Base_Copy::centralExecute
-     * @covers Task_Base_Copy::postExecute
+     * @covers \Himedia\Padocc\Task\Base\Copy::execute
+     * @covers \Himedia\Padocc\Task\Base\Copy::preExecute
+     * @covers \Himedia\Padocc\Task\Base\Copy::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\Copy::postExecute
      */
     public function testExecute_WithSrcFile ()
     {
@@ -180,10 +184,10 @@ class CopyTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Task_Base_Copy::execute
-     * @covers Task_Base_Copy::preExecute
-     * @covers Task_Base_Copy::centralExecute
-     * @covers Task_Base_Copy::postExecute
+     * @covers \Himedia\Padocc\Task\Base\Copy::execute
+     * @covers \Himedia\Padocc\Task\Base\Copy::preExecute
+     * @covers \Himedia\Padocc\Task\Base\Copy::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\Copy::postExecute
      */
     public function testExecute_WithSrcDir ()
     {
@@ -197,7 +201,7 @@ class CopyTest extends \PHPUnit_Framework_TestCase
         $oMockProperties->expects($this->exactly(2))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/srcdir', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
+        $oTaskCopy = Copy::getNewInstance(array('src' => '/path/to/srcdir', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
         $oTaskCopy->setUp();
         $oTaskCopy->execute();
         $this->assertEquals(array(
@@ -207,10 +211,10 @@ class CopyTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Task_Base_Copy::execute
-     * @covers Task_Base_Copy::preExecute
-     * @covers Task_Base_Copy::centralExecute
-     * @covers Task_Base_Copy::postExecute
+     * @covers \Himedia\Padocc\Task\Base\Copy::execute
+     * @covers \Himedia\Padocc\Task\Base\Copy::preExecute
+     * @covers \Himedia\Padocc\Task\Base\Copy::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\Copy::postExecute
      */
     public function testExecute_WithSrcFileAndJoker ()
     {
@@ -224,7 +228,7 @@ class CopyTest extends \PHPUnit_Framework_TestCase
         $oMockProperties->expects($this->exactly(2))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/src*file?', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
+        $oTaskCopy = Copy::getNewInstance(array('src' => '/path/to/src*file?', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
         $oTaskCopy->setUp();
         $oTaskCopy->execute();
         $this->assertEquals(array(
@@ -234,10 +238,10 @@ class CopyTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Task_Base_Copy::execute
-     * @covers Task_Base_Copy::preExecute
-     * @covers Task_Base_Copy::centralExecute
-     * @covers Task_Base_Copy::postExecute
+     * @covers \Himedia\Padocc\Task\Base\Copy::execute
+     * @covers \Himedia\Padocc\Task\Base\Copy::preExecute
+     * @covers \Himedia\Padocc\Task\Base\Copy::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\Copy::postExecute
      */
     public function testExecute_WithSrcDirAndSymLinks ()
     {
@@ -263,7 +267,7 @@ class CopyTest extends \PHPUnit_Framework_TestCase
         $oMockProperties->expects($this->exactly(6))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTaskCopy = Task_Base_Copy::getNewInstance(array('src' => '/path/to/srcdir', 'destdir' => 'user@server:/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
+        $oTaskCopy = Copy::getNewInstance(array('src' => '/path/to/srcdir', 'destdir' => 'user@server:/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
         $oTaskCopy->setUp();
         $oTaskCopy->execute();
         $this->assertEquals(array(

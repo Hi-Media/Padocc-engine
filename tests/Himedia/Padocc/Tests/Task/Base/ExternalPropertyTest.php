@@ -2,10 +2,16 @@
 
 namespace Himedia\Padocc\Tests\Task\Base;
 
+use Himedia\Padocc\DIContainer;
+use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
+use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
+use Himedia\Padocc\Task\Base\ExternalProperty;
+use Himedia\Padocc\Tests\PadoccTestCase;
+
 /**
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
-class ExternalPropertyTest extends \PHPUnit_Framework_TestCase
+class ExternalPropertyTest extends PadoccTestCase
 {
 
     /**
@@ -47,8 +53,8 @@ class ExternalPropertyTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
-        $oProperties = new Properties_Adapter($oMockShell);
-        $oNumbering = new Numbering_Adapter();
+        $oProperties = new PropertiesAdapter($oMockShell, $this->aConfig);
+        $oNumbering = new NumberingAdapter();
 
         $this->oDIContainer = new DIContainer();
         $this->oDIContainer
@@ -69,17 +75,17 @@ class ExternalPropertyTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Task_Base_ExternalProperty::__construct
-     * @covers Task_Base_ExternalProperty::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\ExternalProperty::__construct
+     * @covers \Himedia\Padocc\Task\Base\ExternalProperty::centralExecute
      */
     public function testCentralExecute_throwExceptionIfPropertyNotFound ()
     {
         $sXML = '<project></project>';
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array('getSXE'), array(), '', false);
         $oMockProject->expects($this->any())->method('getSXE')
-            ->will($this->returnValue(new SimpleXMLElement($sXML)));
+            ->will($this->returnValue(new \SimpleXMLElement($sXML)));
 
-        $oTask = Task_Base_ExternalProperty::getNewInstance(
+        $oTask = ExternalProperty::getNewInstance(
             array(
                 'name' => 'not_exists',
                 'description' => '...'
@@ -94,31 +100,31 @@ class ExternalPropertyTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Task_Base_ExternalProperty::__construct
-     * @covers Task_Base_ExternalProperty::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\ExternalProperty::__construct
+     * @covers \Himedia\Padocc\Task\Base\ExternalProperty::centralExecute
      */
     public function testCentralExecute_With1Property ()
     {
-        $oClass = new ReflectionClass('Adapter');
+        $oClass = new \ReflectionClass('Adapter');
         $oProperty = $oClass->getProperty('aProperties');
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();
         $oProperty->setValue($oPropertiesAdapter, array(
-            Task_Base_ExternalProperty::EXTERNAL_PROPERTY_PREFIX . '1' => 'value 1'
+            ExternalProperty::EXTERNAL_PROPERTY_PREFIX . '1' => 'value 1'
         ));
         $this->oDIContainer->setPropertiesAdapter($oPropertiesAdapter);
 
         $sXML = '<project></project>';
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array('getSXE'), array(), '', false);
         $oMockProject->expects($this->any())->method('getSXE')
-            ->will($this->returnValue(new SimpleXMLElement($sXML)));
+            ->will($this->returnValue(new \SimpleXMLElement($sXML)));
 
-        $oClass = new ReflectionClass('ExternalProperty');
+        $oClass = new \ReflectionClass('ExternalProperty');
         $oProperty = $oClass->getProperty('_iCounter');
         $oProperty->setAccessible(true);
         $oProperty->setValue(null, 0);
 
-        $oTask = Task_Base_ExternalProperty::getNewInstance(
+        $oTask = ExternalProperty::getNewInstance(
             array(
                 'name' => 'my_property',
                 'description' => '...'
@@ -133,32 +139,32 @@ class ExternalPropertyTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Task_Base_ExternalProperty::__construct
-     * @covers Task_Base_ExternalProperty::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\ExternalProperty::__construct
+     * @covers \Himedia\Padocc\Task\Base\ExternalProperty::centralExecute
      */
     public function testCentralExecute_WithProperties ()
     {
-        $oClass = new ReflectionClass('Adapter');
+        $oClass = new \ReflectionClass('Adapter');
         $oProperty = $oClass->getProperty('aProperties');
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();
         $oProperty->setValue($oPropertiesAdapter, array(
-            Task_Base_ExternalProperty::EXTERNAL_PROPERTY_PREFIX . '1' => 'value 1',
-            Task_Base_ExternalProperty::EXTERNAL_PROPERTY_PREFIX . '2' => 'other'
+            ExternalProperty::EXTERNAL_PROPERTY_PREFIX . '1' => 'value 1',
+            ExternalProperty::EXTERNAL_PROPERTY_PREFIX . '2' => 'other'
         ));
         $this->oDIContainer->setPropertiesAdapter($oPropertiesAdapter);
 
         $sXML = '<project></project>';
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array('getSXE'), array(), '', false);
         $oMockProject->expects($this->any())->method('getSXE')
-            ->will($this->returnValue(new SimpleXMLElement($sXML)));
+            ->will($this->returnValue(new \SimpleXMLElement($sXML)));
 
-        $oClass = new ReflectionClass('ExternalProperty');
+        $oClass = new \ReflectionClass('ExternalProperty');
         $oProperty = $oClass->getProperty('_iCounter');
         $oProperty->setAccessible(true);
         $oProperty->setValue(null, 0);
 
-        $oTask1 = Task_Base_ExternalProperty::getNewInstance(
+        $oTask1 = ExternalProperty::getNewInstance(
             array(
                 'name' => 'my_property',
                 'description' => '...'
@@ -166,7 +172,7 @@ class ExternalPropertyTest extends \PHPUnit_Framework_TestCase
             $oMockProject,
             $this->oDIContainer
         );
-        $oTask2 = Task_Base_ExternalProperty::getNewInstance(
+        $oTask2 = ExternalProperty::getNewInstance(
             array(
                 'name' => 'second',
                 'description' => '...'

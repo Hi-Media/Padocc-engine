@@ -3,11 +3,14 @@
 namespace Himedia\Padocc\Tests\Task\Base;
 
 use Himedia\Padocc\DIContainer;
+use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
+use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
+use Himedia\Padocc\Tests\PadoccTestCase;
 
 /**
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
-class TargetTest extends \PHPUnit_Framework_TestCase
+class TargetTest extends PadoccTestCase
 {
     /**
      * Collection de services.
@@ -47,16 +50,16 @@ class TargetTest extends \PHPUnit_Framework_TestCase
         $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
-        $oClass = new ReflectionClass('Shell_Adapter');
+        $oClass = new \ReflectionClass('\GAubry\Shell\ShellAdapter');
         $oProperty = $oClass->getProperty('_aFileStatus');
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockShell, array(
             '/path/to/file' => 1
         ));
 
-        $oProperties = new Properties_Adapter($oMockShell);
+        $oProperties = new PropertiesAdapter($oMockShell, $this->aConfig);
 
-        $oNumbering = new Numbering_Adapter();
+        $oNumbering = new NumberingAdapter();
 
         $this->oDIContainer = new DIContainer();
         $this->oDIContainer
@@ -76,18 +79,18 @@ class TargetTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Task_Base_Target::getAvailableEnvsList
+     * @covers Target::getAvailableEnvsList
      */
     public function testGetAvailableEnvsList_ThrowExceptionIfNotFound () {
         $this->setExpectedException(
             'UnexpectedValueException',
             "Project definition not found: '"
         );
-        Task_Base_Target::getAvailableEnvsList(__DIR__ . '/not_found');
+        Target::getAvailableEnvsList(__DIR__ . '/not_found');
     }
 
     /**
-     * @covers Task_Base_Target::getAvailableEnvsList
+     * @covers Target::getAvailableEnvsList
      */
     public function testGetAvailableEnvsList_ThrowExceptionIfBadXML ()
     {
@@ -95,11 +98,11 @@ class TargetTest extends \PHPUnit_Framework_TestCase
             'UnexpectedValueException',
             "Bad project definition: '"
         );
-        Task_Base_Target::getAvailableEnvsList(__DIR__ . '/resources/2/bad_xml.xml');
+        Target::getAvailableEnvsList(__DIR__ . '/resources/2/bad_xml.xml');
     }
 
     /**
-     * @covers Task_Base_Target::getAvailableEnvsList
+     * @covers Target::getAvailableEnvsList
      */
     public function testGetAvailableEnvsList_ThrowExceptionIfNoEnv ()
     {
@@ -107,11 +110,11 @@ class TargetTest extends \PHPUnit_Framework_TestCase
             'UnexpectedValueException',
             "No environment found in "
         );
-        Task_Base_Target::getAvailableEnvsList(__DIR__ . '/resources/2/project_without_env.xml');
+        Target::getAvailableEnvsList(__DIR__ . '/resources/2/project_without_env.xml');
     }
 
     /**
-     * @covers Task_Base_Target::getAvailableEnvsList
+     * @covers Target::getAvailableEnvsList
      */
     public function testGetAvailableEnvsList_ThrowExceptionIfInvalidProperty ()
     {
@@ -119,12 +122,12 @@ class TargetTest extends \PHPUnit_Framework_TestCase
             'UnexpectedValueException',
             "Invalid external property in "
         );
-        Task_Base_Target::getAvailableEnvsList(__DIR__ . '/resources/2/project_env_withinvalidproperty.xml');
+        Target::getAvailableEnvsList(__DIR__ . '/resources/2/project_env_withinvalidproperty.xml');
     }
 
     /**
-     * @covers Task_Base_Target::getAvailableEnvsList
-     * @covers Task_Base_Target::_getSXEExternalProperties
+     * @covers Target::getAvailableEnvsList
+     * @covers Target::_getSXEExternalProperties
      */
     public function testGetAvailableEnvsList_ThrowExceptionIfInvalidTarget ()
     {
@@ -132,12 +135,12 @@ class TargetTest extends \PHPUnit_Framework_TestCase
             'UnexpectedValueException',
             "Target 'invalid' not found or not unique in this project!"
         );
-        Task_Base_Target::getAvailableEnvsList(__DIR__ . '/resources/2/project_env_withinvalidtarget.xml');
+        Target::getAvailableEnvsList(__DIR__ . '/resources/2/project_env_withinvalidtarget.xml');
     }
 
     /**
-     * @covers Task_Base_Target::getAvailableEnvsList
-     * @covers Task_Base_Target::_getSXEExternalProperties
+     * @covers Target::getAvailableEnvsList
+     * @covers Target::_getSXEExternalProperties
      */
     public function testGetAvailableEnvsList_WithEmptyEnv ()
     {
@@ -145,13 +148,13 @@ class TargetTest extends \PHPUnit_Framework_TestCase
             'my_env' => array()
         );
         $sProjectPath = __DIR__ . '/resources/2/project_env_empty.xml';
-        $aEnvsList = Task_Base_Target::getAvailableEnvsList($sProjectPath);
+        $aEnvsList = Target::getAvailableEnvsList($sProjectPath);
         $this->assertEquals($aExpected, $aEnvsList);
     }
 
     /**
-     * @covers Task_Base_Target::getAvailableEnvsList
-     * @covers Task_Base_Target::_getSXEExternalProperties
+     * @covers Target::getAvailableEnvsList
+     * @covers Target::_getSXEExternalProperties
      */
     public function testGetAvailableEnvsList_WithoutExtProperty ()
     {
@@ -159,13 +162,13 @@ class TargetTest extends \PHPUnit_Framework_TestCase
             'my_env' => array()
         );
         $sProjectPath = __DIR__ . '/resources/2/project_env_without_extproperty.xml';
-        $aEnvsList = Task_Base_Target::getAvailableEnvsList($sProjectPath);
+        $aEnvsList = Target::getAvailableEnvsList($sProjectPath);
         $this->assertEquals($aExpected, $aEnvsList);
     }
 
     /**
-     * @covers Task_Base_Target::getAvailableEnvsList
-     * @covers Task_Base_Target::_getSXEExternalProperties
+     * @covers Target::getAvailableEnvsList
+     * @covers Target::_getSXEExternalProperties
      */
     public function testGetAvailableEnvsList_WithOneProperty ()
     {
@@ -173,13 +176,13 @@ class TargetTest extends \PHPUnit_Framework_TestCase
             'my_env' => array('ref' => 'Branch or tag to deploy')
         );
         $sProjectPath = __DIR__ . '/resources/2/project_env_withoneproperty.xml';
-        $aEnvsList = Task_Base_Target::getAvailableEnvsList($sProjectPath);
+        $aEnvsList = Target::getAvailableEnvsList($sProjectPath);
         $this->assertEquals($aExpected, $aEnvsList);
     }
 
     /**
-     * @covers Task_Base_Target::getAvailableEnvsList
-     * @covers Task_Base_Target::_getSXEExternalProperties
+     * @covers Target::getAvailableEnvsList
+     * @covers Target::_getSXEExternalProperties
      */
     public function testGetAvailableEnvsList_WithProperties ()
     {
@@ -190,13 +193,13 @@ class TargetTest extends \PHPUnit_Framework_TestCase
             )
         );
         $sProjectPath = __DIR__ . '/resources/2/project_env_withproperties.xml';
-        $aEnvsList = Task_Base_Target::getAvailableEnvsList($sProjectPath);
+        $aEnvsList = Target::getAvailableEnvsList($sProjectPath);
         $this->assertEquals($aExpected, $aEnvsList);
     }
 
     /**
-     * @covers Task_Base_Target::getAvailableEnvsList
-     * @covers Task_Base_Target::_getSXEExternalProperties
+     * @covers Target::getAvailableEnvsList
+     * @covers Target::_getSXEExternalProperties
      */
     public function testGetAvailableEnvsList_WithCallAndProperties ()
     {
@@ -208,7 +211,7 @@ class TargetTest extends \PHPUnit_Framework_TestCase
             )
         );
         $sProjectPath = __DIR__ . '/resources/2/project_env_withcallandproperties.xml';
-        $aEnvsList = Task_Base_Target::getAvailableEnvsList($sProjectPath);
+        $aEnvsList = Target::getAvailableEnvsList($sProjectPath);
         $this->assertEquals($aExpected, $aEnvsList);
     }
 }

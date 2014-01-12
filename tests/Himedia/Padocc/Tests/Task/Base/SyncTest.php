@@ -2,10 +2,16 @@
 
 namespace Himedia\Padocc\Tests\Task\Base;
 
+use Himedia\Padocc\DIContainer;
+use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
+use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
+use Himedia\Padocc\Task\Base\Project;
+use Himedia\Padocc\Tests\PadoccTestCase;
+
 /**
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
-class SyncTest extends \PHPUnit_Framework_TestCase
+class SyncTest extends PadoccTestCase
 {
 
     /**
@@ -53,7 +59,7 @@ class SyncTest extends \PHPUnit_Framework_TestCase
         //$oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         //$this->aShellExecCmds = array();
 
-        $oClass = new ReflectionClass('Shell_Adapter');
+        $oClass = new \ReflectionClass('\GAubry\Shell\ShellAdapter');
         $oProperty = $oClass->getProperty('_aFileStatus');
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockShell, array(
@@ -61,8 +67,8 @@ class SyncTest extends \PHPUnit_Framework_TestCase
             '/path/to/srcfile' => 1
         ));
 
-        $oProperties = new Properties_Adapter($oMockShell);
-        $oNumbering = new Numbering_Adapter();
+        $oProperties = new PropertiesAdapter($oMockShell, $this->aConfig);
+        $oNumbering = new NumberingAdapter();
 
         $this->oDIContainer = new DIContainer();
         $this->oDIContainer

@@ -1,4 +1,6 @@
 <?php
+use Himedia\Padocc\Task\Base\Project;
+use Himedia\Padocc\Task\Base\Target;
 
 /**
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
@@ -24,8 +26,8 @@ class Deployment
         $this->oDIContainer
             ->setLogger($oLogger)
             ->setShellAdapter($oShell)
-            ->setPropertiesAdapter(new Properties_Adapter($oShell))
-            ->setNumberingAdapter(new Numbering_Adapter());
+            ->setPropertiesAdapter(new PropertiesAdapter($oShell))
+            ->setNumberingAdapter(new NumberingAdapter());
     }
 
     /**
@@ -37,7 +39,7 @@ class Deployment
     {
         $oProperties = $this->oDIContainer->getPropertiesAdapter();
         foreach ($aExternalProperties as $i => $sValue) {
-            $sKey = Task_Base_ExternalProperty::EXTERNAL_PROPERTY_PREFIX . ($i+1);
+            $sKey = ExternalProperty::EXTERNAL_PROPERTY_PREFIX . ($i+1);
             $oProperties->setProperty($sKey, str_replace('&#0160;', ' ', $sValue));
         }
     }
@@ -101,7 +103,7 @@ class Deployment
         if (! empty($aAllProjectsName)) {
             foreach ($aAllProjectsName as $sProjectName) {
                 $sProjectPath = DEPLOYMENT_RESOURCES_DIR . '/' . $sProjectName . '.xml';
-                $aEnvsByProject[$sProjectName] = Task_Base_Target::getAvailableEnvsList($sProjectPath);
+                $aEnvsByProject[$sProjectName] = Target::getAvailableEnvsList($sProjectPath);
             }
         }
         ksort($aEnvsByProject);

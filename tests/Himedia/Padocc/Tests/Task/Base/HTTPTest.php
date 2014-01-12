@@ -2,10 +2,16 @@
 
 namespace Himedia\Padocc\Tests\Task\Base;
 
+use Himedia\Padocc\DIContainer;
+use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
+use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
+use Himedia\Padocc\Task\Base\Project;
+use Himedia\Padocc\Tests\PadoccTestCase;
+
 /**
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
-class HTTPTest extends \PHPUnit_Framework_TestCase
+class HTTPTest extends PadoccTestCase
 {
 
     /**
@@ -53,7 +59,7 @@ class HTTPTest extends \PHPUnit_Framework_TestCase
         $this->aShellExecCmds = array();
 
         //$oShell = new ShellAdapter($oLogger);
-        $oClass = new ReflectionClass('Shell_Adapter');
+        $oClass = new \ReflectionClass('\GAubry\Shell\ShellAdapter');
         $oProperty = $oClass->getProperty('_aFileStatus');
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockShell, array(
@@ -62,8 +68,8 @@ class HTTPTest extends \PHPUnit_Framework_TestCase
         ));
 
         //$oShell = new ShellAdapter($oLogger);
-        $oProperties = new Properties_Adapter($oMockShell);
-        $oNumbering = new Numbering_Adapter();
+        $oProperties = new PropertiesAdapter($oMockShell, $this->aConfig);
+        $oNumbering = new NumberingAdapter();
 
         $this->oDIContainer = new DIContainer();
         $this->oDIContainer
@@ -100,7 +106,7 @@ class HTTPTest extends \PHPUnit_Framework_TestCase
         $this->oDIContainer->setShellAdapter($oMockShell);
 
         $sXML = '<http url="http://xxx" />';
-        $oXML = new SimpleXMLElement($sXML);
+        $oXML = new \SimpleXMLElement($sXML);
         $oTaskHTTP = $this->getMock('HTTP', array('reroutePaths'), array($oXML, $this->oMockProject, $this->oDIContainer));
         $oTaskHTTP->expects($this->any())->method('reroutePaths')->will($this->returnArgument(0));
 
@@ -118,7 +124,7 @@ class HTTPTest extends \PHPUnit_Framework_TestCase
     public function testExecute_WithOneURL ()
     {
         $sXML = '<http url="http://aai.twenga.com/push.php?server=www26&amp;app=web" />';
-        $oXML = new SimpleXMLElement($sXML);
+        $oXML = new \SimpleXMLElement($sXML);
         $oTaskHTTP = $this->getMock('HTTP', array('reroutePaths'), array($oXML, $this->oMockProject, $this->oDIContainer));
         $oTaskHTTP->expects($this->any())->method('reroutePaths')->will($this->returnArgument(0));
 
@@ -145,7 +151,7 @@ class HTTPTest extends \PHPUnit_Framework_TestCase
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
         $sXML = '<http url="http://aai.twenga.com/push.php?server=${servers}&amp;app=web" />';
-        $oXML = new SimpleXMLElement($sXML);
+        $oXML = new \SimpleXMLElement($sXML);
         $oTaskHTTP = $this->getMock('HTTP', array('reroutePaths'), array($oXML, $this->oMockProject, $this->oDIContainer));
         $oTaskHTTP->expects($this->any())->method('reroutePaths')->will($this->returnArgument(0));
 

@@ -117,7 +117,7 @@ class Deployment
         );
 
         $sXML = $this->execSSH(implode(';', $aCommand));
-        $oLogs = new SimpleXMLElement($sXML);
+        $oLogs = new \SimpleXMLElement($sXML);
         $aRawLogs = explode("\n", (string)$oLogs->info);
         $sErrors = nl2br((string)$oLogs->error, true);
 

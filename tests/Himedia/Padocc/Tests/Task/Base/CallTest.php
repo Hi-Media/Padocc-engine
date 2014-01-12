@@ -2,10 +2,20 @@
 
 namespace Himedia\Padocc\Tests\Task\Base;
 
+use GAubry\Shell\ShellAdapter;
+use Himedia\Padocc\DIContainer;
+use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
+use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
+use Himedia\Padocc\Task\Base\Call;
+use Himedia\Padocc\Task\Base\Project;
+use Himedia\Padocc\Task\Base\Target;
+use Himedia\Padocc\Tests\PadoccTestCase;
+use Psr\Log\NullLogger;
+
 /**
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
-class CallTest extends \PHPUnit_Framework_TestCase
+class CallTest extends PadoccTestCase
 {
 
     /**
@@ -39,16 +49,14 @@ class CallTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp ()
     {
-        $oBaseLogger = new Logger_Adapter(LoggerInterface::WARNING);
-        $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
-
+        /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
+        $oLogger     = new NullLogger();
         $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
         $oMockShell->expects($this->any())->method('exec')
             ->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
-        //$oShell = new ShellAdapter($oLogger);
-        $oClass = new ReflectionClass('Shell_Adapter');
+        $oClass = new \ReflectionClass('\GAubry\Shell\ShellAdapter');
         $oProperty = $oClass->getProperty('_aFileStatus');
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockShell, array(
@@ -57,8 +65,8 @@ class CallTest extends \PHPUnit_Framework_TestCase
         ));
 
         //$oShell = new ShellAdapter($oLogger);
-        $oProperties = new Properties_Adapter($oMockShell);
-        $oNumbering = new Numbering_Adapter();
+        $oProperties = new PropertiesAdapter($oMockShell, $this->aConfig);
+        $oNumbering = new NumberingAdapter();
 
         $this->oDIContainer = new DIContainer();
         $this->oDIContainer
@@ -75,24 +83,24 @@ class CallTest extends \PHPUnit_Framework_TestCase
     public function tearDown()
     {
         $this->oDIContainer = null;
-        $this->oMockProject = null;
     }
 
     /**
-     * @covers Task_Base_Call::__construct
+     * @covers \Himedia\Padocc\Task\Base\Call::__construct
      */
     public function testNew_ThrowExceptionIfTargetNotFound ()
     {
+        /* @var $oMockProject Project|\PHPUnit_Framework_MockObject_MockObject */
         $sXML = '<target name="my_target"></target>';
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array('getSXE'), array(), '', false);
         $oMockProject->expects($this->any())->method('getSXE')
-            ->will($this->returnValue(new SimpleXMLElement($sXML)));
+            ->will($this->returnValue(new \SimpleXMLElement($sXML)));
 
         $this->setExpectedException(
             'UnexpectedValueException',
             "Target 'not_exists' not found or not unique in this project!"
         );
-        $oTask = Task_Base_Call::getNewInstance(
+        Call::getNewInstance(
             array('target' => 'not_exists'),
             $oMockProject,
             $this->oDIContainer
@@ -100,20 +108,21 @@ class CallTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Task_Base_Call::__construct
+     * @covers \Himedia\Padocc\Task\Base\Call::__construct
      */
     public function testNew_ThrowExceptionIfTargetNotUnique ()
     {
+        /* @var $oMockProject Project|\PHPUnit_Framework_MockObject_MockObject */
         $sXML = '<project><target name="my_target"></target><target name="my_target"></target></project>';
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array('getSXE'), array(), '', false);
         $oMockProject->expects($this->any())->method('getSXE')
-            ->will($this->returnValue(new SimpleXMLElement($sXML)));
+            ->will($this->returnValue(new \SimpleXMLElement($sXML)));
 
         $this->setExpectedException(
             'UnexpectedValueException',
             "Target 'my_target' not found or not unique in this project!"
         );
-        $oTask = Task_Base_Call::getNewInstance(
+        Call::getNewInstance(
             array('target' => 'my_target'),
             $oMockProject,
             $this->oDIContainer
@@ -121,21 +130,22 @@ class CallTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Task_Base_Call::__construct
+     * @covers \Himedia\Padocc\Task\Base\Call::__construct
      */
     public function testNew ()
     {
+        /* @var $oMockProject Project|\PHPUnit_Framework_MockObject_MockObject */
         $sXML = '<project><target name="my_target"></target></project>';
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array('getSXE'), array(), '', false);
         $oMockProject->expects($this->any())->method('getSXE')
-            ->will($this->returnValue(new SimpleXMLElement($sXML)));
+            ->will($this->returnValue(new \SimpleXMLElement($sXML)));
 
-        $oCallTask = Task_Base_Call::getNewInstance(
+        Call::getNewInstance(
             array('target' => 'my_target'),
             $oMockProject,
             $this->oDIContainer
         );
-        $oTargetTask = Task_Base_Target::getNewInstance(
+        $oTargetTask = Target::getNewInstance(
             array('name' => 'my_target'),
             $oMockProject,
             $this->oDIContainer

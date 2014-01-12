@@ -2,10 +2,16 @@
 
 namespace Himedia\Padocc\Tests\Task\Extended;
 
+use Himedia\Padocc\DIContainer;
+use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
+use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
+use Himedia\Padocc\Task\Base\Project;
+use Himedia\Padocc\Tests\PadoccTestCase;
+
 /**
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
-class B2CSwitchSymlinkTest extends \PHPUnit_Framework_TestCase
+class B2CSwitchSymlinkTest extends PadoccTestCase
 {
 
     /**
@@ -74,9 +80,9 @@ class B2CSwitchSymlinkTest extends \PHPUnit_Framework_TestCase
         $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
-        $oProperties = new Properties_Adapter($oMockShell);
+        $oProperties = new PropertiesAdapter($oMockShell, $this->aConfig);
 
-        $oNumbering = new Numbering_Adapter();
+        $oNumbering = new NumberingAdapter();
 
         $this->oDIContainer = new DIContainer();
         $this->oDIContainer
@@ -117,7 +123,7 @@ class B2CSwitchSymlinkTest extends \PHPUnit_Framework_TestCase
             array(), $this->oMockProject, $this->oDIContainer
         );
 
-        $oClass = new ReflectionClass($oTask);
+        $oClass = new \ReflectionClass($oTask);
         $oMethod = $oClass->getMethod('_setCluster');
         $oMethod->setAccessible(true);
 
@@ -147,7 +153,7 @@ class B2CSwitchSymlinkTest extends \PHPUnit_Framework_TestCase
             array(), $this->oMockProject, $this->oDIContainer
         );
 
-        $oClass = new ReflectionClass($oTask);
+        $oClass = new \ReflectionClass($oTask);
         $oMethod = $oClass->getMethod('_setCluster');
         $oMethod->setAccessible(true);
 
