@@ -40,7 +40,7 @@ class HTTP extends Task
         parent::__construct($oTask, $oProject, $oDIContainer);
         $this->aAttrProperties = array(
             'url' => AttributeProperties::ALLOW_PARAMETER | AttributeProperties::REQUIRED | AttributeProperties::URL,
-            'destdir' => AttributeProperties::ALLOW_PARAMETER | AttributeProperties::DIR
+            'dest' => AttributeProperties::ALLOW_PARAMETER | AttributeProperties::FILE
         );
     }
 
@@ -71,30 +71,11 @@ class HTTP extends Task
         parent::centralExecute();
         $this->oLogger->info('+++Call URL: ' . $this->aAttValues['url'] . '+++');
 
-
-        $sTmpDir = $this->oProperties->getProperty('tmpdir').'/curl';
-        $this->oShell->mkdir($sTmpDir);
-
         $aURLs = $this->processPath($this->aAttValues['url']);
         foreach ($aURLs as $sURL) {
-            $sCmd = 'cd '.$sTmpDir.'; /usr/bin/curl --silent --retry 2 --retry-delay 2 --max-time 5 "' . $sURL . '"';
-            if( isset($this->aAttValues['destdir'] )) $sCmd .= ' -O';
-            $aResults = $this->oShell->exec($sCmd);
-            if (count($aResults) > 0 && substr(end($aResults), 0, 7) === '[ERROR]') {
-                throw new \RuntimeException(implode("\n", $aResults));
-            }
+            $sCmd = $this->aConfig['curl_path'] . ' ' . $this->aConfig['curl_options'] . ' "' . $sURL . '"';
+            $this->oShell->exec($sCmd);
         }
-
-        if (isset($this->aAttValues['destdir'])) {
-            $aDestDirs = $this->processPath($this->aAttValues['destdir']);
-            foreach ($aDestDirs as $sDestDir) {
-                $this->oLogger->info('Copy file(s) to: ' . $sDestDir);
-                $this->oShell->copy($sTmpDir.'/*', $sDestDir, true);
-            }
-
-        }
-
-        $this->oShell->remove($sTmpDir);
 
         $this->oLogger->info('------');
     }

@@ -139,6 +139,13 @@ return array(
          * Chemin vers le shell bash.
          */
         'bash_path' => '/bin/bash',
+
+        /**
+         * Chemin vers le bin cURL.
+         */
+        'curl_path' => '/usr/bin/curl',
+
+        'curl_options' => '-L --silent --retry 2 --retry-delay 2 --max-time 5',
     ),
     'GAubry\ErrorHandler'     => array(
         'display_errors'      => true,

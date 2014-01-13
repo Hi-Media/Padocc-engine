@@ -48,6 +48,11 @@ abstract class Task
     protected $oLogger;
 
     /**
+     * @var array
+     */
+    protected $aConfig;
+
+    /**
      * Adaptateur de propriétés.
      * @var PropertiesInterface
      */
@@ -148,6 +153,7 @@ abstract class Task
         $this->oLogger = $this->oDIContainer->getLogger();
         $this->oProperties = $this->oDIContainer->getPropertiesAdapter();
         $this->oNumbering = $this->oDIContainer->getNumberingAdapter();
+        $this->aConfig = $this->oDIContainer->getConfig();
 
         // TODO à injecter :
         $this->oAttrProperties = new AttributeProperties($this->oDIContainer);
