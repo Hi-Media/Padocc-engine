@@ -93,8 +93,8 @@ class SyncTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Sync::__construct
-     * @covers Task_Base_Sync::check
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::__construct
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::check
      */
     public function testCheck_WithSrcFile ()
     {
@@ -107,8 +107,8 @@ class SyncTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Sync::__construct
-     * @covers Task_Base_Sync::check
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::__construct
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::check
      */
     public function testCheck_WithSrcDirWithoutLeadingSlash ()
     {
@@ -121,8 +121,8 @@ class SyncTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Sync::__construct
-     * @covers Task_Base_Sync::check
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::__construct
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::check
      */
     public function testCheck_WithSrcDirWithLeadingSlash ()
     {
@@ -135,8 +135,8 @@ class SyncTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Sync::__construct
-     * @covers Task_Base_Sync::check
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::__construct
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::check
      */
     public function testCheck_WithSrcDirWithLeadingPattern ()
     {
@@ -149,10 +149,10 @@ class SyncTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Sync::execute
-     * @covers Task_Base_Sync::preExecute
-     * @covers Task_Base_Sync::centralExecute
-     * @covers Task_Base_Sync::postExecute
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::execute
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::preExecute
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::postExecute
      */
     public function testExecute_WithSrcDir ()
     {
@@ -199,10 +199,10 @@ class SyncTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Sync::execute
-     * @covers Task_Base_Sync::preExecute
-     * @covers Task_Base_Sync::centralExecute
-     * @covers Task_Base_Sync::postExecute
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::execute
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::preExecute
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::postExecute
      */
     public function testExecute_WithSrcDirAndInclude ()
     {
@@ -249,10 +249,10 @@ class SyncTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Sync::execute
-     * @covers Task_Base_Sync::preExecute
-     * @covers Task_Base_Sync::centralExecute
-     * @covers Task_Base_Sync::postExecute
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::execute
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::preExecute
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::postExecute
      */
     public function testExecute_WithSrcDirAndIncludeAndExclude ()
     {
@@ -300,10 +300,10 @@ class SyncTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Sync::execute
-     * @covers Task_Base_Sync::preExecute
-     * @covers Task_Base_Sync::centralExecute
-     * @covers Task_Base_Sync::postExecute
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::execute
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::preExecute
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Sync::postExecute
      */
     public function testExecute_WithSrcDirAndSymLinks ()
     {

@@ -6,6 +6,8 @@ use GAubry\Shell\ShellAdapter;
 use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
 use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
+use Himedia\Padocc\Properties\Adapter;
+use Himedia\Padocc\Task\Base\MkDir;
 use Himedia\Padocc\Task\Base\Project;
 use Himedia\Padocc\Tests\PadoccTestCase;
 use Psr\Log\NullLogger;
@@ -76,7 +78,8 @@ class MkDirTest extends PadoccTestCase
             ->setLogger($oLogger)
             ->setPropertiesAdapter($oProperties)
             ->setShellAdapter($oMockShell)
-            ->setNumberingAdapter($oNumbering);
+            ->setNumberingAdapter($oNumbering)
+            ->setConfig($this->aConfig);
 
         $this->oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
     }
@@ -92,12 +95,12 @@ class MkDirTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_MkDir::__construct
-     * @covers Task_Base_MkDir::check
+     * @covers \Himedia\Padocc\Task\Base\MkDir::__construct
+     * @covers \Himedia\Padocc\Task\Base\MkDir::check
      */
     public function testCheck_WithoutMode ()
     {
-        $oTask = Task_Base_MkDir::getNewInstance(array('destdir' => '/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
+        $oTask = MkDir::getNewInstance(array('destdir' => '/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
         $oTask->setUp();
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir'
@@ -105,12 +108,12 @@ class MkDirTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_MkDir::__construct
-     * @covers Task_Base_MkDir::check
+     * @covers \Himedia\Padocc\Task\Base\MkDir::__construct
+     * @covers \Himedia\Padocc\Task\Base\MkDir::check
      */
     public function testCheck_WithMode ()
     {
-        $oTask = Task_Base_MkDir::getNewInstance(array('destdir' => '/path/to/destdir', 'mode' => '755'), $this->oMockProject, $this->oDIContainer);
+        $oTask = MkDir::getNewInstance(array('destdir' => '/path/to/destdir', 'mode' => '755'), $this->oMockProject, $this->oDIContainer);
         $oTask->setUp();
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir',
@@ -119,21 +122,26 @@ class MkDirTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_MkDir::execute
-     * @covers Task_Base_MkDir::preExecute
-     * @covers Task_Base_MkDir::centralExecute
-     * @covers Task_Base_MkDir::postExecute
+     * @covers \Himedia\Padocc\Task\Base\MkDir::execute
+     * @covers \Himedia\Padocc\Task\Base\MkDir::preExecute
+     * @covers \Himedia\Padocc\Task\Base\MkDir::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\MkDir::postExecute
      */
     public function testExecute_WithoutMode ()
     {
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array($this->oDIContainer->getShellAdapter(), $this->aConfig)
+        );
         $oMockProperties->expects($this->any())->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
         $oMockProperties->expects($this->exactly(1))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTask = Task_Base_MkDir::getNewInstance(array('destdir' => '/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
+        $oTask = MkDir::getNewInstance(array('destdir' => '/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
         $oTask->setUp();
         $oTask->execute();
         $this->assertEquals(array(
@@ -142,35 +150,45 @@ class MkDirTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_MkDir::execute
-     * @covers Task_Base_MkDir::preExecute
-     * @covers Task_Base_MkDir::centralExecute
-     * @covers Task_Base_MkDir::postExecute
+     * @covers \Himedia\Padocc\Task\Base\MkDir::execute
+     * @covers \Himedia\Padocc\Task\Base\MkDir::preExecute
+     * @covers \Himedia\Padocc\Task\Base\MkDir::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\MkDir::postExecute
      */
     public function testExecute_WithMode ()
     {
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array($this->oDIContainer->getShellAdapter(), $this->aConfig)
+        );
         $oMockProperties->expects($this->any())->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
         $oMockProperties->expects($this->exactly(1))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTask = Task_Base_MkDir::getNewInstance(array('destdir' => '/path/to/destdir', 'mode' => '755'), $this->oMockProject, $this->oDIContainer);
+        $oTask = MkDir::getNewInstance(array('destdir' => '/path/to/destdir', 'mode' => '755'), $this->oMockProject, $this->oDIContainer);
         $oTask->setUp();
         $oTask->execute();
         $this->assertEquals(array('mkdir -p "/path/to/destdir" && chmod 755 "/path/to/destdir"'), $this->aShellExecCmds);
     }
 
     /**
-     * @covers Task_Base_MkDir::execute
-     * @covers Task_Base_MkDir::preExecute
-     * @covers Task_Base_MkDir::centralExecute
-     * @covers Task_Base_MkDir::postExecute
+     * @covers \Himedia\Padocc\Task\Base\MkDir::execute
+     * @covers \Himedia\Padocc\Task\Base\MkDir::preExecute
+     * @covers \Himedia\Padocc\Task\Base\MkDir::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\MkDir::postExecute
      */
     public function testExecute_WithModeAndSymLinks ()
     {
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array($this->oDIContainer->getShellAdapter(), $this->aConfig)
+        );
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('true'));
@@ -183,7 +201,7 @@ class MkDirTest extends PadoccTestCase
         $oMockProperties->expects($this->exactly(3))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTask = Task_Base_MkDir::getNewInstance(array('destdir' => 'user@server:/path/to/destdir/subdir', 'mode' => '755'), $this->oMockProject, $this->oDIContainer);
+        $oTask = MkDir::getNewInstance(array('destdir' => 'user@server:/path/to/destdir/subdir', 'mode' => '755'), $this->oMockProject, $this->oDIContainer);
         $oTask->setUp();
         $oTask->execute();
         $this->assertEquals(array(

@@ -2,12 +2,15 @@
 
 namespace Himedia\Padocc\Tests\Task\Base;
 
+use GAubry\Logger\MinimalLogger;
 use GAubry\Shell\ShellAdapter;
 use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
 use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
+use Himedia\Padocc\Task\Base\FillTemplate;
 use Himedia\Padocc\Task\Base\Project;
 use Himedia\Padocc\Tests\PadoccTestCase;
+use Psr\Log\LogLevel;
 
 /**
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
@@ -57,11 +60,11 @@ class FillTemplateTest extends PadoccTestCase
      * Callback déclenchée sur appel de Logger_IndentedDecorator::log().
      * Log tous les appels dans le tableau indexé $this->aWarnMessages.
      *
-     * @param string $sMsg message à logger.
      * @param int $iLevel priorité du message.
+     * @param string $sMsg message à logger.
      * @see $aWarnMessages
      */
-    public function logCallback ($sMsg, $iLevel)
+    public function logCallback ($iLevel, $sMsg)
     {
         $this->aWarnMessages[$iLevel][] = $sMsg;
     }
@@ -72,9 +75,8 @@ class FillTemplateTest extends PadoccTestCase
      */
     public function setUp ()
     {
-        $oBaseLogger = new Logger_Adapter(LoggerInterface::ERROR);
-        //$oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
-        $oLogger = $this->getMock('Logger_IndentedDecorator', array('log'), array($oBaseLogger, '   '));
+        /* @var $oLogger MinimalLogger|\PHPUnit_Framework_MockObject_MockObject */
+        $oLogger = $this->getMock('\GAubry\Logger\MinimalLogger', array('log'), array(LogLevel::ERROR));
         $oLogger->expects($this->any())->method('log')->will($this->returnCallback(array($this, 'logCallback')));
         $this->aWarnMessages = array();
 
@@ -101,7 +103,8 @@ class FillTemplateTest extends PadoccTestCase
             ->setLogger($oLogger)
             ->setPropertiesAdapter($oProperties)
             ->setShellAdapter($oMockShell)
-            ->setNumberingAdapter($oNumbering);
+            ->setNumberingAdapter($oNumbering)
+            ->setConfig($this->aConfig);
 
         $this->oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
     }
@@ -117,12 +120,12 @@ class FillTemplateTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_FillTemplate::__construct
-     * @covers Task_Base_FillTemplate::check
+     * @covers \Himedia\Padocc\Task\Base\FillTemplate::__construct
+     * @covers \Himedia\Padocc\Task\Base\FillTemplate::check
      */
     public function testCheck_ThrowExceptionIfSrcIsRemote ()
     {
-        $oTask = Task_Base_FillTemplate::getNewInstance(
+        $oTask = FillTemplate::getNewInstance(
             array('srcfile' => 'server:/path/to/srcfile', 'destfile' => '/path/to/destdir'),
             $this->oMockProject,
             $this->oDIContainer
@@ -132,12 +135,12 @@ class FillTemplateTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_FillTemplate::__construct
-     * @covers Task_Base_FillTemplate::check
+     * @covers \Himedia\Padocc\Task\Base\FillTemplate::__construct
+     * @covers \Himedia\Padocc\Task\Base\FillTemplate::check
      */
     public function testCheck_ThrowExceptionIfDestIsRemote ()
     {
-        $oTask = Task_Base_FillTemplate::getNewInstance(
+        $oTask = FillTemplate::getNewInstance(
             array('srcfile' => '/path/to/srcfile', 'destfile' => 'server:/path/to/destdir'),
             $this->oMockProject,
             $this->oDIContainer
@@ -147,12 +150,12 @@ class FillTemplateTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_FillTemplate::check
-     * @covers Task_Base_FillTemplate::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\FillTemplate::check
+     * @covers \Himedia\Padocc\Task\Base\FillTemplate::centralExecute
      */
     public function testExecute_ThrowExceptionIfMultipleSrcfile ()
     {
-        $oClass = new \ReflectionClass('Adapter');
+        $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();
@@ -167,7 +170,7 @@ class FillTemplateTest extends PadoccTestCase
         ));
         $this->oDIContainer->setPropertiesAdapter($oPropertiesAdapter);
 
-        $oTask = Task_Base_FillTemplate::getNewInstance(array(
+        $oTask = FillTemplate::getNewInstance(array(
             'srcfile' => '/path/${TO}/src',
             'destfile' => '/path/to/dest'
         ), $this->oMockProject, $this->oDIContainer);
@@ -180,12 +183,12 @@ class FillTemplateTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_FillTemplate::check
-     * @covers Task_Base_FillTemplate::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\FillTemplate::check
+     * @covers \Himedia\Padocc\Task\Base\FillTemplate::centralExecute
      */
     public function testExecute_ThrowExceptionIfMultipleDestfile ()
     {
-        $oClass = new \ReflectionClass('Adapter');
+        $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();
@@ -200,7 +203,7 @@ class FillTemplateTest extends PadoccTestCase
         ));
         $this->oDIContainer->setPropertiesAdapter($oPropertiesAdapter);
 
-        $oTask = Task_Base_FillTemplate::getNewInstance(array(
+        $oTask = FillTemplate::getNewInstance(array(
             'srcfile' => '/path/to/src',
             'destfile' => '/path/${TO}/dest'
         ), $this->oMockProject, $this->oDIContainer);
@@ -213,12 +216,12 @@ class FillTemplateTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_FillTemplate::check
-     * @covers Task_Base_FillTemplate::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\FillTemplate::check
+     * @covers \Himedia\Padocc\Task\Base\FillTemplate::centralExecute
      */
     public function testExecute_Simple ()
     {
-        $oClass = new \ReflectionClass('Adapter');
+        $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();
@@ -233,7 +236,7 @@ class FillTemplateTest extends PadoccTestCase
         ));
         $this->oDIContainer->setPropertiesAdapter($oPropertiesAdapter);
 
-        $oTask = Task_Base_FillTemplate::getNewInstance(
+        $oTask = FillTemplate::getNewInstance(
             array(
                 'srcfile' => __DIR__ . '/resources/config_template.inc.php',
                 'destfile' => DEPLOYMENT_TMP_DIR . '/padocc-dist.php'
@@ -293,16 +296,16 @@ define('TEST', 'z');
 
 EOT;
         $this->assertEquals(str_replace("\r\n", "\n", $sExpectedResult), $sResult);
-        $this->assertEquals(0, count($this->aWarnMessages[LoggerInterface::WARNING]));
+        $this->assertArrayNotHasKey(LogLevel::WARNING, $this->aWarnMessages);
     }
 
     /**
-     * @covers Task_Base_FillTemplate::check
-     * @covers Task_Base_FillTemplate::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\FillTemplate::check
+     * @covers \Himedia\Padocc\Task\Base\FillTemplate::centralExecute
      */
     public function testExecute_WithWarning ()
     {
-        $oClass = new \ReflectionClass('Adapter');
+        $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();
@@ -314,7 +317,7 @@ EOT;
         ));
         $this->oDIContainer->setPropertiesAdapter($oPropertiesAdapter);
 
-        $oTask = Task_Base_FillTemplate::getNewInstance(
+        $oTask = FillTemplate::getNewInstance(
             array(
                 'srcfile' => __DIR__ . '/resources/config_template.inc.php',
                 'destfile' => DEPLOYMENT_TMP_DIR . '/padocc-dist.php'
@@ -374,6 +377,6 @@ define('TEST', '${NOT_EXISTS}');
 
 EOT;
         $this->assertEquals(str_replace("\r\n", "\n", $sExpectedResult), $sResult);
-        $this->assertEquals(3, count($this->aWarnMessages[LoggerInterface::WARNING]));
+        $this->assertEquals(3, count($this->aWarnMessages[LogLevel::WARNING]));
     }
 }

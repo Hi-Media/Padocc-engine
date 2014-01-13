@@ -81,7 +81,7 @@ class TargetTest extends PadoccTestCase
     }
 
     /**
-     * @covers Target::getAvailableEnvsList
+     * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
      */
     public function testGetAvailableEnvsList_ThrowExceptionIfNotFound () {
         $this->setExpectedException(
@@ -92,7 +92,7 @@ class TargetTest extends PadoccTestCase
     }
 
     /**
-     * @covers Target::getAvailableEnvsList
+     * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
      */
     public function testGetAvailableEnvsList_ThrowExceptionIfBadXML ()
     {
@@ -104,7 +104,7 @@ class TargetTest extends PadoccTestCase
     }
 
     /**
-     * @covers Target::getAvailableEnvsList
+     * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
      */
     public function testGetAvailableEnvsList_ThrowExceptionIfNoEnv ()
     {
@@ -116,7 +116,7 @@ class TargetTest extends PadoccTestCase
     }
 
     /**
-     * @covers Target::getAvailableEnvsList
+     * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
      */
     public function testGetAvailableEnvsList_ThrowExceptionIfInvalidProperty ()
     {
@@ -128,8 +128,8 @@ class TargetTest extends PadoccTestCase
     }
 
     /**
-     * @covers Target::getAvailableEnvsList
-     * @covers Target::_getSXEExternalProperties
+     * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
+     * @covers \Himedia\Padocc\Task\Base\Target::_getSXEExternalProperties
      */
     public function testGetAvailableEnvsList_ThrowExceptionIfInvalidTarget ()
     {
@@ -141,8 +141,8 @@ class TargetTest extends PadoccTestCase
     }
 
     /**
-     * @covers Target::getAvailableEnvsList
-     * @covers Target::_getSXEExternalProperties
+     * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
+     * @covers \Himedia\Padocc\Task\Base\Target::_getSXEExternalProperties
      */
     public function testGetAvailableEnvsList_WithEmptyEnv ()
     {
@@ -155,8 +155,8 @@ class TargetTest extends PadoccTestCase
     }
 
     /**
-     * @covers Target::getAvailableEnvsList
-     * @covers Target::_getSXEExternalProperties
+     * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
+     * @covers \Himedia\Padocc\Task\Base\Target::_getSXEExternalProperties
      */
     public function testGetAvailableEnvsList_WithoutExtProperty ()
     {
@@ -169,8 +169,8 @@ class TargetTest extends PadoccTestCase
     }
 
     /**
-     * @covers Target::getAvailableEnvsList
-     * @covers Target::_getSXEExternalProperties
+     * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
+     * @covers \Himedia\Padocc\Task\Base\Target::_getSXEExternalProperties
      */
     public function testGetAvailableEnvsList_WithOneProperty ()
     {
@@ -183,8 +183,8 @@ class TargetTest extends PadoccTestCase
     }
 
     /**
-     * @covers Target::getAvailableEnvsList
-     * @covers Target::_getSXEExternalProperties
+     * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
+     * @covers \Himedia\Padocc\Task\Base\Target::_getSXEExternalProperties
      */
     public function testGetAvailableEnvsList_WithProperties ()
     {
@@ -200,8 +200,8 @@ class TargetTest extends PadoccTestCase
     }
 
     /**
-     * @covers Target::getAvailableEnvsList
-     * @covers Target::_getSXEExternalProperties
+     * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
+     * @covers \Himedia\Padocc\Task\Base\Target::_getSXEExternalProperties
      */
     public function testGetAvailableEnvsList_WithCallAndProperties ()
     {

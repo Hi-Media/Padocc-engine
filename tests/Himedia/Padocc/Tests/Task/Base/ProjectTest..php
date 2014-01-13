@@ -82,7 +82,7 @@ class ProjectTest extends PadoccTestCase
     }
 
     /**
-     * @covers Project::getAllProjectsName
+     * @covers \Himedia\Padocc\Task\Base\Project::getAllProjectsName
      */
     public function testGetAllProjectsName_ThrowExceptionIfNotFound ()
     {
@@ -94,7 +94,7 @@ class ProjectTest extends PadoccTestCase
     }
 
     /**
-     * @covers Project::getAllProjectsName
+     * @covers \Himedia\Padocc\Task\Base\Project::getAllProjectsName
      */
     public function testGetAllProjectsName_ThrowExceptionIfBadXml ()
     {
@@ -106,7 +106,7 @@ class ProjectTest extends PadoccTestCase
     }
 
     /**
-     * @covers Project::getAllProjectsName
+     * @covers \Himedia\Padocc\Task\Base\Project::getAllProjectsName
      */
     public function testGetAllProjectsName ()
     {
@@ -115,7 +115,7 @@ class ProjectTest extends PadoccTestCase
     }
 
     /**
-     * @covers Project::getSXEProject
+     * @covers \Himedia\Padocc\Task\Base\Project::getSXEProject
      */
     public function testGetSXEProject_ThrowExceptionIfNotFound () {
         $this->setExpectedException(
@@ -126,7 +126,7 @@ class ProjectTest extends PadoccTestCase
     }
 
     /**
-     * @covers Project::getSXEProject
+     * @covers \Himedia\Padocc\Task\Base\Project::getSXEProject
      */
     public function testGetSXEProject_ThrowExceptionIfBadXML ()
     {
@@ -138,7 +138,7 @@ class ProjectTest extends PadoccTestCase
     }
 
     /**
-     * @covers Project::getSXEProject
+     * @covers \Himedia\Padocc\Task\Base\Project::getSXEProject
      */
     public function testGetSXEProject ()
     {
@@ -147,7 +147,7 @@ class ProjectTest extends PadoccTestCase
     }
 
     /**
-     * @covers Project::__construct
+     * @covers \Himedia\Padocc\Task\Base\Project::__construct
      */
     public function testNew_ThrowExceptionIfProjectNotFound ()
     {
@@ -159,7 +159,7 @@ class ProjectTest extends PadoccTestCase
     }
 
     /**
-     * @covers Project::__construct
+     * @covers \Himedia\Padocc\Task\Base\Project::__construct
      */
     public function testNew_ThrowExceptionIfBadXML ()
     {
@@ -179,7 +179,7 @@ class ProjectTest extends PadoccTestCase
     }
 
     /**
-     * @covers Project::__construct
+     * @covers \Himedia\Padocc\Task\Base\Project::__construct
      */
     public function testNew_ThrowExceptionIfEnvNotFound ()
     {
@@ -203,7 +203,7 @@ EOT;
     }
 
     /**
-     * @covers Project::__construct
+     * @covers \Himedia\Padocc\Task\Base\Project::__construct
      */
     public function testNew_ThrowExceptionIfMultipleEnv ()
     {
@@ -229,8 +229,8 @@ EOT;
     }
 
     /**
-     * @covers Project::__construct
-     * @covers Project::check
+     * @covers \Himedia\Padocc\Task\Base\Project::__construct
+     * @covers \Himedia\Padocc\Task\Base\Project::check
      */
     public function testCheck ()
     {

@@ -94,8 +94,8 @@ class RenameTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Rename::__construct
-     * @covers Task_Base_Rename::check
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Rename::__construct
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Rename::check
      */
     public function testCheck_ThrowExceptionIfServersNotEquals1 ()
     {
@@ -111,8 +111,8 @@ class RenameTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Rename::__construct
-     * @covers Task_Base_Rename::check
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Rename::__construct
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Rename::check
      */
     public function testCheck_ThrowExceptionIfServersNotEquals2 ()
     {
@@ -128,8 +128,8 @@ class RenameTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Rename::check
-     * @covers Task_Base_Rename::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Rename::check
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Rename::centralExecute
      */
     public function testExecute_ThrowExceptionIfMultipleSrc ()
     {
@@ -161,8 +161,8 @@ class RenameTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Rename::check
-     * @covers Task_Base_Rename::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Rename::check
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Rename::centralExecute
      */
     public function testExecute_ThrowExceptionIfMultipleDest ()
     {
@@ -194,8 +194,8 @@ class RenameTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Rename::check
-     * @covers Task_Base_Rename::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Rename::check
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Rename::centralExecute
      */
     public function testExecute_Simple ()
     {

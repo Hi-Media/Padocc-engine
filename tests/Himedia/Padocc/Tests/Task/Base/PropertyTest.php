@@ -85,8 +85,8 @@ class PropertyTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Property::__construct
-     * @covers Task_Base_Property::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Property::__construct
+     * @covers \Himedia\Padocc\Task\Base\Task_Base_Property::centralExecute
      */
     public function testCentralExecute ()
     {
