@@ -7,6 +7,7 @@ use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
 use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
 use Himedia\Padocc\Task\Base\Project;
+use Himedia\Padocc\Task\Base\Rename;
 use Himedia\Padocc\Tests\PadoccTestCase;
 use Psr\Log\NullLogger;
 
@@ -78,7 +79,8 @@ class RenameTest extends PadoccTestCase
             ->setLogger($oLogger)
             ->setPropertiesAdapter($oProperties)
             ->setShellAdapter($oMockShell)
-            ->setNumberingAdapter($oNumbering);
+            ->setNumberingAdapter($oNumbering)
+            ->setConfig($this->aConfig);
 
         $this->oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
     }
@@ -94,12 +96,12 @@ class RenameTest extends PadoccTestCase
     }
 
     /**
-     * @covers \Himedia\Padocc\Task\Base\Task_Base_Rename::__construct
-     * @covers \Himedia\Padocc\Task\Base\Task_Base_Rename::check
+     * @covers \Himedia\Padocc\Task\Base\Rename::__construct
+     * @covers \Himedia\Padocc\Task\Base\Rename::check
      */
     public function testCheck_ThrowExceptionIfServersNotEquals1 ()
     {
-        $oTask = Task_Base_Rename::getNewInstance(array(
+        $oTask = Rename::getNewInstance(array(
             'src' => 'user@server1:/path/to/src',
             'dest' => 'user@server2:/path/to/dest'
         ), $this->oMockProject, $this->oDIContainer);
@@ -111,12 +113,12 @@ class RenameTest extends PadoccTestCase
     }
 
     /**
-     * @covers \Himedia\Padocc\Task\Base\Task_Base_Rename::__construct
-     * @covers \Himedia\Padocc\Task\Base\Task_Base_Rename::check
+     * @covers \Himedia\Padocc\Task\Base\Rename::__construct
+     * @covers \Himedia\Padocc\Task\Base\Rename::check
      */
     public function testCheck_ThrowExceptionIfServersNotEquals2 ()
     {
-        $oTask = Task_Base_Rename::getNewInstance(array(
+        $oTask = Rename::getNewInstance(array(
             'src' => 'user@server1:/path/to/src',
             'dest' => '/path/to/dest'
         ), $this->oMockProject, $this->oDIContainer);
@@ -128,12 +130,12 @@ class RenameTest extends PadoccTestCase
     }
 
     /**
-     * @covers \Himedia\Padocc\Task\Base\Task_Base_Rename::check
-     * @covers \Himedia\Padocc\Task\Base\Task_Base_Rename::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\Rename::check
+     * @covers \Himedia\Padocc\Task\Base\Rename::centralExecute
      */
     public function testExecute_ThrowExceptionIfMultipleSrc ()
     {
-        $oClass = new \ReflectionClass('Adapter');
+        $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();
@@ -148,7 +150,7 @@ class RenameTest extends PadoccTestCase
         ));
         $this->oDIContainer->setPropertiesAdapter($oPropertiesAdapter);
 
-        $oTask = Task_Base_Rename::getNewInstance(array(
+        $oTask = Rename::getNewInstance(array(
             'src' => '/path/${TO}/src',
             'dest' => '/path/to/dest'
         ), $this->oMockProject, $this->oDIContainer);
@@ -161,12 +163,12 @@ class RenameTest extends PadoccTestCase
     }
 
     /**
-     * @covers \Himedia\Padocc\Task\Base\Task_Base_Rename::check
-     * @covers \Himedia\Padocc\Task\Base\Task_Base_Rename::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\Rename::check
+     * @covers \Himedia\Padocc\Task\Base\Rename::centralExecute
      */
     public function testExecute_ThrowExceptionIfMultipleDest ()
     {
-        $oClass = new \ReflectionClass('Adapter');
+        $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();
@@ -181,7 +183,7 @@ class RenameTest extends PadoccTestCase
         ));
         $this->oDIContainer->setPropertiesAdapter($oPropertiesAdapter);
 
-        $oTask = Task_Base_Rename::getNewInstance(array(
+        $oTask = Rename::getNewInstance(array(
             'src' => '/path/to/src',
             'dest' => '/path/${TO}/dest'
         ), $this->oMockProject, $this->oDIContainer);
@@ -194,12 +196,12 @@ class RenameTest extends PadoccTestCase
     }
 
     /**
-     * @covers \Himedia\Padocc\Task\Base\Task_Base_Rename::check
-     * @covers \Himedia\Padocc\Task\Base\Task_Base_Rename::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\Rename::check
+     * @covers \Himedia\Padocc\Task\Base\Rename::centralExecute
      */
     public function testExecute_Simple ()
     {
-        $oClass = new \ReflectionClass('Adapter');
+        $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();
@@ -213,7 +215,7 @@ class RenameTest extends PadoccTestCase
         ));
         $this->oDIContainer->setPropertiesAdapter($oPropertiesAdapter);
 
-        $oTask = Task_Base_Rename::getNewInstance(array(
+        $oTask = Rename::getNewInstance(array(
             'src' => '/path/to/src',
             'dest' => '/path/to/dest'
         ), $this->oMockProject, $this->oDIContainer);
