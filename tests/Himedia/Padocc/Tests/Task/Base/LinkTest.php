@@ -6,6 +6,8 @@ use GAubry\Shell\ShellAdapter;
 use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
 use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
+use Himedia\Padocc\Properties\Adapter;
+use Himedia\Padocc\Task\Base\Link;
 use Himedia\Padocc\Task\Base\Project;
 use Himedia\Padocc\Tests\PadoccTestCase;
 use Psr\Log\NullLogger;
@@ -79,7 +81,8 @@ class LinkTest extends PadoccTestCase
             ->setLogger($oLogger)
             ->setPropertiesAdapter($oProperties)
             ->setShellAdapter($oMockShell)
-            ->setNumberingAdapter($oNumbering);
+            ->setNumberingAdapter($oNumbering)
+            ->setConfig($this->aConfig);
 
         $this->oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
     }
@@ -95,12 +98,12 @@ class LinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Link::__construct
-     * @covers Task_Base_Link::check
+     * @covers \Himedia\Padocc\Task\Base\Link::__construct
+     * @covers \Himedia\Padocc\Task\Base\Link::check
      */
     public function testCheck_WithoutAttrServerThrowExceptionIfServersNotEquals1 ()
     {
-        $oTask = Task_Base_Link::getNewInstance(array(
+        $oTask = Link::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
             'target' => 'user@server2:/path/to/destdir'
         ), $this->oMockProject, $this->oDIContainer);
@@ -112,12 +115,12 @@ class LinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Link::__construct
-     * @covers Task_Base_Link::check
+     * @covers \Himedia\Padocc\Task\Base\Link::__construct
+     * @covers \Himedia\Padocc\Task\Base\Link::check
      */
     public function testCheck_WithoutAttrServerThrowExceptionIfServersNotEquals2 ()
     {
-        $oTask = Task_Base_Link::getNewInstance(array(
+        $oTask = Link::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
             'target' => '/path/to/destdir'
         ), $this->oMockProject, $this->oDIContainer);
@@ -129,12 +132,12 @@ class LinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Link::__construct
-     * @covers Task_Base_Link::check
+     * @covers \Himedia\Padocc\Task\Base\Link::__construct
+     * @covers \Himedia\Padocc\Task\Base\Link::check
      */
     public function testCheck_WithoutAttrServerThrowExceptionIfServersNotEquals3 ()
     {
-        $oTask = Task_Base_Link::getNewInstance(array(
+        $oTask = Link::getNewInstance(array(
             'src' => '/path/to/link',
             'target' => 'user@server1:/path/to/destdir'
         ), $this->oMockProject, $this->oDIContainer);
@@ -146,12 +149,12 @@ class LinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Link::__construct
-     * @covers Task_Base_Link::check
+     * @covers \Himedia\Padocc\Task\Base\Link::__construct
+     * @covers \Himedia\Padocc\Task\Base\Link::check
      */
     public function testCheck_WithAttrServerThrowExceptionIfServersNotEquals1 ()
     {
-        $oTask = Task_Base_Link::getNewInstance(array(
+        $oTask = Link::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
             'target' => '/path/to/destdir',
             'server' => 'user@server2'
@@ -164,12 +167,12 @@ class LinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Link::__construct
-     * @covers Task_Base_Link::check
+     * @covers \Himedia\Padocc\Task\Base\Link::__construct
+     * @covers \Himedia\Padocc\Task\Base\Link::check
      */
     public function testCheck_WithAttrServerThrowExceptionIfServersNotEquals2 ()
     {
-        $oTask = Task_Base_Link::getNewInstance(array(
+        $oTask = Link::getNewInstance(array(
             'src' => '/path/to/link',
             'target' => 'user@server1:/path/to/destdir',
             'server' => 'user@server2'
@@ -182,12 +185,12 @@ class LinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Link::__construct
-     * @covers Task_Base_Link::check
+     * @covers \Himedia\Padocc\Task\Base\Link::__construct
+     * @covers \Himedia\Padocc\Task\Base\Link::check
      */
     public function testCheck_WithAttrServerThrowExceptionIfServersNotEquals3 ()
     {
-        $oTask = Task_Base_Link::getNewInstance(array(
+        $oTask = Link::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
             'target' => 'user@server2:/path/to/destdir',
             'server' => 'user@server3'
@@ -200,12 +203,12 @@ class LinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Link::__construct
-     * @covers Task_Base_Link::check
+     * @covers \Himedia\Padocc\Task\Base\Link::__construct
+     * @covers \Himedia\Padocc\Task\Base\Link::check
      */
     public function testCheck_WithAttrServerThrowExceptionIfTwoOtherServers ()
     {
-        $oTask = Task_Base_Link::getNewInstance(array(
+        $oTask = Link::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
             'target' => 'user@server1:/path/to/destdir',
             'server' => 'user@server2'
@@ -219,12 +222,12 @@ class LinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Link::__construct
-     * @covers Task_Base_Link::check
+     * @covers \Himedia\Padocc\Task\Base\Link::__construct
+     * @covers \Himedia\Padocc\Task\Base\Link::check
      */
     public function testCheck_WithoutAttrServerAndServers ()
     {
-        $oTask = Task_Base_Link::getNewInstance(array('src' => '/path/to/link', 'target' => '/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
+        $oTask = Link::getNewInstance(array('src' => '/path/to/link', 'target' => '/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
         $oTask->setUp();
         $this->assertAttributeEquals(array(
             'src' => '/path/to/link',
@@ -234,12 +237,12 @@ class LinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Link::__construct
-     * @covers Task_Base_Link::check
+     * @covers \Himedia\Padocc\Task\Base\Link::__construct
+     * @covers \Himedia\Padocc\Task\Base\Link::check
      */
     public function testCheck_WithAttrServer ()
     {
-        $oTask = Task_Base_Link::getNewInstance(array(
+        $oTask = Link::getNewInstance(array(
             'src' => '/path/to/link',
             'target' => '/path/to/destdir',
             'server' => 'user@server'
@@ -253,12 +256,12 @@ class LinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Link::__construct
-     * @covers Task_Base_Link::check
+     * @covers \Himedia\Padocc\Task\Base\Link::__construct
+     * @covers \Himedia\Padocc\Task\Base\Link::check
      */
     public function testCheck_WithoutAttrServerButServers ()
     {
-        $oTask = Task_Base_Link::getNewInstance(array('src' => 'user@server:/path/to/link', 'target' => 'user@server:/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
+        $oTask = Link::getNewInstance(array('src' => 'user@server:/path/to/link', 'target' => 'user@server:/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
         $oTask->setUp();
         $this->assertAttributeEquals(array(
             'src' => 'user@server:/path/to/link',
@@ -268,14 +271,19 @@ class LinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Link::execute
-     * @covers Task_Base_Link::preExecute
-     * @covers Task_Base_Link::centralExecute
-     * @covers Task_Base_Link::postExecute
+     * @covers \Himedia\Padocc\Task\Base\Link::execute
+     * @covers \Himedia\Padocc\Task\Base\Link::preExecute
+     * @covers \Himedia\Padocc\Task\Base\Link::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\Link::postExecute
      */
     public function testExecute_WithoutAttrServer ()
     {
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array($this->oDIContainer->getShellAdapter(), $this->aConfig)
+        );
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
@@ -285,28 +293,35 @@ class LinkTest extends PadoccTestCase
         $oMockProperties->expects($this->exactly(2))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTask = Task_Base_Link::getNewInstance(array(
+        $oTask = Link::getNewInstance(array(
             'src' => 'user@server:/path/to/link',
             'target' => 'user@server:/path/to/destdir'
         ), $this->oMockProject, $this->oDIContainer);
         $oTask->setUp();
         $oTask->execute();
+
+        $sSshOptions = $GLOBALS['aConfig']['GAubry\Shell']['ssh_options'];
         $this->assertEquals(array(
-            'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
+            "ssh $sSshOptions -T user@server /bin/bash <<EOF\n"
                 . 'mkdir -p "$(dirname "/path/to/link")" && ln -snf "/path/to/destdir" "/path/to/link"' . "\n"
                 . 'EOF' . "\n"
         ), $this->aShellExecCmds);
     }
 
     /**
-     * @covers Task_Base_Link::execute
-     * @covers Task_Base_Link::preExecute
-     * @covers Task_Base_Link::centralExecute
-     * @covers Task_Base_Link::postExecute
+     * @covers \Himedia\Padocc\Task\Base\Link::execute
+     * @covers \Himedia\Padocc\Task\Base\Link::preExecute
+     * @covers \Himedia\Padocc\Task\Base\Link::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\Link::postExecute
      */
     public function testExecute_WithoutAttrServerAndLocal ()
     {
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array($this->oDIContainer->getShellAdapter(), $this->aConfig)
+        );
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
@@ -316,7 +331,7 @@ class LinkTest extends PadoccTestCase
         $oMockProperties->expects($this->exactly(2))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTask = Task_Base_Link::getNewInstance(array(
+        $oTask = Link::getNewInstance(array(
             'src' => '/path/to/link',
             'target' => '/path/to/destdir'
         ), $this->oMockProject, $this->oDIContainer);
@@ -332,14 +347,14 @@ class LinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Link::execute
-     * @covers Task_Base_Link::preExecute
-     * @covers Task_Base_Link::centralExecute
-     * @covers Task_Base_Link::postExecute
+     * @covers \Himedia\Padocc\Task\Base\Link::execute
+     * @covers \Himedia\Padocc\Task\Base\Link::preExecute
+     * @covers \Himedia\Padocc\Task\Base\Link::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\Link::postExecute
      */
     public function testExecute_WithoutAttrServerThrowExceptionIfBadSrc ()
     {
-        $oTask = Task_Base_Link::getNewInstance(array(
+        $oTask = Link::getNewInstance(array(
             'src' => 'user@server:/path/to/srcdir',
             'target' => 'user@server:/path/to/destdir'
         ), $this->oMockProject, $this->oDIContainer);
@@ -352,43 +367,55 @@ class LinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Base_Link::execute
-     * @covers Task_Base_Link::preExecute
-     * @covers Task_Base_Link::centralExecute
-     * @covers Task_Base_Link::postExecute
+     * @covers \Himedia\Padocc\Task\Base\Link::execute
+     * @covers \Himedia\Padocc\Task\Base\Link::preExecute
+     * @covers \Himedia\Padocc\Task\Base\Link::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\Link::postExecute
      */
     public function testExecute_WithAttrServer ()
     {
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array($this->oDIContainer->getShellAdapter(), $this->aConfig)
+        );
         $oMockProperties->expects($this->any())->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
         //$oMockProperties->expects($this->exactly(2))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTask = Task_Base_Link::getNewInstance(array(
+        $oTask = Link::getNewInstance(array(
             'src' => '/path/to/link',
             'target' => '/path/to/destdir',
             'server' => 'user@server'
         ), $this->oMockProject, $this->oDIContainer);
         $oTask->setUp();
         $oTask->execute();
+
+        $sSshOptions = $GLOBALS['aConfig']['GAubry\Shell']['ssh_options'];
         $this->assertEquals(array(
-            'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
-                . 'mkdir -p "$(dirname "/path/to/link")" && ln -snf "/path/to/destdir" "/path/to/link"' . "\n"
-                . 'EOF' . "\n"
+            "ssh $sSshOptions -T user@server /bin/bash <<EOF\n"
+            . 'mkdir -p "$(dirname "/path/to/link")" && ln -snf "/path/to/destdir" "/path/to/link"' . "\n"
+            . 'EOF' . "\n"
         ), $this->aShellExecCmds);
     }
 
     /**
-     * @covers Task_Base_Link::execute
-     * @covers Task_Base_Link::preExecute
-     * @covers Task_Base_Link::centralExecute
-     * @covers Task_Base_Link::postExecute
+     * @covers \Himedia\Padocc\Task\Base\Link::execute
+     * @covers \Himedia\Padocc\Task\Base\Link::preExecute
+     * @covers \Himedia\Padocc\Task\Base\Link::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\Link::postExecute
      */
     public function testExecute_WithAttrServerAndSymlink ()
     {
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array($this->oDIContainer->getShellAdapter(), $this->aConfig)
+        );
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('true'));
@@ -410,29 +437,36 @@ class LinkTest extends PadoccTestCase
         $oMockProperties->expects($this->exactly(6))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTask = Task_Base_Link::getNewInstance(array(
+        $oTask = Link::getNewInstance(array(
             'src' => '/path/to/destdir/link',
             'target' => '/path/to/destdir/subdir',
             'server' => 'user@server'
         ), $this->oMockProject, $this->oDIContainer);
         $oTask->setUp();
         $oTask->execute();
+
+        $sSshOptions = $GLOBALS['aConfig']['GAubry\Shell']['ssh_options'];
         $this->assertEquals(array(
-            'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
-                . 'mkdir -p "$(dirname "/path/to/destdir_releases/12345/link")" && ln -snf "/path/to/destdir_releases/12345/subdir" "/path/to/destdir_releases/12345/link"' . "\n"
-                . 'EOF' . "\n"
+            "ssh $sSshOptions -T user@server /bin/bash <<EOF\n"
+            . 'mkdir -p "$(dirname "/path/to/destdir_releases/12345/link")" && ln -snf "/path/to/destdir_releases/12345/subdir" "/path/to/destdir_releases/12345/link"' . "\n"
+            . 'EOF' . "\n"
         ), $this->aShellExecCmds);
     }
 
     /**
-     * @covers Task_Base_Link::execute
-     * @covers Task_Base_Link::preExecute
-     * @covers Task_Base_Link::centralExecute
-     * @covers Task_Base_Link::postExecute
+     * @covers \Himedia\Padocc\Task\Base\Link::execute
+     * @covers \Himedia\Padocc\Task\Base\Link::preExecute
+     * @covers \Himedia\Padocc\Task\Base\Link::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\Link::postExecute
      */
     public function testExecute_WithoutAttrServerWithSymlink ()
     {
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($this->oDIContainer->getShellAdapter()));
+        /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array($this->oDIContainer->getShellAdapter(), $this->aConfig)
+        );
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('true'));
@@ -454,16 +488,18 @@ class LinkTest extends PadoccTestCase
         $oMockProperties->expects($this->exactly(6))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTask = Task_Base_Link::getNewInstance(array(
+        $oTask = Link::getNewInstance(array(
             'src' => 'user@server:/path/to/destdir/link',
             'target' => 'user@server:/path/to/destdir/subdir'
         ), $this->oMockProject, $this->oDIContainer);
         $oTask->setUp();
         $oTask->execute();
+
+        $sSshOptions = $GLOBALS['aConfig']['GAubry\Shell']['ssh_options'];
         $this->assertEquals(array(
-            'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
-                . 'mkdir -p "$(dirname "/path/to/destdir_releases/12345/link")" && ln -snf "/path/to/destdir_releases/12345/subdir" "/path/to/destdir_releases/12345/link"' . "\n"
-                . 'EOF' . "\n"
+            "ssh $sSshOptions -T user@server /bin/bash <<EOF\n"
+            . 'mkdir -p "$(dirname "/path/to/destdir_releases/12345/link")" && ln -snf "/path/to/destdir_releases/12345/subdir" "/path/to/destdir_releases/12345/link"' . "\n"
+            . 'EOF' . "\n"
         ), $this->aShellExecCmds);
     }
 }
