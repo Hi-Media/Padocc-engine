@@ -1,5 +1,5 @@
 <?php
-class Deployment
+class DeploymentXXX
 {
     const DEPLOYMENT_SCRIPT_NAME = 'deployment.php';
     const SUPERVISOR_STATUS_WAITING 	= 1;

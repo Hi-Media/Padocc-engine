@@ -1,12 +1,27 @@
 <?php
+
+namespace Himedia\Padocc;
+
+use Himedia\Padocc\Properties\PropertiesInterface;
+use Himedia\Padocc\Task\Base\ExternalProperty;
 use Himedia\Padocc\Task\Base\Project;
 use Himedia\Padocc\Task\Base\Target;
+use Psr\Log\LoggerInterface;
 
 /**
+ * Définit une propriété externe qu'il sera obligatoire de fournir lors de tout déploiement.
+ * Cette propriété est par la suite réutilisable dans les attributs possédant le flag ALLOW_PARAMETER.
+ * À inclure dans une tâche env ou target.
+ *
+ * Exemple : <externalproperty name="ref" description="Branch or tag to deploy" />
+ *
+ * @category TwengaDeploy
+ * @package Core
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
 class Deployment
 {
+
     /**
      * Instance de services.
      * @var DIContainer
@@ -14,20 +29,31 @@ class Deployment
     private $oDIContainer;
 
     /**
+     * Adaptateur de propriétés.
+     * @var PropertiesInterface
+     */
+    protected $oProperties;
+
+    /**
+     * Adaptateur de log.
+     * @var LoggerInterface
+     */
+    protected $oLogger;
+
+    /**
+     * @var array
+     */
+    protected $aConfig;
+
+    /**
      * Constructeur.
      */
-    public function __construct ()
+    public function __construct (DIContainer $oDIContainer)
     {
-        $oBaseLogger = new Logger_Adapter(LoggerInterface::DEBUG);
-        $oLogger = new Logger_IndentedDecorator($oBaseLogger, '   ');
-        $oShell = new ShellAdapter($oLogger);
-
-        $this->oDIContainer = new DIContainer();
-        $this->oDIContainer
-            ->setLogger($oLogger)
-            ->setShellAdapter($oShell)
-            ->setPropertiesAdapter(new PropertiesAdapter($oShell))
-            ->setNumberingAdapter(new NumberingAdapter());
+        $this->oDIContainer = $oDIContainer;
+        $this->oLogger = $this->oDIContainer->getLogger();
+        $this->oProperties = $this->oDIContainer->getPropertiesAdapter();
+        $this->aConfig = $this->oDIContainer->getConfig();
     }
 
     /**
@@ -35,12 +61,11 @@ class Deployment
      *
      * @param array $aExternalProperties tableau indexé des valeurs ordonnées des propriétés externes.
      */
-    private function _setExternalProperties (array $aExternalProperties)
+    private function setExternalProperties (array $aExternalProperties)
     {
-        $oProperties = $this->oDIContainer->getPropertiesAdapter();
         foreach ($aExternalProperties as $i => $sValue) {
             $sKey = ExternalProperty::EXTERNAL_PROPERTY_PREFIX . ($i+1);
-            $oProperties->setProperty($sKey, str_replace('&#0160;', ' ', $sValue));
+            $this->oProperties->setProperty($sKey, str_replace('&#0160;', ' ', $sValue));
         }
     }
 
@@ -57,26 +82,22 @@ class Deployment
      */
     public function run ($sProjectName, $sEnvName, $sExecutionID, array $aExternalProperties, $sRollbackID)
     {
-        $this->oDIContainer->getPropertiesAdapter()
+        $this->oProperties
             ->setProperty('project_name', $sProjectName)
             ->setProperty('environment_name', $sEnvName)
             ->setProperty('execution_id', $sExecutionID)
-            ->setProperty('tmpdir', DEPLOYMENT_TMP_DIR . '/deploy_' . $sExecutionID)
+            ->setProperty('tmpdir', $this->aConfig['dir']['tmp'] . '/deploy_' . $sExecutionID)
             ->setProperty('rollback_id', $sRollbackID);
 
-        $this->_setExternalProperties($aExternalProperties);
+        $this->setExternalProperties($aExternalProperties);
 
         $sProjectPath = DEPLOYMENT_RESOURCES_DIR . '/' . $sProjectName . '.xml';
         $oProject = new Project($sProjectPath, $sEnvName, $this->oDIContainer);
-        $oLogger = $this->oDIContainer->getLogger();
-        $oLogger->log('Check tasks:');
-        $oLogger->indent();
+        $this->oLogger->info('Check tasks:+++');
         $oProject->setUp();
-        $oLogger->unindent();
-        $oLogger->log('Execute tasks:');
-        $oLogger->indent();
+        $this->oLogger->info('---Execute tasks:+++');
         $oProject->execute();
-        $oLogger->unindent();
+        $this->oLogger->info('---');
     }
 
     /**

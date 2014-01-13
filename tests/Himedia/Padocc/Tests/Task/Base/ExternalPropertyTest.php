@@ -7,6 +7,7 @@ use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
 use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
 use Himedia\Padocc\Task\Base\ExternalProperty;
+use Himedia\Padocc\Task\Base\Project;
 use Himedia\Padocc\Tests\PadoccTestCase;
 use Psr\Log\NullLogger;
 
@@ -63,7 +64,8 @@ class ExternalPropertyTest extends PadoccTestCase
             ->setLogger($oLogger)
             ->setPropertiesAdapter($oProperties)
             ->setShellAdapter($oMockShell)
-            ->setNumberingAdapter($oNumbering);
+            ->setNumberingAdapter($oNumbering)
+            ->setConfig($this->aConfig);
     }
 
     /**
@@ -81,6 +83,7 @@ class ExternalPropertyTest extends PadoccTestCase
      */
     public function testCentralExecute_throwExceptionIfPropertyNotFound ()
     {
+        /* @var $oMockProject Project|\PHPUnit_Framework_MockObject_MockObject */
         $sXML = '<project></project>';
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array('getSXE'), array(), '', false);
         $oMockProject->expects($this->any())->method('getSXE')
@@ -106,7 +109,7 @@ class ExternalPropertyTest extends PadoccTestCase
      */
     public function testCentralExecute_With1Property ()
     {
-        $oClass = new \ReflectionClass('Adapter');
+        $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();
@@ -115,13 +118,14 @@ class ExternalPropertyTest extends PadoccTestCase
         ));
         $this->oDIContainer->setPropertiesAdapter($oPropertiesAdapter);
 
+        /* @var $oMockProject Project|\PHPUnit_Framework_MockObject_MockObject */
         $sXML = '<project></project>';
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array('getSXE'), array(), '', false);
         $oMockProject->expects($this->any())->method('getSXE')
             ->will($this->returnValue(new \SimpleXMLElement($sXML)));
 
-        $oClass = new \ReflectionClass('ExternalProperty');
-        $oProperty = $oClass->getProperty('_iCounter');
+        $oClass = new \ReflectionClass('\Himedia\Padocc\Task\Base\ExternalProperty');
+        $oProperty = $oClass->getProperty('iCounter');
         $oProperty->setAccessible(true);
         $oProperty->setValue(null, 0);
 
@@ -145,7 +149,7 @@ class ExternalPropertyTest extends PadoccTestCase
      */
     public function testCentralExecute_WithProperties ()
     {
-        $oClass = new \ReflectionClass('Adapter');
+        $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();
@@ -155,13 +159,14 @@ class ExternalPropertyTest extends PadoccTestCase
         ));
         $this->oDIContainer->setPropertiesAdapter($oPropertiesAdapter);
 
+        /* @var $oMockProject Project|\PHPUnit_Framework_MockObject_MockObject */
         $sXML = '<project></project>';
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array('getSXE'), array(), '', false);
         $oMockProject->expects($this->any())->method('getSXE')
             ->will($this->returnValue(new \SimpleXMLElement($sXML)));
 
-        $oClass = new \ReflectionClass('ExternalProperty');
-        $oProperty = $oClass->getProperty('_iCounter');
+        $oClass = new \ReflectionClass('\Himedia\Padocc\Task\Base\ExternalProperty');
+        $oProperty = $oClass->getProperty('iCounter');
         $oProperty->setAccessible(true);
         $oProperty->setValue(null, 0);
 
