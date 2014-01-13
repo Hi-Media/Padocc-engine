@@ -7,6 +7,7 @@ use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
 use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
 use Himedia\Padocc\Task\Base\Project;
+use Himedia\Padocc\Task\Base\Property;
 use Himedia\Padocc\Tests\PadoccTestCase;
 use Psr\Log\NullLogger;
 
@@ -69,7 +70,8 @@ class PropertyTest extends PadoccTestCase
             ->setLogger($oLogger)
             ->setPropertiesAdapter($oProperties)
             ->setShellAdapter($oMockShell)
-            ->setNumberingAdapter($oNumbering);
+            ->setNumberingAdapter($oNumbering)
+            ->setConfig($this->aConfig);
 
         $this->oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
     }
@@ -85,12 +87,12 @@ class PropertyTest extends PadoccTestCase
     }
 
     /**
-     * @covers \Himedia\Padocc\Task\Base\Task_Base_Property::__construct
-     * @covers \Himedia\Padocc\Task\Base\Task_Base_Property::centralExecute
+     * @covers \Himedia\Padocc\Task\Base\Property::__construct
+     * @covers \Himedia\Padocc\Task\Base\Property::centralExecute
      */
     public function testCentralExecute ()
     {
-        $oProperty = Task_Base_Property::getNewInstance(
+        $oProperty = Property::getNewInstance(
             array('name' => 'my_prop', 'value' => 'my value'),
             $this->oMockProject,
             $this->oDIContainer

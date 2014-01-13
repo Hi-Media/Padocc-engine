@@ -204,8 +204,10 @@ class MkDirTest extends PadoccTestCase
         $oTask = MkDir::getNewInstance(array('destdir' => 'user@server:/path/to/destdir/subdir', 'mode' => '755'), $this->oMockProject, $this->oDIContainer);
         $oTask->setUp();
         $oTask->execute();
+
+        $sSshOptions = $GLOBALS['aConfig']['GAubry\Shell']['ssh_options'];
         $this->assertEquals(array(
-            'ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes -T user@server /bin/bash <<EOF' . "\n"
+            "ssh $sSshOptions -T user@server /bin/bash <<EOF\n"
                 . 'mkdir -p "/path/to/destdir_releases/12345/subdir" && chmod 755 "/path/to/destdir_releases/12345/subdir"' . "\n"
                 . 'EOF' . "\n"
         ), $this->aShellExecCmds);
