@@ -84,45 +84,6 @@ class Sync extends Task
             $this->aAttValues['destdir'] .= '/' . substr(strrchr($this->aAttValues['src'], '/'), 1);
             $this->aAttValues['src'] .= '/';
         }
-
-
-        list($bIsDestRemote, $sDestServer, $sDestRawPath) =
-                    $this->oShell->isRemotePath($this->aAttValues['src']);
-
-        // Check remote server
-        if(true === $bIsDestRemote)
-        {
-            $aServer = $this->processPath($sDestServer);
-            $sDestRawPath = $this->processSimplePath($sDestRawPath);
-
-            \Cli::write("START");
-            \Cli::write($sDestServer);
-            \Cli::write($sDestRawPath);
-            \Cli::write("END");
-
-
-
-            $aParallelResult = $this->oShell->getParallelSSHPathStatus ($sDestRawPath, $aServer);
-            //var_dump($aParallelResult);
-        }
-
-        list($bIsDestRemote, $sDestServer, $sDestRawPath) =
-                    $this->oShell->isRemotePath($this->aAttValues['destdir']);
-
-        // Check remote server
-        if(true === $bIsDestRemote)
-        {
-            $aServer = $this->processPath($sDestServer);
-            $sDestRawPath = $this->processSimplePath($sDestRawPath);
-
-            \Cli::write("START");
-            \Cli::write($sDestServer);
-            \Cli::write($sDestRawPath);
-            \Cli::write("END");
-
-            $aParallelResult = $this->oShell->getParallelSSHPathStatus ($sDestRawPath, $aServer);
-            //var_dump($aParallelResult);
-        }
     }
 
     /**

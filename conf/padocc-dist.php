@@ -75,7 +75,7 @@ define('DEPLOYMENT_JSMIN_BIN_PATH', DEPLOYMENT_LIB_DIR . '/Minifier/jsmin/jsmin'
 define('DEPLOYMENT_TMP_DIR', '/tmp');
 
 /**
- * Nombre maximal de processus lancés en parallèle par parallelize.inc.sh.
+ * Nombre maximal de processus lancés en parallèle par parallelize.sh.
  * @var int
  * @see ShellInterface::parallelize()
  */
@@ -156,7 +156,7 @@ return array(
         'curl_options' => '-L --silent --retry 2 --retry-delay 2 --max-time 5',
 
         /**
-         * Nombre maximal de processus lancés en parallèle par parallelize.inc.sh.
+         * Nombre maximal de processus lancés en parallèle par parallelize.sh.
          * @var int
          */
         'parallelization_max_nb_processes' => 10

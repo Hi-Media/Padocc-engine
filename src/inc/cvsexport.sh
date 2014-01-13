@@ -1,5 +1,5 @@
-#!/bin/bash
-# @author Geoffroy AUBRY <geoffroy.aubry@twenga.com>
+#!/usr/bin/env bash
+# @author Geoffroy AUBRY <gaubry@hi-media.com>
 
 repository="$1"
 module="$2"

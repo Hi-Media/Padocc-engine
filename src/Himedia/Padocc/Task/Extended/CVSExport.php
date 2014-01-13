@@ -11,7 +11,7 @@ use Himedia\Padocc\Task\Base\Project;
  * Exporte tout ou partie du contenu d'un dépôt CVS vers une ou plusieurs destinations.
  * À inclure dans une tâche env ou target.
  *
- * Exploite le script DEPLOYMENT_LIB_DIR . '/cvsexport.inc.sh'.
+ * Exploite le script '/src/inc/cvsexport.sh'.
  * Réalise la synchronisation à l'aide d'une tâche ''sync''.
  *
  * Attributs :
@@ -121,7 +121,7 @@ class CVSExport extends Task
 
         $this->oLogger->info("Export from '" . $this->aAttValues['repository'] . "' CVS repository+++");
         $aResult = $this->oShell->exec(
-            DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/cvsexport.inc.sh'
+            $this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['inc'] . '/cvsexport.sh'
             . ' "' . $this->aAttValues['repository'] . '"'
             . ' "' . $this->aAttValues['module'] . '"'
             . ' "' . $this->aAttValues['srcdir'] . '"'

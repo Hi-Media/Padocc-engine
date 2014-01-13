@@ -12,7 +12,7 @@ use Himedia\Padocc\Task\Base\Sync;
  * Exporte tout ou partie du contenu d'un dépôt Git vers une ou plusieurs destinations.
  * À inclure dans une tâche env ou target.
  *
- * Exploite le script DEPLOYMENT_LIB_DIR . '/cvsexport.inc.sh'.
+ * Exploite le script '/src/inc/cvsexport.sh'.
  * Réalise la synchronisation à l'aide d'une tâche sync avec la liste d'exclusion suivante
  * (en plus des éventuels include et exclude spécifiés dans la tâche) : '.bzr/', '.cvsignore', '.git/',
  * '.gitignore', '.svn/', 'cvslog.*', 'CVS', 'CVS.adm'.
@@ -140,7 +140,7 @@ class GitExport extends Task
         $sMsg = "Export '$sRef' reference from '" . $this->aAttValues['repository'] . "' git repository+++";
         $this->oLogger->info($sMsg);
         $aResult = $this->oShell->exec(
-            DEPLOYMENT_BASH_PATH . ' ' . DEPLOYMENT_LIB_DIR . '/gitexport.inc.sh'
+            $this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['inc'] . '/gitexport.sh'
             . ' "' . $this->aAttValues['repository'] . '"'
             . ' "' . $sRef . '"'
             . ' "' . $this->aAttValues['localrepositorydir'] . '"'
