@@ -238,16 +238,16 @@ class FillTemplateTest extends PadoccTestCase
 
         $oTask = FillTemplate::getNewInstance(
             array(
-                'srcfile' => __DIR__ . '/resources/config_template.inc.php',
-                'destfile' => DEPLOYMENT_TMP_DIR . '/padocc-dist.php'
+                'srcfile' => $this->aConfig['dir']['tests'] . '/resources/base_filltemplate/config_template.php',
+                'destfile' => $this->aConfig['dir']['tmp'] . '/padocc-dist.php'
             ),
             $this->oMockProject,
             $this->oDIContainer
         );
         $oTask->setUp();
         $oTask->execute();
-        $sResult = file_get_contents(DEPLOYMENT_TMP_DIR . '/padocc-dist.php');
-        unlink(DEPLOYMENT_TMP_DIR . '/padocc-dist.php');
+        $sResult = file_get_contents($this->aConfig['dir']['tmp'] . '/padocc-dist.php');
+        unlink($this->aConfig['dir']['tmp'] . '/padocc-dist.php');
 
         $sExpectedResult = <<<'EOT'
 <?php
@@ -319,16 +319,16 @@ EOT;
 
         $oTask = FillTemplate::getNewInstance(
             array(
-                'srcfile' => __DIR__ . '/resources/config_template.inc.php',
-                'destfile' => DEPLOYMENT_TMP_DIR . '/padocc-dist.php'
+                'srcfile' => $this->aConfig['dir']['tests'] . '/resources/base_filltemplate/config_template.php',
+                'destfile' => $this->aConfig['dir']['tmp'] . '/padocc-dist.php'
             ),
             $this->oMockProject,
             $this->oDIContainer
         );
         $oTask->setUp();
         $oTask->execute();
-        $sResult = file_get_contents(DEPLOYMENT_TMP_DIR . '/padocc-dist.php');
-        unlink(DEPLOYMENT_TMP_DIR . '/padocc-dist.php');
+        $sResult = file_get_contents($this->aConfig['dir']['tmp'] . '/padocc-dist.php');
+        unlink($this->aConfig['dir']['tmp'] . '/padocc-dist.php');
 
         $sExpectedResult = <<<'EOT'
 <?php

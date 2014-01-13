@@ -289,7 +289,7 @@ class Environment extends Target
         $sCmd = "if [ -d %1\$s ] && ls -1 %1\$s | grep -qE '$sPattern'; "
               . "then ls -1 %1\$s | grep -E '$sPattern'; fi";
         $sSSHCmd = $this->oShell->buildSSHCmd($sCmd, '[]:' . $sExpandedPath);
-        $aParallelResult = $this->oShell->parallelize($aServers, $sSSHCmd);
+        $aParallelResult = $this->oShell->parallelize($aServers, $sSSHCmd, $this->aConfig['parallelization_max_nb_processes']);
 
         $aAllReleases = array();
         foreach ($aParallelResult as $aServerResult) {
@@ -348,7 +348,7 @@ class Environment extends Target
                     $this->oLogger->info($sMsg);
                     $sPath = "[]:$sBaseSymLink/$sRelease";
                     $sSSHCmd = $this->oShell->buildSSHCmd('rm -rf %s', $sPath);
-                    $this->oShell->parallelize($aServers, $sSSHCmd);
+                    $this->oShell->parallelize($aServers, $sSSHCmd, $this->aConfig['parallelization_max_nb_processes']);
                 }
             }
 

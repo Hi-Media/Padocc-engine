@@ -6,6 +6,7 @@ use GAubry\Shell\ShellAdapter;
 use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
 use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
+use Himedia\Padocc\Task\Base\Target;
 use Himedia\Padocc\Tests\PadoccTestCase;
 use Psr\Log\NullLogger;
 

@@ -45,7 +45,7 @@ abstract class WithProperties extends Task
     public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
     {
         parent::__construct($oTask, $oProject, $oDIContainer);
-        $this->_aAttrProperties = array(
+        $this->aAttrProperties = array(
             'loadtwengaservers' => AttributeProperties::BOOLEAN,
             'propertyshellfile' => AttributeProperties::SRC_PATH,
             'propertyinifile' => AttributeProperties::SRC_PATH

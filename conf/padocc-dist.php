@@ -125,6 +125,7 @@ return array(
     'Himedia\Padocc' => array(
         /**
          * Identifiant unique d'exécution, optionnellement transmis en paramètre lors de l'appel du script.
+         * @var string
          */
         'exec_id' => '',
 
@@ -132,20 +133,33 @@ return array(
 
         /**
          * Suffixe concaténé au base directory pour obtenir le nom du répertoire regroupant les différentes releases.
+         * @var string
          */
         'symlink_releases_dir_suffix' => '_releases',
 
         /**
          * Chemin vers le shell bash.
+         * @var string
          */
         'bash_path' => '/bin/bash',
 
         /**
          * Chemin vers le bin cURL.
+         * @var string
          */
         'curl_path' => '/usr/bin/curl',
 
+        /**
+         * Options cURL lors des appels en ligne de commande.
+         * @var string
+         */
         'curl_options' => '-L --silent --retry 2 --retry-delay 2 --max-time 5',
+
+        /**
+         * Nombre maximal de processus lancés en parallèle par parallelize.inc.sh.
+         * @var int
+         */
+        'parallelization_max_nb_processes' => 10
     ),
     'GAubry\ErrorHandler'     => array(
         'display_errors'      => true,

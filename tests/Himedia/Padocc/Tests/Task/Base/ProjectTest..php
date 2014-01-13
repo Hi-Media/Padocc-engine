@@ -69,7 +69,8 @@ class ProjectTest extends PadoccTestCase
             ->setLogger($oLogger)
             ->setPropertiesAdapter($oProperties)
             ->setShellAdapter($oMockShell)
-            ->setNumberingAdapter($oNumbering);
+            ->setNumberingAdapter($oNumbering)
+            ->setConfig($this->aConfig);
     }
 
     /**
@@ -90,7 +91,7 @@ class ProjectTest extends PadoccTestCase
             'UnexpectedValueException',
             "Resource path not found: '"
         );
-        Project::getAllProjectsName(__DIR__ . '/not_found');
+        Project::getAllProjectsName($this->aConfig['dir']['tmp'] . '/not_exists_lzujlkrehvls');
     }
 
     /**
@@ -102,7 +103,7 @@ class ProjectTest extends PadoccTestCase
             'UnexpectedValueException',
             "Bad project definition: '"
         );
-        Project::getAllProjectsName(__DIR__ . '/resources/2');
+        Project::getAllProjectsName($this->aConfig['dir']['tests'] . '/resources/base_project/2');
     }
 
     /**
@@ -110,19 +111,8 @@ class ProjectTest extends PadoccTestCase
      */
     public function testGetAllProjectsName ()
     {
-        $aProjectNames = Project::getAllProjectsName(__DIR__ . '/resources/1');
+        $aProjectNames = Project::getAllProjectsName($this->aConfig['dir']['tests'] . '/resources/base_project/1');
         $this->assertEquals($aProjectNames, array('ebay', 'ptpn', 'rts'));
-    }
-
-    /**
-     * @covers \Himedia\Padocc\Task\Base\Project::getSXEProject
-     */
-    public function testGetSXEProject_ThrowExceptionIfNotFound () {
-        $this->setExpectedException(
-            'UnexpectedValueException',
-            "Project definition not found: '"
-        );
-        Project::getSXEProject(__DIR__ . '/not_found');
     }
 
     /**
@@ -134,7 +124,8 @@ class ProjectTest extends PadoccTestCase
             'UnexpectedValueException',
             "Bad project definition: '"
         );
-        Project::getSXEProject(__DIR__ . '/resources/2/bad_xml.xml');
+        $sXML = file_get_contents($this->aConfig['dir']['tests'] . '/resources/base_project/2/bad_xml.xml');
+        Project::getSXEProject($sXML);
     }
 
     /**
@@ -142,20 +133,9 @@ class ProjectTest extends PadoccTestCase
      */
     public function testGetSXEProject ()
     {
-        $oSXE = Project::getSXEProject(__DIR__ . '/resources/1/ebay.xml');
-        $this->assertEquals($oSXE, new \SimpleXMLElement(__DIR__ . '/resources/1/ebay.xml', null, true));
-    }
-
-    /**
-     * @covers \Himedia\Padocc\Task\Base\Project::__construct
-     */
-    public function testNew_ThrowExceptionIfProjectNotFound ()
-    {
-        $this->setExpectedException(
-            'UnexpectedValueException',
-            "Project definition not found: '/path/not found'!"
-        );
-        $oTask = new Project('/path/not found', 'myEnv', $this->oDIContainer);
+        $sXML = file_get_contents($this->aConfig['dir']['tests'] . '/resources/base_project/1/ebay.xml');
+        $oSXE = Project::getSXEProject($sXML);
+        $this->assertEquals($oSXE, new \SimpleXMLElement($this->aConfig['dir']['tests'] . '/resources/base_project/1/ebay.xml', null, true));
     }
 
     /**
@@ -163,19 +143,12 @@ class ProjectTest extends PadoccTestCase
      */
     public function testNew_ThrowExceptionIfBadXML ()
     {
-        $sTmpPath = tempnam(DEPLOYMENT_TMP_DIR, 'deploy_unittest_');
-        $sContent = 'bla bla';
-        file_put_contents($sTmpPath, $sContent);
+        $sXML = 'bla bla';
         $this->setExpectedException(
             'UnexpectedValueException',
-            "Bad project definition: '" . DEPLOYMENT_TMP_DIR . "/deploy_unittest_"
+            "Bad project definition: '$sXML"
         );
-        try {
-            $oTask = new Project($sTmpPath, 'myEnv', $this->oDIContainer);
-        } catch (UnexpectedValueException $oException) {
-            unlink($sTmpPath);
-            throw $oException;
-        }
+        new Project($sXML, 'myEnv', $this->oDIContainer);
     }
 
     /**
@@ -183,23 +156,16 @@ class ProjectTest extends PadoccTestCase
      */
     public function testNew_ThrowExceptionIfEnvNotFound ()
     {
-        $sTmpPath = tempnam(DEPLOYMENT_TMP_DIR, 'deploy_unittest_');
-        $sContent = <<<EOT
+        $sXML = <<<EOT
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="tests">
 </project>
 EOT;
-        file_put_contents($sTmpPath, $sContent);
         $this->setExpectedException(
             'UnexpectedValueException',
             "Environment 'myEnv' not found or not unique in this project!"
         );
-        try {
-            $oTask = new Project($sTmpPath, 'myEnv', $this->oDIContainer);
-        } catch (UnexpectedValueException $oException) {
-            unlink($sTmpPath);
-            throw $oException;
-        }
+        new Project($sXML, 'myEnv', $this->oDIContainer);
     }
 
     /**
@@ -207,25 +173,18 @@ EOT;
      */
     public function testNew_ThrowExceptionIfMultipleEnv ()
     {
-        $sTmpPath = tempnam(DEPLOYMENT_TMP_DIR, 'deploy_unittest_');
-        $sContent = <<<EOT
+        $sXML = <<<EOT
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="tests">
     <env name="myEnv" />
     <env name="myEnv" />
 </project>
 EOT;
-        file_put_contents($sTmpPath, $sContent);
         $this->setExpectedException(
             'UnexpectedValueException',
             "Environment 'myEnv' not found or not unique in this project!"
         );
-        try {
-            $oTask = new Project($sTmpPath, 'myEnv', $this->oDIContainer);
-        } catch (UnexpectedValueException $oException) {
-            unlink($sTmpPath);
-            throw $oException;
-        }
+        new Project($sXML, 'myEnv', $this->oDIContainer);
     }
 
     /**
@@ -234,31 +193,27 @@ EOT;
      */
     public function testCheck ()
     {
-        $sTmpPath = tempnam(DEPLOYMENT_TMP_DIR, 'deploy_unittest_');
-        $sContent = <<<EOT
+        $sXML = <<<EOT
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="tests" propertyinifile="/path/to/file">
     <env name="myEnv" basedir="/base/dir" />
 </project>
 EOT;
-        file_put_contents($sTmpPath, $sContent);
-        $oProject = new Project($sTmpPath, 'myEnv', $this->oDIContainer);
-        /*$oProject = $this->getMock(
-            'Project',
-            array('loadProperties'),
-            array($sTmpPath, 'myEnv', 'anExecutionID', $this->oDIContainer)
-        );*/
+        $oProject = new Project($sXML, 'myEnv', $this->oDIContainer);
         $oProject->setUp();
-        unlink($sTmpPath);
 
-        $oClass = new \ReflectionClass('Project');
+        $oClass = new \ReflectionClass('\Himedia\Padocc\Task\Base\Project');
         $oProperty = $oClass->getProperty('oBoundTask');
         $oProperty->setAccessible(true);
         $oEnv = $oProperty->getValue($oProject);
 
-        $this->assertAttributeEquals(array(
-            'basedir' => '/base/dir',
-            'name' => 'myEnv'
-        ), 'aAttValues', $oEnv);
+        $this->assertAttributeEquals(
+            array(
+                'basedir' => '/base/dir',
+                'name' => 'myEnv'
+            ),
+            'aAttValues',
+            $oEnv
+        );
     }
 }

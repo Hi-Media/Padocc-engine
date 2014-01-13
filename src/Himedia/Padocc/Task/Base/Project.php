@@ -32,27 +32,27 @@ class Project extends WithProperties
     public static function getAllProjectsName ($sRessourcesPath)
     {
         $aProjectNames = array();
-        // TODO enlever @
-        $rHandle = @opendir($sRessourcesPath);
-        if ($rHandle === false) {
-            throw new \UnexpectedValueException("Resource path not found: '$sRessourcesPath'.");
-        } else {
-            while ($file = readdir($rHandle)) {
-                clearstatcache();
-                $sProjectPath = $sRessourcesPath . '/' . $file;
-                if (substr($file, strlen($file)-4, 4) == '.xml' && is_file($sProjectPath)) {
-                    try {
-                        $oProject = new \SimpleXMLElement($sProjectPath, null, true);
-                    } catch (\Exception $oException) {
-                        throw new \UnexpectedValueException("Bad project definition: '$sProjectPath'", 1, $oException);
-                    }
-                    if (isset($oProject['name'])) {
-                        $aProjectNames[] = (string)$oProject['name'];
-                    }
+        try {
+            $rHandle = opendir($sRessourcesPath);
+        } catch (\ErrorException $oException) {
+            if (strpos($oException->getMessage(), 'failed to open dir: No such file or directory') !== false) {
+                throw new \UnexpectedValueException("Resource path not found: '$sRessourcesPath'.");
+            } else {
+                throw $oException;
+            }
+        }
+        while ($file = readdir($rHandle)) {
+            clearstatcache();
+            $sProjectPath = $sRessourcesPath . '/' . $file;
+            if (substr($file, -4) == '.xml' && is_file($sProjectPath)) {
+                $sXML = file_get_contents($sProjectPath);
+                $oProject = Project::getSXEProject($sXML);
+                if (isset($oProject['name'])) {
+                    $aProjectNames[] = (string)$oProject['name'];
                 }
             }
-            closedir($rHandle);
         }
+        closedir($rHandle);
         sort($aProjectNames);
         return $aProjectNames;
     }
@@ -67,7 +67,7 @@ class Project extends WithProperties
     public static function getSXEProject ($sXmlConfiguration)
     {
         try {
-            $oSXE = new \SimpleXMLElement($sXmlConfiguration, null);
+            $oSXE = new \SimpleXMLElement($sXmlConfiguration, null, false);
         } catch (\Exception $oException) {
             throw new \UnexpectedValueException("Bad project definition: '$sXmlConfiguration'", 1, $oException);
         }

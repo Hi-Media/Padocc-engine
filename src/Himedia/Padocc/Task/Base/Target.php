@@ -131,8 +131,8 @@ class Target extends WithProperties
         DIContainer $oDIContainer)
     {
         parent::__construct($oTask, $oProject, $oDIContainer);
-        $this->_aAttrProperties = array_merge(
-            $this->_aAttrProperties,
+        $this->aAttrProperties = array_merge(
+            $this->aAttrProperties,
             array('name' => AttributeProperties::REQUIRED)
         );
 
