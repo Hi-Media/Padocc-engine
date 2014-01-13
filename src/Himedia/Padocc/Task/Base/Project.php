@@ -25,9 +25,10 @@ class Project extends WithProperties
      * La liste est triée par ordre alphabétique.
      *
      * @param string $sRessourcesPath chemin hébergeant des configurations de déploiement au format XML
-     * @return array la liste des projets dont le fichier de déploiement XML se trouve dans le chemin spécifié.
-     * @throws \UnexpectedValueException si chemin non trouvé
+     * @throws \ErrorException
+     * @throws \Exception
      * @throws \UnexpectedValueException si fichier XML mal formaté
+     * @return array la liste des projets dont le fichier de déploiement XML se trouve dans le chemin spécifié.
      */
     public static function getAllProjectsName ($sRessourcesPath)
     {
@@ -45,8 +46,8 @@ class Project extends WithProperties
             clearstatcache();
             $sProjectPath = $sRessourcesPath . '/' . $file;
             if (substr($file, -4) == '.xml' && is_file($sProjectPath)) {
-                $sXML = file_get_contents($sProjectPath);
-                $oProject = Project::getSXEProject($sXML);
+                $sXmlProjectConf = file_get_contents($sProjectPath);
+                $oProject = Project::getSXEProject($sXmlProjectConf);
                 if (isset($oProject['name'])) {
                     $aProjectNames[] = (string)$oProject['name'];
                 }
@@ -93,15 +94,15 @@ class Project extends WithProperties
     /**
      * Constructeur.
      *
-     * @param string $sXmlConfiguration string XML de la configuration du projet
+     * @param string $sXmlProjectConf string XML de la configuration du projet
      * @param string $sEnvName Environnement sélectionné.
      * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
      * @throws \UnexpectedValueException si fichier XML du projet non trouvé
      * @throws \UnexpectedValueException si environnement non trouvé ou non unique
      */
-    public function __construct ($sXmlConfiguration, $sEnvName, DIContainer $oDIContainer)
+    public function __construct ($sXmlProjectConf, $sEnvName, DIContainer $oDIContainer)
     {
-        $oSXEProject = self::getSXEProject($sXmlConfiguration);
+        $oSXEProject = self::getSXEProject($sXmlProjectConf);
         $this->sEnvName = $sEnvName;
 
         parent::__construct($oSXEProject, $this, $oDIContainer);

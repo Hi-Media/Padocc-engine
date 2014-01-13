@@ -84,24 +84,14 @@ class TargetTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
      */
-    public function testGetAvailableEnvsList_ThrowExceptionIfNotFound () {
-        $this->setExpectedException(
-            'UnexpectedValueException',
-            "Project definition not found: '"
-        );
-        Target::getAvailableEnvsList(__DIR__ . '/not_found');
-    }
-
-    /**
-     * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
-     */
     public function testGetAvailableEnvsList_ThrowExceptionIfBadXML ()
     {
         $this->setExpectedException(
             'UnexpectedValueException',
             "Bad project definition: '"
         );
-        Target::getAvailableEnvsList(__DIR__ . '/resources/2/bad_xml.xml');
+        $sXmlProjectConf = file_get_contents($this->aConfig['dir']['tests'] . '/resources/base_target/bad_xml.xml');
+        Target::getAvailableEnvsList($sXmlProjectConf);
     }
 
     /**
@@ -113,7 +103,8 @@ class TargetTest extends PadoccTestCase
             'UnexpectedValueException',
             "No environment found in "
         );
-        Target::getAvailableEnvsList(__DIR__ . '/resources/2/project_without_env.xml');
+        $sXmlProjectConf = file_get_contents($this->aConfig['dir']['tests'] . '/resources/base_target/project_without_env.xml');
+        Target::getAvailableEnvsList($sXmlProjectConf);
     }
 
     /**
@@ -125,12 +116,13 @@ class TargetTest extends PadoccTestCase
             'UnexpectedValueException',
             "Invalid external property in "
         );
-        Target::getAvailableEnvsList(__DIR__ . '/resources/2/project_env_withinvalidproperty.xml');
+        $sXmlProjectConf = file_get_contents($this->aConfig['dir']['tests'] . '/resources/base_target/project_env_withinvalidproperty.xml');
+        Target::getAvailableEnvsList($sXmlProjectConf);
     }
 
     /**
      * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
-     * @covers \Himedia\Padocc\Task\Base\Target::_getSXEExternalProperties
+     * @covers \Himedia\Padocc\Task\Base\Target::getSXEExternalProperties
      */
     public function testGetAvailableEnvsList_ThrowExceptionIfInvalidTarget ()
     {
@@ -138,54 +130,58 @@ class TargetTest extends PadoccTestCase
             'UnexpectedValueException',
             "Target 'invalid' not found or not unique in this project!"
         );
-        Target::getAvailableEnvsList(__DIR__ . '/resources/2/project_env_withinvalidtarget.xml');
+        $sXmlProjectConf = file_get_contents($this->aConfig['dir']['tests'] . '/resources/base_target/project_env_withinvalidtarget.xml');
+        Target::getAvailableEnvsList($sXmlProjectConf);
     }
 
     /**
      * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
-     * @covers \Himedia\Padocc\Task\Base\Target::_getSXEExternalProperties
+     * @covers \Himedia\Padocc\Task\Base\Target::getSXEExternalProperties
      */
     public function testGetAvailableEnvsList_WithEmptyEnv ()
     {
         $aExpected = array(
             'my_env' => array()
         );
-        $sProjectPath = __DIR__ . '/resources/2/project_env_empty.xml';
-        $aEnvsList = Target::getAvailableEnvsList($sProjectPath);
+        $sProjectPath = $this->aConfig['dir']['tests'] . '/resources/base_target/project_env_empty.xml';
+        $sXmlProjectConf = file_get_contents($sProjectPath);
+        $aEnvsList = Target::getAvailableEnvsList($sXmlProjectConf);
         $this->assertEquals($aExpected, $aEnvsList);
     }
 
     /**
      * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
-     * @covers \Himedia\Padocc\Task\Base\Target::_getSXEExternalProperties
+     * @covers \Himedia\Padocc\Task\Base\Target::getSXEExternalProperties
      */
     public function testGetAvailableEnvsList_WithoutExtProperty ()
     {
         $aExpected = array(
             'my_env' => array()
         );
-        $sProjectPath = __DIR__ . '/resources/2/project_env_without_extproperty.xml';
-        $aEnvsList = Target::getAvailableEnvsList($sProjectPath);
+        $sProjectPath = $this->aConfig['dir']['tests'] . '/resources/base_target/project_env_without_extproperty.xml';
+        $sXmlProjectConf = file_get_contents($sProjectPath);
+        $aEnvsList = Target::getAvailableEnvsList($sXmlProjectConf);
         $this->assertEquals($aExpected, $aEnvsList);
     }
 
     /**
      * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
-     * @covers \Himedia\Padocc\Task\Base\Target::_getSXEExternalProperties
+     * @covers \Himedia\Padocc\Task\Base\Target::getSXEExternalProperties
      */
     public function testGetAvailableEnvsList_WithOneProperty ()
     {
         $aExpected = array(
             'my_env' => array('ref' => 'Branch or tag to deploy')
         );
-        $sProjectPath = __DIR__ . '/resources/2/project_env_withoneproperty.xml';
-        $aEnvsList = Target::getAvailableEnvsList($sProjectPath);
+        $sProjectPath = $this->aConfig['dir']['tests'] . '/resources/base_target/project_env_withoneproperty.xml';
+        $sXmlProjectConf = file_get_contents($sProjectPath);
+        $aEnvsList = Target::getAvailableEnvsList($sXmlProjectConf);
         $this->assertEquals($aExpected, $aEnvsList);
     }
 
     /**
      * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
-     * @covers \Himedia\Padocc\Task\Base\Target::_getSXEExternalProperties
+     * @covers \Himedia\Padocc\Task\Base\Target::getSXEExternalProperties
      */
     public function testGetAvailableEnvsList_WithProperties ()
     {
@@ -195,14 +191,15 @@ class TargetTest extends PadoccTestCase
                 'ref2' => 'label',
             )
         );
-        $sProjectPath = __DIR__ . '/resources/2/project_env_withproperties.xml';
-        $aEnvsList = Target::getAvailableEnvsList($sProjectPath);
+        $sProjectPath = $this->aConfig['dir']['tests'] . '/resources/base_target/project_env_withproperties.xml';
+        $sXmlProjectConf = file_get_contents($sProjectPath);
+        $aEnvsList = Target::getAvailableEnvsList($sXmlProjectConf);
         $this->assertEquals($aExpected, $aEnvsList);
     }
 
     /**
      * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
-     * @covers \Himedia\Padocc\Task\Base\Target::_getSXEExternalProperties
+     * @covers \Himedia\Padocc\Task\Base\Target::getSXEExternalProperties
      */
     public function testGetAvailableEnvsList_WithCallAndProperties ()
     {
@@ -213,8 +210,9 @@ class TargetTest extends PadoccTestCase
                 'ref3' => 'other...',
             )
         );
-        $sProjectPath = __DIR__ . '/resources/2/project_env_withcallandproperties.xml';
-        $aEnvsList = Target::getAvailableEnvsList($sProjectPath);
+        $sProjectPath = $this->aConfig['dir']['tests'] . '/resources/base_target/project_env_withcallandproperties.xml';
+        $sXmlProjectConf = file_get_contents($sProjectPath);
+        $aEnvsList = Target::getAvailableEnvsList($sXmlProjectConf);
         $this->assertEquals($aExpected, $aEnvsList);
     }
 }

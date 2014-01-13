@@ -124,7 +124,8 @@ class Deployment
         if (! empty($aAllProjectsName)) {
             foreach ($aAllProjectsName as $sProjectName) {
                 $sProjectPath = DEPLOYMENT_RESOURCES_DIR . '/' . $sProjectName . '.xml';
-                $aEnvsByProject[$sProjectName] = Target::getAvailableEnvsList($sProjectPath);
+                $sXmlProjectConf = file_get_contents($sProjectPath);
+                $aEnvsByProject[$sProjectName] = Target::getAvailableEnvsList($sXmlProjectConf);
             }
         }
         ksort($aEnvsByProject);

@@ -52,6 +52,7 @@ class Target extends WithProperties
         $sTargetTagName = Target::getTagName();
 
         $aSXEExtProperties = array();
+        /* @var $oSXEChild \SimpleXMLElement */
         foreach ($oNode->children() as $oSXEChild) {
             $sName = (string)$oSXEChild->getName();
             if ($sName === $sCallTagName && isset($oSXEChild['target'])) {
@@ -84,7 +85,7 @@ class Target extends WithProperties
      * )
      *
      *
-     * @param string $sProjectPath chemin de configuration XML du projet à analyser
+     * @param string $sXmlProjectConf chemin de configuration XML du projet à analyser
      * @return array la liste des environnements et de leurs propriétés externes pour le projet spécifié.
      * @throws \UnexpectedValueException si fichier XML du projet non trouvé
      * @throws \UnexpectedValueException si fichier XML du projet mal formaté
@@ -93,12 +94,12 @@ class Target extends WithProperties
      * @throws \UnexpectedValueException si noeud <target /> non trouvé ou non unique mais référencé par un
      * 		noeud <call />.
      */
-    public static function getAvailableEnvsList ($sProjectPath)
+    public static function getAvailableEnvsList ($sXmlProjectConf)
     {
-        $oSXEProject = Project::getSXEProject($sProjectPath);
+        $oSXEProject = Project::getSXEProject($sXmlProjectConf);
         $aTargets = $oSXEProject->xpath("//env");
         if (count($aTargets) === 0) {
-            throw new \UnexpectedValueException("No environment found in '$sProjectPath'!");
+            throw new \UnexpectedValueException("No environment found in specified project!");
         }
         $aEnvsList = array();
         foreach ($aTargets as $oTarget) {
@@ -106,7 +107,7 @@ class Target extends WithProperties
             $aExtProperties = array();
             foreach ($aSXEExtProperties as $oSXEExtProperty) {
                 if (! isset($oSXEExtProperty['name']) || ! isset($oSXEExtProperty['description'])) {
-                    throw new \UnexpectedValueException("Invalid external property in '$sProjectPath'!");
+                    throw new \UnexpectedValueException("Invalid external property in specified project!");
                 }
                 $sName = (string)$oSXEExtProperty['name'];
                 $sDesc = (string)$oSXEExtProperty['description'];
@@ -152,8 +153,9 @@ class Target extends WithProperties
     /**
      * Retourne un tableau associatif décrivant les tâches disponibles.
      *
-     * @return array tableau associatif des tâches disponibles : array('sTag' => 'sClassName', ...)
+     * @throws \RuntimeException si classe inexistante
      * @throws \LogicException si collision de nom de tag XML
+     * @return array tableau associatif des tâches disponibles : array('sTag' => 'sClassName', ...)
      */
     private static function getAvailableTasks ()
     {
@@ -169,7 +171,7 @@ class Target extends WithProperties
                         throw new \RuntimeException($sFullClassName." doesn't exist!");
                     }
 
-                    //$sTag = call_user_func($sFullClassName.'::getTagName');
+                    /* @var $sFullClassName Task */
                     $sTag = $sFullClassName::getTagName();
                     if (isset($aAvailableTasks[$sTag])) {
                         throw new \LogicException("Already defined task tag '$sTag' in '$aAvailableTasks[$sTag]'!");
