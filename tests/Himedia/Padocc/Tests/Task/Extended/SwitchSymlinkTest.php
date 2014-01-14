@@ -6,7 +6,9 @@ use GAubry\Shell\ShellAdapter;
 use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
 use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
+use Himedia\Padocc\Task\Base\Environment;
 use Himedia\Padocc\Task\Base\Project;
+use Himedia\Padocc\Task\Extended\SwitchSymlink;
 use Himedia\Padocc\Tests\PadoccTestCase;
 use Psr\Log\NullLogger;
 
@@ -79,7 +81,8 @@ class SwitchSymlinkTest extends PadoccTestCase
             ->setLogger($oLogger)
             ->setPropertiesAdapter($oProperties)
             ->setShellAdapter($oMockShell)
-            ->setNumberingAdapter($oNumbering);
+            ->setNumberingAdapter($oNumbering)
+            ->setConfig($this->aConfig);
 
         $this->oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
     }
@@ -95,12 +98,12 @@ class SwitchSymlinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Extended_SwitchSymlink::__construct
-     * @covers Task_Extended_SwitchSymlink::check
+     * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::__construct
+     * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::check
      */
     public function testCheck_WithoutAttrServerThrowExceptionIfServersNotEquals1 ()
     {
-        $oTask = Task_Extended_SwitchSymlink::getNewInstance(array(
+        $oTask = SwitchSymlink::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
             'target' => 'user@server2:/path/to/destdir'
         ), $this->oMockProject, $this->oDIContainer);
@@ -112,12 +115,12 @@ class SwitchSymlinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Extended_SwitchSymlink::__construct
-     * @covers Task_Extended_SwitchSymlink::check
+     * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::__construct
+     * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::check
      */
     public function testCheck_WithoutAttrServerThrowExceptionIfServersNotEquals2 ()
     {
-        $oTask = Task_Extended_SwitchSymlink::getNewInstance(array(
+        $oTask = SwitchSymlink::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
             'target' => '/path/to/destdir'
         ), $this->oMockProject, $this->oDIContainer);
@@ -129,12 +132,12 @@ class SwitchSymlinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Extended_SwitchSymlink::__construct
-     * @covers Task_Extended_SwitchSymlink::check
+     * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::__construct
+     * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::check
      */
     public function testCheck_WithoutAttrServerThrowExceptionIfServersNotEquals3 ()
     {
-        $oTask = Task_Extended_SwitchSymlink::getNewInstance(array(
+        $oTask = SwitchSymlink::getNewInstance(array(
             'src' => '/path/to/link',
             'target' => 'user@server1:/path/to/destdir'
         ), $this->oMockProject, $this->oDIContainer);
@@ -146,12 +149,12 @@ class SwitchSymlinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Extended_SwitchSymlink::__construct
-     * @covers Task_Extended_SwitchSymlink::check
+     * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::__construct
+     * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::check
      */
     public function testCheck_WithAttrServerThrowExceptionIfServersNotEquals1 ()
     {
-        $oTask = Task_Extended_SwitchSymlink::getNewInstance(array(
+        $oTask = SwitchSymlink::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
             'target' => '/path/to/destdir',
             'server' => 'user@server2'
@@ -164,12 +167,12 @@ class SwitchSymlinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Extended_SwitchSymlink::__construct
-     * @covers Task_Extended_SwitchSymlink::check
+     * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::__construct
+     * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::check
      */
     public function testCheck_WithAttrServerThrowExceptionIfServersNotEquals2 ()
     {
-        $oTask = Task_Extended_SwitchSymlink::getNewInstance(array(
+        $oTask = SwitchSymlink::getNewInstance(array(
             'src' => '/path/to/link',
             'target' => 'user@server1:/path/to/destdir',
             'server' => 'user@server2'
@@ -182,12 +185,12 @@ class SwitchSymlinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Extended_SwitchSymlink::__construct
-     * @covers Task_Extended_SwitchSymlink::check
+     * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::__construct
+     * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::check
      */
     public function testCheck_WithAttrServerThrowExceptionIfServersNotEquals3 ()
     {
-        $oTask = Task_Extended_SwitchSymlink::getNewInstance(array(
+        $oTask = SwitchSymlink::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
             'target' => 'user@server2:/path/to/destdir',
             'server' => 'user@server3'
@@ -200,12 +203,12 @@ class SwitchSymlinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Extended_SwitchSymlink::__construct
-     * @covers Task_Extended_SwitchSymlink::check
+     * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::__construct
+     * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::check
      */
     public function testCheck_WithAttrServerThrowExceptionIfTwoOtherServers ()
     {
-        $oTask = Task_Extended_SwitchSymlink::getNewInstance(array(
+        $oTask = SwitchSymlink::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
             'target' => 'user@server1:/path/to/destdir',
             'server' => 'user@server2'
@@ -219,12 +222,12 @@ class SwitchSymlinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Extended_SwitchSymlink::__construct
-     * @covers Task_Extended_SwitchSymlink::check
+     * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::__construct
+     * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::check
      */
     public function testCheck_WithoutAttributes ()
     {
-        $oClass = new \ReflectionClass('Adapter');
+        $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();
@@ -236,23 +239,23 @@ class SwitchSymlinkTest extends PadoccTestCase
         ));
         $this->oDIContainer->setPropertiesAdapter($oPropertiesAdapter);
 
-        $oTask = Task_Extended_SwitchSymlink::getNewInstance(array(), $this->oMockProject, $this->oDIContainer);
+        $oTask = SwitchSymlink::getNewInstance(array(), $this->oMockProject, $this->oDIContainer);
         $oTask->setUp();
         $this->assertAttributeEquals(array(
             'src' => $oPropertiesAdapter->getProperty('basedir'),
             'target' => $oPropertiesAdapter->getProperty('basedir') . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX
                       . '/' . $oPropertiesAdapter->getProperty('execution_id'),
-            'server' => '${' . Task_Base_Environment::SERVERS_CONCERNED_WITH_BASE_DIR . '}'
+            'server' => '${' . Environment::SERVERS_CONCERNED_WITH_BASE_DIR . '}'
         ), 'aAttValues', $oTask);
     }
 
     /**
-     * @covers Task_Extended_SwitchSymlink::__construct
-     * @covers Task_Extended_SwitchSymlink::check
+     * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::__construct
+     * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::check
      */
     public function testCheck_WithoutAttributesWithRollback ()
     {
-        $oClass = new \ReflectionClass('Adapter');
+        $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();
@@ -264,23 +267,23 @@ class SwitchSymlinkTest extends PadoccTestCase
         ));
         $this->oDIContainer->setPropertiesAdapter($oPropertiesAdapter);
 
-        $oTask = Task_Extended_SwitchSymlink::getNewInstance(array(), $this->oMockProject, $this->oDIContainer);
+        $oTask = SwitchSymlink::getNewInstance(array(), $this->oMockProject, $this->oDIContainer);
         $oTask->setUp();
         $this->assertAttributeEquals(array(
             'src' => $oPropertiesAdapter->getProperty('basedir'),
             'target' => $oPropertiesAdapter->getProperty('basedir') . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX
                       . '/' . $oPropertiesAdapter->getProperty('rollback_id'),
-            'server' => '${' . Task_Base_Environment::SERVERS_CONCERNED_WITH_BASE_DIR . '}'
+            'server' => '${' . Environment::SERVERS_CONCERNED_WITH_BASE_DIR . '}'
         ), 'aAttValues', $oTask);
     }
 
     /**
-     * @covers Task_Extended_SwitchSymlink::getNbInstances
+     * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::getNbInstances
      */
     public function testGetNbInstances ()
     {
-        $i0 = Task_Extended_SwitchSymlink::getNbInstances();
-        Task_Extended_SwitchSymlink::getNewInstance(array(), $this->oMockProject, $this->oDIContainer);
-        $this->assertEquals($i0+1, Task_Extended_SwitchSymlink::getNbInstances());
+        $i0 = SwitchSymlink::getNbInstances();
+        SwitchSymlink::getNewInstance(array(), $this->oMockProject, $this->oDIContainer);
+        $this->assertEquals($i0+1, SwitchSymlink::getNbInstances());
     }
 }
