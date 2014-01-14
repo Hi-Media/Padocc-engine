@@ -47,13 +47,8 @@
         <mkdir dir="${basedir}/build/logs"/>
         <mkdir dir="${basedir}/build/pdepend"/>
         <copy
-            file="${basedir}/conf/dw-core-jenkins.php"
-            tofile="${basedir}/conf/dw-core.php"
-            overwrite="true"
-        />
-        <copy
-            file="${basedir}/conf/dw-apps-dist.php"
-            tofile="${basedir}/conf/dw-apps.php"
+            file="${basedir}/conf/padocc-dist.php"
+            tofile="${basedir}/conf/padocc.php"
             overwrite="true"
         />
     </target>
