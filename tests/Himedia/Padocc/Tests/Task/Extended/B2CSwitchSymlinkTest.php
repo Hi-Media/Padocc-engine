@@ -2,12 +2,15 @@
 
 namespace Himedia\Padocc\Tests\Task\Extended;
 
+use GAubry\Logger\MinimalLogger;
 use GAubry\Shell\ShellAdapter;
 use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
 use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
 use Himedia\Padocc\Task\Base\Project;
+use Himedia\Padocc\Task\Extended\B2CSwitchSymlink;
 use Himedia\Padocc\Tests\PadoccTestCase;
+use Psr\Log\LogLevel;
 
 /**
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
@@ -61,7 +64,7 @@ class B2CSwitchSymlinkTest extends PadoccTestCase
      * @param int $iLevel priorité du message.
      * @see $aWarnMessages
      */
-    public function logCallback ($sMsg, $iLevel)
+    public function logCallback ($iLevel, $sMsg)
     {
         $this->aMessages[$iLevel][] = $sMsg;
     }
@@ -72,8 +75,8 @@ class B2CSwitchSymlinkTest extends PadoccTestCase
      */
     public function setUp ()
     {
-        $oBaseLogger = new Logger_Adapter(LoggerInterface::ERROR);
-        $oLogger = $this->getMock('Logger_IndentedDecorator', array('log'), array($oBaseLogger, '   '));
+        /* @var $oLogger MinimalLogger|\PHPUnit_Framework_MockObject_MockObject */
+        $oLogger = $this->getMock('\GAubry\Logger\MinimalLogger', array('log'), array(LogLevel::ERROR));
         $oLogger->expects($this->any())->method('log')->will($this->returnCallback(array($this, 'logCallback')));
         $this->aMessages = array();
 
@@ -91,7 +94,8 @@ class B2CSwitchSymlinkTest extends PadoccTestCase
             ->setLogger($oLogger)
             ->setPropertiesAdapter($oProperties)
             ->setShellAdapter($oMockShell)
-            ->setNumberingAdapter($oNumbering);
+            ->setNumberingAdapter($oNumbering)
+            ->setConfig($this->aConfig);
 
         $this->oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
     }
@@ -107,26 +111,32 @@ class B2CSwitchSymlinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Extended_B2CSwitchSymlink::_setCluster
+     * @covers \Himedia\Padocc\Task\Extended\B2CSwitchSymlink::setCluster
      */
     public function testSetCluster_ThrowException ()
     {
+        /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockShell = $this->oDIContainer->getShellAdapter();
         $oMockShell->expects($this->any())->method('exec')
             ->with($this->equalTo('/home/prod/twenga/tools/wwwcluster -s server1 -d'))
             ->will($this->throwException(new \RuntimeException('bla bla', 1)));
 
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($oMockShell));
+        /* @var $oMockProperties \Himedia\Padocc\Properties\Adapter|\PHPUnit_Framework_MockObject_MockObject */
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array($oMockShell, $this->aConfig)
+        );
         $oMockProperties->expects($this->any())->method('getProperty')
             ->will($this->returnValue('-'));
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTask = Task_Extended_B2CSwitchSymlink::getNewInstance(
+        $oTask = B2CSwitchSymlink::getNewInstance(
             array(), $this->oMockProject, $this->oDIContainer
         );
 
         $oClass = new \ReflectionClass($oTask);
-        $oMethod = $oClass->getMethod('_setCluster');
+        $oMethod = $oClass->getMethod('setCluster');
         $oMethod->setAccessible(true);
 
         $this->setExpectedException(
@@ -137,32 +147,38 @@ class B2CSwitchSymlinkTest extends PadoccTestCase
     }
 
     /**
-     * @covers Task_Extended_B2CSwitchSymlink::_setCluster
+     * @covers \Himedia\Padocc\Task\Extended\B2CSwitchSymlink::setCluster
      */
     public function testSetCluster_WithWarning ()
     {
+        /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockShell = $this->oDIContainer->getShellAdapter();
         $oMockShell->expects($this->any())->method('exec')
             ->with($this->equalTo('/home/prod/twenga/tools/wwwcluster -s server1 -d'))
             ->will($this->throwException(new \RuntimeException('bla bla', 2)));
 
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array($oMockShell));
+        /* @var $oMockProperties \Himedia\Padocc\Properties\Adapter|\PHPUnit_Framework_MockObject_MockObject */
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array($oMockShell, $this->aConfig)
+        );
         $oMockProperties->expects($this->any())->method('getProperty')
             ->will($this->returnValue('-'));
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTask = Task_Extended_B2CSwitchSymlink::getNewInstance(
+        $oTask = B2CSwitchSymlink::getNewInstance(
             array(), $this->oMockProject, $this->oDIContainer
         );
 
         $oClass = new \ReflectionClass($oTask);
-        $oMethod = $oClass->getMethod('_setCluster');
+        $oMethod = $oClass->getMethod('setCluster');
         $oMethod->setAccessible(true);
 
         $oMethod->invokeArgs($oTask, array('server1', false));
         $this->assertEquals(
-            array("Remove 'server1' server from the cluster.", "[WARNING] bla bla"),
-            $this->aMessages[LoggerInterface::INFO]
+            array("Remove 'server1' server from the cluster.+++", "---"),
+            $this->aMessages[LogLevel::INFO]
         );
     }
 }

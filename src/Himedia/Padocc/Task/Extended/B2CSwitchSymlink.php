@@ -65,7 +65,7 @@ class B2CSwitchSymlink extends SwitchSymlink
      * Tâche de création d'appel cURL AAI sous-jacente.
      * @var HTTP
      */
-    private $_oHTTPTask;
+    private $oHTTPTask;
 
     /**
      * Constructeur.
@@ -94,7 +94,7 @@ class B2CSwitchSymlink extends SwitchSymlink
         $sAppParameter = (isset($aMappingAAI[$sEnv]) ? $aMappingAAI[$sEnv] : $sEnv);
         $sURL = 'http://aai.twenga.com/push.php?server=${WEB_SERVERS}&amp;app=' . $sAppParameter;
         $aAttributes = array('url' => $sURL);
-        $this->_oHTTPTask = HTTP::getNewInstance($aAttributes, $oProject, $oDIContainer);
+        $this->oHTTPTask = HTTP::getNewInstance($aAttributes, $oProject, $oDIContainer);
         $this->oNumbering->removeCounterDivision();
     }
 
@@ -135,7 +135,7 @@ class B2CSwitchSymlink extends SwitchSymlink
         if ($this->aAttValues['sysopsnotifications'] == 'true') {
             $sEnv = $this->oProperties->getProperty('environment_name');
             $sID = $this->oProperties->getProperty('execution_id');
-            $this->_sendSysopsNotification('MEP-activation', 2, "Deploy to $sEnv servers (#$sID) is switching...");
+            $this->sendSysopsNotification('MEP-activation', 2, "Deploy to $sEnv servers (#$sID) is switching...");
         }
         $this->oLogger->info('---');
     }
@@ -162,7 +162,7 @@ class B2CSwitchSymlink extends SwitchSymlink
                     $this->oLogger->info("Switch '$sServer' server:+++");
 
                     if ($this->aAttValues['clusterRemoving'] == 'true') {
-                        $this->_setCluster($sServer, false);
+                        $this->setCluster($sServer, false);
                     }
 
                     // Switch du lien symbolique :
@@ -177,10 +177,10 @@ class B2CSwitchSymlink extends SwitchSymlink
                     $oLinkTask->setUp();
                     $oLinkTask->execute();
 
-                    $this->_restartServerApache($sServer);
-                    $this->_clearServerSmartyCaches($sServer);
+                    $this->restartServerApache($sServer);
+                    $this->clearServerSmartyCaches($sServer);
                     if ($this->aAttValues['clusterReintegration'] == 'true') {
-                        $this->_setCluster($sServer, true);
+                        $this->setCluster($sServer, true);
                     }
                     $this->oLogger->info('---');
                 }
@@ -228,12 +228,12 @@ class B2CSwitchSymlink extends SwitchSymlink
         $this->oLogger->info('+++');
 
         if ($this->aAttValues['addSQLTwBuild'] == 'true') {
-            $this->_addSQLTwBuild($sID, $sEnv);
+            $this->addSQLTwBuild($sID, $sEnv);
         }
         if ($this->aAttValues['sysopsnotifications'] == 'true') {
-            $this->_sendSysopsNotification('MEP-activation', 0, "Deploy to $sEnv servers (#$sID) finished.");
+            $this->sendSysopsNotification('MEP-activation', 0, "Deploy to $sEnv servers (#$sID) finished.");
         }
-        $this->_oHTTPTask->execute();
+        $this->oHTTPTask->execute();
 
         $this->oLogger->info('---');
         parent::postExecute();
@@ -246,7 +246,7 @@ class B2CSwitchSymlink extends SwitchSymlink
      * @param int $iStatus 0 ok, 1 warning, 2 critical
      * @param string $sMessage
      */
-    private function _sendSysopsNotification ($sService, $iStatus, $sMessage)
+    private function sendSysopsNotification ($sService, $iStatus, $sMessage)
     {
         $this->oLogger->info("Send notification to Sysops: '$sMessage'+++");
         $sCmd = "/home/prod/twenga/tools/send_nsca_fs3.sh $sService $iStatus \"$sMessage\"";
@@ -261,7 +261,7 @@ class B2CSwitchSymlink extends SwitchSymlink
      * @param string $sEnv Environnement
      * @throws \DomainException quand environnement non capturé
      */
-    private function _addSQLTwBuild ($sID, $sEnv)
+    private function addSQLTwBuild ($sID, $sEnv)
     {
         $aTypes = array('qa' => 'Q', 'bct' => 'B', 'internal' => 'I', 'preprod' => 'X', 'prod' => 'P');
         if (! isset($aTypes[$sEnv])) {
@@ -278,7 +278,7 @@ class B2CSwitchSymlink extends SwitchSymlink
      *
      * @param string $sServer au format [user@]servername_or_ip
      */
-    private function _restartServerApache ($sServer)
+    private function restartServerApache ($sServer)
     {
         $this->oLogger->info("Restart Apache webserver '$sServer'.+++");
         $sToExec = $this->processSimplePath($sServer . ':/root/apache_restart');
@@ -291,7 +291,7 @@ class B2CSwitchSymlink extends SwitchSymlink
      *
      * @param string $sServer au format [user@]servername_or_ip
      */
-    private function _clearServerSmartyCaches ($sServer)
+    private function clearServerSmartyCaches ($sServer)
     {
         $this->oLogger->info("Clear Smarty caches of server '$sServer':+++");
 
@@ -308,8 +308,10 @@ class B2CSwitchSymlink extends SwitchSymlink
      *
      * @param string $sServer au format [user@]servername_or_ip
      * @param bool $bStatus true pour réintégrer, false pour sortir.
+     * @throws \Exception
+     * @throws \RuntimeException
      */
-    private function _setCluster ($sServer, $bStatus)
+    private function setCluster ($sServer, $bStatus)
     {
         $aMsgs = ($bStatus ? array('Reintegrate', 'into', '-e') : array('Remove', 'from', '-d'));
 
@@ -319,16 +321,16 @@ class B2CSwitchSymlink extends SwitchSymlink
             try {
                 $aResult = $this->oShell->exec($sCmd);
                 $sResult = implode("\n", $aResult);
+                if ($sResult != '') {
+                    $this->oLogger->info($sResult);
+                }
             } catch (\RuntimeException $oException) {
                 if ($oException->getCode() == 2) {
                     $sResult = '[WARNING] ' . $oException->getMessage();
+                    $this->oLogger->warning($sResult);
                 } else {
                     throw $oException;
                 }
-            }
-
-            if ($sResult != '') {
-                $this->oLogger->info($sResult);
             }
             $this->oLogger->info('---');
         } else {
@@ -343,7 +345,7 @@ class B2CSwitchSymlink extends SwitchSymlink
     {
         parent::setUp();
         $this->oLogger->info('+++');
-        $this->_oHTTPTask->setUp();
+        $this->oHTTPTask->setUp();
         $this->oLogger->info('---');
     }
 }
