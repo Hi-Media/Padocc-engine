@@ -20,7 +20,9 @@ use Himedia\Padocc\Task\Base\Sync;
  * Attributs :
  * - 'repository'
  * - 'ref' : branche ou tag à déployer
- * - 'localrepositorydir' : lieu temporaire d'extraction du contenu qui nous intéresse du dépôt avant de l'envoyer vers la destination ⇒ laisser à vide de manière générale, l'outil utilisera alors le répertoire DEPLOYMENT_REPOSITORIES_DIR
+ * - 'localrepositorydir' : lieu temporaire d'extraction du contenu qui nous intéresse du dépôt avant de l'envoyer
+ * vers la destination ⇒ laisser à vide de manière générale,
+ * l'outil utilisera alors le répertoire $aConfig['dir']['repositories'].
  * - 'srcsubdir' : sous-répertoire du dépôt qui nous intéresse
  * - 'destdir'
  * - 'include' : si l'on veut filtrer
@@ -75,7 +77,7 @@ class GitExport extends Task
         // Valeur par défaut de l'attribut localrepositorydir :
         if (empty($this->aAttValues['localrepositorydir'])) {
             $this->aAttValues['localrepositorydir'] =
-                DEPLOYMENT_REPOSITORIES_DIR . '/git/'
+                $this->aConfig['dir']['repositories'] . '/git/'
                 . $this->oProperties->getProperty('project_name') . '_'
                 . $this->oProperties->getProperty('environment_name') . '_'
                 . $this->sCounter;

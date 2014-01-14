@@ -59,7 +59,7 @@ class BuildLanguage extends Task
         $this->oLogger->info('+++');
 
         $sLanguagesPath = tempnam(
-            DEPLOYMENT_TMP_DIR,
+            $this->aConfig['dir']['tmp'],
             $this->oProperties->getProperty('execution_id') . '_languages_'
         );
         $sURL = 'https://xyz/translation_tool/build_language_files.php?project='

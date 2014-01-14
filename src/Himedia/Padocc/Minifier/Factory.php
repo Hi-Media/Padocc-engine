@@ -30,7 +30,7 @@ class Factory
     {
         switch ($iType) {
             case self::TYPE_JSMIN:
-                $oMinifier = new JSMinAdapter(DEPLOYMENT_JSMIN_BIN_PATH, $oShell);
+                $oMinifier = new JSMinAdapter('$this->aConfig[\'jsmin_path\']', $oShell);
                 break;
 
             default:

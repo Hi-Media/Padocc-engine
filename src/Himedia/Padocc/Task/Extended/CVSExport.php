@@ -19,7 +19,7 @@ use Himedia\Padocc\Task\Base\Project;
  * - 'module' : sous-répertoire du dépôt qui nous intéresse
  * - 'src' : lieu temporaire d'extraction du contenu qui nous intéresse du dépôt avant de l'envoyer
  *   vers la destination => laisser à vide de manière générale,
- *   l'outil utilisera alors le répertoire DEPLOYMENT_REPOSITORIES_DIR
+ *   l'outil utilisera alors le répertoire $aConfig['dir']['repositories']
  * - 'dest'
  *
  * Exemple :
@@ -67,7 +67,7 @@ class CVSExport extends Task
 
         if (empty($this->aAttValues['srcdir'])) {
             $this->aAttValues['srcdir'] =
-                DEPLOYMENT_REPOSITORIES_DIR . '/cvs/'
+                $this->aConfig['dir']['repositories'] . '/cvs/'
                 . $this->oProperties->getProperty('project_name') . '_'
                 . $this->oProperties->getProperty('environment_name') . '_'
                 . $this->sCounter;

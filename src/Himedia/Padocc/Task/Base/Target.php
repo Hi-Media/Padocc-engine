@@ -162,7 +162,7 @@ class Target extends WithProperties
         if (count(self::$aAvailableTasks) === 0) {
             $aAvailableTasks = array();
             foreach (array('base', 'extended') as $sTaskType) {
-                $sTaskPaths = glob(DEPLOYMENT_TASKS_DIR . "/$sTaskType/*.class.php");
+                $sTaskPaths = glob(__DIR__ . "/../$sTaskType/*.class.php");
                 foreach ($sTaskPaths as $sTaskPath) {
                     $sClassName = strstr(substr(strrchr($sTaskPath, '/'), 1), '.', true);
                     $sFullClassName = __NAMESPACE__.'\\'.'Task_' . ucfirst($sTaskType) . '_' . $sClassName;

@@ -243,7 +243,7 @@ class SwitchSymlinkTest extends PadoccTestCase
         $oTask->setUp();
         $this->assertAttributeEquals(array(
             'src' => $oPropertiesAdapter->getProperty('basedir'),
-            'target' => $oPropertiesAdapter->getProperty('basedir') . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX
+            'target' => $oPropertiesAdapter->getProperty('basedir') . $this->aConfig['symlink_releases_dir_suffix']
                       . '/' . $oPropertiesAdapter->getProperty('execution_id'),
             'server' => '${' . Environment::SERVERS_CONCERNED_WITH_BASE_DIR . '}'
         ), 'aAttValues', $oTask);
@@ -271,7 +271,7 @@ class SwitchSymlinkTest extends PadoccTestCase
         $oTask->setUp();
         $this->assertAttributeEquals(array(
             'src' => $oPropertiesAdapter->getProperty('basedir'),
-            'target' => $oPropertiesAdapter->getProperty('basedir') . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX
+            'target' => $oPropertiesAdapter->getProperty('basedir') . $this->aConfig['symlink_releases_dir_suffix']
                       . '/' . $oPropertiesAdapter->getProperty('rollback_id'),
             'server' => '${' . Environment::SERVERS_CONCERNED_WITH_BASE_DIR . '}'
         ), 'aAttValues', $oTask);

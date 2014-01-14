@@ -100,7 +100,7 @@ class SwitchSymlink extends Link
             } else {
                 $sID = $this->oProperties->getProperty('execution_id');
             }
-            $sReleaseSymLink = $sBaseSymLink . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX . '/' . $sID;
+            $sReleaseSymLink = $sBaseSymLink . $this->aConfig['symlink_releases_dir_suffix'] . '/' . $sID;
 
             $this->aAttValues['src'] = $sBaseSymLink;
             $this->aAttValues['target'] = $sReleaseSymLink;

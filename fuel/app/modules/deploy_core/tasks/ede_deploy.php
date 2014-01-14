@@ -136,7 +136,7 @@ class Ede_deploy
             ->setProperty('environment_name', $aParam['ENVIRONMENT'])
             ->setProperty('execution_id', $aParam['EXECUTION_ID'])
             ->setProperty('configuration', $aParam['CONFIGURATION'])
-            ->setProperty('tmpdir', DEPLOYMENT_TMP_DIR . '/deploy_' . $aParam['EXECUTION_ID'])
+            ->setProperty('tmpdir', $this->aConfig['dir']['tmp'] . '/deploy_' . $aParam['EXECUTION_ID'])
             ->setProperty('rollback_id', $aParam['ROLLBACK_ID']);
 
         $this->_setExternalProperties((array)json_decode($aParam['EXTERNAL_PROPERTY']));

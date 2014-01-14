@@ -74,7 +74,7 @@ class JSminAdapterTest extends PadoccTestCase
     public function testGetContent_WithoutFiles ()
     {
         $oJSminAdapter = new JSMinAdapter(
-            DEPLOYMENT_JSMIN_BIN_PATH,
+            $this->aConfig['jsmin_path'],
             $this->oShell
         );
 
@@ -92,7 +92,7 @@ class JSminAdapterTest extends PadoccTestCase
     public function testGetContent_throwExceptionIfNotFound ()
     {
         $oJSminAdapter = new JSMinAdapter(
-            DEPLOYMENT_JSMIN_BIN_PATH,
+            $this->aConfig['jsmin_path'],
             $this->oShell
         );
 
@@ -110,7 +110,7 @@ class JSminAdapterTest extends PadoccTestCase
     public function testGetContent_With1File ()
     {
         $oJSminAdapter = new JSMinAdapter(
-            DEPLOYMENT_JSMIN_BIN_PATH,
+            $this->aConfig['jsmin_path'],
             $this->oShell
         );
 
@@ -131,7 +131,7 @@ class JSminAdapterTest extends PadoccTestCase
     public function testGetContent_WithFiles ()
     {
         $oJSminAdapter = new JSMinAdapter(
-            DEPLOYMENT_JSMIN_BIN_PATH,
+            $this->aConfig['jsmin_path'],
             $this->oShell
         );
 
@@ -258,7 +258,7 @@ class JSminAdapterTest extends PadoccTestCase
         $method = new \ReflectionMethod('\Himedia\Padocc\Minifier\JSMinAdapter', 'minifyCSS');
         $method->setAccessible(true);
 
-        $sTmpPath = tempnam(DEPLOYMENT_TMP_DIR, 'deploy_unittest_');
+        $sTmpPath = tempnam($this->aConfig['dir']['tmp'], 'deploy_unittest_');
         $method->invokeArgs(
             $oJSminAdapter,
             array(array($this->aConfig['dir']['tests'] . '/resources/minifier/a.css'), $sTmpPath)

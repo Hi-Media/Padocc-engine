@@ -91,7 +91,7 @@ class Deployment
 
         $this->setExternalProperties($aExternalProperties);
 
-        $sProjectPath = DEPLOYMENT_RESOURCES_DIR . '/' . $sProjectName . '.xml';
+        $sProjectPath = '/XML' . '/' . $sProjectName . '.xml';
         $oProject = new Project($sProjectPath, $sEnvName, $this->oDIContainer);
         $this->oLogger->info('Check tasks:+++');
         $oProject->setUp();
@@ -119,11 +119,11 @@ class Deployment
      */
     public static function getProjectsEnvsList ()
     {
-        $aAllProjectsName = Project::getAllProjectsName(DEPLOYMENT_RESOURCES_DIR);
+        $aAllProjectsName = Project::getAllProjectsName('/XML');
         $aEnvsByProject = array();
         if (! empty($aAllProjectsName)) {
             foreach ($aAllProjectsName as $sProjectName) {
-                $sProjectPath = DEPLOYMENT_RESOURCES_DIR . '/' . $sProjectName . '.xml';
+                $sProjectPath = '/XML' . '/' . $sProjectName . '.xml';
                 $sXmlProjectConf = file_get_contents($sProjectPath);
                 $aEnvsByProject[$sProjectName] = Target::getAvailableEnvsList($sXmlProjectConf);
             }

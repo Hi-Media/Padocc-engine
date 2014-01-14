@@ -255,7 +255,7 @@ abstract class Task
     /**
      * Reroute de façon transparente tous les chemins système inclus ou égal à la valeur de la propriété 'basedir'
      * dans le répertoire de releases nommé de la valeur de 'basedir'
-     * avec le suffixe DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX.
+     * avec le suffixe $aConfig['symlink_releases_dir_suffix'].
      * Les autres chemins, ceux hors 'basedir', restent inchangés.
      *
      * @param array $aPaths liste de chemins sans paramètres (par exemple provenant de expandPath())
@@ -265,7 +265,7 @@ abstract class Task
     {
         if ($this->oProperties->getProperty('with_symlinks') === 'true') {
             $sBaseSymLink = $this->oProperties->getProperty('basedir');
-            $sReleaseSymLink = $sBaseSymLink . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX . '/'
+            $sReleaseSymLink = $sBaseSymLink . $this->aConfig['symlink_releases_dir_suffix'] . '/'
                              . $this->oProperties->getProperty('execution_id');
             for ($i=0, $iMax=count($aPaths); $i<$iMax; $i++) {
                 if (preg_match('#^(.*?:)' . preg_quote($sBaseSymLink, '#') . '\b#', $aPaths[$i], $aMatches) === 1) {

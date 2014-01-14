@@ -48,12 +48,6 @@ class Environment extends Target
     private static $aSmartyRsyncExclude = array('smarty/templates_c', 'smarty/*/wrt*', 'smarty/**/wrt*');
 
     /**
-     * Nombre maximal de déploiement à garder dans les répertoires de releases.
-     * @var int
-     */
-    private static $iDefaultMaxNbReleases = DEPLOYMENT_SYMLINK_MAX_NB_RELEASES;
-
-    /**
      * Propriété (au sens PropertiesInterface) contenant la liste des serveurs concernés par le déploiement.
      * @var string
      */
@@ -196,7 +190,7 @@ class Environment extends Target
             if ($aPathStatusResult[$sServer] === PathStatus::STATUS_DIR) {
                 $bTransitionMade = true;
                 $sDir = $sExpandedPath . '/';
-                $sOriginRelease = $sServer . ':' . $sBaseSymLink . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX
+                $sOriginRelease = $sServer . ':' . $sBaseSymLink . $this->aConfig['symlink_releases_dir_suffix']
                                 . '/' . $this->oProperties->getProperty('execution_id') . '_origin';
                 $this->oLogger->info("Backup '$sDir' to '$sOriginRelease'.+++");
                 $this->oShell->sync($sDir, $sOriginRelease, array(), array(), self::$aSmartyRsyncExclude);
@@ -248,7 +242,7 @@ class Environment extends Target
         $this->oLogger->info('Initialize with content of previous release:+++');
         $sBaseSymLink = $this->oProperties->getProperty('basedir');
         $aServers = $this->expandPath('${' . self::SERVERS_CONCERNED_WITH_BASE_DIR . '}');
-        $sReleaseSymLink = $sBaseSymLink . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX
+        $sReleaseSymLink = $sBaseSymLink . $this->aConfig['symlink_releases_dir_suffix']
                          . '/' . $this->oProperties->getProperty('execution_id');
         $aPathStatusResult = $this->oShell->getParallelSSHPathStatus($sBaseSymLink, $aServers);
 
@@ -313,7 +307,7 @@ class Environment extends Target
         } else {
 
             // Check releases:
-            $sBaseSymLink = $this->oProperties->getProperty('basedir') . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX;
+            $sBaseSymLink = $this->oProperties->getProperty('basedir') . $this->aConfig['symlink_releases_dir_suffix'];
             $aServers = $this->expandPath('${' . self::SERVERS_CONCERNED_WITH_BASE_DIR . '}');
             $this->oLogger->info('Check releases on each server.+++');
             $aAllReleases = $this->getAllReleases($sBaseSymLink, $aServers);
@@ -326,14 +320,14 @@ class Environment extends Target
                 if ($iNbReleases === 0) {
                     $this->oLogger->info("No release found on server '$sServer'.");
                 } else {
-                    $bIsQuotaExceeded = ($iNbReleases > self::$iDefaultMaxNbReleases);
+                    $bIsQuotaExceeded = ($iNbReleases > $this->aConfig['symlink_max_nb_releases']);
                     $sMsg = $iNbReleases . " release(s) found on server '$sServer': quota "
                           . ($bIsQuotaExceeded ? 'exceeded' : 'not exceeded')
-                          . ' (' . self::$iDefaultMaxNbReleases . ' backups max).';
+                          . ' (' . $this->aConfig['symlink_max_nb_releases'] . ' backups max).';
                     $this->oLogger->info($sMsg);
 
                     if ($bIsQuotaExceeded) {
-                        $aReleasesToDelete = array_slice($aReleases, self::$iDefaultMaxNbReleases);
+                        $aReleasesToDelete = array_slice($aReleases, $this->aConfig['symlink_max_nb_releases']);
                         foreach ($aReleasesToDelete as $sReleaseToDelete) {
                             $aAllReleasesToDelete[$sReleaseToDelete][] = $sServer;
                         }

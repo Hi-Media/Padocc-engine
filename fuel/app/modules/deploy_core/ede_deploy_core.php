@@ -60,7 +60,7 @@ class ede_deploy_core
             ->setProperty('project_name', $sProjectName)
             ->setProperty('environment_name', $sEnvName)
             ->setProperty('execution_id', $sExecutionID)
-            ->setProperty('tmpdir', DEPLOYMENT_TMP_DIR . '/deploy_' . $sExecutionID)
+            ->setProperty('tmpdir', $this->aConfig['dir']['tmp'] . '/deploy_' . $sExecutionID)
             ->setProperty('rollback_id', $sRollbackID);
 
         $this->_setExternalProperties($aExternalProperties);

@@ -404,8 +404,8 @@ class TaskTest extends PadoccTestCase
         $aDest = array(
             $sBaseDir,
             $sBaseDir . '/subdir',
-            'user@server:' . $sBaseDir . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX . '/12345',
-            'user@server:' . $sBaseDir . DEPLOYMENT_SYMLINK_RELEASES_DIR_SUFFIX . '/12345/subdir'
+            'user@server:' . $sBaseDir . $this->aConfig['symlink_releases_dir_suffix'] . '/12345',
+            'user@server:' . $sBaseDir . $this->aConfig['symlink_releases_dir_suffix'] . '/12345/subdir'
         );
 
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
