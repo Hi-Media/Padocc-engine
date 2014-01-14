@@ -3,6 +3,7 @@
 namespace Himedia\Padocc;
 
 use GAubry\Shell\PathStatus;
+use GAubry\Shell\ShellAdapter;
 
 /**
  * Collection des propriétés possibles pour un attribut de tâche.
@@ -98,12 +99,10 @@ class AttributeProperties
     public static $sMultiValuedJoinGlue = ', ';
 
     /**
-     * Collection de services.
-     *
-     * @var DIContainer
-     * @see checkAttribute()
+     * Shell adapter.
+     * @var ShellAdapter
      */
-    protected $oDIContainer;
+    protected $oShell;
 
     /**
      * Constructeur.
@@ -112,7 +111,7 @@ class AttributeProperties
      */
     public function __construct (DIContainer $oDIContainer)
     {
-        $this->oDIContainer = $oDIContainer;
+        $this->oShell = $oDIContainer->getShellAdapter();
     }
 
     /**
@@ -176,7 +175,7 @@ class AttributeProperties
         $this->checkUnknownAttributes($aProperties, $aValues);
 
         foreach ($aProperties as $sName => $iProperties) {
-            if (isset($aValues[$sName])) {
+            if (! empty($aValues[$sName])) {
                 if (($iProperties & self::MULTI_VALUED) > 0) {
                     $aSplittedValues = preg_split(
                         self::$sMultiValuedSep,
@@ -275,7 +274,7 @@ class AttributeProperties
             if (
                     ($iProperties & self::SRC_PATH) > 0
                     && preg_match('#\*|\?|\$\{[^}]*\}#', $sValue) === 0
-                    && $this->oDIContainer->getShellAdapter()->getPathStatus($sValue)
+                    && $this->oShell->getPathStatus($sValue)
                         === PathStatus::STATUS_NOT_EXISTS
             ) {
                 throw new \UnexpectedValueException("File or directory '$sValue' not found!");
