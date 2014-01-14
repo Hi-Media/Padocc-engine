@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Padocc" default="build">
+    <property environment="env"/>
+    <fileset dir="${basedir}" id="php.sources">
+        <include name="/src/**/*.php"/>
+    </fileset>
+
+    <target
+        name="build"
+        depends="prepare,lint,apigen,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpunit,phpcb"
+    />
+
+    <target name="build-parallel" depends="prepare,lint,tools-parallel,phpunit,phpcb"/>
+
+    <target name="tools-parallel" description="Run tools in parallel">
+        <parallel threadCount="2">
+            <sequential>
+                <antcall target="pdepend"/>
+                <antcall target="phpmd-ci"/>
+            </sequential>
+            <antcall target="phpcpd"/>
+            <antcall target="phpcs-ci"/>
+            <antcall target="apigen"/>
+            <antcall target="phploc"/>
+        </parallel>
+    </target>
+
+    <target name="clean" description="Cleanup build artifacts">
+        <delete dir="${basedir}/build/api"/>
+        <delete dir="${basedir}/build/code-browser"/>
+        <delete dir="${basedir}/build/coverage"/>
+        <delete dir="${basedir}/build/logs"/>
+        <delete dir="${basedir}/build/pdepend"/>
+    </target>
+
+    <target name="vendors" description="Install dependent libraries">
+        <exec executable="composer" failonerror="true">
+            <arg value="install" />
+        </exec>
+    </target>
+
+    <target name="prepare" depends="clean,vendors" description="Prepare for build">
+        <mkdir dir="${basedir}/build/api"/>
+        <mkdir dir="${basedir}/build/code-browser"/>
+        <mkdir dir="${basedir}/build/coverage"/>
+        <mkdir dir="${basedir}/build/logs"/>
+        <mkdir dir="${basedir}/build/pdepend"/>
+        <copy
+            file="${basedir}/conf/dw-core-jenkins.php"
+            tofile="${basedir}/conf/dw-core.php"
+            overwrite="true"
+        />
+        <copy
+            file="${basedir}/conf/dw-apps-dist.php"
+            tofile="${basedir}/conf/dw-apps.php"
+            overwrite="true"
+        />
+    </target>
+
+    <target name="checkModified" description="Check for modified php files">
+        <echo message="Searching for newly modified files"/>
+        <path id="editedfiles">
+            <fileset dir="${basedir}/src">
+                <include name="**/*.php" />
+                <modified />
+            </fileset>
+
+            <fileset dir="${basedir}/tests">
+                <include name="**/*.php" />
+                <modified />
+            </fileset>
+
+            <fileset dir="${basedir}/conf">
+                <include name="**/*.php" />
+                <modified />
+            </fileset>
+        </path>
+        <pathconvert pathsep="${line.separator}" property="files.modified" refid="editedfiles"/>
+        <condition property="modifiedFiles">
+            <not>
+                <equals arg1="${files.modified}" arg2=""/>
+            </not>
+        </condition>
+    </target>
+
+    <target name="lint" depends="checkModified" description="Perform syntax check of src files" if="modifiedFiles">
+        <echo message="Linting php files"/>
+        <exec executable="bash" failonerror="true">
+            <arg value="-c"/>
+            <arg value="echo '${files.modified}' | xargs -n 1 -P 4 -i'{}' php -l {}"/>
+        </exec>
+    </target>
+
+    <target name="phploc" description="Measure project size using PHPLOC">
+        <exec executable="phploc">
+            <arg value="--log-csv" />
+            <arg value="${basedir}/build/logs/phploc.csv" />
+            <arg value="--suffixes" />
+            <arg value="php" />
+            <arg path="${basedir}/src" />
+        </exec>
+    </target>
+
+    <target name="pdepend" description="Calculate software metrics using PHP_Depend">
+        <exec executable="pdepend">
+            <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
+            <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg" />
+            <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg" />
+            <arg value="--suffix=php" />
+            <arg path="${basedir}/src" />
+        </exec>
+    </target>
+
+    <target name="phpmd-ci" description="Perform project mess detection using PHPMD">
+        <exec executable="phpmd">
+            <arg path="${basedir}/src" />
+            <arg value="xml" />
+            <arg value="codesize,design,naming,unusedcode" />
+            <arg value="--reportfile" />
+            <arg value="${basedir}/build/logs/pmd.xml" />
+        </exec>
+    </target>
+
+    <target name="phpcs-ci" description="Find coding standard violations using PHP_CodeSniffer">
+        <exec executable="phpcs" output="/dev/null">
+            <arg value="--standard=PSR2" />
+            <arg value="--extensions=php" />
+            <arg value="--report=checkstyle" />
+            <arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
+            <arg path="${basedir}/src" />
+            <arg path="${basedir}/tests" />
+        </exec>
+    </target>
+
+    <target name="phpcpd" description="Find duplicate code using PHPCPD">
+        <exec executable="phpcpd">
+            <arg value="--log-pmd" />
+            <arg value="${basedir}/build/logs/pmd-cpd.xml" />
+            <arg path="${basedir}/src" />
+        </exec>
+    </target>
+
+    <target name="phpunit" description="Run unit tests with PHPUnit">
+        <exec executable="phpunit" failonerror="true">
+            <arg line="-c '${basedir}/conf/phpunit-dist.xml'" />
+        </exec>
+    </target>
+
+    <target name="apigen" description="Generate API documentation using apiGen">
+        <exec executable="apigen">
+            <arg value="--config" />
+            <arg value="${basedir}/conf/apigen.neon" />
+            <arg value="--source" />
+            <arg value="${basedir}/src" />
+            <arg value="--source" />
+            <arg value="${basedir}/vendor/geoffroy-aubry" />
+            <arg value="--source" />
+            <arg value="${basedir}/vendor/psr" />
+            <arg value="--destination" />
+            <arg value="${basedir}/build/api" />
+            <arg value="--report" />
+            <arg path="${basedir}/build/logs/checkstyle-apigen.xml" />
+        </exec>
+    </target>
+
+    <target name="doxygen" description="Generate API documentation using Doxygen">
+        <exec executable="doxygen" failonerror="true">
+            <arg value="${basedir}/conf/doxyfile" />
+        </exec>
+    </target>
+
+    <target name="docblox" description="Generate API documentation using Docblox">
+        <exec executable="docblox">
+            <arg line="run -d . -t build/api --title 'Data Warehouse' -m TODO,FIXME -v public,protected,private -f *.php -d src" />
+        </exec>
+    </target>
+
+    <target name="phpcb" description="Aggregate tool output with PHP_CodeBrowser">
+        <exec executable="phpcb">
+            <arg value="--extensions=php" />
+            <arg value="--output=${basedir}/build/code-browser" />
+            <arg value="--source=${basedir}/src" />
+        </exec>
+    </target>
+
+</project>
