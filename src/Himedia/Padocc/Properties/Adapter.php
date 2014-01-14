@@ -131,8 +131,8 @@ class Adapter implements PropertiesInterface
             throw new \UnexpectedValueException("Property file '$sConfigShellPath' not found!");
         }
         $sConfigIniPath = tempnam($this->aConfig['dir']['tmp'], 'deploy_configshell2ini_');
-        $sCmd = $this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['inc']
-              . "/cfg2ini.sh '$sConfigShellPath' '$sConfigIniPath'";
+        $sCmd = $this->aConfig['bash_path'] . " '" . $this->aConfig['dir']['inc']
+              . "/cfg2ini.sh' '$sConfigShellPath' '$sConfigIniPath'";
         $this->oShell->exec($sCmd);
         $this->loadConfigIniFile($sConfigIniPath);
         unlink($sConfigIniPath);
