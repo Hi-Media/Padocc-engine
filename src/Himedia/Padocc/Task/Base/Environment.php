@@ -41,9 +41,9 @@ class Environment extends Target
     /**
      * Liste d'exclusions Smarty pour les rsync réalisés lors de l'initialisation des déploiements.
      * @var array
-     * @see _makeTransitionToSymlinks()
-     * @see _makeTransitionFromSymlinks()
-     * @see _initNewRelease()
+     * @see makeTransitionToSymlinks()
+     * @see makeTransitionFromSymlinks()
+     * @see initNewRelease()
      */
     private static $aSmartyRsyncExclude = array('smarty/templates_c', 'smarty/*/wrt*', 'smarty/**/wrt*');
 

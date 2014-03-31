@@ -49,7 +49,8 @@ if (isset($argv) && count($argv) > 2 && preg_match('/\d{14}_\d{5}/', $argv[count
     $aConfig['Himedia\DW']['exec_id'] = md5(microtime().rand());
 }
 
-$GLOBALS['oErrorHandler'] = new ErrorHandler($aConfig['GAubry\ErrorHandler']);
+$oErrorHandler = new ErrorHandler($aConfig['GAubry\ErrorHandler']);
+$oErrorHandler->addExcludedPath(__DIR__ . '/../../vendor/corneltek');
 
 date_default_timezone_set('UTC');
 

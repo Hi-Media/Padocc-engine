@@ -47,7 +47,7 @@ class Project extends WithProperties
             $sProjectPath = $sRessourcesPath . '/' . $file;
             if (substr($file, -4) == '.xml' && is_file($sProjectPath)) {
                 $sXmlProjectConf = file_get_contents($sProjectPath);
-                $oProject = Project::getSXEProject($sXmlProjectConf);
+                $oProject = self::getSXEProject($sXmlProjectConf);
                 if (isset($oProject['name'])) {
                     $aProjectNames[] = (string)$oProject['name'];
                 }
@@ -61,16 +61,16 @@ class Project extends WithProperties
     /**
      * Retourne une instance SimpleXMLElement du projet spécifié.
      *
-     * @param string $sXmlConfiguration $sXmlConfiguration string XML de la configuration du projet
+     * @param string $sXmlProjectPath $sXmlConfiguration string XML de la configuration du projet
      * @throws \UnexpectedValueException si fichier XML du projet mal formaté
      * @return \SimpleXMLElement instance du projet spécifié
      */
-    public static function getSXEProject ($sXmlConfiguration)
+    public static function getSXEProject ($sXmlProjectPath)
     {
         try {
-            $oSXE = new \SimpleXMLElement($sXmlConfiguration, null, false);
+            $oSXE = new \SimpleXMLElement($sXmlProjectPath, null, true);
         } catch (\Exception $oException) {
-            throw new \UnexpectedValueException("Bad project definition: '$sXmlConfiguration'", 1, $oException);
+            throw new \UnexpectedValueException("Bad project definition: '$sXmlProjectPath'", 1, $oException);
         }
         return $oSXE;
     }
@@ -94,15 +94,15 @@ class Project extends WithProperties
     /**
      * Constructeur.
      *
-     * @param string $sXmlProjectConf string XML de la configuration du projet
+     * @param string $sXmlProjectPath string XML de la configuration du projet
      * @param string $sEnvName Environnement sélectionné.
      * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
      * @throws \UnexpectedValueException si fichier XML du projet non trouvé
      * @throws \UnexpectedValueException si environnement non trouvé ou non unique
      */
-    public function __construct ($sXmlProjectConf, $sEnvName, DIContainer $oDIContainer)
+    public function __construct ($sXmlProjectPath, $sEnvName, DIContainer $oDIContainer)
     {
-        $oSXEProject = self::getSXEProject($sXmlProjectConf);
+        $oSXEProject = self::getSXEProject($sXmlProjectPath);
         $this->sEnvName = $sEnvName;
 
         parent::__construct($oSXEProject, $this, $oDIContainer);

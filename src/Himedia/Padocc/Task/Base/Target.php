@@ -161,13 +161,13 @@ class Target extends WithProperties
     {
         if (count(self::$aAvailableTasks) === 0) {
             $aAvailableTasks = array();
-            foreach (array('base', 'extended') as $sTaskType) {
-                $sTaskPaths = glob(__DIR__ . "/../$sTaskType/*.class.php");
+            foreach (array('Base', 'Extended') as $sTaskType) {
+                $sTaskPaths = glob(__DIR__ . "/../$sTaskType/*.php");
                 foreach ($sTaskPaths as $sTaskPath) {
                     $sClassName = strstr(substr(strrchr($sTaskPath, '/'), 1), '.', true);
-                    $sFullClassName = __NAMESPACE__.'\\'.'Task_' . ucfirst($sTaskType) . '_' . $sClassName;
+                    $sFullClassName = "Himedia\\Padocc\\Task\\$sTaskType\\$sClassName";
 
-                    if(!class_exists($sFullClassName)){
+                    if (! class_exists($sFullClassName, true)) {
                         throw new \RuntimeException($sFullClassName." doesn't exist!");
                     }
 
@@ -200,7 +200,7 @@ class Target extends WithProperties
         $this->oLogger->info("Initialize tasks of target '" . $this->aAttValues['name'] . "'.");
         $aAvailableTasks = self::getAvailableTasks();
 
-        // Mise à plat des tâches car SimpleXML regroupe celles successives de même nom
+        // Mise à plat des tâches car \SimpleXML regroupe celles successives de même nom
         // dans un tableau et les autres sont hors tableau :
         $aTasks = array();
         foreach ($oTarget->children() as $sTag => $mTasks) {

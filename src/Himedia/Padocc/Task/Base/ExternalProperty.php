@@ -20,23 +20,9 @@ class ExternalProperty extends Task
     /**
      * Préfixe de propriété externe, c.-à-d. fournie par l'utilisateur.
      * @var string
-     * @see _centralExecute()
+     * @see centralExecute()
      */
     const EXTERNAL_PROPERTY_PREFIX = 'external_property_';
-
-    /**
-     * Compteur général du nombre de propriétés externes résolues, c.-à-d. associées à une variable
-     * du fichier de configuration XML (les '${my_var}').
-     * @var int
-     */
-    private static $iCounter = 0;
-
-    /**
-     * Numéro de cette instance de propriété externe : c'est la valeur de self::$_iCounter à la création.
-     * La première instance vaudra donc 1.
-     * @var int
-     */
-    private $iNumber;
 
     /**
      * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
@@ -62,7 +48,6 @@ class ExternalProperty extends Task
             'name' => AttributeProperties::REQUIRED,
             'description' => AttributeProperties::REQUIRED
         );
-        $this->iNumber = ++self::$iCounter;
     }
 
     /**
@@ -76,7 +61,7 @@ class ExternalProperty extends Task
         parent::centralExecute();
         $this->oLogger->info('+++');
         try {
-            $sValue = $this->oProperties->getProperty(self::EXTERNAL_PROPERTY_PREFIX . $this->iNumber);
+            $sValue = $this->oProperties->getProperty(self::EXTERNAL_PROPERTY_PREFIX . $this->aAttValues['name']);
         } catch (\UnexpectedValueException $oException) {
             $sMsg = "Property '" . $this->aAttValues['name'] . "' undefined!";
             throw new \UnexpectedValueException($sMsg, 1, $oException);

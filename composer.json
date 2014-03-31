@@ -3,6 +3,7 @@
     "description": "Platform for Automatized Deployments with pOwerful Concise Configuration",
     "keywords": ["deployment", "PHP"],
     "require": {
+        "corneltek/getoptionkit":      "~1.2",
         "ext-PDO":                     "*",
         "geoffroy-aubry/errorhandler": "1.*",
         "geoffroy-aubry/helpers":      "1.*",

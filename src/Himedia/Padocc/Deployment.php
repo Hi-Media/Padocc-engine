@@ -59,31 +59,32 @@ class Deployment
     /**
      * Enregistre les propriétés externes dans l'instance PropertiesInterface.
      *
-     * @param array $aExternalProperties tableau indexé des valeurs ordonnées des propriétés externes.
+     * @param array $aExternalProperties tableau associatif nom/valeur des propriétés externes.
      */
     private function setExternalProperties (array $aExternalProperties)
     {
-        foreach ($aExternalProperties as $i => $sValue) {
-            $sKey = ExternalProperty::EXTERNAL_PROPERTY_PREFIX . ($i+1);
-            $this->oProperties->setProperty($sKey, str_replace('&#0160;', ' ', $sValue));
+        foreach ($aExternalProperties as $sName => $sValue) {
+            $sFullName = ExternalProperty::EXTERNAL_PROPERTY_PREFIX . $sName;
+            $this->oProperties->setProperty($sFullName, str_replace('&#0160;', ' ', $sValue));
         }
     }
 
     /**
      * Exécute le déploiement.
      *
-     * @param string $sProjectName
+     * @param string $sXmlProjectPath chemin vers le XML de configuration du projet
      * @param string $sEnvName
-     * @param string $sExecutionID au format YYYYMMDDHHMMSS_xxxxx, où x est un chiffre aléatoire,
+     * @param string $sExecutionID au format YYYYMMDDHHMMSS_xxxxx, où x est un nombre aléatoire,
      * par exemple '20111026142342_07502'
-     * @param array $aExternalProperties tableau indexé des valeurs ordonnées des propriétés externes.
+     * @param array $aExternalProperties tableau associatif nom/valeur des propriétés externes.
      * @param string $sRollbackID identifiant de déploiement sur lequel effectuer un rollback,
      * par exemple '20111026142342_07502'
      */
-    public function run ($sProjectName, $sEnvName, $sExecutionID, array $aExternalProperties, $sRollbackID)
+    public function run ($sXmlProjectPath, $sEnvName, $sExecutionID, array $aExternalProperties, $sRollbackID)
     {
+        $sXmlProjectPath = realpath($sXmlProjectPath);
         $this->oProperties
-            ->setProperty('project_name', $sProjectName)
+            ->setProperty('project_name', 'toto')
             ->setProperty('environment_name', $sEnvName)
             ->setProperty('execution_id', $sExecutionID)
             ->setProperty('tmpdir', $this->aConfig['dir']['tmp'] . '/deploy_' . $sExecutionID)
@@ -91,8 +92,8 @@ class Deployment
 
         $this->setExternalProperties($aExternalProperties);
 
-        $sProjectPath = '/XML' . '/' . $sProjectName . '.xml';
-        $oProject = new Project($sProjectPath, $sEnvName, $this->oDIContainer);
+        $this->oLogger->info("Project loaded: $sXmlProjectPath");
+        $oProject = new Project($sXmlProjectPath, $sEnvName, $this->oDIContainer);
         $this->oLogger->info('Check tasks:+++');
         $oProject->setUp();
         $this->oLogger->info('---Execute tasks:+++');
