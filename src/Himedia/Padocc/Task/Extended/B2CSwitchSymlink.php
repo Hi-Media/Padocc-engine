@@ -154,7 +154,7 @@ class B2CSwitchSymlink extends SwitchSymlink
                 $this->oLogger->info('No release found.');
             } else {
                 $this->oProperties->setProperty('with_symlinks', 'false');
-                $this->_checkTargets();
+                $this->checkTargets();
 
                 // Pour chaque serveur :
                 $aServers = $this->processPath('${WEB_SERVERS}');

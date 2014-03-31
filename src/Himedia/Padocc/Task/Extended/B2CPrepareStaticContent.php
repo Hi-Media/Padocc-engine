@@ -33,7 +33,7 @@ class B2CPrepareStaticContent extends Task
      * Nom du symlink directory pointant sur le dernier déploiement statique.
      * @var string
      */
-    private static $_sLastDir = 'last_deploy';
+    private static $sLastDir = 'last_deploy';
 
     /**
      * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
@@ -49,7 +49,7 @@ class B2CPrepareStaticContent extends Task
      * Tâche de création de lien sous-jacente.
      * @var Link
      */
-    private $_oLinkTask;
+    private $oLinkTask;
 
     /**
      * Constructeur.
@@ -65,10 +65,10 @@ class B2CPrepareStaticContent extends Task
 
         $this->oNumbering->addCounterDivision();
         $aAttributes = array(
-            'src' => '${STATIC_SERVERS}:${STATIC_BASEDIR}/' . self::$_sLastDir,
+            'src' => '${STATIC_SERVERS}:${STATIC_BASEDIR}/' . self::$sLastDir,
             'target' => '${STATIC_SERVERS}:${STATIC_BASEDIR}/${EXECUTION_ID}'
         );
-        $this->_oLinkTask = Link::getNewInstance($aAttributes, $oProject, $oDIContainer);
+        $this->oLinkTask = Link::getNewInstance($aAttributes, $oProject, $oDIContainer);
         $this->oNumbering->removeCounterDivision();
     }
 
@@ -84,7 +84,7 @@ class B2CPrepareStaticContent extends Task
         $this->oLogger->info('+++Initialize static content with previous release:+++');
 
         $aServers = $this->expandPath('${STATIC_SERVERS}');
-        $sBaseDir = $this->processSimplePath('${STATIC_BASEDIR}/' . self::$_sLastDir);
+        $sBaseDir = $this->processSimplePath('${STATIC_BASEDIR}/' . self::$sLastDir);
         $aPathStatusResult = $this->oShell->getParallelSSHPathStatus($sBaseDir, $aServers);
 
         // Recherche des serveurs que l'on peut initialiser :
@@ -107,7 +107,7 @@ class B2CPrepareStaticContent extends Task
         }
 
         $this->oLogger->info('---');
-        $this->_oLinkTask->execute();
+        $this->oLinkTask->execute();
         $this->oLogger->info('---');
     }
 
@@ -118,7 +118,7 @@ class B2CPrepareStaticContent extends Task
     {
         parent::setUp();
         $this->oLogger->info('+++');
-        $this->_oLinkTask->setUp();
+        $this->oLinkTask->setUp();
         $this->oLogger->info('---');
     }
 }

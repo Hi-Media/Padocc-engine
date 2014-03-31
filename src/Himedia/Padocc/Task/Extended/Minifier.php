@@ -22,7 +22,7 @@ class Minifier extends Task
      * Instance MinifierInterface.
      * @var MinifierInterface
      */
-    private $_oMinifier;
+    private $oMinifier;
 
     /**
      * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
@@ -48,7 +48,7 @@ class Minifier extends Task
             'srcfile' => AttributeProperties::FILEJOKER | AttributeProperties::ALLOW_PARAMETER,
             'destfile' => AttributeProperties::FILE | AttributeProperties::ALLOW_PARAMETER
         );
-        $this->_oMinifier = Factory::getInstance(Factory::TYPE_JSMIN, $this->oShell);
+        $this->oMinifier = Factory::getInstance(Factory::TYPE_JSMIN, $this->oShell);
     }
 
     /**
@@ -66,7 +66,7 @@ class Minifier extends Task
 
         $aSrcPaths = $this->processPath($this->aAttValues['srcfile']);
         $sDestPaths = $this->processSimplePath($this->aAttValues['destfile']);
-        $this->_oMinifier->minify($aSrcPaths, $sDestPaths);
+        $this->oMinifier->minify($aSrcPaths, $sDestPaths);
 
         $this->oLogger->info('---');
     }

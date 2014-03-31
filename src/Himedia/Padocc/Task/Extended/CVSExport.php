@@ -45,7 +45,7 @@ class CVSExport extends Task
      * Tâche de synchronisation sous-jacente.
      * @var Task\Base\Sync
      */
-    private $_oSyncTask;
+    private $oSyncTask;
 
     /**
      * Constructeur.
@@ -78,7 +78,7 @@ class CVSExport extends Task
 
         // Création de la tâche de synchronisation sous-jacente :
         $this->oNumbering->addCounterDivision();
-        $this->_oSyncTask = Task\Base\Sync::getNewInstance(
+        $this->oSyncTask = Task\Base\Sync::getNewInstance(
             array(
                 'src' => $this->aAttValues['srcdir'] . '/' . $this->aAttValues['module'] . '/',
                 'destdir' => $this->aAttValues['destdir']
@@ -97,7 +97,7 @@ class CVSExport extends Task
         parent::setUp();
         $this->oLogger->info('+++');
         try {
-            $this->_oSyncTask->setUp();
+            $this->oSyncTask->setUp();
         } catch (\UnexpectedValueException $oException) {
             if ($oException->getMessage() !== "File or directory '" . $this->aAttValues['srcdir']
                                             . '/' . $this->aAttValues['module'] . '/' . "' not found!") {
@@ -128,7 +128,7 @@ class CVSExport extends Task
         );
         $this->oLogger->info(implode("\n", $aResult) . '---');
 
-        $this->_oSyncTask->execute();
+        $this->oSyncTask->execute();
         $this->oLogger->info('---');
     }
 }

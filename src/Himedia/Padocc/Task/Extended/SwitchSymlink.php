@@ -43,7 +43,7 @@ class SwitchSymlink extends Link
      * @var int
      * @see getNbInstances()
      */
-    private static $_iNbInstances = 0;
+    private static $iNbInstances = 0;
 
     /**
      * Accesseur au compteur d'instances de la classe.
@@ -53,7 +53,7 @@ class SwitchSymlink extends Link
      */
     public static function getNbInstances ()
     {
-        return self::$_iNbInstances;
+        return self::$iNbInstances;
     }
 
     /**
@@ -71,7 +71,7 @@ class SwitchSymlink extends Link
             'target' => AttributeProperties::FILE | AttributeProperties::DIR | AttributeProperties::ALLOW_PARAMETER,
             'server' => AttributeProperties::ALLOW_PARAMETER
         );
-        self::$_iNbInstances++;
+        self::$iNbInstances++;
     }
 
     /**
@@ -124,7 +124,7 @@ class SwitchSymlink extends Link
                 $this->oLogger->info('No release found.');
             } else {
                 $this->oProperties->setProperty('with_symlinks', 'false');
-                $this->_checkTargets();
+                $this->checkTargets();
                 $this->oLogger->info('---');
                 parent::centralExecute();
                 $this->oLogger->info('+++');
@@ -142,7 +142,7 @@ class SwitchSymlink extends Link
      *
      * @throws \RuntimeException si l'un des répertoires cible des liens n'existe pas
      */
-    protected function _checkTargets ()
+    protected function checkTargets ()
     {
         $this->oLogger->info('Check that all symlinks targets exists.+++');
 

@@ -50,7 +50,7 @@ class GitExport extends Task
      * Tâche de synchronisation sous-jacente.
      * @var Sync
      */
-    private $_oSyncTask;
+    private $oSyncTask;
 
     /**
      * Constructeur.
@@ -103,7 +103,7 @@ class GitExport extends Task
         if (! empty($this->aAttValues['exclude'])) {
             $aSyncAttributes['exclude'] = $this->aAttValues['exclude'];
         }
-        $this->_oSyncTask = Sync::getNewInstance($aSyncAttributes, $oProject, $oDIContainer);
+        $this->oSyncTask = Sync::getNewInstance($aSyncAttributes, $oProject, $oDIContainer);
         $this->oNumbering->removeCounterDivision();
     }
 
@@ -115,7 +115,7 @@ class GitExport extends Task
         parent::setUp();
         $this->oLogger->info('+++');
         try {
-            $this->_oSyncTask->setUp();
+            $this->oSyncTask->setUp();
         } catch (\UnexpectedValueException $oException) {
             if ($oException->getMessage() !== "File or directory '" . $this->aAttValues['localrepositorydir']
                                             . $this->aAttValues['srcsubdir'] . '/' . "' not found!") {
@@ -149,7 +149,7 @@ class GitExport extends Task
         );
         $this->oLogger->info(implode("\n", $aResult) . '---');
 
-        $this->_oSyncTask->execute();
+        $this->oSyncTask->execute();
         $this->oLogger->info('---');
     }
 }

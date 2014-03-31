@@ -26,15 +26,15 @@ class TwengaServers extends Task
     /**
      * Tâche d'export Git sous-jacente.
      *
-*@var GitExport
+     * @var GitExport
      */
-    private $_oGitExportTask;
+    private $oGitExportTask;
 
     /**
      * Répertoire temporaire où extraire master_synchro.cfg.
      * @var string
      */
-    private $_sTmpDir;
+    private $sTmpDir;
 
     /**
      * Constructeur.
@@ -47,16 +47,16 @@ class TwengaServers extends Task
     {
         parent::__construct($oTask, $oProject, $oDIContainer);
         $this->aAttrProperties = array();
-        $this->_sTmpDir = $this->aConfig['dir']['tmp'] . '/'
+        $this->sTmpDir = $this->aConfig['dir']['tmp'] . '/'
                         . $this->oProperties->getProperty('execution_id') . '_' . self::getTagName();
 
         // Création de la tâche de synchronisation sous-jacente :
         $this->oNumbering->addCounterDivision();
-        $this->_oGitExportTask = GitExport::getNewInstance(
+        $this->oGitExportTask = GitExport::getNewInstance(
             array(
                 'repository' => 'git@git.twenga.com:aa/server_config.git',
                 'ref' => 'master',
-                'destdir' => $this->_sTmpDir
+                'destdir' => $this->sTmpDir
             ),
             $oProject,
             $oDIContainer
@@ -71,7 +71,7 @@ class TwengaServers extends Task
     {
         parent::setUp();
         $this->oLogger->info('+++');
-        $this->_oGitExportTask->setUp();
+        $this->oGitExportTask->setUp();
         $this->oLogger->info('---');
     }
 
@@ -87,11 +87,11 @@ class TwengaServers extends Task
     {
         parent::centralExecute();
         $this->oLogger->info('+++');
-        $this->_oGitExportTask->execute();
-        $sPathToLoad = $this->_sTmpDir . '/master_synchro.cfg';
+        $this->oGitExportTask->execute();
+        $sPathToLoad = $this->sTmpDir . '/master_synchro.cfg';
         $this->oLogger->info("Load shell properties: $sPathToLoad+++");
         $this->oProperties->loadConfigShellFile($sPathToLoad);
-        $this->oShell->remove($this->_sTmpDir);
+        $this->oShell->remove($this->sTmpDir);
         $this->oLogger->info('------');
     }
 
