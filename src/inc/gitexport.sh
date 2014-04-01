@@ -13,9 +13,19 @@ fi
 
 mkdir -p "$srcdir" && cd "$srcdir" || exit $?
 
+# Injection of SSH options into git commands:
+DIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)
+SSH_KEY=${DIR}/../../conf/padocc-ssh
+echo "ssh -i $SSH_KEY \$@" > /tmp/.git_ssh.$$
+chmod +x /tmp/.git_ssh.$$
+export GIT_SSH=/tmp/.git_ssh.$$
+
+# remove temporary file on exit:
+trap 'rm -f /tmp/.git_ssh.$$' 0
+
 current_repository="$(git remote -v 2>/dev/null | grep -E ^$reponame | head -n 1 | sed 's/^'"$reponame"'\s*//' | sed 's/\s*([^)]*)$//')"
 if [ "$current_repository" = "$repository" ]; then
-    if [ `git status --porcelain --ignore-submodules=all | wc -l` -ne 0 ]; then
+    if [ $(git status --porcelain --ignore-submodules=all | wc -l) -ne 0 ]; then
         echo "Git: reset local repository"
         git reset --hard 1>/dev/null || exit $?
     fi
