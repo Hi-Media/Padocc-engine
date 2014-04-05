@@ -11,3 +11,10 @@ fuel/app/config
 /composer.phar
 /.twgit*
 /.idea/
+/conf/padocc.php
+/conf/padocc-ssh
+/conf/supervisor.sh
+/build/
+composer.phar
+conf/phpunit.xml
+/cache.properties

@@ -1,26 +1,64 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php
 
-// TODO vérifier présence de /var/log/apache2/error.padocc.log et access.padocc.log
+// OK: /var/log/apache2/error.padocc.log et access.padocc.log
 // 192.168.27.103  padocc.hi-media-techno.com
+
+/*
+ * TODO lors de l'install :
+        – ssh indefero.hi-media-techno.com => pour ajouter indefero aux .ssh/known_hosts
+        – ajouter user padocc dans Aura pour les projets concernés
+        – ajouter padocc dans indefero sur les projets concernés
+        – créer conf/padocc-ssh contenant la clé privée SSH
+        – installer mutt: apt-get install mutt
+ */
+
+/*
+ * Déploiement de Padocc sur redmine :
+rsync -axz --delete --stats -e ssh --cvs-exclude --exclude=conf/padocc.php --exclude=conf/padocc-ssh --exclude=conf/supervisor.sh \
+    /home/gaubry/PhpstormProjects/Padocc-engine/ \
+    gaubry@192.168.27.103:/var/www/padocc/ \
+&& ssh gaubry@192.168.27.103 "sudo mkdir -p /var/padocc/archives /var/padocc/repositories /var/log/padocc /tmp/padocc/locks"
+ */
+
+/*
+ * Test de déploiement :
+root# src/padocc.php --deploy --xml=/home/gaubry/dw-payment.xml --env=dev -p ref="stable" --param=u=i=g
+ */
+
+/*
+ * Apache2 VirtualHost: /etc/apache2/sites-available/padocc.hi-media-techno.com
+<VirtualHost 127.0.0.1:80>
+        ServerName padocc.hi-media-techno.com
+
+        DocumentRoot /var/www/padocc/web
+        <Directory /var/www/padocc/web >
+                Options FollowSymLinks  MultiViews -Indexes
+                AllowOverride None
+                Order allow,deny
+                allow from all
+        </Directory>
+
+        ErrorLog /var/log/apache2/error.padocc.log
+        CustomLog /var/log/apache2/access.padocc.log combined
+</VirtualHost>
+ */
 
 namespace Himedia\Padocc;
 
-use GAubry\Logger\ColoredIndentedLogger;
-use GAubry\Shell\ShellAdapter;
+use GAubry\Helpers\Helpers;
 use GetOptionKit\GetOptionKit;
-use Himedia\Padocc\Task\Base\Target;
 
 require(__DIR__ . '/inc/bootstrap.php');
 /** @var $aConfig array */
+/** @var $argv array */
 
 // Set options:
 $oGetopt = new GetOptionKit();
 $oGetopt->add('xml:', 'XML project configuration');
 $oGetopt->add('env:', 'Project\'s environment to deploy');
+$oGetopt->add('action:', 'Choose between: deploy, get-env');
 $oGetopt->add('p|param+', 'External parameters');
-$oGetopt->add('deploy', 'Deploy specified project');
-$oGetopt->add('get-env', 'Get project\'s environments and their external parameters');
 //$oGetopt->printOptions();
 
 // Extract command line parameters
@@ -30,34 +68,31 @@ $aRawExtParameters = (isset($aCLIParameters['param']) ? $aCLIParameters['param']
 $aExtParameters = array();
 foreach ($aRawExtParameters as $sData) {
     list($sName, $sValue) = explode('=', $sData, 2);
+    if (preg_match("/^('|\").+\\1$/", $sValue) === 1) {
+        $sValue = substr($sValue, 1, -1);
+    }
     $aExtParameters[$sName] = $sValue;
 }
 $sEnvName = $aCLIParameters['env']->value;
 $sExecutionID = 0;
 $sRollbackID = '';
 
+$oPadocc = new Padocc($aConfig);
+
 // Controller:
-if (isset($aCLIParameters['get-env'])) {
-    $aEnv = Target::getAvailableEnvsList($sXmlProjectPath);
+if ($aCLIParameters['action']->value == 'get-env') {
+    $aEnv = $oPadocc->getEnvAndExtParameters($sXmlProjectPath);
     var_dump($aEnv);
 
-} elseif (isset($aCLIParameters['deploy'])) {
-    // Build dependency injection container
-    $oLogger      = new ColoredIndentedLogger($aConfig['GAubry\Logger\ColoredIndentedLogger']);
-    $oShell       = new ShellAdapter($oLogger);
-    $oDIContainer = new DIContainer();
-    $oDIContainer
-        ->setLogger($oLogger)
-        ->setShellAdapter($oShell)
-        ->setPropertiesAdapter(new Properties\Adapter($oShell, $aConfig['GAubry\Logger\ColoredIndentedLogger']))
-        ->setNumberingAdapter(new Numbering\Adapter())
-        ->setConfig($aConfig['Himedia\Padocc']);
+} elseif ($aCLIParameters['action']->value == 'deploy') {
+    $oPadocc->run($sXmlProjectPath, $sEnvName, $sExecutionID, $aExtParameters, $sRollbackID);
+//    $sOutput = Helpers::exec($sCmd);
 
-    $oDeployment = new Deployment($oDIContainer);
-    $oDeployment->run($sXmlProjectPath, $sEnvName, $sExecutionID, $aExtParameters, $sRollbackID);
+} elseif ($aCLIParameters['action']->value == 'deploy-wos') {
+    $oPadocc->runWOSupervisor($sXmlProjectPath, $sEnvName, $sExecutionID, $aExtParameters, $sRollbackID);
 
 } else {
-    $sMsg = "Must choose action between following: deploy, get-env!\n";
+    $sMsg = "Must choose action between following: deploy, deploy-wos, get-env!\n";
     file_put_contents('php://stderr', $sMsg, E_USER_ERROR);
 }
 

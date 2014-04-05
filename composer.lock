@@ -233,16 +233,16 @@
         },
         {
             "name": "geoffroy-aubry/shell",
-            "version": "v1.1.1",
+            "version": "v1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/geoffroy-aubry/Shell.git",
-                "reference": "f2a45eabf036d33812765b5c3441f42fabc9733a"
+                "reference": "25d1805eed7171e0e1c5f9db78bcbaad2dc66fdc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/geoffroy-aubry/Shell/zipball/f2a45eabf036d33812765b5c3441f42fabc9733a",
-                "reference": "f2a45eabf036d33812765b5c3441f42fabc9733a",
+                "url": "https://api.github.com/repos/geoffroy-aubry/Shell/zipball/25d1805eed7171e0e1c5f9db78bcbaad2dc66fdc",
+                "reference": "25d1805eed7171e0e1c5f9db78bcbaad2dc66fdc",
                 "shasum": ""
             },
             "require": {
@@ -273,7 +273,7 @@
                     "email": "geoffroy.aubry@free.fr"
                 }
             ],
-            "time": "2013-06-25 08:03:18"
+            "time": "2014-03-31 21:41:23"
         },
         {
             "name": "geoffroy-aubry/supervisor",
@@ -1340,28 +1340,28 @@
         },
         {
             "name": "sebastian/phpcpd",
-            "version": "2.0.0",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpcpd.git",
-                "reference": "346c909de7adc3979988a6505a80814c8562d6b3"
+                "reference": "a9462153f2dd90466a010179901d31fbff598365"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpcpd/zipball/346c909de7adc3979988a6505a80814c8562d6b3",
-                "reference": "346c909de7adc3979988a6505a80814c8562d6b3",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpcpd/zipball/a9462153f2dd90466a010179901d31fbff598365",
+                "reference": "a9462153f2dd90466a010179901d31fbff598365",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3",
                 "phpunit/php-timer": ">=1.0.4",
                 "sebastian/finder-facade": ">=1.1.0",
-                "sebastian/version": ">=1.0.0",
+                "sebastian/version": ">=1.0.3",
                 "symfony/console": ">=2.2.0",
                 "theseer/fdomdocument": "~1.4"
             },
             "bin": [
-                "composer/bin/phpcpd"
+                "phpcpd"
             ],
             "type": "library",
             "extra": {
@@ -1387,7 +1387,7 @@
             ],
             "description": "Copy/Paste Detector (CPD) for PHP code.",
             "homepage": "https://github.com/sebastianbergmann/phpcpd",
-            "time": "2013-11-08 09:05:42"
+            "time": "2014-03-31 09:25:30"
         },
         {
             "name": "sebastian/version",
