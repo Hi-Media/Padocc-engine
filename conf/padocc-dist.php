@@ -24,6 +24,12 @@ $aDirs = array(
 return array(
     'Himedia\Padocc' => array(
         /**
+         * In case of rsync or ssh on remote server, use this value by default.
+         * @var string
+         */
+        'default_remote_shell_user' => 'padocc',
+
+        /**
          * Identifiant unique d'exécution, optionnellement transmis en paramètre lors de l'appel du script.
          * @var string
          */
