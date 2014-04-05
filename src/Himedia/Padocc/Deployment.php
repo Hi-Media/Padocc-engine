@@ -100,36 +100,4 @@ class Deployment
         $oProject->execute();
         $this->oLogger->info('---');
     }
-
-    /**
-     * Retourne la liste des environnements de chaque projet,
-     * avec pour chacun d'eux la liste des paramètres externes.
-     *
-     * Structure :
-     * {
-     * 		"rts":{"dev":[],"qa":[],"pre-prod":[]},
-     * 		"tests":{
-     * 			"tests_gitexport":{"rts_ref":"Branch or tag to deploy"},
-     * 			"tests_languages":{"t1":"Branch","t2":"or tag","t3":"or tag"},
-     * 			"all_tests":[]},
-     * 		"ptpn":{"prod":[]}
-     * }
-     *
-     * @return array la liste des environnements de chaque projet,
-     * avec pour chacun d'eux la liste des paramètres externes.
-     */
-    public static function getProjectsEnvsList ()
-    {
-        $aAllProjectsName = Project::getAllProjectsName('/XML');
-        $aEnvsByProject = array();
-        if (! empty($aAllProjectsName)) {
-            foreach ($aAllProjectsName as $sProjectName) {
-                $sProjectPath = '/XML' . '/' . $sProjectName . '.xml';
-                $sXmlProjectConf = file_get_contents($sProjectPath);
-                $aEnvsByProject[$sProjectName] = Target::getAvailableEnvsList($sXmlProjectConf);
-            }
-        }
-        ksort($aEnvsByProject);
-        return $aEnvsByProject;
-    }
 }
