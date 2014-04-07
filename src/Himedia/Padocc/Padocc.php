@@ -2,8 +2,11 @@
 
 namespace Himedia\Padocc;
 
+use GAubry\Helpers\Helpers;
 use GAubry\Logger\ColoredIndentedLogger;
 use GAubry\Shell\ShellAdapter;
+use Himedia\Padocc\DB\DeploymentMapper;
+use Himedia\Padocc\DB\PDOAdapter;
 use Himedia\Padocc\Task\Base\Target;
 
 /**
@@ -67,11 +70,29 @@ class Padocc {
      * @param array $aExternalProperties tableau associatif nom/valeur des propriétés externes.
      * @param string $sRollbackID identifiant de déploiement sur lequel effectuer un rollback,
      * par exemple '20111026142342_07502'
+     * @throws \RuntimeException if Supervisor log result are unexpected.
      */
     public function run ($sXmlProjectPath, $sEnvName, $sExecutionID, array $aExternalProperties, $sRollbackID)
     {
+        $oDB = PDOAdapter::getInstance($this->aConfig['Himedia\Padocc']['db']);
+        $oDeploymentMapper = new DeploymentMapper($oDB);
+        $sExecId = date('YmdHis') . sprintf('_%05d', rand(0, 99999));
+        $aParameters = array(
+            'exec_id' => $sExecId,
+            'xml_path' => $sXmlProjectPath,
+            'project_name' => '??',
+            'env_name' => $sEnvName,
+            'external_properties' => json_encode($aExternalProperties),
+            'status' => DeploymentStatus::IN_PROGRESS,
+            'nb_warnings' => 0,
+            'date_start' => date('Y-m-d H:i:s'),
+            'is_rollbackable' => 0,
+        );
+        $oDeploymentMapper->insert($aParameters);
+
         $sSupervisorBin = $this->aConfig['Himedia\Padocc']['dir']['vendor'] . '/bin/supervisor.sh';
-        $sSupervisorParams = '--conf=' . $this->aConfig['Himedia\Padocc']['dir']['conf'] . '/supervisor.sh';
+        $sSupervisorParams = '--conf=' . $this->aConfig['Himedia\Padocc']['dir']['conf'] . '/supervisor.sh '
+                           . "--exec-id=$sExecId";
         $sPadoccBin = $this->aConfig['Himedia\Padocc']['dir']['src'] . '/padocc.php';
         $sPadoccParams = "--action=deploy-wos --xml=$sXmlProjectPath --env=$sEnvName";
         foreach ($aExternalProperties as $sName => $sValue) {
@@ -88,5 +109,27 @@ class Padocc {
                 echo $results;
             }
         }
+
+        $sInfoLogPath = sprintf($this->aConfig['Himedia\Padocc']['info_log_path_pattern'], $sExecId);
+        $aResult = Helpers::exec("tail -n1 '$sInfoLogPath'");
+        if (preg_match('/^[0-9 :-]{22}cs;\[SUPERVISOR\] (OK|ERROR|WARNING \(#(\d+)\))\s*$/', $aResult[0], $aMatches) !== 1) {
+            throw new \RuntimeException("Supervisor log result unexpected! Log file: '$sInfoLogPath'.");
+        } elseif ($aMatches[1] == 'OK') {
+            $sStatus = DeploymentStatus::SUCCESSFUL;
+            $iNbWarnings = 0;
+        } elseif ($aMatches[1] == 'ERROR') {
+            $sStatus = DeploymentStatus::FAILED;
+            $iNbWarnings = 0;
+        } else {
+            $sStatus = DeploymentStatus::WARNING;
+            $iNbWarnings = $aMatches[2];
+        }
+        $aParameters = array(
+            'exec_id' => $sExecId,
+            'status' => $sStatus,
+            'nb_warnings' => $iNbWarnings,
+            'date_end' => date('Y-m-d H:i:s'),
+        );
+        $oDeploymentMapper->update($aParameters);
     }
 }

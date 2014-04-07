@@ -93,8 +93,11 @@ class Deployment
         $this->setExternalProperties($aExternalProperties);
 
         $this->oLogger->info("Project loaded: $sXmlProjectPath");
+//        $this->oLogger->info("[WARNING] test");
+//        throw new \RuntimeException('slkghskgh');
         $oProject = new Project($sXmlProjectPath, $sEnvName, $this->oDIContainer);
         $this->oLogger->info('Check tasks:+++');
+//        $this->oLogger->info("[WARNING] test");
         $oProject->setUp();
         $this->oLogger->info('---Execute tasks:+++');
         $oProject->execute();

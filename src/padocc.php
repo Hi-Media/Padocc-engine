@@ -46,7 +46,6 @@ root# src/padocc.php --deploy --xml=/home/gaubry/dw-payment.xml --env=dev -p ref
 
 namespace Himedia\Padocc;
 
-use GAubry\Helpers\Helpers;
 use GetOptionKit\GetOptionKit;
 
 require(__DIR__ . '/inc/bootstrap.php');

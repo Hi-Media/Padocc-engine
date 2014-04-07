@@ -30,12 +30,37 @@ return array(
         'default_remote_shell_user' => 'padocc',
 
         /**
+         * DB connection.
+         * @var array
+         */
+        'db' => array(
+            'driver'   => '',   // string: 'pdo_mysql', 'pdo_pgsql'
+            'hostname' => '',   // string: 'localhost'
+            'port'     => 3306, // int
+            'db_name'  => '',
+            'username' => '',
+            'password' => ''
+        ),
+
+        /**
          * Identifiant unique d'exécution, optionnellement transmis en paramètre lors de l'appel du script.
          * @var string
          */
         'exec_id' => '',
 
         'dir' => $aDirs,
+
+        /**
+         * Log d'exécution du déploiement, où %s vaut pour l'exec_id.
+         * @var string
+         */
+        'info_log_path_pattern' => $aDirs['log'] . '/padocc.php.%s.info.log',
+
+        /**
+         * Log d'erreur de l'exécution du déploiement, où %s vaut pour l'exec_id.
+         * @var string
+         */
+        'error_log_path_pattern' => $aDirs['log'] . '/padocc.php.%s.error.log',
 
         /**
          * Suffixe concaténé au base directory pour obtenir le nom du répertoire regroupant les différentes releases.

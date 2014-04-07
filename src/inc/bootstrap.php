@@ -59,4 +59,3 @@ date_default_timezone_set('UTC');
 //foreach (array('log', 'tmp', 'locks', 'archives') as $sDir) {
 //    $oShell->mkdir($aConfig['Himedia\Padocc']['dir'][$sDir]);
 //}
-
