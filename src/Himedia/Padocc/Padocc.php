@@ -7,6 +7,7 @@ use GAubry\Logger\ColoredIndentedLogger;
 use GAubry\Shell\ShellAdapter;
 use Himedia\Padocc\DB\DeploymentMapper;
 use Himedia\Padocc\DB\PDOAdapter;
+use Himedia\Padocc\Task\Base\Project;
 use Himedia\Padocc\Task\Base\Target;
 
 /**
@@ -77,10 +78,12 @@ class Padocc {
         $oDB = PDOAdapter::getInstance($this->aConfig['Himedia\Padocc']['db']);
         $oDeploymentMapper = new DeploymentMapper($oDB);
         $sExecId = date('YmdHis') . sprintf('_%05d', rand(0, 99999));
+        $oProject = Project::getSXEProject($sXmlProjectPath);
+        $sProjectName = (string)$oProject['name'];
         $aParameters = array(
             'exec_id' => $sExecId,
             'xml_path' => $sXmlProjectPath,
-            'project_name' => '??',
+            'project_name' => $sProjectName,
             'env_name' => $sEnvName,
             'external_properties' => json_encode($aExternalProperties),
             'status' => DeploymentStatus::IN_PROGRESS,
