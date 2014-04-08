@@ -47,7 +47,7 @@ class Project extends WithProperties
             $sProjectPath = $sRessourcesPath . '/' . $file;
             if (substr($file, -4) == '.xml' && is_file($sProjectPath)) {
                 $sXmlProjectConf = file_get_contents($sProjectPath);
-                $oProject = self::getSXEProject($sXmlProjectConf);
+                $oProject = self::getSXEProject($sXmlProjectConf, false);
                 if (isset($oProject['name'])) {
                     $aProjectNames[] = (string)$oProject['name'];
                 }
@@ -61,16 +61,17 @@ class Project extends WithProperties
     /**
      * Retourne une instance SimpleXMLElement du projet spécifié.
      *
-     * @param string $sXmlProjectPath $sXmlConfiguration string XML de la configuration du projet
-     * @throws \UnexpectedValueException si fichier XML du projet mal formaté
+     * @param string $sXmlProject XML project path, or XML data if $bIsURL is false
+     * @param bool $bIsURL true if $sXmlProject is an XML project path, else false for XML data
+     * @throws \UnexpectedValueException si XML du projet mal formaté
      * @return \SimpleXMLElement instance du projet spécifié
      */
-    public static function getSXEProject ($sXmlProjectPath)
+    public static function getSXEProject ($sXmlProject, $bIsURL)
     {
         try {
-            $oSXE = new \SimpleXMLElement($sXmlProjectPath, null, true);
+            $oSXE = new \SimpleXMLElement($sXmlProject, null, $bIsURL);
         } catch (\Exception $oException) {
-            throw new \UnexpectedValueException("Bad project definition: '$sXmlProjectPath'", 1, $oException);
+            throw new \UnexpectedValueException("Bad project definition: '$sXmlProject'", 1, $oException);
         }
         return $oSXE;
     }
@@ -102,7 +103,7 @@ class Project extends WithProperties
      */
     public function __construct ($sXmlProjectPath, $sEnvName, DIContainer $oDIContainer)
     {
-        $oSXEProject = self::getSXEProject($sXmlProjectPath);
+        $oSXEProject = self::getSXEProject($sXmlProjectPath, true);
         $this->sEnvName = $sEnvName;
 
         parent::__construct($oSXEProject, $this, $oDIContainer);

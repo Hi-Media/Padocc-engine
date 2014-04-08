@@ -96,7 +96,7 @@ class Target extends WithProperties
      */
     public static function getAvailableEnvsList ($sXmlProjectConf)
     {
-        $oSXEProject = Project::getSXEProject($sXmlProjectConf);
+        $oSXEProject = Project::getSXEProject($sXmlProjectConf, true);
         $aTargets = $oSXEProject->xpath("//env");
         if (count($aTargets) === 0) {
             throw new \UnexpectedValueException("No environment found in specified project!");

@@ -125,7 +125,7 @@ class ProjectTest extends PadoccTestCase
             "Bad project definition: '"
         );
         $sXML = file_get_contents($this->aConfig['dir']['tests'] . '/resources/base_project/2/bad_xml.xml');
-        Project::getSXEProject($sXML);
+        Project::getSXEProject($sXML, false);
     }
 
     /**
@@ -134,7 +134,7 @@ class ProjectTest extends PadoccTestCase
     public function testGetSXEProject ()
     {
         $sXML = file_get_contents($this->aConfig['dir']['tests'] . '/resources/base_project/1/ebay.xml');
-        $oSXE = Project::getSXEProject($sXML);
+        $oSXE = Project::getSXEProject($sXML, false);
         $this->assertEquals($oSXE, new \SimpleXMLElement($this->aConfig['dir']['tests'] . '/resources/base_project/1/ebay.xml', null, true));
     }
 
