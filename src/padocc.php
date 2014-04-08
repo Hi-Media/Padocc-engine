@@ -60,10 +60,13 @@ require(__DIR__ . '/inc/bootstrap.php');
 /** @var $aConfig array */
 /** @var $argv array */
 
-// Set options:
 // TODO rename execId en deployId ?
+// TODO fusionner get-info-log et get-error-log ?
+
+// Set options:
+$sActions = 'deploy, deploy-wos, enqueue, get-env, get-info-log, get-error-log, get-queue';
 $oGetopt = new GetOptionKit();
-$oGetopt->add('action:', 'Choose between: deploy, deploy-wos, enqueue, get-env, get-info-log, get-error-log');
+$oGetopt->add('action:', "Choose between: $sActions");
 $oGetopt->add('env:', 'Project\'s environment to deploy');
 $oGetopt->add('exec-id:', 'Execution Id');
 $oGetopt->add('p|param+', 'External parameters');
@@ -90,32 +93,43 @@ $sRollbackID = '';
 $oPadocc = new Padocc($aConfig);
 
 // Controller:
-if ($sAction == 'get-env') {
-    $aEnv = $oPadocc->getEnvAndExtParameters($sXmlProjectPath);
-    var_dump($aEnv);
+switch ($sAction) {
+    case 'get-env':
+        $aEnv = $oPadocc->getEnvAndExtParameters($sXmlProjectPath);
+        var_dump($aEnv);
+        break;
 
-} elseif ($sAction == 'get-info-log') {
-    $sContent = $oPadocc->getInfoLog($sExecId);
-    var_dump($sContent);
+    case 'get-info-log':
+        $sContent = $oPadocc->getInfoLog($sExecId);
+        var_dump($sContent);
+        break;
 
-} elseif ($sAction == 'get-error-log') {
-    $sContent = $oPadocc->getErrorLog($sExecId);
-    var_dump($sContent);
+    case 'get-error-log':
+        $sContent = $oPadocc->getErrorLog($sExecId);
+        var_dump($sContent);
+        break;
 
-} elseif ($sAction == 'deploy') {
-    $oPadocc->run($sXmlProjectPath, $sEnvName, $sExecId, $aExtParameters, $sRollbackID);
-//    $sOutput = Helpers::exec($sCmd);
+    case 'get-queue':
+        $sContent = $oPadocc->getQueueAndRunning();
+        var_dump($sContent);
+        break;
 
-} elseif ($sAction == 'deploy-wos') {
-    $oPadocc->runWOSupervisor($sXmlProjectPath, $sEnvName, $sExecId, $aExtParameters, $sRollbackID);
+    case 'deploy':
+        $oPadocc->run($sXmlProjectPath, $sEnvName, $sExecId, $aExtParameters, $sRollbackID);
+        break;
 
-} elseif ($sAction == 'enqueue') {
-    $sExecId = $oPadocc->enqueue($sXmlProjectPath, $sEnvName, $aExtParameters);
-    var_dump($sExecId);
+    case 'deploy-wos':
+        $oPadocc->runWOSupervisor($sXmlProjectPath, $sEnvName, $sExecId, $aExtParameters, $sRollbackID);
+        break;
 
-} else {
-    $sMsg = "Must choose action between following: deploy, deploy-wos, enqueue, get-env, get-info-log, get-error-log!\n";
-    file_put_contents('php://stderr', $sMsg, E_USER_ERROR);
+    case 'enqueue':
+        $sExecId = $oPadocc->enqueue($sXmlProjectPath, $sEnvName, $aExtParameters);
+        var_dump($sExecId);
+        break;
+
+    default:
+        $sMsg = "Must choose action between following: $sActions!\n";
+        file_put_contents('php://stderr', $sMsg, E_USER_ERROR);
 }
 
 

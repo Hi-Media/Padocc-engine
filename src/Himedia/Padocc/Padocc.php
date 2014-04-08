@@ -53,6 +53,20 @@ class Padocc {
         return $sContent;
     }
 
+    public function getQueueAndRunning ()
+    {
+        $oDB = PDOAdapter::getInstance($this->aConfig['Himedia\Padocc']['db']);
+        $oDeploymentMapper = new DeploymentMapper($oDB);
+        $aFilter = array(
+            array(
+                array('status' => DeploymentStatus::QUEUED),
+                array('status' => DeploymentStatus::IN_PROGRESS)
+            )
+        );
+        $aResult = $oDeploymentMapper->select($aFilter, array('exec_id ASC'));
+        return $aResult;
+    }
+
     /**
      * Exécute le déploiement sans supervisor et sans trace en DB.
      *
