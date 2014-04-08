@@ -33,6 +33,16 @@ class Padocc {
         return $aEnv;
     }
 
+    public function getInfoLog ($sExecId)
+    {
+        $sInfoLogPath = sprintf($this->aConfig['Himedia\Padocc']['info_log_path_pattern'], $sExecId);
+        if (! file_exists($sInfoLogPath)) {
+            throw new \RuntimeException("File not found: '$sInfoLogPath'!");
+        }
+        $sContent = file_get_contents($sInfoLogPath);
+        return $sContent;
+    }
+
     /**
      * Exécute le déploiement sans supervisor et sans trace en DB.
      *

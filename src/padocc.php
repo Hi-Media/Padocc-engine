@@ -44,6 +44,13 @@ root# src/padocc.php --deploy --xml=/home/gaubry/dw-payment.xml --env=dev -p ref
 </VirtualHost>
  */
 
+/*
+ * Scenarios :
+ * src/padocc.php --action=enqueue --xml=/home/gaubry/dw-payment.xml --env=preprod -p core-ref=stable --param=apps-ref=stable
+ * src/padocc.php --action=deploy --xml=/home/gaubry/dw-payment.xml --env=preprod -p core-ref=stable --param=apps-ref=stable
+ * src/padocc.php --action=get-info-log --exec-id=20140408125738_84476
+ */
+
 namespace Himedia\Padocc;
 
 use GetOptionKit\GetOptionKit;
@@ -53,17 +60,21 @@ require(__DIR__ . '/inc/bootstrap.php');
 /** @var $argv array */
 
 // Set options:
+// TODO rename execId en deployId ?
 $oGetopt = new GetOptionKit();
-$oGetopt->add('xml:', 'XML project configuration');
+$oGetopt->add('action:', 'Choose between: deploy, deploy-wos, enqueue, get-env, get-info-log');
 $oGetopt->add('env:', 'Project\'s environment to deploy');
-$oGetopt->add('action:', 'Choose between: deploy, deploy-wos, enqueue, get-env');
+$oGetopt->add('exec-id:', 'Execution Id');
 $oGetopt->add('p|param+', 'External parameters');
+$oGetopt->add('xml:', 'XML project configuration');
 //$oGetopt->printOptions();
 
 // Extract command line parameters
-$aCLIParameters = $oGetopt->parse($argv);
-$sXmlProjectPath = $aCLIParameters['xml']->value;
-$aRawExtParameters = (isset($aCLIParameters['param']) ? $aCLIParameters['param']->value : array());
+$aCLIParameters    = $oGetopt->parse($argv);
+$sXmlProjectPath   = (isset($aCLIParameters['xml'])     ? $aCLIParameters['xml']->value     : '');
+$aRawExtParameters = (isset($aCLIParameters['param'])   ? $aCLIParameters['param']->value   : array());
+$sEnvName          = (isset($aCLIParameters['env'])     ? $aCLIParameters['env']->value     : '');
+$sExecId           = (isset($aCLIParameters['exec-id']) ? $aCLIParameters['exec-id']->value : '');
 $aExtParameters = array();
 foreach ($aRawExtParameters as $sData) {
     list($sName, $sValue) = explode('=', $sData, 2);
@@ -72,8 +83,6 @@ foreach ($aRawExtParameters as $sData) {
     }
     $aExtParameters[$sName] = $sValue;
 }
-$sEnvName = $aCLIParameters['env']->value;
-$sExecutionID = 0;
 $sRollbackID = '';
 
 $oPadocc = new Padocc($aConfig);
@@ -83,15 +92,20 @@ if ($aCLIParameters['action']->value == 'get-env') {
     $aEnv = $oPadocc->getEnvAndExtParameters($sXmlProjectPath);
     var_dump($aEnv);
 
+} elseif ($aCLIParameters['action']->value == 'get-info-log') {
+    $sContent = $oPadocc->getInfoLog($sExecId);
+    var_dump($sContent);
+
 } elseif ($aCLIParameters['action']->value == 'deploy') {
-    $oPadocc->run($sXmlProjectPath, $sEnvName, $sExecutionID, $aExtParameters, $sRollbackID);
+    $oPadocc->run($sXmlProjectPath, $sEnvName, $sExecId, $aExtParameters, $sRollbackID);
 //    $sOutput = Helpers::exec($sCmd);
 
 } elseif ($aCLIParameters['action']->value == 'deploy-wos') {
-    $oPadocc->runWOSupervisor($sXmlProjectPath, $sEnvName, $sExecutionID, $aExtParameters, $sRollbackID);
+    $oPadocc->runWOSupervisor($sXmlProjectPath, $sEnvName, $sExecId, $aExtParameters, $sRollbackID);
 
 } elseif ($aCLIParameters['action']->value == 'enqueue') {
-    $oPadocc->enqueue($sXmlProjectPath, $sEnvName, $aExtParameters);
+    $sExecId = $oPadocc->enqueue($sXmlProjectPath, $sEnvName, $aExtParameters);
+    var_dump($sExecId);
 
 } else {
     $sMsg = "Must choose action between following: deploy, deploy-wos, get-env!\n";
