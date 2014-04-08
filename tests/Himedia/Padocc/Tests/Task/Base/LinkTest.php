@@ -58,7 +58,11 @@ class LinkTest extends PadoccTestCase
         $oLogger = new NullLogger();
 
         /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
-        $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
+        $oMockShell = $this->getMock(
+            '\GAubry\Shell\ShellAdapter',
+            array('exec'),
+            array($oLogger, $this->aAllConfigs['GAubry\Shell'])
+        );
         $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
@@ -300,7 +304,7 @@ class LinkTest extends PadoccTestCase
         $oTask->setUp();
         $oTask->execute();
 
-        $sSshOptions = $GLOBALS['aConfig']['GAubry\Shell']['ssh_options'];
+        $sSshOptions = $this->aAllConfigs['GAubry\Shell']['ssh_options'];
         $this->assertEquals(array(
             "ssh $sSshOptions -T user@server /bin/bash <<EOF\n"
                 . 'mkdir -p "$(dirname "/path/to/link")" && ln -snf "/path/to/destdir" "/path/to/link"' . "\n"
@@ -394,7 +398,7 @@ class LinkTest extends PadoccTestCase
         $oTask->setUp();
         $oTask->execute();
 
-        $sSshOptions = $GLOBALS['aConfig']['GAubry\Shell']['ssh_options'];
+        $sSshOptions = $this->aAllConfigs['GAubry\Shell']['ssh_options'];
         $this->assertEquals(array(
             "ssh $sSshOptions -T user@server /bin/bash <<EOF\n"
             . 'mkdir -p "$(dirname "/path/to/link")" && ln -snf "/path/to/destdir" "/path/to/link"' . "\n"
@@ -445,7 +449,7 @@ class LinkTest extends PadoccTestCase
         $oTask->setUp();
         $oTask->execute();
 
-        $sSshOptions = $GLOBALS['aConfig']['GAubry\Shell']['ssh_options'];
+        $sSshOptions = $this->aAllConfigs['GAubry\Shell']['ssh_options'];
         $this->assertEquals(array(
             "ssh $sSshOptions -T user@server /bin/bash <<EOF\n"
             . 'mkdir -p "$(dirname "/path/to/destdir_releases/12345/link")" && ln -snf "/path/to/destdir_releases/12345/subdir" "/path/to/destdir_releases/12345/link"' . "\n"
@@ -495,7 +499,7 @@ class LinkTest extends PadoccTestCase
         $oTask->setUp();
         $oTask->execute();
 
-        $sSshOptions = $GLOBALS['aConfig']['GAubry\Shell']['ssh_options'];
+        $sSshOptions = $this->aAllConfigs['GAubry\Shell']['ssh_options'];
         $this->assertEquals(array(
             "ssh $sSshOptions -T user@server /bin/bash <<EOF\n"
             . 'mkdir -p "$(dirname "/path/to/destdir_releases/12345/link")" && ln -snf "/path/to/destdir_releases/12345/subdir" "/path/to/destdir_releases/12345/link"' . "\n"

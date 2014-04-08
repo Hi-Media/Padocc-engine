@@ -14,6 +14,12 @@ abstract class PadoccTestCase extends \PHPUnit_Framework_TestCase
     protected $aConfig;
 
     /**
+     * All configurations array.
+     * @var array
+     */
+    protected $aAllConfigs;
+
+    /**
      * This method is called before the first test of this test class is run.
      *
      * @since Method available since Release 3.4.0
@@ -33,6 +39,7 @@ abstract class PadoccTestCase extends \PHPUnit_Framework_TestCase
     {
         parent::__construct($sName, $aData, $sDataName);
         $this->aConfig = $GLOBALS['aConfig']['Himedia\Padocc'];
+        $this->aAllConfigs = $GLOBALS['aConfig'];
         if (! file_exists($this->aConfig['dir']['tmp'])) {
             mkdir($this->aConfig['dir']['tmp'], 0777, true);
         }

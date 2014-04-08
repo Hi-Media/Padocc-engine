@@ -251,7 +251,7 @@ abstract class Task
 
         // Set default remote user if not specified:
         foreach ($aPaths as $idx => $sPath) {
-            if (preg_match('/^[^:@]+:.+$/i', $sPath) === 1) {
+            if (preg_match('#^([^:@]+):(?!//).+$#i', $sPath, $aMatches) === 1 && $aMatches[1] != '[]') {
                 $aPaths[$idx] = $this->aConfig['default_remote_shell_user'] . '@' . $sPath;
             }
         }

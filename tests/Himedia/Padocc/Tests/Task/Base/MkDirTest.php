@@ -58,7 +58,11 @@ class MkDirTest extends PadoccTestCase
         $oLogger = new NullLogger();
 
         /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
-        $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
+        $oMockShell = $this->getMock(
+            '\GAubry\Shell\ShellAdapter',
+            array('exec'),
+            array($oLogger, $this->aAllConfigs['GAubry\Shell'])
+        );
         $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
@@ -205,7 +209,7 @@ class MkDirTest extends PadoccTestCase
         $oTask->setUp();
         $oTask->execute();
 
-        $sSshOptions = $GLOBALS['aConfig']['GAubry\Shell']['ssh_options'];
+        $sSshOptions = $this->aAllConfigs['GAubry\Shell']['ssh_options'];
         $this->assertEquals(array(
             "ssh $sSshOptions -T user@server /bin/bash <<EOF\n"
                 . 'mkdir -p "/path/to/destdir_releases/12345/subdir" && chmod 755 "/path/to/destdir_releases/12345/subdir"' . "\n"

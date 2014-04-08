@@ -149,7 +149,8 @@ return array(
         'bash_path' => '/bin/bash',
 
         // (string) List of '-o option' options used for all SSH and SCP commands:
-        'ssh_options' => '-o ServerAliveInterval=10 -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes',
+        'ssh_options' => '-o ServerAliveInterval=10 -o StrictHostKeyChecking=no -o ConnectTimeout=10 '
+                       . '-o BatchMode=yes -i ' . $aDirs['conf'] . '/padocc-ssh',
 
         // (int) Maximal number of command shells launched simultaneously (parallel processes):
         'parallelization_max_nb_processes' => 10,

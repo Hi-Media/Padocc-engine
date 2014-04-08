@@ -114,7 +114,7 @@ class ExternalPropertyTest extends PadoccTestCase
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();
         $oProperty->setValue($oPropertiesAdapter, array(
-            ExternalProperty::EXTERNAL_PROPERTY_PREFIX . '1' => 'value 1'
+            ExternalProperty::EXTERNAL_PROPERTY_PREFIX . 'my_property' => 'value 1'
         ));
         $this->oDIContainer->setPropertiesAdapter($oPropertiesAdapter);
 
@@ -123,11 +123,6 @@ class ExternalPropertyTest extends PadoccTestCase
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array('getSXE'), array(), '', false);
         $oMockProject->expects($this->any())->method('getSXE')
             ->will($this->returnValue(new \SimpleXMLElement($sXML)));
-
-        $oClass = new \ReflectionClass('\Himedia\Padocc\Task\Base\ExternalProperty');
-        $oProperty = $oClass->getProperty('iCounter');
-        $oProperty->setAccessible(true);
-        $oProperty->setValue(null, 0);
 
         $oTask = ExternalProperty::getNewInstance(
             array(
@@ -154,8 +149,8 @@ class ExternalPropertyTest extends PadoccTestCase
         $oProperty->setAccessible(true);
         $oPropertiesAdapter = $this->oDIContainer->getPropertiesAdapter();
         $oProperty->setValue($oPropertiesAdapter, array(
-            ExternalProperty::EXTERNAL_PROPERTY_PREFIX . '1' => 'value 1',
-            ExternalProperty::EXTERNAL_PROPERTY_PREFIX . '2' => 'other'
+            ExternalProperty::EXTERNAL_PROPERTY_PREFIX . 'my_property' => 'value 1',
+            ExternalProperty::EXTERNAL_PROPERTY_PREFIX . 'second' => 'other'
         ));
         $this->oDIContainer->setPropertiesAdapter($oPropertiesAdapter);
 
@@ -164,11 +159,6 @@ class ExternalPropertyTest extends PadoccTestCase
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array('getSXE'), array(), '', false);
         $oMockProject->expects($this->any())->method('getSXE')
             ->will($this->returnValue(new \SimpleXMLElement($sXML)));
-
-        $oClass = new \ReflectionClass('\Himedia\Padocc\Task\Base\ExternalProperty');
-        $oProperty = $oClass->getProperty('iCounter');
-        $oProperty->setAccessible(true);
-        $oProperty->setValue(null, 0);
 
         $oTask1 = ExternalProperty::getNewInstance(
             array(

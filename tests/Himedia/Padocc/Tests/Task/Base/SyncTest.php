@@ -38,7 +38,11 @@ class SyncTest extends PadoccTestCase
         $oLogger = new NullLogger();
 
         /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
-        $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
+        $oMockShell = $this->getMock(
+            '\GAubry\Shell\ShellAdapter',
+            array('exec'),
+            array($oLogger, $this->aAllConfigs['GAubry\Shell'])
+        );
 
         $oClass = new \ReflectionClass('\GAubry\Shell\ShellAdapter');
         $oProperty = $oClass->getProperty('_aFileStatus');
@@ -171,7 +175,8 @@ class SyncTest extends PadoccTestCase
             ->with($this->equalTo('mkdir -p "/path/to/destdir/srcdir"'))
             ->will($this->returnValue(array()));
         $oMockShell->expects($this->at(1))->method('exec')
-            ->with($this->equalTo($this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['vendor'] . '/geoffroy-aubry/shell/src/inc/parallelize.sh "-" "rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --exclude=\"to_exclude.*\" --exclude=\"config.php\" --stats -e ssh \"/path/to/srcdir/\" \"/path/to/destdir/srcdir\""'))
+            ->with($this->equalTo($this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['vendor']
+                    . '/geoffroy-aubry/shell/src/inc/parallelize.sh "-" "rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --exclude=\"to_exclude.*\" --exclude=\"config.php\" --stats -e \"ssh ' . $this->aAllConfigs['GAubry\Shell']['ssh_options'] . '\" \"/path/to/srcdir/\" \"/path/to/destdir/srcdir\""'))
             ->will($this->returnValue($aRawRsyncResult));
         $oMockShell->expects($this->exactly(2))->method('exec');
 
@@ -227,7 +232,7 @@ class SyncTest extends PadoccTestCase
             ->with($this->equalTo('mkdir -p "/path/to/destdir/srcdir"'))
             ->will($this->returnValue(array()));
         $oMockShell->expects($this->at(1))->method('exec')
-            ->with($this->equalTo($this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['vendor'] . '/geoffroy-aubry/shell/src/inc/parallelize.sh "-" "rsync -axz --delete --include=\"*.js\" --include=\"*.css\" --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e ssh \"/path/to/srcdir/\" \"/path/to/destdir/srcdir\""'))
+            ->with($this->equalTo($this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['vendor'] . '/geoffroy-aubry/shell/src/inc/parallelize.sh "-" "rsync -axz --delete --include=\"*.js\" --include=\"*.css\" --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e \"ssh ' . $this->aAllConfigs['GAubry\Shell']['ssh_options'] . '\" \"/path/to/srcdir/\" \"/path/to/destdir/srcdir\""'))
             ->will($this->returnValue($aRawRsyncResult));
         $oMockShell->expects($this->exactly(2))->method('exec');
 
@@ -283,7 +288,7 @@ class SyncTest extends PadoccTestCase
             ->with($this->equalTo('mkdir -p "/path/to/destdir/srcdir"'))
             ->will($this->returnValue(array()));
         $oMockShell->expects($this->at(1))->method('exec')
-            ->with($this->equalTo($this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['vendor'] . '/geoffroy-aubry/shell/src/inc/parallelize.sh "-" "rsync -axz --delete --include=\"*.js\" --include=\"*.css\" --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --exclude=\"to_exclude.*\" --exclude=\"config.php\" --stats -e ssh \"/path/to/srcdir/\" \"/path/to/destdir/srcdir\""'))
+            ->with($this->equalTo($this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['vendor'] . '/geoffroy-aubry/shell/src/inc/parallelize.sh "-" "rsync -axz --delete --include=\"*.js\" --include=\"*.css\" --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --exclude=\"to_exclude.*\" --exclude=\"config.php\" --stats -e \"ssh ' . $this->aAllConfigs['GAubry\Shell']['ssh_options'] . '\" \"/path/to/srcdir/\" \"/path/to/destdir/srcdir\""'))
             ->will($this->returnValue($aRawRsyncResult));
         $oMockShell->expects($this->exactly(2))->method('exec');
 
@@ -332,7 +337,7 @@ class SyncTest extends PadoccTestCase
         $oProperty->setProperty('execution_id', '12345');
 
         /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
-        $sSshOptions = $GLOBALS['aConfig']['GAubry\Shell']['ssh_options'];
+        $sSshOptions = $this->aAllConfigs['GAubry\Shell']['ssh_options'];
         $oMockShell = $this->oDIContainer->getShellAdapter();
         $oMockShell->expects($this->at(0))->method('exec')
             ->with($this->equalTo($this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['vendor'] . '/geoffroy-aubry/shell/src/inc/parallelize.sh "user@server" "ssh ' . $sSshOptions . ' -T [] /bin/bash <<EOF' . "\n"
@@ -340,7 +345,7 @@ class SyncTest extends PadoccTestCase
                 . 'EOF' . "\n" . '"'))
             ->will($this->returnValue($aMkdirExecResult));
         $oMockShell->expects($this->at(1))->method('exec')
-            ->with($this->equalTo($this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['vendor'] . '/geoffroy-aubry/shell/src/inc/parallelize.sh "user@server" "rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e ssh \"/path/to/srcdir/\" \"[]:/path/to/destdir_releases/12345/srcdir\""'))
+            ->with($this->equalTo($this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['vendor'] . '/geoffroy-aubry/shell/src/inc/parallelize.sh "user@server" "rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e \"ssh ' . $this->aAllConfigs['GAubry\Shell']['ssh_options'] . '\" \"/path/to/srcdir/\" \"[]:/path/to/destdir_releases/12345/srcdir\""'))
             ->will($this->returnValue($aRawRsyncResult));
         $oMockShell->expects($this->exactly(2))->method('exec');
 

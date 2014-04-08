@@ -62,12 +62,12 @@ class Project extends WithProperties
      * Retourne une instance SimpleXMLElement du projet spécifié.
      *
      * @param string $sXmlProject XML project path, or XML data if $bIsURL is false
-     * @param bool $bIsURL true if $sXmlProject is an XML project path, else false for XML data
      * @throws \UnexpectedValueException si XML du projet mal formaté
      * @return \SimpleXMLElement instance du projet spécifié
      */
-    public static function getSXEProject ($sXmlProject, $bIsURL)
+    public static function getSXEProject ($sXmlProject)
     {
+        $bIsURL = (substr($sXmlProject, 0, 5) != '<?xml');
         try {
             $oSXE = new \SimpleXMLElement($sXmlProject, null, $bIsURL);
         } catch (\Exception $oException) {

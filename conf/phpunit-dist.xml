@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!-- strict="false" because of new functionality of 4.0.0:
+    A test will now fail in strict mode when it uses the @covers annotation
+    and code that is not expected to be covered is executed
+-->
 <phpunit
     backupGlobals="false"
     backupStaticAttributes="false"
@@ -10,7 +14,7 @@
     syntaxCheck="true"
     processIsolation="false"
     colors="false"
-    strict="true"
+    strict="false"
     verbose="true"
     stopOnFailure="false"
     timeoutForSmallTests="20"
