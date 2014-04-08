@@ -67,6 +67,27 @@ class Padocc {
         return $aResult;
     }
 
+    public function getLatestDeployments ($sProjectName, $sEnvName)
+    {
+        $oDB = PDOAdapter::getInstance($this->aConfig['Himedia\Padocc']['db']);
+        $oDeploymentMapper = new DeploymentMapper($oDB);
+        $aFilter = array(
+            array(
+                array('status' => DeploymentStatus::SUCCESSFUL),
+                array('status' => DeploymentStatus::WARNING),
+                array('status' => DeploymentStatus::FAILED)
+            )
+        );
+        if (! empty($sProjectName)) {
+            $aFilter[] = array(array('project_name' => $sProjectName));
+        }
+        if (! empty($sEnvName)) {
+            $aFilter[] = array(array('env_name' => $sEnvName));
+        }
+        $aResult = $oDeploymentMapper->select($aFilter, array('exec_id ASC'));
+        return $aResult;
+    }
+
     /**
      * Exécute le déploiement sans supervisor et sans trace en DB.
      *

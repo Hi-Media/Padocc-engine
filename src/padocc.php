@@ -47,9 +47,11 @@ root# src/padocc.php --deploy --xml=/home/gaubry/dw-payment.xml --env=dev -p ref
 /*
  * Scenarios :
  * src/padocc.php --action=enqueue --xml=/home/gaubry/dw-payment.xml --env=preprod -p core-ref=stable --param=apps-ref=stable
- * src/padocc.php --action=deploy --xml=/home/gaubry/dw-payment.xml --env=preprod -p core-ref=stable --param=apps-ref=stable
+ * src/padocc.php --action=deploy  --xml=/home/gaubry/dw-payment.xml --env=preprod -p core-ref=stable --param=apps-ref=stable
  * src/padocc.php --action=get-info-log --exec-id=20140408125738_84476
  * src/padocc.php --action=get-error-log --exec-id=20140408125738_84476
+ * src/padocc.php --action=get-queue
+ * src/padocc.php --action=get-latest-deployments --project='DW Payment' --env=preprod
  */
 
 namespace Himedia\Padocc;
@@ -64,13 +66,14 @@ require(__DIR__ . '/inc/bootstrap.php');
 // TODO fusionner get-info-log et get-error-log ?
 
 // Set options:
-$sActions = 'deploy, deploy-wos, enqueue, get-env, get-info-log, get-error-log, get-queue';
+$sActions = 'deploy, deploy-wos, enqueue, get-env, get-info-log, get-error-log, get-queue, get-latest-deployments';
 $oGetopt = new GetOptionKit();
-$oGetopt->add('action:', "Choose between: $sActions");
-$oGetopt->add('env:', 'Project\'s environment to deploy');
+$oGetopt->add('action:',  "Choose between: $sActions");
+$oGetopt->add('env:',     'Project\'s environment to deploy');
+$oGetopt->add('project:', 'Project\'s name');
 $oGetopt->add('exec-id:', 'Execution Id');
 $oGetopt->add('p|param+', 'External parameters');
-$oGetopt->add('xml:', 'XML project configuration');
+$oGetopt->add('xml:',     'XML project configuration');
 //$oGetopt->printOptions();
 
 // Extract command line parameters
@@ -78,6 +81,7 @@ $aCLIParameters    = $oGetopt->parse($argv);
 $sAction           = (isset($aCLIParameters['action'])  ? $aCLIParameters['action']->value  : '');
 $sXmlProjectPath   = (isset($aCLIParameters['xml'])     ? $aCLIParameters['xml']->value     : '');
 $aRawExtParameters = (isset($aCLIParameters['param'])   ? $aCLIParameters['param']->value   : array());
+$sProjectName      = (isset($aCLIParameters['project']) ? $aCLIParameters['project']->value : '');
 $sEnvName          = (isset($aCLIParameters['env'])     ? $aCLIParameters['env']->value     : '');
 $sExecId           = (isset($aCLIParameters['exec-id']) ? $aCLIParameters['exec-id']->value : '');
 $aExtParameters = array();
@@ -111,6 +115,11 @@ switch ($sAction) {
 
     case 'get-queue':
         $sContent = $oPadocc->getQueueAndRunning();
+        var_dump($sContent);
+        break;
+
+    case 'get-latest-deployments':
+        $sContent = $oPadocc->getLatestDeployments($sProjectName, $sEnvName);
         var_dump($sContent);
         break;
 
