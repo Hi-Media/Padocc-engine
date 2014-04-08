@@ -61,6 +61,28 @@ class Padocc {
         $oDeployment->run($sXmlProjectPath, $sEnvName, $sExecutionID, $aExternalProperties, $sRollbackID);
     }
 
+    public function enqueue ($sXmlProjectPath, $sEnvName, array $aExternalProperties)
+    {
+        $oDB = PDOAdapter::getInstance($this->aConfig['Himedia\Padocc']['db']);
+        $oDeploymentMapper = new DeploymentMapper($oDB);
+        $sExecId = date('YmdHis') . sprintf('_%05d', rand(0, 99999));
+        $oProject = Project::getSXEProject($sXmlProjectPath);
+        $sProjectName = (string)$oProject['name'];
+        $aParameters = array(
+            'exec_id' => $sExecId,
+            'xml_path' => $sXmlProjectPath,
+            'project_name' => $sProjectName,
+            'env_name' => $sEnvName,
+            'external_properties' => json_encode($aExternalProperties),
+            'status' => DeploymentStatus::QUEUED,
+            'nb_warnings' => 0,
+            'date_queue' => date('Y-m-d H:i:s'),
+            'is_rollbackable' => 0
+        );
+        $oDeploymentMapper->insert($aParameters);
+        return $sExecId;
+    }
+
     /**
      * Exécute le déploiement avec supervisor et avec trace en DB.
      *
@@ -71,6 +93,7 @@ class Padocc {
      * @param array $aExternalProperties tableau associatif nom/valeur des propriétés externes.
      * @param string $sRollbackID identifiant de déploiement sur lequel effectuer un rollback,
      * par exemple '20111026142342_07502'
+     * @return string $sExecutionID
      * @throws \RuntimeException if Supervisor log result are unexpected.
      */
     public function run ($sXmlProjectPath, $sEnvName, $sExecutionID, array $aExternalProperties, $sRollbackID)
@@ -89,7 +112,7 @@ class Padocc {
             'status' => DeploymentStatus::IN_PROGRESS,
             'nb_warnings' => 0,
             'date_start' => date('Y-m-d H:i:s'),
-            'is_rollbackable' => 0,
+            'is_rollbackable' => 0
         );
         $oDeploymentMapper->insert($aParameters);
 
@@ -131,8 +154,9 @@ class Padocc {
             'exec_id' => $sExecId,
             'status' => $sStatus,
             'nb_warnings' => $iNbWarnings,
-            'date_end' => date('Y-m-d H:i:s'),
+            'date_end' => date('Y-m-d H:i:s')
         );
         $oDeploymentMapper->update($aParameters);
+        return $sExecId;
     }
 }

@@ -56,7 +56,7 @@ require(__DIR__ . '/inc/bootstrap.php');
 $oGetopt = new GetOptionKit();
 $oGetopt->add('xml:', 'XML project configuration');
 $oGetopt->add('env:', 'Project\'s environment to deploy');
-$oGetopt->add('action:', 'Choose between: deploy, get-env');
+$oGetopt->add('action:', 'Choose between: deploy, deploy-wos, enqueue, get-env');
 $oGetopt->add('p|param+', 'External parameters');
 //$oGetopt->printOptions();
 
@@ -89,6 +89,9 @@ if ($aCLIParameters['action']->value == 'get-env') {
 
 } elseif ($aCLIParameters['action']->value == 'deploy-wos') {
     $oPadocc->runWOSupervisor($sXmlProjectPath, $sEnvName, $sExecutionID, $aExtParameters, $sRollbackID);
+
+} elseif ($aCLIParameters['action']->value == 'enqueue') {
+    $oPadocc->enqueue($sXmlProjectPath, $sEnvName, $aExtParameters);
 
 } else {
     $sMsg = "Must choose action between following: deploy, deploy-wos, get-env!\n";

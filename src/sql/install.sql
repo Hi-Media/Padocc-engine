@@ -12,7 +12,7 @@ CREATE TABLE deployments (
     external_properties text NOT NULL,
     status varchar(255) NOT NULL CHECK (status IN ('queued', 'in progress', 'failed', 'warning', 'successful')),
     nb_warnings int NOT NULL,
-    date_insert timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    date_queue timestamp NULL,
     date_start timestamp NULL,
     date_end timestamp NULL,
     is_rollbackable tinyint(1) NOT NULL
