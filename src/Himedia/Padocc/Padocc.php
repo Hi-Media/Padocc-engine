@@ -43,6 +43,16 @@ class Padocc {
         return $sContent;
     }
 
+    public function getErrorLog ($sExecId)
+    {
+        $sErrorLogPath = sprintf($this->aConfig['Himedia\Padocc']['error_log_path_pattern'], $sExecId);
+        if (! file_exists($sErrorLogPath)) {
+            throw new \RuntimeException("File not found: '$sErrorLogPath'!");
+        }
+        $sContent = file_get_contents($sErrorLogPath);
+        return $sContent;
+    }
+
     /**
      * Exécute le déploiement sans supervisor et sans trace en DB.
      *
