@@ -340,12 +340,12 @@ class SyncTest extends PadoccTestCase
         $sSshOptions = $this->aAllConfigs['GAubry\Shell']['ssh_options'];
         $oMockShell = $this->oDIContainer->getShellAdapter();
         $oMockShell->expects($this->at(0))->method('exec')
-            ->with($this->equalTo($this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['vendor'] . '/geoffroy-aubry/shell/src/inc/parallelize.sh "user@server" "ssh ' . $sSshOptions . ' -T [] /bin/bash <<EOF' . "\n"
+            ->with($this->equalTo($this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['vendor'] . '/geoffroy-aubry/shell/src/inc/parallelize.sh "user@server" "ssh ' . $sSshOptions . ' -T ' . $this->aConfig['default_remote_shell_user'] . '@[] /bin/bash <<EOF' . "\n"
                 . 'mkdir -p \"/path/to/destdir_releases/12345/srcdir\"' . "\n"
                 . 'EOF' . "\n" . '"'))
             ->will($this->returnValue($aMkdirExecResult));
         $oMockShell->expects($this->at(1))->method('exec')
-            ->with($this->equalTo($this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['vendor'] . '/geoffroy-aubry/shell/src/inc/parallelize.sh "user@server" "rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e \"ssh ' . $this->aAllConfigs['GAubry\Shell']['ssh_options'] . '\" \"/path/to/srcdir/\" \"[]:/path/to/destdir_releases/12345/srcdir\""'))
+            ->with($this->equalTo($this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['vendor'] . '/geoffroy-aubry/shell/src/inc/parallelize.sh "user@server" "rsync -axz --delete --exclude=\".bzr/\" --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\" --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e \"ssh ' . $this->aAllConfigs['GAubry\Shell']['ssh_options'] . '\" \"/path/to/srcdir/\" \"' . $this->aConfig['default_remote_shell_user'] . '@[]:/path/to/destdir_releases/12345/srcdir\""'))
             ->will($this->returnValue($aRawRsyncResult));
         $oMockShell->expects($this->exactly(2))->method('exec');
 

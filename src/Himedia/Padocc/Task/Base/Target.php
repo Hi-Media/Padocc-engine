@@ -85,7 +85,7 @@ class Target extends WithProperties
      * )
      *
      *
-     * @param string $sXmlProjectConf chemin de configuration XML du projet à analyser
+     * @param string $sXmlProject XML project path or XML data
      * @return array la liste des environnements et de leurs propriétés externes pour le projet spécifié.
      * @throws \UnexpectedValueException si fichier XML du projet non trouvé
      * @throws \UnexpectedValueException si fichier XML du projet mal formaté
@@ -94,9 +94,9 @@ class Target extends WithProperties
      * @throws \UnexpectedValueException si noeud <target /> non trouvé ou non unique mais référencé par un
      * 		noeud <call />.
      */
-    public static function getAvailableEnvsList ($sXmlProjectConf)
+    public static function getAvailableEnvsList ($sXmlProject)
     {
-        $oSXEProject = Project::getSXEProject($sXmlProjectConf, true);
+        $oSXEProject = Project::getSXEProject($sXmlProject);
         $aTargets = $oSXEProject->xpath("//env");
         if (count($aTargets) === 0) {
             throw new \UnexpectedValueException("No environment found in specified project!");

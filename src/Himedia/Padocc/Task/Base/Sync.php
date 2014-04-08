@@ -106,8 +106,7 @@ class Sync extends Task
                           ? array()
                           : explode(' ', $this->aAttValues['exclude']));
 
-        list($bIsDestRemote, $sDestServer, $sDestRawPath) =
-            $this->oShell->isRemotePath($this->aAttValues['destdir']);
+        list($bIsDestRemote, $sDestServer, $sDestRawPath) = $this->oShell->isRemotePath($this->aAttValues['destdir']);
         $sDestPath = ($bIsDestRemote ? '[]:' . $sDestRawPath : $sDestRawPath);
         foreach ($this->processPath($sDestPath) as $sDestRealPath) {
             $aResults = $this->oShell->sync(

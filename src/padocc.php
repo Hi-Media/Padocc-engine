@@ -64,6 +64,8 @@ require(__DIR__ . '/inc/bootstrap.php');
 
 // TODO rename execId en deployId ?
 // TODO fusionner get-info-log et get-error-log ?
+// TODO En ajoutant le supervisor au run(), les lignes [DEBUG] sont filtrées, mais seulement la 1re de chaque lot,
+// c'eat-à-dire celle contenant le tag.
 
 // Set options:
 $sActions = 'deploy, deploy-wos, enqueue, get-env, get-info-log, get-error-log, get-queue, get-latest-deployments';

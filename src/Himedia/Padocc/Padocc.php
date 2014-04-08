@@ -121,7 +121,7 @@ class Padocc {
         $oDB = PDOAdapter::getInstance($this->aConfig['Himedia\Padocc']['db']);
         $oDeploymentMapper = new DeploymentMapper($oDB);
         $sExecId = date('YmdHis') . sprintf('_%05d', rand(0, 99999));
-        $oProject = Project::getSXEProject($sXmlProjectPath, true);
+        $oProject = Project::getSXEProject($sXmlProjectPath);
         $sProjectName = (string)$oProject['name'];
         $aParameters = array(
             'exec_id' => $sExecId,
@@ -156,7 +156,7 @@ class Padocc {
         $oDB = PDOAdapter::getInstance($this->aConfig['Himedia\Padocc']['db']);
         $oDeploymentMapper = new DeploymentMapper($oDB);
         $sExecId = date('YmdHis') . sprintf('_%05d', rand(0, 99999));
-        $oProject = Project::getSXEProject($sXmlProjectPath, true);
+        $oProject = Project::getSXEProject($sXmlProjectPath);
         $sProjectName = (string)$oProject['name'];
         $aParameters = array(
             'exec_id' => $sExecId,
