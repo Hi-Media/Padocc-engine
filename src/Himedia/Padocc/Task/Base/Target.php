@@ -128,8 +128,7 @@ class Target extends WithProperties
      * @param Project $oProject Super tâche projet.
      * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
      */
-    public function __construct (\SimpleXMLElement $oTask, Project $oProject,
-        DIContainer $oDIContainer)
+    public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
     {
         parent::__construct($oTask, $oProject, $oDIContainer);
         $this->aAttrProperties = array_merge(

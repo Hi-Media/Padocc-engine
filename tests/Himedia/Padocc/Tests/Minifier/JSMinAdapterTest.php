@@ -32,7 +32,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @param string $sCmd commande Shell qui aurait dûe être exécutée.
      * @see $aShellExecCmds
      */
-   public function shellExecCallback ($sCmd)
+    public function shellExecCallback ($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
     }
@@ -71,7 +71,7 @@ class JSminAdapterTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getContent
      */
-    public function testGetContent_WithoutFiles ()
+    public function testGetContentWithoutFiles ()
     {
         $oJSminAdapter = new JSMinAdapter(
             $this->aConfig['jsmin_path'],
@@ -89,7 +89,7 @@ class JSminAdapterTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getContent
      */
-    public function testGetContent_throwExceptionIfNotFound ()
+    public function testGetContentThrowExceptionIfNotFound ()
     {
         $oJSminAdapter = new JSMinAdapter(
             $this->aConfig['jsmin_path'],
@@ -107,7 +107,7 @@ class JSminAdapterTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getContent
      */
-    public function testGetContent_With1File ()
+    public function testGetContentWith1File ()
     {
         $oJSminAdapter = new JSMinAdapter(
             $this->aConfig['jsmin_path'],
@@ -128,7 +128,7 @@ class JSminAdapterTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getContent
      */
-    public function testGetContent_WithFiles ()
+    public function testGetContentWithFiles ()
     {
         $oJSminAdapter = new JSMinAdapter(
             $this->aConfig['jsmin_path'],
@@ -149,7 +149,7 @@ class JSminAdapterTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getContent
      */
-    public function testGetContent_WithFileWithJoker ()
+    public function testGetContentWithFileWithJoker ()
     {
         $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
@@ -160,7 +160,10 @@ class JSminAdapterTest extends PadoccTestCase
         $method = $class->getMethod('getContent');
         $method->setAccessible(true);
 
-        $sResult = $method->invokeArgs($oJSminAdapter, array(array($this->aConfig['dir']['tests'] . '/resources/minifier/*.txt')));
+        $sResult = $method->invokeArgs(
+            $oJSminAdapter,
+            array(array($this->aConfig['dir']['tests'] . '/resources/minifier/*.txt'))
+        );
         $this->assertEquals("a1\na2b1\nb2", $sResult);
     }
 
@@ -170,7 +173,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getHeader
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getLargestCommonPrefix
      */
-    public function testMinifyJS_With1File ()
+    public function testMinifyJSWith1File ()
     {
         $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
@@ -195,7 +198,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getHeader
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getLargestCommonPrefix
      */
-    public function testMinifyJS_WithFiles ()
+    public function testMinifyJSWithFiles ()
     {
         $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
@@ -223,7 +226,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getHeader
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getLargestCommonPrefix
      */
-    public function testMinifyJS_WithJoker ()
+    public function testMinifyJSWithJoker ()
     {
         $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
@@ -248,7 +251,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getHeader
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getLargestCommonPrefix
      */
-    public function testMinifyCSS_With1File ()
+    public function testMinifyCSSWith1File ()
     {
         $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
@@ -269,7 +272,7 @@ class JSminAdapterTest extends PadoccTestCase
         $this->assertContains("/tests/resources/minifier/a.css */", $sContent);
         $this->assertContains(
             "\nbody { padding: 0; background-color:#ffffff;"
-                . " background:url('http://s0.twenga.com/background.gif') repeat-y 0% 0 fixed;} ",
+            . " background:url('http://s0.twenga.com/background.gif') repeat-y 0% 0 fixed;} ",
             $sContent
         );
     }
@@ -278,7 +281,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::__construct
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::minify
      */
-    public function testMinify_throwExceptionWhenNoSrc ()
+    public function testMinifyThrowExceptionWhenNoSrc ()
     {
         $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
@@ -293,7 +296,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::__construct
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::minify
      */
-    public function testMinify_throwExceptionWhenDifferentSrcExtensions ()
+    public function testMinifyThrowExceptionWhenDifferentSrcExtensions ()
     {
         $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
@@ -308,7 +311,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::__construct
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::minify
      */
-    public function testMinify_throwExceptionWhenNoCompatibleDest ()
+    public function testMinifyThrowExceptionWhenNoCompatibleDest ()
     {
         $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
@@ -323,7 +326,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::__construct
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::minify
      */
-    public function testMinify_throwExceptionWhenNeitherJSNorCSS ()
+    public function testMinifyThrowExceptionWhenNeitherJSNorCSS ()
     {
         $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
@@ -338,7 +341,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::__construct
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::minify
      */
-    public function testMinify_WithJS ()
+    public function testMinifyWithJS ()
     {
         $oMockJSminAdapter = $this->getMock(
             '\Himedia\Padocc\Minifier\JSMinAdapter',
@@ -361,7 +364,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::__construct
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::minify
      */
-    public function testMinify_WithCSS ()
+    public function testMinifyWithCSS ()
     {
         $oMockJSminAdapter = $this->getMock(
             '\Himedia\Padocc\Minifier\JSMinAdapter',
@@ -382,7 +385,7 @@ class JSminAdapterTest extends PadoccTestCase
 
     /**
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getLargestCommonPrefix
-     * @dataProvider dataProvider_testGetLargestCommonPrefix
+     * @dataProvider dataProviderTestGetLargestCommonPrefix
      * @param array $aPaths liste de chaînes à comparer
      * @param string $sExpected le plus long préfixe commun aux chaînes fournies.
      */
@@ -404,7 +407,7 @@ class JSminAdapterTest extends PadoccTestCase
     /**
      * Data provider pour testGetLargestCommonPrefix()
      */
-    public static function dataProvider_testGetLargestCommonPrefix ()
+    public static function dataProviderTestGetLargestCommonPrefix ()
     {
         return array(
             array(array(''), ''),

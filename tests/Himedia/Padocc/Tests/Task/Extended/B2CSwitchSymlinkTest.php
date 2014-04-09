@@ -82,7 +82,8 @@ class B2CSwitchSymlinkTest extends PadoccTestCase
 
         /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
-        $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
+        $oMockShell->expects($this->any())
+            ->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
         $oProperties = new PropertiesAdapter($oMockShell, $this->aConfig);
@@ -113,7 +114,7 @@ class B2CSwitchSymlinkTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task\Extended\B2CSwitchSymlink::setCluster
      */
-    public function testSetCluster_ThrowException ()
+    public function testSetClusterThrowException ()
     {
         /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockShell = $this->oDIContainer->getShellAdapter();
@@ -131,9 +132,7 @@ class B2CSwitchSymlinkTest extends PadoccTestCase
             ->will($this->returnValue('-'));
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTask = B2CSwitchSymlink::getNewInstance(
-            array(), $this->oMockProject, $this->oDIContainer
-        );
+        $oTask = B2CSwitchSymlink::getNewInstance(array(), $this->oMockProject, $this->oDIContainer);
 
         $oClass = new \ReflectionClass($oTask);
         $oMethod = $oClass->getMethod('setCluster');
@@ -149,7 +148,7 @@ class B2CSwitchSymlinkTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task\Extended\B2CSwitchSymlink::setCluster
      */
-    public function testSetCluster_WithWarning ()
+    public function testSetClusterWithWarning ()
     {
         /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockShell = $this->oDIContainer->getShellAdapter();
@@ -167,9 +166,7 @@ class B2CSwitchSymlinkTest extends PadoccTestCase
             ->will($this->returnValue('-'));
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTask = B2CSwitchSymlink::getNewInstance(
-            array(), $this->oMockProject, $this->oDIContainer
-        );
+        $oTask = B2CSwitchSymlink::getNewInstance(array(), $this->oMockProject, $this->oDIContainer);
 
         $oClass = new \ReflectionClass($oTask);
         $oMethod = $oClass->getMethod('setCluster');

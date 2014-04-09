@@ -64,12 +64,11 @@ class Copy extends Task
         // Suppression de l'éventuel slash terminal :
         $this->aAttValues['src'] = preg_replace('#/$#', '', $this->aAttValues['src']);
 
-        if (
-                preg_match('/\*|\?/', $this->aAttValues['src']) === 0
-                && $this->oShell->getPathStatus($this->aAttValues['src']) === PathStatus::STATUS_DIR
+        if (preg_match('/\*|\?/', $this->aAttValues['src']) === 0
+            && $this->oShell->getPathStatus($this->aAttValues['src']) === PathStatus::STATUS_DIR
         ) {
-                $this->aAttValues['destdir'] .= '/' . substr(strrchr($this->aAttValues['src'], '/'), 1);
-                $this->aAttValues['src'] .= '/*';
+            $this->aAttValues['destdir'] .= '/' . substr(strrchr($this->aAttValues['src'], '/'), 1);
+            $this->aAttValues['src'] .= '/*';
         }
     }
 

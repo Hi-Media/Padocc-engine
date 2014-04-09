@@ -44,7 +44,7 @@ class LinkTest extends PadoccTestCase
      * @param string $sCmd commande Shell qui aurait dûe être exécutée.
      * @see $aShellExecCmds
      */
-   public function shellExecCallback ($sCmd)
+    public function shellExecCallback ($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
     }
@@ -63,7 +63,8 @@ class LinkTest extends PadoccTestCase
             array('exec'),
             array($oLogger, $this->aAllConfigs['GAubry\Shell'])
         );
-        $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
+        $oMockShell->expects($this->any())
+            ->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
         $oClass = new \ReflectionClass('\GAubry\Shell\ShellAdapter');
@@ -105,7 +106,7 @@ class LinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Link::__construct
      * @covers \Himedia\Padocc\Task\Base\Link::check
      */
-    public function testCheck_WithoutAttrServerThrowExceptionIfServersNotEquals1 ()
+    public function testCheckWithoutAttrServerThrowExceptionIfServersNotEquals1 ()
     {
         $oTask = Link::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
@@ -122,7 +123,7 @@ class LinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Link::__construct
      * @covers \Himedia\Padocc\Task\Base\Link::check
      */
-    public function testCheck_WithoutAttrServerThrowExceptionIfServersNotEquals2 ()
+    public function testCheckWithoutAttrServerThrowExceptionIfServersNotEquals2 ()
     {
         $oTask = Link::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
@@ -139,7 +140,7 @@ class LinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Link::__construct
      * @covers \Himedia\Padocc\Task\Base\Link::check
      */
-    public function testCheck_WithoutAttrServerThrowExceptionIfServersNotEquals3 ()
+    public function testCheckWithoutAttrServerThrowExceptionIfServersNotEquals3 ()
     {
         $oTask = Link::getNewInstance(array(
             'src' => '/path/to/link',
@@ -156,7 +157,7 @@ class LinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Link::__construct
      * @covers \Himedia\Padocc\Task\Base\Link::check
      */
-    public function testCheck_WithAttrServerThrowExceptionIfServersNotEquals1 ()
+    public function testCheckWithAttrServerThrowExceptionIfServersNotEquals1 ()
     {
         $oTask = Link::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
@@ -174,7 +175,7 @@ class LinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Link::__construct
      * @covers \Himedia\Padocc\Task\Base\Link::check
      */
-    public function testCheck_WithAttrServerThrowExceptionIfServersNotEquals2 ()
+    public function testCheckWithAttrServerThrowExceptionIfServersNotEquals2 ()
     {
         $oTask = Link::getNewInstance(array(
             'src' => '/path/to/link',
@@ -192,7 +193,7 @@ class LinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Link::__construct
      * @covers \Himedia\Padocc\Task\Base\Link::check
      */
-    public function testCheck_WithAttrServerThrowExceptionIfServersNotEquals3 ()
+    public function testCheckWithAttrServerThrowExceptionIfServersNotEquals3 ()
     {
         $oTask = Link::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
@@ -210,7 +211,7 @@ class LinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Link::__construct
      * @covers \Himedia\Padocc\Task\Base\Link::check
      */
-    public function testCheck_WithAttrServerThrowExceptionIfTwoOtherServers ()
+    public function testCheckWithAttrServerThrowExceptionIfTwoOtherServers ()
     {
         $oTask = Link::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
@@ -220,7 +221,7 @@ class LinkTest extends PadoccTestCase
         $this->setExpectedException(
             'DomainException',
             'Multiple server declaration! Server=user@server2 '
-                . 'Src=user@server1:/path/to/link Target=user@server1:/path/to/destdir'
+            . 'Src=user@server1:/path/to/link Target=user@server1:/path/to/destdir'
         );
         $oTask->setUp();
     }
@@ -229,9 +230,13 @@ class LinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Link::__construct
      * @covers \Himedia\Padocc\Task\Base\Link::check
      */
-    public function testCheck_WithoutAttrServerAndServers ()
+    public function testCheckWithoutAttrServerAndServers ()
     {
-        $oTask = Link::getNewInstance(array('src' => '/path/to/link', 'target' => '/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
+        $oTask = Link::getNewInstance(
+            array('src' => '/path/to/link', 'target' => '/path/to/destdir'),
+            $this->oMockProject,
+            $this->oDIContainer
+        );
         $oTask->setUp();
         $this->assertAttributeEquals(array(
             'src' => '/path/to/link',
@@ -244,7 +249,7 @@ class LinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Link::__construct
      * @covers \Himedia\Padocc\Task\Base\Link::check
      */
-    public function testCheck_WithAttrServer ()
+    public function testCheckWithAttrServer ()
     {
         $oTask = Link::getNewInstance(array(
             'src' => '/path/to/link',
@@ -263,9 +268,13 @@ class LinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Link::__construct
      * @covers \Himedia\Padocc\Task\Base\Link::check
      */
-    public function testCheck_WithoutAttrServerButServers ()
+    public function testCheckWithoutAttrServerButServers ()
     {
-        $oTask = Link::getNewInstance(array('src' => 'user@server:/path/to/link', 'target' => 'user@server:/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
+        $oTask = Link::getNewInstance(
+            array('src' => 'user@server:/path/to/link', 'target' => 'user@server:/path/to/destdir'),
+            $this->oMockProject,
+            $this->oDIContainer
+        );
         $oTask->setUp();
         $this->assertAttributeEquals(array(
             'src' => 'user@server:/path/to/link',
@@ -280,7 +289,7 @@ class LinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Link::centralExecute
      * @covers \Himedia\Padocc\Task\Base\Link::postExecute
      */
-    public function testExecute_WithoutAttrServer ()
+    public function testExecuteWithoutAttrServer ()
     {
         /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProperties = $this->getMock(
@@ -318,7 +327,7 @@ class LinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Link::centralExecute
      * @covers \Himedia\Padocc\Task\Base\Link::postExecute
      */
-    public function testExecute_WithoutAttrServerAndLocal ()
+    public function testExecuteWithoutAttrServerAndLocal ()
     {
         /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProperties = $this->getMock(
@@ -356,7 +365,7 @@ class LinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Link::centralExecute
      * @covers \Himedia\Padocc\Task\Base\Link::postExecute
      */
-    public function testExecute_WithoutAttrServerThrowExceptionIfBadSrc ()
+    public function testExecuteWithoutAttrServerThrowExceptionIfBadSrc ()
     {
         $oTask = Link::getNewInstance(array(
             'src' => 'user@server:/path/to/srcdir',
@@ -376,7 +385,7 @@ class LinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Link::centralExecute
      * @covers \Himedia\Padocc\Task\Base\Link::postExecute
      */
-    public function testExecute_WithAttrServer ()
+    public function testExecuteWithAttrServer ()
     {
         /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProperties = $this->getMock(
@@ -412,7 +421,7 @@ class LinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Link::centralExecute
      * @covers \Himedia\Padocc\Task\Base\Link::postExecute
      */
-    public function testExecute_WithAttrServerAndSymlink ()
+    public function testExecuteWithAttrServerAndSymlink ()
     {
         /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProperties = $this->getMock(
@@ -463,7 +472,7 @@ class LinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Link::centralExecute
      * @covers \Himedia\Padocc\Task\Base\Link::postExecute
      */
-    public function testExecute_WithoutAttrServerWithSymlink ()
+    public function testExecuteWithoutAttrServerWithSymlink ()
     {
         /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProperties = $this->getMock(

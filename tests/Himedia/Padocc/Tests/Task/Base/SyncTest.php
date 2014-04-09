@@ -80,9 +80,13 @@ class SyncTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Sync::__construct
      * @covers \Himedia\Padocc\Task\Base\Sync::check
      */
-    public function testCheck_WithSrcFile ()
+    public function testCheckWithSrcFile ()
     {
-        $oTaskCopy = Sync::getNewInstance(array('src' => '/path/to/srcfile', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
+        $oTaskCopy = Sync::getNewInstance(
+            array('src' => '/path/to/srcfile', 'destdir' => '/path/to/destdir'),
+            $this->oMockProject,
+            $this->oDIContainer
+        );
         $oTaskCopy->setUp();
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir',
@@ -94,9 +98,13 @@ class SyncTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Sync::__construct
      * @covers \Himedia\Padocc\Task\Base\Sync::check
      */
-    public function testCheck_WithSrcDirWithoutLeadingSlash ()
+    public function testCheckWithSrcDirWithoutLeadingSlash ()
     {
-        $oTaskCopy = Sync::getNewInstance(array('src' => '/path/to/srcdir', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
+        $oTaskCopy = Sync::getNewInstance(
+            array('src' => '/path/to/srcdir', 'destdir' => '/path/to/destdir'),
+            $this->oMockProject,
+            $this->oDIContainer
+        );
         $oTaskCopy->setUp();
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir/srcdir',
@@ -108,9 +116,13 @@ class SyncTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Sync::__construct
      * @covers \Himedia\Padocc\Task\Base\Sync::check
      */
-    public function testCheck_WithSrcDirWithLeadingSlash ()
+    public function testCheckWithSrcDirWithLeadingSlash ()
     {
-        $oTaskCopy = Sync::getNewInstance(array('src' => '/path/to/srcdir/', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
+        $oTaskCopy = Sync::getNewInstance(
+            array('src' => '/path/to/srcdir/', 'destdir' => '/path/to/destdir'),
+            $this->oMockProject,
+            $this->oDIContainer
+        );
         $oTaskCopy->setUp();
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir',
@@ -122,9 +134,13 @@ class SyncTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Sync::__construct
      * @covers \Himedia\Padocc\Task\Base\Sync::check
      */
-    public function testCheck_WithSrcDirWithLeadingPattern ()
+    public function testCheckWithSrcDirWithLeadingPattern ()
     {
-        $oTaskCopy = Sync::getNewInstance(array('src' => '/path/to/srcdir/*', 'destdir' => '/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
+        $oTaskCopy = Sync::getNewInstance(
+            array('src' => '/path/to/srcdir/*', 'destdir' => '/path/to/destdir'),
+            $this->oMockProject,
+            $this->oDIContainer
+        );
         $oTaskCopy->setUp();
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir',
@@ -138,7 +154,7 @@ class SyncTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Sync::centralExecute
      * @covers \Himedia\Padocc\Task\Base\Sync::postExecute
      */
-    public function testExecute_WithSrcDir ()
+    public function testExecuteWithSrcDir ()
     {
         $aRawRsyncResult = array('---[-]-->0|0s', '[CMD]', '...', '[OUT]',
             'Number of files: 1774',
@@ -195,7 +211,7 @@ class SyncTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Sync::centralExecute
      * @covers \Himedia\Padocc\Task\Base\Sync::postExecute
      */
-    public function testExecute_WithSrcDirAndInclude ()
+    public function testExecuteWithSrcDirAndInclude ()
     {
         $aRawRsyncResult = array('---[-]-->0|0s', '[CMD]', '...', '[OUT]',
             'Number of files: 1774',
@@ -251,7 +267,7 @@ class SyncTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Sync::centralExecute
      * @covers \Himedia\Padocc\Task\Base\Sync::postExecute
      */
-    public function testExecute_WithSrcDirAndIncludeAndExclude ()
+    public function testExecuteWithSrcDirAndIncludeAndExclude ()
     {
         $aRawRsyncResult = array('---[-]-->0|0s', '[CMD]', '...', '[OUT]',
             'Number of files: 1774',
@@ -308,7 +324,7 @@ class SyncTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Sync::centralExecute
      * @covers \Himedia\Padocc\Task\Base\Sync::postExecute
      */
-    public function testExecute_WithSrcDirAndSymLinks ()
+    public function testExecuteWithSrcDirAndSymLinks ()
     {
         $aMkdirExecResult = array(
             '---[user@server]-->0|0s', '[CMD]', '...', '[OUT]', '[ERR]', '///',

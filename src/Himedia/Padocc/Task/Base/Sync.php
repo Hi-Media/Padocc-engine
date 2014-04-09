@@ -46,8 +46,7 @@ class Sync extends Task
      * @param Project $oProject Super tâche projet.
      * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
      */
-    public function __construct (\SimpleXMLElement $oTask, Project $oProject,
-        DIContainer $oDIContainer)
+    public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
     {
         parent::__construct($oTask, $oProject, $oDIContainer);
         $this->aAttrProperties = array(
@@ -77,9 +76,8 @@ class Sync extends Task
     {
         parent::check();
 
-        if (
-                preg_match('#\*|\?|/$#', $this->aAttValues['src']) === 0
-                && $this->oShell->getPathStatus($this->aAttValues['src']) === PathStatus::STATUS_DIR
+        if (preg_match('#\*|\?|/$#', $this->aAttValues['src']) === 0
+            && $this->oShell->getPathStatus($this->aAttValues['src']) === PathStatus::STATUS_DIR
         ) {
             $this->aAttValues['destdir'] .= '/' . substr(strrchr($this->aAttValues['src'], '/'), 1);
             $this->aAttValues['src'] .= '/';

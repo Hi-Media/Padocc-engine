@@ -37,7 +37,7 @@ class ExternalPropertyTest extends PadoccTestCase
      * @param string $sCmd commande Shell qui aurait dûe être exécutée.
      * @see $aShellExecCmds
      */
-   public function shellExecCallback ($sCmd)
+    public function shellExecCallback ($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
     }
@@ -81,7 +81,7 @@ class ExternalPropertyTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\ExternalProperty::__construct
      * @covers \Himedia\Padocc\Task\Base\ExternalProperty::centralExecute
      */
-    public function testCentralExecute_throwExceptionIfPropertyNotFound ()
+    public function testCentralExecuteThrowExceptionIfPropertyNotFound ()
     {
         /* @var $oMockProject Project|\PHPUnit_Framework_MockObject_MockObject */
         $sXML = '<project></project>';
@@ -107,7 +107,7 @@ class ExternalPropertyTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\ExternalProperty::__construct
      * @covers \Himedia\Padocc\Task\Base\ExternalProperty::centralExecute
      */
-    public function testCentralExecute_With1Property ()
+    public function testCentralExecuteWith1Property ()
     {
         $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');
@@ -142,7 +142,7 @@ class ExternalPropertyTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\ExternalProperty::__construct
      * @covers \Himedia\Padocc\Task\Base\ExternalProperty::centralExecute
      */
-    public function testCentralExecute_WithProperties ()
+    public function testCentralExecuteWithProperties ()
     {
         $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');

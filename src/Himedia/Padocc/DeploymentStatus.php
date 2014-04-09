@@ -2,7 +2,8 @@
 
 namespace Himedia\Padocc;
 
-class DeploymentStatus {
+class DeploymentStatus
+{
 
     /**
      * In queue.

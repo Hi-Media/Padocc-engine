@@ -87,8 +87,7 @@ class SwitchSymlink extends Link
      */
     public function check ()
     {
-        if (
-            ! isset($this->aAttValues['src'])
+        if (! isset($this->aAttValues['src'])
             && ! isset($this->aAttValues['target'])
             && ! isset($this->aAttValues['server'])
         ) {

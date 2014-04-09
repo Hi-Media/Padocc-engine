@@ -58,7 +58,8 @@ class RenameTest extends PadoccTestCase
 
         /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
-        $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
+        $oMockShell->expects($this->any())
+            ->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
         $oClass = new \ReflectionClass('\GAubry\Shell\ShellAdapter');
@@ -99,7 +100,7 @@ class RenameTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Rename::__construct
      * @covers \Himedia\Padocc\Task\Base\Rename::check
      */
-    public function testCheck_ThrowExceptionIfServersNotEquals1 ()
+    public function testCheckThrowExceptionIfServersNotEquals1 ()
     {
         $oTask = Rename::getNewInstance(array(
             'src' => 'user@server1:/path/to/src',
@@ -116,7 +117,7 @@ class RenameTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Rename::__construct
      * @covers \Himedia\Padocc\Task\Base\Rename::check
      */
-    public function testCheck_ThrowExceptionIfServersNotEquals2 ()
+    public function testCheckThrowExceptionIfServersNotEquals2 ()
     {
         $oTask = Rename::getNewInstance(array(
             'src' => 'user@server1:/path/to/src',
@@ -133,7 +134,7 @@ class RenameTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Rename::check
      * @covers \Himedia\Padocc\Task\Base\Rename::centralExecute
      */
-    public function testExecute_ThrowExceptionIfMultipleSrc ()
+    public function testExecuteThrowExceptionIfMultipleSrc ()
     {
         $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');
@@ -166,7 +167,7 @@ class RenameTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Rename::check
      * @covers \Himedia\Padocc\Task\Base\Rename::centralExecute
      */
-    public function testExecute_ThrowExceptionIfMultipleDest ()
+    public function testExecuteThrowExceptionIfMultipleDest ()
     {
         $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');
@@ -199,7 +200,7 @@ class RenameTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Rename::check
      * @covers \Himedia\Padocc\Task\Base\Rename::centralExecute
      */
-    public function testExecute_Simple ()
+    public function testExecuteSimple ()
     {
         $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');

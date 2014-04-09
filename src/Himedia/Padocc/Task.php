@@ -124,8 +124,7 @@ abstract class Task
      * @return Task
      * @throws \RuntimeException si appelée directement sur Task.
      */
-    public static function getNewInstance (array $aAttributes, Project $oProject,
-        DIContainer $oDIContainer)
+    public static function getNewInstance (array $aAttributes, Project $oProject, DIContainer $oDIContainer)
     {
         $sAttributes = '';
         foreach ($aAttributes as $sName => $sValue) {
@@ -303,8 +302,7 @@ abstract class Task
     protected function registerPaths ()
     {
         foreach ($this->aAttrProperties as $sAttribute => $iProperties) {
-            if (
-                (($iProperties & AttributeProperties::DIR) > 0 || ($iProperties & AttributeProperties::FILE) > 0)
+            if ((($iProperties & AttributeProperties::DIR) > 0 || ($iProperties & AttributeProperties::FILE) > 0)
                 && isset($this->aAttValues[$sAttribute])
             ) {
                 self::$aRegisteredPaths[$this->aAttValues[$sAttribute]] = true;

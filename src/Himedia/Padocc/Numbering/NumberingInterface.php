@@ -20,7 +20,7 @@ interface NumberingInterface
      *
      * @return string prochaine valeur du compteur hiérarchique en intercalant le séparateur entre chaque niveau
      */
-    public function getNextCounterValue ();
+    public function getNextCounterValue();
 
     /**
      * Ajoute une nouvelle division hiérarchique et l'initialise à 0.
@@ -28,12 +28,12 @@ interface NumberingInterface
      *
      * @return NumberingInterface $this
      */
-    public function addCounterDivision ();
+    public function addCounterDivision();
 
     /**
      * Remonte d'un niveau hiérarchique.
      *
      * @return NumberingInterface $this
      */
-    public function removeCounterDivision ();
+    public function removeCounterDivision();
 }

@@ -56,10 +56,13 @@ class TaskTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task::expandPath
      */
-    public function testExpandPath_WithSimpleString ()
+    public function testExpandPathWithSimpleString ()
     {
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
 
         $class = new \ReflectionClass($oMockTask);
         $method = $class->getMethod('expandPath');
@@ -72,19 +75,28 @@ class TaskTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task::expandPath
      */
-    public function testExpandPath_WithOneSimpleParameter ()
+    public function testExpandPathWithOneSimpleParameter ()
     {
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
 
         /* @var $oMockProperties PropertiesInterface|\PHPUnit_Framework_MockObject_MockObject */
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array(), '', false);
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array(),
+            '',
+            false
+        );
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('p'))
             ->will($this->returnValue('simple_value'));
         $oMockProperties->expects($this->exactly(1))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
 
         $class = new \ReflectionClass($oMockTask);
         $method = $class->getMethod('expandPath');
@@ -97,19 +109,28 @@ class TaskTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task::expandPath
      */
-    public function testExpandPath_WithOneComplexParameter ()
+    public function testExpandPathWithOneComplexParameter ()
     {
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
 
         /* @var $oMockProperties PropertiesInterface|\PHPUnit_Framework_MockObject_MockObject */
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array(), '', false);
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array(),
+            '',
+            false
+        );
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('p'))
             ->will($this->returnValue('123 three values'));
         $oMockProperties->expects($this->exactly(1))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
 
         $class = new \ReflectionClass($oMockTask);
         $method = $class->getMethod('expandPath');
@@ -122,12 +143,18 @@ class TaskTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task::expandPath
      */
-    public function testExpandPath_WithTwoComplexParameters ()
+    public function testExpandPathWithTwoComplexParameters ()
     {
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
 
         /* @var $oMockProperties PropertiesInterface|\PHPUnit_Framework_MockObject_MockObject */
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array(), '', false);
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array(),
+            '',
+            false
+        );
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('p'))
             ->will($this->returnValue('123 three values'));
@@ -137,7 +164,10 @@ class TaskTest extends PadoccTestCase
         $oMockProperties->expects($this->exactly(2))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
 
         $class = new \ReflectionClass($oMockTask);
         $method = $class->getMethod('expandPath');
@@ -154,12 +184,18 @@ class TaskTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task::expandPath
      */
-    public function testExpandPath_WithMultiComplexParameters ()
+    public function testExpandPathWithMultiComplexParameters ()
     {
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
 
         /* @var $oMockProperties PropertiesInterface|\PHPUnit_Framework_MockObject_MockObject */
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array(), '', false);
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array(),
+            '',
+            false
+        );
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('one'))
             ->will($this->returnValue('${two} ${three} four'));
@@ -175,7 +211,10 @@ class TaskTest extends PadoccTestCase
         $oMockProperties->expects($this->exactly(4))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
 
         $class = new \ReflectionClass($oMockTask);
         $method = $class->getMethod('expandPath');
@@ -193,11 +232,14 @@ class TaskTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task::check
      */
-    public function testCheck_WhenEmpty ()
+    public function testCheckWhenEmpty ()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
         $o = new \ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('aAttrProperties');
@@ -216,11 +258,14 @@ class TaskTest extends PadoccTestCase
      * AttributeProperties exception well transmitted?
      * @covers \Himedia\Padocc\Task::check
      */
-    public function testCheck_ThrowExceptionIfUnknownAttribute ()
+    public function testCheckThrowExceptionIfUnknownAttribute ()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
         $o = new \ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('aAttrProperties');
@@ -238,7 +283,7 @@ class TaskTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task::getTagName
      */
-    public function testGetTagName_ThrowException ()
+    public function testGetTagNameThrowException ()
     {
         $this->setExpectedException('RuntimeException', 'Not implemented at this level!');
         Task::getTagName();
@@ -247,7 +292,7 @@ class TaskTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task::getNewInstance
      */
-    public function testGetNewInstance_ThrowException ()
+    public function testGetNewInstanceThrowException ()
     {
         /* @var $oMockProject Task\Base\Project|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
@@ -260,7 +305,7 @@ class TaskTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task::fetchAttributes
      * @covers \Himedia\Padocc\Task::__construct
      */
-    public function testGetNewInstance_Ok ()
+    public function testGetNewInstanceOk ()
     {
         /* @var $oMockProject Task\Base\Project|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
@@ -271,19 +316,28 @@ class TaskTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task::reroutePaths
      */
-    public function testReroutePaths_WithoutSymlinksWithEmptyPath ()
+    public function testReroutePathsWithoutSymlinksWithEmptyPath ()
     {
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
 
         /* @var $oMockProperties PropertiesInterface|\PHPUnit_Framework_MockObject_MockObject */
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array(), '', false);
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array(),
+            '',
+            false
+        );
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
         $oMockProperties->expects($this->exactly(1))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
 
         $oClass = new \ReflectionClass($oMockTask);
         $oMethod = $oClass->getMethod('reroutePaths');
@@ -296,19 +350,28 @@ class TaskTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task::reroutePaths
      */
-    public function testReroutePaths_WithoutSymlinks ()
+    public function testReroutePathsWithoutSymlinks ()
     {
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
 
         /* @var $oMockProperties PropertiesInterface|\PHPUnit_Framework_MockObject_MockObject */
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array(), '', false);
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array(),
+            '',
+            false
+        );
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('false'));
         $oMockProperties->expects($this->exactly(1))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
 
         $oClass = new \ReflectionClass($oMockTask);
         $oMethod = $oClass->getMethod('reroutePaths');
@@ -321,12 +384,18 @@ class TaskTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task::reroutePaths
      */
-    public function testReroutePaths_WithSymlinksWithEmptyPath ()
+    public function testReroutePathsWithSymlinksWithEmptyPath ()
     {
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
 
         /* @var $oMockProperties PropertiesInterface|\PHPUnit_Framework_MockObject_MockObject */
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array(), '', false);
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array(),
+            '',
+            false
+        );
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('true'));
@@ -339,7 +408,10 @@ class TaskTest extends PadoccTestCase
         $oMockProperties->expects($this->exactly(3))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
 
         $oClass = new \ReflectionClass($oMockTask);
         $oMethod = $oClass->getMethod('reroutePaths');
@@ -352,13 +424,19 @@ class TaskTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task::reroutePaths
      */
-    public function testReroutePaths_WithSymlinksWithNoReroute ()
+    public function testReroutePathsWithSymlinksWithNoReroute ()
     {
         $sBaseDir = '/path/to/basedir';
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
 
         /* @var $oMockProperties PropertiesInterface|\PHPUnit_Framework_MockObject_MockObject */
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array(), '', false);
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array(),
+            '',
+            false
+        );
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('true'));
@@ -371,7 +449,10 @@ class TaskTest extends PadoccTestCase
         $oMockProperties->expects($this->exactly(3))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
 
         $oClass = new \ReflectionClass($oMockTask);
         $oMethod = $oClass->getMethod('reroutePaths');
@@ -392,7 +473,7 @@ class TaskTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task::reroutePaths
      */
-    public function testReroutePaths_WithSymlinksWithReroute ()
+    public function testReroutePathsWithSymlinksWithReroute ()
     {
         $sBaseDir = '/path/to/basedir';
         $aSrc = array(
@@ -411,7 +492,13 @@ class TaskTest extends PadoccTestCase
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
 
         /* @var $oMockProperties PropertiesInterface|\PHPUnit_Framework_MockObject_MockObject */
-        $oMockProperties = $this->getMock('\Himedia\Padocc\Properties\Adapter', array('getProperty'), array(), '', false);
+        $oMockProperties = $this->getMock(
+            '\Himedia\Padocc\Properties\Adapter',
+            array('getProperty'),
+            array(),
+            '',
+            false
+        );
         $oMockProperties->expects($this->at(0))->method('getProperty')
             ->with($this->equalTo('with_symlinks'))
             ->will($this->returnValue('true'));
@@ -424,7 +511,10 @@ class TaskTest extends PadoccTestCase
         $oMockProperties->expects($this->exactly(3))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
         $oClass = new \ReflectionClass($oMockTask);
         $oMethod = $oClass->getMethod('reroutePaths');
         $oMethod->setAccessible(true);
@@ -438,7 +528,10 @@ class TaskTest extends PadoccTestCase
     public function testRegisterPaths ()
     {
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
         $oClass = new \ReflectionClass($oMockTask);
 
         $oProperty = $oClass->getProperty('aRegisteredPaths');

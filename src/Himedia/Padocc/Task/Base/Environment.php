@@ -98,8 +98,7 @@ class Environment extends Target
      */
     private function addSwithSymlinkTask ()
     {
-        if (
-            SwitchSymlink::getNbInstances() === 0
+        if (SwitchSymlink::getNbInstances() === 0
             && $this->oProperties->getProperty('with_symlinks') === 'true'
         ) {
             $this->oNumbering->addCounterDivision();
@@ -259,7 +258,11 @@ class Environment extends Target
         // Initialisation de ces serveurs :
         if (count($aServersToInit) > 0) {
             $aResults = $this->oShell->sync(
-                "[]:$sBaseSymLink/", '[]:' . $sReleaseSymLink, $aServersToInit, array(), self::$aSmartyRsyncExclude
+                "[]:$sBaseSymLink/",
+                '[]:' . $sReleaseSymLink,
+                $aServersToInit,
+                array(),
+                self::$aSmartyRsyncExclude
             );
             foreach ($aResults as $sResult) {
                 $this->oLogger->info($sResult);
@@ -283,7 +286,11 @@ class Environment extends Target
         $sCmd = "if [ -d %1\$s ] && ls -1 %1\$s | grep -qE '$sPattern'; "
               . "then ls -1 %1\$s | grep -E '$sPattern'; fi";
         $sSSHCmd = $this->oShell->buildSSHCmd($sCmd, '[]:' . $sExpandedPath);
-        $aParallelResult = $this->oShell->parallelize($aServers, $sSSHCmd, $this->aConfig['parallelization_max_nb_processes']);
+        $aParallelResult = $this->oShell->parallelize(
+            $aServers,
+            $sSSHCmd,
+            $this->aConfig['parallelization_max_nb_processes']
+        );
 
         $aAllReleases = array();
         foreach ($aParallelResult as $aServerResult) {
@@ -361,13 +368,12 @@ class Environment extends Target
             $this->oLogger->info('Remove unnecessary tasks for rollback.');
             $aKeptTasks = array();
             foreach ($this->aTasks as $oTask) {
-               if (
-                       ($oTask instanceof Property)
-                       || ($oTask instanceof ExternalProperty)
-                       || ($oTask instanceof SwitchSymlink)
-               ) {
-                   $aKeptTasks[] = $oTask;
-               }
+                if (($oTask instanceof Property)
+                    || ($oTask instanceof ExternalProperty)
+                    || ($oTask instanceof SwitchSymlink)
+                ) {
+                    $aKeptTasks[] = $oTask;
+                }
             }
             $this->aTasks = $aKeptTasks;
         }

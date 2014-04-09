@@ -35,7 +35,7 @@ class ProjectTest extends PadoccTestCase
      * @param string $sCmd commande Shell qui aurait dûe être exécutée.
      * @see $aShellExecCmds
      */
-   public function shellExecCallback ($sCmd)
+    public function shellExecCallback ($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
     }
@@ -50,7 +50,8 @@ class ProjectTest extends PadoccTestCase
 
         /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
-        $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
+        $oMockShell->expects($this->any())
+            ->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
         $oClass = new \ReflectionClass('\GAubry\Shell\ShellAdapter');
@@ -85,7 +86,7 @@ class ProjectTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task\Base\Project::getAllProjectsName
      */
-    public function testGetAllProjectsName_ThrowExceptionIfNotFound ()
+    public function testGetAllProjectsNameThrowExceptionIfNotFound ()
     {
         $this->setExpectedException(
             'UnexpectedValueException',
@@ -97,7 +98,7 @@ class ProjectTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task\Base\Project::getAllProjectsName
      */
-    public function testGetAllProjectsName_ThrowExceptionIfBadXml ()
+    public function testGetAllProjectsNameThrowExceptionIfBadXml ()
     {
         $this->setExpectedException(
             'UnexpectedValueException',
@@ -118,7 +119,7 @@ class ProjectTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task\Base\Project::getSXEProject
      */
-    public function testGetSXEProject_ThrowExceptionIfBadXML ()
+    public function testGetSXEProjectThrowExceptionIfBadXML ()
     {
         $this->setExpectedException(
             'UnexpectedValueException',
@@ -135,13 +136,18 @@ class ProjectTest extends PadoccTestCase
     {
         $sXML = file_get_contents($this->aConfig['dir']['tests'] . '/resources/base_project/1/ebay.xml');
         $oSXE = Project::getSXEProject($sXML);
-        $this->assertEquals($oSXE, new \SimpleXMLElement($this->aConfig['dir']['tests'] . '/resources/base_project/1/ebay.xml', null, true));
+        $oExpectedSXE = new \SimpleXMLElement(
+            $this->aConfig['dir']['tests'] . '/resources/base_project/1/ebay.xml',
+            null,
+            true
+        );
+        $this->assertEquals($oSXE, $oExpectedSXE);
     }
 
     /**
      * @covers \Himedia\Padocc\Task\Base\Project::__construct
      */
-    public function testNew_ThrowExceptionIfBadXML ()
+    public function testNewThrowExceptionIfBadXML ()
     {
         $sXML = 'bla bla';
         $this->setExpectedException(
@@ -154,7 +160,7 @@ class ProjectTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task\Base\Project::__construct
      */
-    public function testNew_ThrowExceptionIfEnvNotFound ()
+    public function testNewThrowExceptionIfEnvNotFound ()
     {
         $sXML = <<<EOT
 <?xml version="1.0" encoding="UTF-8"?>
@@ -171,7 +177,7 @@ EOT;
     /**
      * @covers \Himedia\Padocc\Task\Base\Project::__construct
      */
-    public function testNew_ThrowExceptionIfMultipleEnv ()
+    public function testNewThrowExceptionIfMultipleEnv ()
     {
         $sXML = <<<EOT
 <?xml version="1.0" encoding="UTF-8"?>

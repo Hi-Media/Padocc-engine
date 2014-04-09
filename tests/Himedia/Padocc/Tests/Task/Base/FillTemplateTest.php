@@ -82,7 +82,8 @@ class FillTemplateTest extends PadoccTestCase
 
         /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
-        $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
+        $oMockShell->expects($this->any())
+            ->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
         //$oShell = new ShellAdapter($oLogger);
@@ -123,7 +124,7 @@ class FillTemplateTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\FillTemplate::__construct
      * @covers \Himedia\Padocc\Task\Base\FillTemplate::check
      */
-    public function testCheck_ThrowExceptionIfSrcIsRemote ()
+    public function testCheckThrowExceptionIfSrcIsRemote ()
     {
         $oTask = FillTemplate::getNewInstance(
             array('srcfile' => 'server:/path/to/srcfile', 'destfile' => '/path/to/destdir'),
@@ -138,7 +139,7 @@ class FillTemplateTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\FillTemplate::__construct
      * @covers \Himedia\Padocc\Task\Base\FillTemplate::check
      */
-    public function testCheck_ThrowExceptionIfDestIsRemote ()
+    public function testCheckThrowExceptionIfDestIsRemote ()
     {
         $oTask = FillTemplate::getNewInstance(
             array('srcfile' => '/path/to/srcfile', 'destfile' => 'server:/path/to/destdir'),
@@ -153,7 +154,7 @@ class FillTemplateTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\FillTemplate::check
      * @covers \Himedia\Padocc\Task\Base\FillTemplate::centralExecute
      */
-    public function testExecute_ThrowExceptionIfMultipleSrcfile ()
+    public function testExecuteThrowExceptionIfMultipleSrcfile ()
     {
         $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');
@@ -186,7 +187,7 @@ class FillTemplateTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\FillTemplate::check
      * @covers \Himedia\Padocc\Task\Base\FillTemplate::centralExecute
      */
-    public function testExecute_ThrowExceptionIfMultipleDestfile ()
+    public function testExecuteThrowExceptionIfMultipleDestfile ()
     {
         $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');
@@ -219,7 +220,7 @@ class FillTemplateTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\FillTemplate::check
      * @covers \Himedia\Padocc\Task\Base\FillTemplate::centralExecute
      */
-    public function testExecute_Simple ()
+    public function testExecuteSimple ()
     {
         $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');
@@ -303,7 +304,7 @@ EOT;
      * @covers \Himedia\Padocc\Task\Base\FillTemplate::check
      * @covers \Himedia\Padocc\Task\Base\FillTemplate::centralExecute
      */
-    public function testExecute_WithWarning ()
+    public function testExecuteWithWarning ()
     {
         $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');

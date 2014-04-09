@@ -171,9 +171,7 @@ class B2CSwitchSymlink extends SwitchSymlink
                         'target' => $this->aAttValues['target'],
                         'server' => $sServer
                     );
-                    $oLinkTask = Link::getNewInstance(
-                        $aAttributes, $this->oProject, $this->oDIContainer
-                    );
+                    $oLinkTask = Link::getNewInstance($aAttributes, $this->oProject, $this->oDIContainer);
                     $oLinkTask->setUp();
                     $oLinkTask->execute();
 
@@ -198,9 +196,7 @@ class B2CSwitchSymlink extends SwitchSymlink
                         'target' => $this->aAttValues['target'],
                         'server' => '${remaining_servers_to_switch}'
                     );
-                    $oLinkTask = Link::getNewInstance(
-                        $aAttributes, $this->oProject, $this->oDIContainer
-                    );
+                    $oLinkTask = Link::getNewInstance($aAttributes, $this->oProject, $this->oDIContainer);
                     $oLinkTask->setUp();
                     $oLinkTask->execute();
                     $this->oLogger->info('---');

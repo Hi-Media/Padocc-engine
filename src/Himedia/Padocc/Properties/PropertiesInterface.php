@@ -22,7 +22,7 @@ interface PropertiesInterface
      * @return string valeur de la propriété spécifiée.
      * @throws \UnexpectedValueException si propriété inconnue
      */
-    public function getProperty ($sPropertyName);
+    public function getProperty($sPropertyName);
 
     /**
      * Initialise ou met à jour la valeur de la propriété spécifiée (insensible à la casse).
@@ -31,7 +31,7 @@ interface PropertiesInterface
      * @param string $sValue
      * @return PropertiesInterface $this
      */
-    public function setProperty ($sPropertyName, $sValue);
+    public function setProperty($sPropertyName, $sValue);
 
     /**
      * Charge le fichier INI spécifié en ajoutant ou écrasant ses définitions aux propriétés existantes.
@@ -42,7 +42,7 @@ interface PropertiesInterface
      * @throws \RuntimeException si erreur de chargement du fichier INI
      * @throws \UnexpectedValueException si fichier INI introuvable
      */
-    public function loadConfigIniFile ($sIniPath);
+    public function loadConfigIniFile($sIniPath);
 
     /**
      * Charge le fichier shell spécifié en ajoutant ou écrasant ses définitions aux propriétés existantes.
@@ -58,5 +58,5 @@ interface PropertiesInterface
      * @throws \RuntimeException si erreur de chargement du fichier
      * @throws \UnexpectedValueException si fichier shell introuvable
      */
-    public function loadConfigShellFile ($sConfigShellPath);
+    public function loadConfigShellFile($sConfigShellPath);
 }

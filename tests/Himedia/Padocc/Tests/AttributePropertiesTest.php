@@ -57,11 +57,14 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      * @covers \Himedia\Padocc\AttributeProperties::checkUnknownAttributes
      */
-    public function testCheckAttributes_WhenNoProperties ()
+    public function testCheckAttributesWhenNoProperties ()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
         $o = new \ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('aAttrProperties');
@@ -82,11 +85,14 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      * @covers \Himedia\Padocc\AttributeProperties::checkUnknownAttributes
      */
-    public function testCheckAttributes_WithNeutralProperty ()
+    public function testCheckAttributesWithNeutralProperty ()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
         $o = new \ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('aAttrProperties');
@@ -107,11 +113,14 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      * @covers \Himedia\Padocc\AttributeProperties::checkUnknownAttributes
      */
-    public function testCheckAttributes_WithMultivaluedProperty ()
+    public function testCheckAttributesWithMultivaluedProperty ()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
         $o = new \ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('aAttrProperties');
@@ -133,11 +142,14 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      * @covers \Himedia\Padocc\AttributeProperties::checkUnknownAttributes
      */
-    public function testCheckAttributes_WithEmptyProperty ()
+    public function testCheckAttributesWithEmptyProperty ()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
         $o = new \ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('aAttrProperties');
@@ -156,11 +168,14 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::checkUnknownAttributes
      */
-    public function testCheckUnknownAttributes_ThrowExceptionIfUnknownAttribute ()
+    public function testCheckUnknownAttributesThrowExceptionIfUnknownAttribute ()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
         $o = new \ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('aAttrProperties');
@@ -179,11 +194,14 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      */
-    public function testCheckAttribute_ThrowExceptionIfRequiredAttribute ()
+    public function testCheckAttributeThrowExceptionIfRequiredAttribute ()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
         $o = new \ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('aAttrProperties');
@@ -202,11 +220,14 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::formatAttribute
      */
-    public function testFormatAttribute_WithFile ()
+    public function testFormatAttributeWithFile ()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
         $o = new \ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('aAttrProperties');
@@ -225,11 +246,14 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::formatAttribute
      */
-    public function testFormatAttribute_WithDir ()
+    public function testFormatAttributeWithDir ()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
         $o = new \ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('aAttrProperties');
@@ -248,11 +272,14 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      */
-    public function testCheckAttribute_ThrowExceptionIfDirectoryJokerWithoutDirjokerAttribute ()
+    public function testCheckAttributeThrowExceptionIfDirectoryJokerWithoutDirjokerAttribute ()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
         $o = new \ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('aAttrProperties');
@@ -274,11 +301,14 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      */
-    public function testCheckAttribute_ThrowExceptionIfFileJokerWithoutFilejokerAttribute ()
+    public function testCheckAttributeThrowExceptionIfFileJokerWithoutFilejokerAttribute ()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
         $o = new \ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('aAttrProperties');
@@ -300,11 +330,14 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      */
-    public function testCheckAttribute_ThrowExceptionIfBadURLAttribute ()
+    public function testCheckAttributeThrowExceptionIfBadURLAttribute ()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
         $o = new \ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('aAttrProperties');
@@ -323,11 +356,14 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      */
-    public function testCheckAttribute_ThrowExceptionIfBadEmailAttribute ()
+    public function testCheckAttributeThrowExceptionIfBadEmailAttribute ()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
         $o = new \ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('aAttrProperties');
@@ -346,11 +382,14 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      */
-    public function testCheckAttribute_ThrowExceptionIfGoodEmailsWithoutMultiAttribute ()
+    public function testCheckAttributeThrowExceptionIfGoodEmailsWithoutMultiAttribute ()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
         $o = new \ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('aAttrProperties');
@@ -369,11 +408,14 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      */
-    public function testCheckAttribute_ThrowExceptionIfBadBooleanAttribute ()
+    public function testCheckAttributeThrowExceptionIfBadBooleanAttribute ()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
         $o = new \ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('aAttrProperties');
@@ -395,11 +437,14 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      */
-    public function testCheckAttribute_ThrowExceptionIfParameterWithoutAllowparametersAttribute ()
+    public function testCheckAttributeThrowExceptionIfParameterWithoutAllowparametersAttribute ()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
         $o = new \ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('aAttrProperties');
@@ -421,16 +466,24 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      */
-    public function testCheckAttribute_ParameterThrowExceptionWithSrcpathAttribute ()
+    public function testCheckAttributeParameterThrowExceptionWithSrcpathAttribute ()
     {
-        $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($this->oDIContainer->getLogger()));
+        /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
+        $oMockShell = $this->getMock(
+            '\GAubry\Shell\ShellAdapter',
+            array('exec'),
+            array($this->oDIContainer->getLogger())
+        );
         $oMockShell->expects($this->exactly(1))->method('exec');
         $oMockShell->expects($this->at(0))->method('exec')->will($this->returnValue(array('0')));
         $this->oDIContainer->setShellAdapter($oMockShell);
 
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-        $oMockTask = $this->getMockForAbstractClass('\Himedia\Padocc\Task', array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer));
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
         $o = new \ReflectionClass($oMockTask);
 
         $oProperty = $o->getProperty('aAttrProperties');
@@ -452,7 +505,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::normalizeAttributeProperties
      */
-    public function testNormalizeAttributeProperties_WithAttrSrcPath ()
+    public function testNormalizeAttributePropertiesWithAttrSrcPath ()
     {
         $aAttrProperties = array(
             'srcpath1' => AttributeProperties::SRC_PATH,
@@ -489,7 +542,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::normalizeAttributeProperties
      */
-    public function testNormalizeAttributeProperties_WithAttrFileJoker ()
+    public function testNormalizeAttributePropertiesWithAttrFileJoker ()
     {
         $aAttrProperties = array(
             'srcpath1' => AttributeProperties::FILEJOKER,
@@ -522,7 +575,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::normalizeAttributeProperties
      */
-    public function testNormalizeAttributeProperties_WithAttrDirJoker ()
+    public function testNormalizeAttributePropertiesWithAttrDirJoker ()
     {
         $aAttrProperties = array(
             'srcpath1' => AttributeProperties::DIRJOKER,

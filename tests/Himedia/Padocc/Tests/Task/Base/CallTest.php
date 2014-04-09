@@ -38,7 +38,7 @@ class CallTest extends PadoccTestCase
      * @param string $sCmd commande Shell qui aurait dûe être exécutée.
      * @see $aShellExecCmds
      */
-   public function shellExecCallback ($sCmd)
+    public function shellExecCallback ($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
     }
@@ -89,7 +89,7 @@ class CallTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task\Base\Call::__construct
      */
-    public function testNew_ThrowExceptionIfTargetNotFound ()
+    public function testNewThrowExceptionIfTargetNotFound ()
     {
         /* @var $oMockProject Project|\PHPUnit_Framework_MockObject_MockObject */
         $sXML = '<target name="my_target"></target>';
@@ -111,7 +111,7 @@ class CallTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task\Base\Call::__construct
      */
-    public function testNew_ThrowExceptionIfTargetNotUnique ()
+    public function testNewThrowExceptionIfTargetNotUnique ()
     {
         /* @var $oMockProject Project|\PHPUnit_Framework_MockObject_MockObject */
         $sXML = '<project><target name="my_target"></target><target name="my_target"></target></project>';

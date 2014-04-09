@@ -44,7 +44,7 @@ class MkDirTest extends PadoccTestCase
      * @param string $sCmd commande Shell qui aurait dûe être exécutée.
      * @see $aShellExecCmds
      */
-   public function shellExecCallback ($sCmd)
+    public function shellExecCallback ($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
     }
@@ -63,7 +63,8 @@ class MkDirTest extends PadoccTestCase
             array('exec'),
             array($oLogger, $this->aAllConfigs['GAubry\Shell'])
         );
-        $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
+        $oMockShell->expects($this->any())
+            ->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
         $oClass = new \ReflectionClass('\GAubry\Shell\ShellAdapter');
@@ -102,9 +103,13 @@ class MkDirTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\MkDir::__construct
      * @covers \Himedia\Padocc\Task\Base\MkDir::check
      */
-    public function testCheck_WithoutMode ()
+    public function testCheckWithoutMode ()
     {
-        $oTask = MkDir::getNewInstance(array('destdir' => '/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
+        $oTask = MkDir::getNewInstance(
+            array('destdir' => '/path/to/destdir'),
+            $this->oMockProject,
+            $this->oDIContainer
+        );
         $oTask->setUp();
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir'
@@ -115,9 +120,13 @@ class MkDirTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\MkDir::__construct
      * @covers \Himedia\Padocc\Task\Base\MkDir::check
      */
-    public function testCheck_WithMode ()
+    public function testCheckWithMode ()
     {
-        $oTask = MkDir::getNewInstance(array('destdir' => '/path/to/destdir', 'mode' => '755'), $this->oMockProject, $this->oDIContainer);
+        $oTask = MkDir::getNewInstance(
+            array('destdir' => '/path/to/destdir', 'mode' => '755'),
+            $this->oMockProject,
+            $this->oDIContainer
+        );
         $oTask->setUp();
         $this->assertAttributeEquals(array(
             'destdir' => '/path/to/destdir',
@@ -131,7 +140,7 @@ class MkDirTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\MkDir::centralExecute
      * @covers \Himedia\Padocc\Task\Base\MkDir::postExecute
      */
-    public function testExecute_WithoutMode ()
+    public function testExecuteWithoutMode ()
     {
         /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProperties = $this->getMock(
@@ -145,7 +154,11 @@ class MkDirTest extends PadoccTestCase
         $oMockProperties->expects($this->exactly(1))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTask = MkDir::getNewInstance(array('destdir' => '/path/to/destdir'), $this->oMockProject, $this->oDIContainer);
+        $oTask = MkDir::getNewInstance(
+            array('destdir' => '/path/to/destdir'),
+            $this->oMockProject,
+            $this->oDIContainer
+        );
         $oTask->setUp();
         $oTask->execute();
         $this->assertEquals(array(
@@ -159,7 +172,7 @@ class MkDirTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\MkDir::centralExecute
      * @covers \Himedia\Padocc\Task\Base\MkDir::postExecute
      */
-    public function testExecute_WithMode ()
+    public function testExecuteWithMode ()
     {
         /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProperties = $this->getMock(
@@ -173,10 +186,17 @@ class MkDirTest extends PadoccTestCase
         $oMockProperties->expects($this->exactly(1))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTask = MkDir::getNewInstance(array('destdir' => '/path/to/destdir', 'mode' => '755'), $this->oMockProject, $this->oDIContainer);
+        $oTask = MkDir::getNewInstance(
+            array('destdir' => '/path/to/destdir', 'mode' => '755'),
+            $this->oMockProject,
+            $this->oDIContainer
+        );
         $oTask->setUp();
         $oTask->execute();
-        $this->assertEquals(array('mkdir -p "/path/to/destdir" && chmod 755 "/path/to/destdir"'), $this->aShellExecCmds);
+        $this->assertEquals(
+            array('mkdir -p "/path/to/destdir" && chmod 755 "/path/to/destdir"'),
+            $this->aShellExecCmds
+        );
     }
 
     /**
@@ -185,7 +205,7 @@ class MkDirTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\MkDir::centralExecute
      * @covers \Himedia\Padocc\Task\Base\MkDir::postExecute
      */
-    public function testExecute_WithModeAndSymLinks ()
+    public function testExecuteWithModeAndSymLinks ()
     {
         /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProperties = $this->getMock(
@@ -205,15 +225,19 @@ class MkDirTest extends PadoccTestCase
         $oMockProperties->expects($this->exactly(3))->method('getProperty');
         $this->oDIContainer->setPropertiesAdapter($oMockProperties);
 
-        $oTask = MkDir::getNewInstance(array('destdir' => 'user@server:/path/to/destdir/subdir', 'mode' => '755'), $this->oMockProject, $this->oDIContainer);
+        $oTask = MkDir::getNewInstance(
+            array('destdir' => 'user@server:/path/to/destdir/subdir', 'mode' => '755'),
+            $this->oMockProject,
+            $this->oDIContainer
+        );
         $oTask->setUp();
         $oTask->execute();
 
         $sSshOptions = $this->aAllConfigs['GAubry\Shell']['ssh_options'];
         $this->assertEquals(array(
             "ssh $sSshOptions -T user@server /bin/bash <<EOF\n"
-                . 'mkdir -p "/path/to/destdir_releases/12345/subdir" && chmod 755 "/path/to/destdir_releases/12345/subdir"' . "\n"
-                . 'EOF' . "\n"
+            . 'mkdir -p "/path/to/destdir_releases/12345/subdir" && chmod 755 "/path/to/destdir_releases/12345/subdir"'
+            . "\n" . 'EOF' . "\n"
         ), $this->aShellExecCmds);
     }
 }

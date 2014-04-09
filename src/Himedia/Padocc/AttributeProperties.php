@@ -239,7 +239,7 @@ class AttributeProperties
                 throw new \DomainException($sMsg);
             }
 
-            if (($iProperties & self::URL) > 0 && preg_match('#^http://#i', $sValue) === 0 ) {
+            if (($iProperties & self::URL) > 0 && preg_match('#^http://#i', $sValue) === 0) {
                 throw new \DomainException("Bad URL: '" . $sValue . "'");
             }
 
@@ -271,11 +271,9 @@ class AttributeProperties
             }
 
             // Vérification de présence de la source si chemin sans joker ni paramètre :
-            if (
-                    ($iProperties & self::SRC_PATH) > 0
-                    && preg_match('#\*|\?|\$\{[^}]*\}#', $sValue) === 0
-                    && $this->oShell->getPathStatus($sValue)
-                        === PathStatus::STATUS_NOT_EXISTS
+            if (($iProperties & self::SRC_PATH) > 0
+                && preg_match('#\*|\?|\$\{[^}]*\}#', $sValue) === 0
+                && $this->oShell->getPathStatus($sValue) === PathStatus::STATUS_NOT_EXISTS
             ) {
                 throw new \UnexpectedValueException("File or directory '$sValue' not found!");
             }

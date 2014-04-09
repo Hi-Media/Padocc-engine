@@ -58,7 +58,8 @@ class HTTPTest extends PadoccTestCase
 
         /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
-        $oMockShell->expects($this->any())->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
+        $oMockShell->expects($this->any())
+            ->method('exec')->will($this->returnCallback(array($this, 'shellExecCallback')));
         $this->aShellExecCmds = array();
 
         $oClass = new \ReflectionClass('\GAubry\Shell\ShellAdapter');
@@ -101,7 +102,7 @@ class HTTPTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\HTTP::centralExecute
      * @covers \Himedia\Padocc\Task\Base\HTTP::postExecute
      */
-    public function testExecute_ThrowExceptionIfCURLReturnErrorMsg ()
+    public function testExecuteThrowExceptionIfCURLReturnErrorMsg ()
     {
         $oLogger = $this->oDIContainer->getLogger();
         $oMockShell = new ShellAdapter($oLogger, $this->aConfig);
@@ -114,7 +115,11 @@ class HTTPTest extends PadoccTestCase
         /* @var $oTaskHTTP HTTP|\PHPUnit_Framework_MockObject_MockObject */
         $sXML = '<http url="http://xxx" />';
         $oXML = new \SimpleXMLElement($sXML);
-        $oTaskHTTP = $this->getMock('\Himedia\Padocc\Task\Base\HTTP', array('reroutePaths'), array($oXML, $this->oMockProject, $this->oDIContainer));
+        $oTaskHTTP = $this->getMock(
+            '\Himedia\Padocc\Task\Base\HTTP',
+            array('reroutePaths'),
+            array($oXML, $this->oMockProject, $this->oDIContainer)
+        );
         $oTaskHTTP->expects($this->any())->method('reroutePaths')->will($this->returnArgument(0));
 
         $this->setExpectedException('RuntimeException');
@@ -128,18 +133,23 @@ class HTTPTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\HTTP::centralExecute
      * @covers \Himedia\Padocc\Task\Base\HTTP::postExecute
      */
-    public function testExecute_WithOneURL ()
+    public function testExecuteWithOneURL ()
     {
         /* @var $oTaskHTTP HTTP|\PHPUnit_Framework_MockObject_MockObject */
         $sXML = '<http url="http://www.xyz.com/index.php?a=26&amp;b=ttt" />';
         $oXML = new \SimpleXMLElement($sXML);
-        $oTaskHTTP = $this->getMock('\Himedia\Padocc\Task\Base\HTTP', array('reroutePaths'), array($oXML, $this->oMockProject, $this->oDIContainer));
+        $oTaskHTTP = $this->getMock(
+            '\Himedia\Padocc\Task\Base\HTTP',
+            array('reroutePaths'),
+            array($oXML, $this->oMockProject, $this->oDIContainer)
+        );
         $oTaskHTTP->expects($this->any())->method('reroutePaths')->will($this->returnArgument(0));
 
         $oTaskHTTP->setUp();
         $oTaskHTTP->execute();
         $aExpected = array(
-            $this->aConfig['curl_path'] . ' ' . $this->aConfig['curl_options'] . ' "http://www.xyz.com/index.php?a=26&b=ttt"'
+            $this->aConfig['curl_path'] . ' ' . $this->aConfig['curl_options']
+            . ' "http://www.xyz.com/index.php?a=26&b=ttt"'
         );
         $this->assertEquals($aExpected, $this->aShellExecCmds);
     }
@@ -150,7 +160,7 @@ class HTTPTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\HTTP::centralExecute
      * @covers \Himedia\Padocc\Task\Base\HTTP::postExecute
      */
-    public function testExecute_WithMultiURL ()
+    public function testExecuteWithMultiURL ()
     {
         /* @var $oMockProperties \Himedia\Padocc\Properties\Adapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProperties = $this->getMock(
@@ -167,15 +177,23 @@ class HTTPTest extends PadoccTestCase
         /* @var $oTaskHTTP HTTP|\PHPUnit_Framework_MockObject_MockObject */
         $sXML = '<http url="http://aai.twenga.com/push.php?server=${servers}&amp;app=web" />';
         $oXML = new \SimpleXMLElement($sXML);
-        $oTaskHTTP = $this->getMock('\Himedia\Padocc\Task\Base\HTTP', array('reroutePaths'), array($oXML, $this->oMockProject, $this->oDIContainer));
+        $oTaskHTTP = $this->getMock(
+            '\Himedia\Padocc\Task\Base\HTTP',
+            array('reroutePaths'),
+            array($oXML, $this->oMockProject, $this->oDIContainer)
+        );
         $oTaskHTTP->expects($this->any())->method('reroutePaths')->will($this->returnArgument(0));
 
         $oTaskHTTP->setUp();
         $oTaskHTTP->execute();
-        $this->assertEquals(array(
-            $this->aConfig['curl_path'] . ' ' . $this->aConfig['curl_options'] . ' "http://aai.twenga.com/push.php?server=www01&app=web"',
-            $this->aConfig['curl_path'] . ' ' . $this->aConfig['curl_options'] . ' "http://aai.twenga.com/push.php?server=www02&app=web"',
-            $this->aConfig['curl_path'] . ' ' . $this->aConfig['curl_options'] . ' "http://aai.twenga.com/push.php?server=www03&app=web"',
-        ), $this->aShellExecCmds);
+        $sCURL = $this->aConfig['curl_path'] . ' ' . $this->aConfig['curl_options'];
+        $this->assertEquals(
+            array(
+                $sCURL . ' "http://aai.twenga.com/push.php?server=www01&app=web"',
+                $sCURL . ' "http://aai.twenga.com/push.php?server=www02&app=web"',
+                $sCURL . ' "http://aai.twenga.com/push.php?server=www03&app=web"',
+            ),
+            $this->aShellExecCmds
+        );
     }
 }

@@ -15,7 +15,8 @@
 
 /*
  * Déploiement de Padocc sur redmine :
-rsync -axz --delete --stats -e ssh --cvs-exclude --exclude=conf/padocc.php --exclude=conf/padocc-ssh --exclude=conf/supervisor.sh \
+rsync -axz --delete --stats -e ssh \
+    --cvs-exclude --exclude=conf/padocc.php --exclude=conf/padocc-ssh --exclude=conf/supervisor.sh \
     /home/gaubry/PhpstormProjects/Padocc-engine/ \
     gaubry@192.168.27.103:/var/www/padocc/ \
 && ssh gaubry@192.168.27.103 "sudo mkdir -p /var/padocc/archives /var/padocc/repositories /var/log/padocc /tmp/padocc/locks"
@@ -70,12 +71,12 @@ require(__DIR__ . '/inc/bootstrap.php');
 // Set options:
 $sActions = 'deploy, deploy-wos, enqueue, get-env, get-status, get-queue, get-latest-deployments';
 $oGetopt = new GetOptionKit();
-$oGetopt->add('action:',  "Choose between: $sActions");
-$oGetopt->add('env:',     'Project\'s environment to deploy');
+$oGetopt->add('action:', "Choose between: $sActions");
+$oGetopt->add('env:', 'Project\'s environment to deploy');
 $oGetopt->add('project:', 'Project\'s name');
 $oGetopt->add('exec-id:', 'Execution Id');
 $oGetopt->add('p|param+', 'External parameters');
-$oGetopt->add('xml:',     'XML project configuration');
+$oGetopt->add('xml:', 'XML project configuration');
 //$oGetopt->printOptions();
 
 // Extract command line parameters

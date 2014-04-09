@@ -71,8 +71,7 @@ class Link extends Task
 
         list($bIsSrcRemote, $sSrcServer, ) = $this->oShell->isRemotePath($this->aAttValues['src']);
         list($bIsDestRemote, $sDestServer, ) = $this->oShell->isRemotePath($this->aAttValues['target']);
-        if (
-            ($bIsSrcRemote XOR $bIsDestRemote)
+        if (($bIsSrcRemote xor $bIsDestRemote)
             || ($bIsSrcRemote && $bIsDestRemote && $sSrcServer != $sDestServer)
         ) {
             $sMsg = 'Servers must be equals!' . ' Src=' . $this->aAttValues['src']

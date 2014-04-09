@@ -32,13 +32,6 @@ if (file_exists(__DIR__ . '/../../conf/padocc.php')) {
 }
 $aConfig = Helpers::arrayMergeRecursiveDistinct($aDefaultConfig, $aUserConfig);
 
-set_include_path(
-//    $aConfig['Himedia\Padocc']['dir']['root'] . PATH_SEPARATOR .
-//    $aConfig['Himedia\DW']['dir']['lib'] . PATH_SEPARATOR .
-    get_include_path()
-);
-
-
 // Additional parameters from Supervisor: $EXECUTION_ID $SCRIPT_ERROR_LOG_FILE
 // Où $EXECUTION_ID est de la forme : 20121031153331_32037
 if (isset($argv) && count($argv) > 2 && preg_match('/\d{14}_\d{5}/', $argv[count($argv)-2]) === 1) {

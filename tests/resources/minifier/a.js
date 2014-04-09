@@ -5,7 +5,7 @@
  */
 
     var jCarousel	= $("#carousel");
-    if(jCarousel.size() > 0){
+    if (jCarousel.size() > 0) {
         jCarousel.carousel({
             autoSlide: true,
             loop : true,

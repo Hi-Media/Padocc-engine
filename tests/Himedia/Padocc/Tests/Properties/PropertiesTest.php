@@ -42,7 +42,7 @@ class PropertiesTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Properties\Adapter::getProperty
      */
-    public function testGetProperty_ThrowExceptionIfUnknownProperty ()
+    public function testGetPropertyThrowExceptionIfUnknownProperty ()
     {
         $this->setExpectedException('UnexpectedValueException', "Unknown property 'not_exists'!");
         $this->oProperties->getProperty('not_exists');
@@ -52,7 +52,7 @@ class PropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Properties\Adapter::getProperty
      * @covers \Himedia\Padocc\Properties\Adapter::setProperty
      */
-    public function testGetProperty_IfPropertyExists ()
+    public function testGetPropertyIfPropertyExists ()
     {
         $sValue = $this->oProperties->setProperty('A_PRoperty', 'A value')->getProperty('a_PropERTY');
         $this->assertEquals('A value', $sValue);
@@ -62,7 +62,7 @@ class PropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Properties\Adapter::getProperty
      * @covers \Himedia\Padocc\Properties\Adapter::setProperty
      */
-    public function testGetProperty_With2SetProperty ()
+    public function testGetPropertyWith2SetProperty ()
     {
         $sValue = $this->oProperties->setProperty('A_PRoperty', 'A value')
             ->setProperty('A_PRoperty', 'A new value')
@@ -73,7 +73,7 @@ class PropertiesTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Properties\Adapter::loadConfigIniFile
      */
-    public function testLoadConfigIniFile_ThrowExceptionIfFileNotExists ()
+    public function testLoadConfigIniFileThrowExceptionIfFileNotExists ()
     {
         $this->setExpectedException('UnexpectedValueException', "Property file '/file/not/exists.ini' not found!");
         $this->oProperties->loadConfigIniFile('/file/not/exists.ini');
@@ -82,7 +82,7 @@ class PropertiesTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Properties\Adapter::loadConfigIniFile
      */
-    public function testLoadConfigIniFile_ThrowExceptionIfParseFailed ()
+    public function testLoadConfigIniFileThrowExceptionIfParseFailed ()
     {
         $sTmpPath = tempnam($this->aConfig['dir']['tmp'], 'deploy_unittest_');
         chmod($sTmpPath, 0222);
@@ -106,7 +106,7 @@ class PropertiesTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Properties\Adapter::loadConfigIniFile
      */
-    public function testLoadConfigIniFile_WithValues ()
+    public function testLoadConfigIniFileWithValues ()
     {
         $sTmpPath = tempnam($this->aConfig['dir']['tmp'], 'deploy_unittest_');
         $sContent = <<<EOT
@@ -130,7 +130,7 @@ EOT;
     /**
      * @covers \Himedia\Padocc\Properties\Adapter::loadConfigShellFile
      */
-    public function testLoadConfigShellFile_ThrowExceptionIfFileNotExists ()
+    public function testLoadConfigShellFileThrowExceptionIfFileNotExists ()
     {
         $this->setExpectedException('UnexpectedValueException', "Property file '/file/not/exists.ini' not found!");
         $this->oProperties->loadConfigShellFile('/file/not/exists.ini');
@@ -139,7 +139,7 @@ EOT;
     /**
      * @covers \Himedia\Padocc\Properties\Adapter::loadConfigShellFile
      */
-    public function testLoadConfigShellFile_WithSimpleValues ()
+    public function testLoadConfigShellFileWithSimpleValues ()
     {
         $sTmpPath = tempnam($this->aConfig['dir']['tmp'], 'deploy_unittest_');
         $sContent = <<<EOT
@@ -159,7 +159,7 @@ EOT;
     /**
      * @covers \Himedia\Padocc\Properties\Adapter::loadConfigShellFile
      */
-    public function testLoadConfigShellFile_WithRecursiveValues ()
+    public function testLoadConfigShellFileWithRecursiveValues ()
     {
         $sTmpPath = tempnam($this->aConfig['dir']['tmp'], 'deploy_unittest_');
         $sContent = <<<EOT

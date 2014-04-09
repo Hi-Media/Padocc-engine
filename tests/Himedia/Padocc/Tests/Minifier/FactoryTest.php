@@ -15,7 +15,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers \Himedia\Padocc\Minifier\Factory::getInstance
      */
-    public function testGetInstance_throwExceptionWhenUnknownType ()
+    public function testGetInstanceThrowExceptionWhenUnknownType ()
     {
         $oShell = new ShellAdapter(new NullLogger());
         $this->setExpectedException('BadMethodCallException', "Unknown type: '65484'!");

@@ -69,7 +69,7 @@ interface DBAdapterInterface
      */
     public function prepare($sQuery);
 
-    public function executePreparedStatement (\PDOStatement $oStatement, array $aValues);
+    public function executePreparedStatement(\PDOStatement $oStatement, array $aValues);
 
     /**
      * Returns the ID of the last inserted row or sequence value.
