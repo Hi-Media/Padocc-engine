@@ -27,30 +27,67 @@ class Padocc {
         $this->aConfig = $aConfig;
     }
 
-    public function getEnvAndExtParameters ($sXmlProjectPath)
+    /**
+     * Return environments and external properties of specified project.
+     *
+     * Example: array(
+     *     'dev' => array(),
+     *     'qa' => array(
+     *         'ref' => "Branch or tag to deploy",
+     *         …
+     *     )
+     * )
+     *
+     * @param string $sXmlProject XML project path or XML data
+     * @return array environments and external properties of specified project.
+     */
+    public function getEnvAndExtParameters ($sXmlProject)
     {
-        $aEnv = Target::getAvailableEnvsList($sXmlProjectPath);
+        $aEnv = Target::getAvailableEnvsList($sXmlProject);
         return $aEnv;
     }
 
-    public function getInfoLog ($sExecId)
+    /**
+     * Return triplet containing DB record of specified exec_id, content of execution log, and errors.
+     *
+     * @param $sExecId
+     * @return array triplet containing DB record of specified exec_id, content of execution log, and errors.
+     * @throws \RuntimeException if info log or error log not found
+     */
+    public function getStatus ($sExecId)
     {
-        $sInfoLogPath = sprintf($this->aConfig['Himedia\Padocc']['info_log_path_pattern'], $sExecId);
-        if (! file_exists($sInfoLogPath)) {
-            throw new \RuntimeException("File not found: '$sInfoLogPath'!");
-        }
-        $sContent = file_get_contents($sInfoLogPath);
-        return $sContent;
-    }
+        $oDB = PDOAdapter::getInstance($this->aConfig['Himedia\Padocc']['db']);
+        $oDeploymentMapper = new DeploymentMapper($oDB);
+        $aFilter = array(
+            array(
+                array('exec_id' => $sExecId)
+            )
+        );
+        $aResult = $oDeploymentMapper->select($aFilter);
+        $aRecord = $aResult[0];
 
-    public function getErrorLog ($sExecId)
-    {
-        $sErrorLogPath = sprintf($this->aConfig['Himedia\Padocc']['error_log_path_pattern'], $sExecId);
-        if (! file_exists($sErrorLogPath)) {
-            throw new \RuntimeException("File not found: '$sErrorLogPath'!");
+        if ($aRecord['status'] == DeploymentStatus::QUEUED) {
+            $sInfoLog = '';
+            $sErrorLog = '';
+        } else {
+            $sInfoLogPath = sprintf($this->aConfig['Himedia\Padocc']['info_log_path_pattern'], $sExecId);
+            if (! file_exists($sInfoLogPath)) {
+                throw new \RuntimeException("File not found: '$sInfoLogPath'!");
+            }
+            $sInfoLog = file_get_contents($sInfoLogPath);
+
+            $sErrorLogPath = sprintf($this->aConfig['Himedia\Padocc']['error_log_path_pattern'], $sExecId);
+            if (! file_exists($sErrorLogPath)) {
+                throw new \RuntimeException("File not found: '$sErrorLogPath'!");
+            }
+            $sErrorLog = file_get_contents($sErrorLogPath);
         }
-        $sContent = file_get_contents($sErrorLogPath);
-        return $sContent;
+
+        return array(
+            'record'    => $aRecord,
+            'info-log'  => $sInfoLog,
+            'error-log' => $sErrorLog
+        );
     }
 
     public function getQueueAndRunning ()

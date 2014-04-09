@@ -1,4 +1,4 @@
--- mysql  --user=root --password=hristo76
+-- mysql  --user=root --password=xxx
 -- CREATE DATABASE padocc CHARSET=utf8 COLLATE=utf8_unicode_ci;
 -- CREATE USER padocc IDENTIFIED BY 'xxx';
 -- GRANT ALL ON padocc.* TO padocc;

@@ -68,7 +68,7 @@ require(__DIR__ . '/inc/bootstrap.php');
 // c'eat-à-dire celle contenant le tag.
 
 // Set options:
-$sActions = 'deploy, deploy-wos, enqueue, get-env, get-info-log, get-error-log, get-queue, get-latest-deployments';
+$sActions = 'deploy, deploy-wos, enqueue, get-env, get-status, get-queue, get-latest-deployments';
 $oGetopt = new GetOptionKit();
 $oGetopt->add('action:',  "Choose between: $sActions");
 $oGetopt->add('env:',     'Project\'s environment to deploy');
@@ -105,13 +105,8 @@ switch ($sAction) {
         var_dump($aEnv);
         break;
 
-    case 'get-info-log':
-        $sContent = $oPadocc->getInfoLog($sExecId);
-        var_dump($sContent);
-        break;
-
-    case 'get-error-log':
-        $sContent = $oPadocc->getErrorLog($sExecId);
+    case 'get-status':
+        $sContent = $oPadocc->getStatus($sExecId);
         var_dump($sContent);
         break;
 

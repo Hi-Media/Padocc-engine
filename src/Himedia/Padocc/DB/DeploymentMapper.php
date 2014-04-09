@@ -67,7 +67,6 @@ class DeploymentMapper
         }
 
         $sQuery = "SELECT * FROM deployments WHERE $sWhere $sOrderBy LIMIT $iLimit OFFSET $iOffset";
-        var_dump($sQuery);
         /* @var $oStmt \PDOStatement */
         $oStmt = $this->oDB->prepare($sQuery);
         $oStmt->execute($aParameters);
