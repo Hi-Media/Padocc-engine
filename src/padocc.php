@@ -49,10 +49,10 @@ root# src/padocc.php --deploy --xml=/home/gaubry/dw-payment.xml --env=dev -p ref
  * Scenarios :
  * src/padocc.php --action=enqueue --xml=/home/gaubry/dw-payment.xml --env=preprod -p core-ref=stable --param=apps-ref=stable
  * src/padocc.php --action=deploy  --xml=/home/gaubry/dw-payment.xml --env=preprod -p core-ref=stable --param=apps-ref=stable
- * src/padocc.php --action=get-info-log --exec-id=20140408125738_84476
- * src/padocc.php --action=get-error-log --exec-id=20140408125738_84476
+ * src/padocc.php --action=get-status --exec-id=20140408125738_84476
  * src/padocc.php --action=get-queue
  * src/padocc.php --action=get-latest-deployments --project='DW Payment' --env=preprod
+ * src/padocc.php --action=dequeue
  */
 
 namespace Himedia\Padocc;
@@ -69,7 +69,7 @@ require(__DIR__ . '/inc/bootstrap.php');
 // c'eat-à-dire celle contenant le tag.
 
 // Set options:
-$sActions = 'deploy, deploy-wos, enqueue, get-env, get-status, get-queue, get-latest-deployments';
+$sActions = 'deploy, deploy-wos, dequeue, enqueue, get-env, get-status, get-queue, get-latest-deployments';
 $oGetopt = new GetOptionKit();
 $oGetopt->add('action:', "Choose between: $sActions");
 $oGetopt->add('env:', 'Project\'s environment to deploy');
@@ -132,6 +132,10 @@ switch ($sAction) {
     case 'enqueue':
         $sExecId = $oPadocc->enqueue($sXmlProjectPath, $sEnvName, $aExtParameters);
         var_dump($sExecId);
+        break;
+
+    case 'dequeue':
+        $oPadocc->dequeue();
         break;
 
     default:

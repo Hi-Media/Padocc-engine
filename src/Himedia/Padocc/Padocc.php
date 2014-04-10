@@ -23,9 +23,13 @@ class Padocc
      */
     private $aConfig;
 
+    private $oDeploymentMapper;
+
     public function __construct (array $aConfig)
     {
         $this->aConfig = $aConfig;
+        $oDB = PDOAdapter::getInstance($this->aConfig['Himedia\Padocc']['db']);
+        $this->oDeploymentMapper = new DeploymentMapper($oDB);
     }
 
     /**
@@ -57,14 +61,12 @@ class Padocc
      */
     public function getStatus ($sExecId)
     {
-        $oDB = PDOAdapter::getInstance($this->aConfig['Himedia\Padocc']['db']);
-        $oDeploymentMapper = new DeploymentMapper($oDB);
         $aFilter = array(
             array(
                 array('exec_id' => $sExecId)
             )
         );
-        $aResult = $oDeploymentMapper->select($aFilter);
+        $aResult = $this->oDeploymentMapper->select($aFilter);
         $aRecord = $aResult[0];
 
         if ($aRecord['status'] == DeploymentStatus::QUEUED) {
@@ -93,22 +95,18 @@ class Padocc
 
     public function getQueueAndRunning ()
     {
-        $oDB = PDOAdapter::getInstance($this->aConfig['Himedia\Padocc']['db']);
-        $oDeploymentMapper = new DeploymentMapper($oDB);
         $aFilter = array(
             array(
                 array('status' => DeploymentStatus::QUEUED),
                 array('status' => DeploymentStatus::IN_PROGRESS)
             )
         );
-        $aResult = $oDeploymentMapper->select($aFilter, array('exec_id ASC'));
+        $aResult = $this->oDeploymentMapper->select($aFilter, array('exec_id ASC'));
         return $aResult;
     }
 
     public function getLatestDeployments ($sProjectName, $sEnvName)
     {
-        $oDB = PDOAdapter::getInstance($this->aConfig['Himedia\Padocc']['db']);
-        $oDeploymentMapper = new DeploymentMapper($oDB);
         $aFilter = array(
             array(
                 array('status' => DeploymentStatus::SUCCESSFUL),
@@ -122,7 +120,7 @@ class Padocc
         if (! empty($sEnvName)) {
             $aFilter[] = array(array('env_name' => $sEnvName));
         }
-        $aResult = $oDeploymentMapper->select($aFilter, array('exec_id ASC'));
+        $aResult = $this->oDeploymentMapper->select($aFilter, array('exec_id ASC'));
         return $aResult;
     }
 
@@ -161,8 +159,6 @@ class Padocc
 
     public function enqueue ($sXmlProjectPath, $sEnvName, array $aExternalProperties)
     {
-        $oDB = PDOAdapter::getInstance($this->aConfig['Himedia\Padocc']['db']);
-        $oDeploymentMapper = new DeploymentMapper($oDB);
         $sExecId = date('YmdHis') . sprintf('_%05d', rand(0, 99999));
         $oProject = Project::getSXEProject($sXmlProjectPath);
         $sProjectName = (string)$oProject['name'];
@@ -177,7 +173,33 @@ class Padocc
             'date_queue' => date('Y-m-d H:i:s'),
             'is_rollbackable' => 0
         );
-        $oDeploymentMapper->insert($aParameters);
+        $this->oDeploymentMapper->insert($aParameters);
+        return $sExecId;
+    }
+
+    public function dequeue ()
+    {
+        $aFilter = array(
+            array(
+                array('status' => DeploymentStatus::QUEUED)
+            )
+        );
+        $aResult = $this->oDeploymentMapper->select($aFilter, array('exec_id ASC'), 1);
+
+        if (count($aResult) > 0) {
+            $aOldestQueued = $aResult[0];
+            var_dump($aOldestQueued);
+
+            $sExecId = $this->run(
+                $aOldestQueued['xml_path'],
+                $aOldestQueued['env_name'],
+                $aOldestQueued['exec_id'],
+                json_decode($aOldestQueued['external_properties'], true),
+                ''
+            );
+        } else {
+            $sExecId = '';
+        }
         return $sExecId;
     }
 
@@ -186,19 +208,27 @@ class Padocc
      *
      * @param string $sXmlProjectPath chemin vers le XML de configuration du projet
      * @param string $sEnvName
-     * @param string $sExecutionID au format YYYYMMDDHHMMSS_xxxxx, où x est un nombre aléatoire,
-     * par exemple '20111026142342_07502'
+     * @param string $sExecId au format YYYYMMDDHHMMSS_xxxxx, où x est un nombre aléatoire,
+     * par exemple '20111026142342_07502'. Si vide, en génère un.
      * @param array $aExternalProperties tableau associatif nom/valeur des propriétés externes.
      * @param string $sRollbackID identifiant de déploiement sur lequel effectuer un rollback,
      * par exemple '20111026142342_07502'
      * @return string $sExecutionID
      * @throws \RuntimeException if Supervisor log result are unexpected.
      */
-    public function run ($sXmlProjectPath, $sEnvName, $sExecutionID, array $aExternalProperties, $sRollbackID)
+    public function run ($sXmlProjectPath, $sEnvName, $sExecId, array $aExternalProperties, $sRollbackID)
     {
-        $oDB = PDOAdapter::getInstance($this->aConfig['Himedia\Padocc']['db']);
-        $oDeploymentMapper = new DeploymentMapper($oDB);
-        $sExecId = date('YmdHis') . sprintf('_%05d', rand(0, 99999));
+        $aFilter = array(
+            array(
+                array('exec_id' => $sExecId)
+            )
+        );
+        $aResult = $this->oDeploymentMapper->select($aFilter);
+        $bAlreadyInDB = (count($aResult) === 1);
+
+        if (empty($sExecId)) {
+            $sExecId = date('YmdHis') . sprintf('_%05d', rand(0, 99999));
+        }
         $oProject = Project::getSXEProject($sXmlProjectPath);
         $sProjectName = (string)$oProject['name'];
         $aParameters = array(
@@ -212,7 +242,11 @@ class Padocc
             'date_start' => date('Y-m-d H:i:s'),
             'is_rollbackable' => 0
         );
-        $oDeploymentMapper->insert($aParameters);
+        if ($bAlreadyInDB) {
+            $this->oDeploymentMapper->update($aParameters);
+        } else {
+            $this->oDeploymentMapper->insert($aParameters);
+        }
 
         $sSupervisorBin = $this->aConfig['Himedia\Padocc']['dir']['vendor'] . '/bin/supervisor.sh';
         $sSupervisorParams = '--conf=' . $this->aConfig['Himedia\Padocc']['dir']['conf'] . '/supervisor.sh '
@@ -259,7 +293,7 @@ class Padocc
             'nb_warnings' => $iNbWarnings,
             'date_end' => date('Y-m-d H:i:s')
         );
-        $oDeploymentMapper->update($aParameters);
+        $this->oDeploymentMapper->update($aParameters);
         return $sExecId;
     }
 }
