@@ -221,7 +221,7 @@ abstract class Task
      */
     protected function expandPath ($sPath)
     {
-        if (preg_match_all('/\$\{([^}]+)\}/i', $sPath, $aMatches) > 0) {
+        if (preg_match_all('/\$\{([^}]+)\}/', $sPath, $aMatches) > 0) {
             // On traite dans un premier temps un maximum de remplacements sans récursivité :
             $aPaths = array($sPath);
             foreach ($aMatches[1] as $property) {
@@ -363,6 +363,7 @@ abstract class Task
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
      * Appelé par execute().
      * @see execute()
+     * @codeCoverageIgnore
      */
     protected function centralExecute ()
     {
@@ -373,6 +374,7 @@ abstract class Task
      * Elle devrait systématiquement finir par "parent::postExecute();".
      * Appelé par execute().
      * @see execute()
+     * @codeCoverageIgnore
      */
     protected function postExecute ()
     {

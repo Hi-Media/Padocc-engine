@@ -55,9 +55,13 @@ class TaskTest extends PadoccTestCase
 
     /**
      * @covers \Himedia\Padocc\Task::expandPath
+     * @dataProvider dataProviderTestExpandPath
      */
-    public function testExpandPathWithSimpleString ()
+    public function testExpandPath (array $aProperties, $sPath, array $aExpected)
     {
+        foreach ($aProperties as $sKey => $sValue) {
+            $this->oDIContainer->getPropertiesAdapter()->setProperty($sKey, $sValue);
+        }
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
         $oMockTask = $this->getMockForAbstractClass(
             '\Himedia\Padocc\Task',
@@ -68,165 +72,214 @@ class TaskTest extends PadoccTestCase
         $method = $class->getMethod('expandPath');
         $method->setAccessible(true);
 
-        $aResult = $method->invokeArgs($oMockTask, array('test'));
-        $this->assertEquals(array('test'), $aResult);
+        $aResult = $method->invokeArgs($oMockTask, array($sPath));
+        $this->assertEquals($aExpected, $aResult);
     }
 
     /**
-     * @covers \Himedia\Padocc\Task::expandPath
+     * Data provider pour testExpandPath()
      */
-    public function testExpandPathWithOneSimpleParameter ()
+    public function dataProviderTestExpandPath ()
     {
-        $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
+        return array(
+            array(array(), 'test', array('test')),
+            array(array(), 'server:test', array($this->aConfig['default_remote_shell_user'] . '@server:test')),
+            array(array(), '[]:test', array($this->aConfig['default_remote_shell_user'] . '@[]:test')),
+            array(array(), 'user@server:test', array('user@server:test')),
+            array(array(), 'http://test', array('http://test')),
 
-        /* @var $oMockProperties PropertiesInterface|\PHPUnit_Framework_MockObject_MockObject */
-        $oMockProperties = $this->getMock(
-            '\Himedia\Padocc\Properties\Adapter',
-            array('getProperty'),
-            array(),
-            '',
-            false
+            array(array('p' => 'simple_value'), 'foo${p}bar', array('foosimple_valuebar')),
+            array(array('p' => '123 three values'), 'foo${p}bar', array('foo123bar', 'foothreebar', 'foovaluesbar')),
+            array(
+                array('p' => '123 three values', 'q' => '0 1'),
+                '${p}foo${q}',
+                array('123foo0', '123foo1', 'threefoo0', 'threefoo1', 'valuesfoo0', 'valuesfoo1')
+            ),
+            array(
+                array('one' => '${two} ${three} four', 'two' => 'a b', 'three' => 'five ${two}'),
+                '${one}foo',
+                array('afoo', 'bfoo', 'fivefoo', 'fourfoo')
+            )
         );
-        $oMockProperties->expects($this->at(0))->method('getProperty')
-            ->with($this->equalTo('p'))
-            ->will($this->returnValue('simple_value'));
-        $oMockProperties->expects($this->exactly(1))->method('getProperty');
-        $this->oDIContainer->setPropertiesAdapter($oMockProperties);
-
-        $oMockTask = $this->getMockForAbstractClass(
-            '\Himedia\Padocc\Task',
-            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
-        );
-
-        $class = new \ReflectionClass($oMockTask);
-        $method = $class->getMethod('expandPath');
-        $method->setAccessible(true);
-
-        $aResult = $method->invokeArgs($oMockTask, array('foo${p}bar'));
-        $this->assertEquals(array('foosimple_valuebar'), $aResult);
     }
 
     /**
-     * @covers \Himedia\Padocc\Task::expandPath
+     * @covers \Himedia\Padocc\Task::reroutePaths
+     * @dataProvider dataProviderTestReroutePaths
      */
-    public function testExpandPathWithOneComplexParameter ()
+    public function testReroutePaths (array $aProperties, $aPaths, $aExpected)
     {
+        foreach ($aProperties as $sKey => $sValue) {
+            $this->oDIContainer->getPropertiesAdapter()->setProperty($sKey, $sValue);
+        }
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-
-        /* @var $oMockProperties PropertiesInterface|\PHPUnit_Framework_MockObject_MockObject */
-        $oMockProperties = $this->getMock(
-            '\Himedia\Padocc\Properties\Adapter',
-            array('getProperty'),
-            array(),
-            '',
-            false
-        );
-        $oMockProperties->expects($this->at(0))->method('getProperty')
-            ->with($this->equalTo('p'))
-            ->will($this->returnValue('123 three values'));
-        $oMockProperties->expects($this->exactly(1))->method('getProperty');
-        $this->oDIContainer->setPropertiesAdapter($oMockProperties);
-
         $oMockTask = $this->getMockForAbstractClass(
             '\Himedia\Padocc\Task',
             array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
         );
 
-        $class = new \ReflectionClass($oMockTask);
-        $method = $class->getMethod('expandPath');
-        $method->setAccessible(true);
+        $oClass = new \ReflectionClass($oMockTask);
+        $oMethod = $oClass->getMethod('reroutePaths');
+        $oMethod->setAccessible(true);
 
-        $aResult = $method->invokeArgs($oMockTask, array('foo${p}bar'));
-        $this->assertEquals(array('foo123bar', 'foothreebar', 'foovaluesbar'), $aResult);
+        $aResult = $oMethod->invokeArgs($oMockTask, array($aPaths));
+        $this->assertEquals($aExpected, $aResult);
     }
 
     /**
-     * @covers \Himedia\Padocc\Task::expandPath
+     * Data provider pour testReroutePaths()
      */
-    public function testExpandPathWithTwoComplexParameters ()
+    public function dataProviderTestReroutePaths ()
     {
-        $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-
-        /* @var $oMockProperties PropertiesInterface|\PHPUnit_Framework_MockObject_MockObject */
-        $oMockProperties = $this->getMock(
-            '\Himedia\Padocc\Properties\Adapter',
-            array('getProperty'),
-            array(),
-            '',
-            false
+        $sBaseDir = '/path/to/basedir';
+        return array(
+            array(array('with_symlinks' => 'false'), array(), array()),
+            array(
+                array('with_symlinks' => 'false'),
+                array('/path/to/my_dir', 'user@server:/other/path'),
+                array('/path/to/my_dir', 'user@server:/other/path')
+            ),
+            array(
+                array('with_symlinks' => 'true', 'basedir' => $sBaseDir, 'execution_id' => 123),
+                array(),
+                array()
+            ),
+            array(
+                array('with_symlinks' => 'true', 'basedir' => $sBaseDir, 'execution_id' => 123),
+                array(
+                    $sBaseDir . 'a',
+                    $sBaseDir . '/a',
+                    '/path/to/elsewhere',
+                    '/bad' . $sBaseDir,
+                    'user@server:/other/path',
+                    'user@server:/bad' . $sBaseDir,
+                    'user@server:' . $sBaseDir,
+                    'user@server:' . $sBaseDir . '/subdir'
+                ),
+                array(
+                    $sBaseDir . 'a',
+                    $sBaseDir . '/a',
+                    '/path/to/elsewhere',
+                    '/bad' . $sBaseDir,
+                    'user@server:/other/path',
+                    'user@server:/bad' . $sBaseDir,
+                    'user@server:' . $sBaseDir . $this->aConfig['symlink_releases_dir_suffix'] . '/123',
+                    'user@server:' . $sBaseDir . $this->aConfig['symlink_releases_dir_suffix'] . '/123/subdir'
+                ),
+            ),
         );
-        $oMockProperties->expects($this->at(0))->method('getProperty')
-            ->with($this->equalTo('p'))
-            ->will($this->returnValue('123 three values'));
-        $oMockProperties->expects($this->at(1))->method('getProperty')
-            ->with($this->equalTo('q'))
-            ->will($this->returnValue('0 1'));
-        $oMockProperties->expects($this->exactly(2))->method('getProperty');
-        $this->oDIContainer->setPropertiesAdapter($oMockProperties);
-
-        $oMockTask = $this->getMockForAbstractClass(
-            '\Himedia\Padocc\Task',
-            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
-        );
-
-        $class = new \ReflectionClass($oMockTask);
-        $method = $class->getMethod('expandPath');
-        $method->setAccessible(true);
-
-        $aResult = $method->invokeArgs($oMockTask, array('${p}foo${q}'));
-        $this->assertEquals(array(
-            '123foo0', '123foo1',
-            'threefoo0', 'threefoo1',
-            'valuesfoo0', 'valuesfoo1',
-        ), $aResult);
     }
 
     /**
-     * @covers \Himedia\Padocc\Task::expandPath
+     * @covers \Himedia\Padocc\Task::processPath
+     * @dataProvider dataProviderTestProcessPath
      */
-    public function testExpandPathWithMultiComplexParameters ()
+    public function testProcessPath (array $aProperties, $sPath, array $aExpected)
     {
+        foreach ($aProperties as $sKey => $sValue) {
+            $this->oDIContainer->getPropertiesAdapter()->setProperty($sKey, $sValue);
+        }
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-
-        /* @var $oMockProperties PropertiesInterface|\PHPUnit_Framework_MockObject_MockObject */
-        $oMockProperties = $this->getMock(
-            '\Himedia\Padocc\Properties\Adapter',
-            array('getProperty'),
-            array(),
-            '',
-            false
-        );
-        $oMockProperties->expects($this->at(0))->method('getProperty')
-            ->with($this->equalTo('one'))
-            ->will($this->returnValue('${two} ${three} four'));
-        $oMockProperties->expects($this->at(1))->method('getProperty')
-            ->with($this->equalTo('two'))
-            ->will($this->returnValue('a b'));
-        $oMockProperties->expects($this->at(2))->method('getProperty')
-            ->with($this->equalTo('three'))
-            ->will($this->returnValue('five ${two}'));
-        $oMockProperties->expects($this->at(3))->method('getProperty')
-            ->with($this->equalTo('two'))
-            ->will($this->returnValue('a b'));
-        $oMockProperties->expects($this->exactly(4))->method('getProperty');
-        $this->oDIContainer->setPropertiesAdapter($oMockProperties);
-
         $oMockTask = $this->getMockForAbstractClass(
             '\Himedia\Padocc\Task',
             array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
         );
 
         $class = new \ReflectionClass($oMockTask);
-        $method = $class->getMethod('expandPath');
+        $method = $class->getMethod('processPath');
         $method->setAccessible(true);
 
-        $aResult = $method->invokeArgs($oMockTask, array('${one}foo'));
-        $this->assertEquals(array(
-            'afoo',
-            'bfoo',
-            'fivefoo',
-            'fourfoo'
-        ), $aResult);
+        $aResult = $method->invokeArgs($oMockTask, array($sPath));
+        $this->assertEquals($aExpected, $aResult);
+    }
+
+    /**
+     * Data provider pour testProcessPath()
+     */
+    public function dataProviderTestProcessPath ()
+    {
+        $sBaseDir = '/path/to/basedir';
+        $sReroutePrefix = 'user@server:' . $sBaseDir . $this->aConfig['symlink_releases_dir_suffix'] . '/123';
+        return array(
+            array(
+                array(
+                    'with_symlinks' => 'true', 'basedir' => $sBaseDir, 'execution_id' => 123,
+                    'a' => '1 2', 'b' => '3 4'
+                ),
+                'user@server:' . $sBaseDir . '/foo${a}${b}bar',
+                array(
+                    "$sReroutePrefix/foo13bar",
+                    "$sReroutePrefix/foo14bar",
+                    "$sReroutePrefix/foo23bar",
+                    "$sReroutePrefix/foo24bar"
+                )
+            ),
+        );
+    }
+
+    /**
+     * @covers \Himedia\Padocc\Task::processSimplePath
+     */
+    public function testProcessSimplePathThrowExceptionIfMultipleExpansion ()
+    {
+        $sBaseDir = '/path/to/basedir';
+        $aProperties = array('with_symlinks' => 'true', 'basedir' => $sBaseDir, 'execution_id' => 123, 'a' => '1 2');
+        $sPath = 'user@server:' . $sBaseDir . '/foo${a}bar';
+
+        foreach ($aProperties as $sKey => $sValue) {
+            $this->oDIContainer->getPropertiesAdapter()->setProperty($sKey, $sValue);
+        }
+        $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
+
+        $class = new \ReflectionClass($oMockTask);
+        $method = $class->getMethod('processSimplePath');
+        $method->setAccessible(true);
+
+        $this->setExpectedException('\RuntimeException', 'should return a single path after process:');
+        $method->invokeArgs($oMockTask, array($sPath));
+    }
+
+    /**
+     * @covers \Himedia\Padocc\Task::processSimplePath
+     * @dataProvider dataProviderTestProcessSimplePathOk
+     */
+    public function testProcessSimplePathOk (array $aProperties, $sPath, $sExpected)
+    {
+        foreach ($aProperties as $sKey => $sValue) {
+            $this->oDIContainer->getPropertiesAdapter()->setProperty($sKey, $sValue);
+        }
+        $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
+
+        $class = new \ReflectionClass($oMockTask);
+        $method = $class->getMethod('processSimplePath');
+        $method->setAccessible(true);
+
+        $aResult = $method->invokeArgs($oMockTask, array($sPath));
+        $this->assertEquals($sExpected, $aResult);
+    }
+
+    /**
+     * Data provider pour testProcessSimplePathOk()
+     */
+    public function dataProviderTestProcessSimplePathOk ()
+    {
+        $sBaseDir = '/path/to/basedir';
+        $sReroutePrefix = 'user@server:' . $sBaseDir . $this->aConfig['symlink_releases_dir_suffix'] . '/123';
+        return array(
+            array(
+                array('with_symlinks' => 'true', 'basedir' => $sBaseDir, 'execution_id' => 123),
+                'user@server:' . $sBaseDir . '/foo',
+                "$sReroutePrefix/foo"
+            ),
+        );
     }
 
     /**
@@ -249,6 +302,31 @@ class TaskTest extends PadoccTestCase
         $oProperty = $o->getProperty('aAttValues');
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockTask, array());
+
+        $oMockTask->setUp();
+        $oMockTask->expects($this->any())->method('check');
+    }
+
+    /**
+     * @covers \Himedia\Padocc\Task::check
+     */
+    public function testCheckWhenNotEmpty ()
+    {
+        /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
+        $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
+        $oMockTask = $this->getMockForAbstractClass(
+            '\Himedia\Padocc\Task',
+            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
+        );
+        $o = new \ReflectionClass($oMockTask);
+
+        $oProperty = $o->getProperty('aAttrProperties');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array('name' => AttributeProperties::REQUIRED));
+
+        $oProperty = $o->getProperty('aAttValues');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockTask, array('name' => 'toto'));
 
         $oMockTask->setUp();
         $oMockTask->expects($this->any())->method('check');
@@ -311,215 +389,6 @@ class TaskTest extends PadoccTestCase
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
         $oTaskCopy = Copy::getNewInstance(array('attr1' => 'v1', 'attr2' => 'v2'), $oMockProject, $this->oDIContainer);
         $this->assertAttributeEquals(array('attr1' => 'v1', 'attr2' => 'v2'), 'aAttValues', $oTaskCopy);
-    }
-
-    /**
-     * @covers \Himedia\Padocc\Task::reroutePaths
-     */
-    public function testReroutePathsWithoutSymlinksWithEmptyPath ()
-    {
-        $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-
-        /* @var $oMockProperties PropertiesInterface|\PHPUnit_Framework_MockObject_MockObject */
-        $oMockProperties = $this->getMock(
-            '\Himedia\Padocc\Properties\Adapter',
-            array('getProperty'),
-            array(),
-            '',
-            false
-        );
-        $oMockProperties->expects($this->at(0))->method('getProperty')
-            ->with($this->equalTo('with_symlinks'))
-            ->will($this->returnValue('false'));
-        $oMockProperties->expects($this->exactly(1))->method('getProperty');
-        $this->oDIContainer->setPropertiesAdapter($oMockProperties);
-
-        $oMockTask = $this->getMockForAbstractClass(
-            '\Himedia\Padocc\Task',
-            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
-        );
-
-        $oClass = new \ReflectionClass($oMockTask);
-        $oMethod = $oClass->getMethod('reroutePaths');
-        $oMethod->setAccessible(true);
-
-        $aResult = $oMethod->invokeArgs($oMockTask, array(array()));
-        $this->assertEquals(array(), $aResult);
-    }
-
-    /**
-     * @covers \Himedia\Padocc\Task::reroutePaths
-     */
-    public function testReroutePathsWithoutSymlinks ()
-    {
-        $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-
-        /* @var $oMockProperties PropertiesInterface|\PHPUnit_Framework_MockObject_MockObject */
-        $oMockProperties = $this->getMock(
-            '\Himedia\Padocc\Properties\Adapter',
-            array('getProperty'),
-            array(),
-            '',
-            false
-        );
-        $oMockProperties->expects($this->at(0))->method('getProperty')
-            ->with($this->equalTo('with_symlinks'))
-            ->will($this->returnValue('false'));
-        $oMockProperties->expects($this->exactly(1))->method('getProperty');
-        $this->oDIContainer->setPropertiesAdapter($oMockProperties);
-
-        $oMockTask = $this->getMockForAbstractClass(
-            '\Himedia\Padocc\Task',
-            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
-        );
-
-        $oClass = new \ReflectionClass($oMockTask);
-        $oMethod = $oClass->getMethod('reroutePaths');
-        $oMethod->setAccessible(true);
-
-        $aResult = $oMethod->invokeArgs($oMockTask, array(array('/path/to/my_dir', 'user@server:/other/path')));
-        $this->assertEquals(array('/path/to/my_dir', 'user@server:/other/path'), $aResult);
-    }
-
-    /**
-     * @covers \Himedia\Padocc\Task::reroutePaths
-     */
-    public function testReroutePathsWithSymlinksWithEmptyPath ()
-    {
-        $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-
-        /* @var $oMockProperties PropertiesInterface|\PHPUnit_Framework_MockObject_MockObject */
-        $oMockProperties = $this->getMock(
-            '\Himedia\Padocc\Properties\Adapter',
-            array('getProperty'),
-            array(),
-            '',
-            false
-        );
-        $oMockProperties->expects($this->at(0))->method('getProperty')
-            ->with($this->equalTo('with_symlinks'))
-            ->will($this->returnValue('true'));
-        $oMockProperties->expects($this->at(1))->method('getProperty')
-            ->with($this->equalTo('basedir'))
-            ->will($this->returnValue('/path/to/base_dir'));
-        $oMockProperties->expects($this->at(2))->method('getProperty')
-            ->with($this->equalTo('execution_id'))
-            ->will($this->returnValue('12345'));
-        $oMockProperties->expects($this->exactly(3))->method('getProperty');
-        $this->oDIContainer->setPropertiesAdapter($oMockProperties);
-
-        $oMockTask = $this->getMockForAbstractClass(
-            '\Himedia\Padocc\Task',
-            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
-        );
-
-        $oClass = new \ReflectionClass($oMockTask);
-        $oMethod = $oClass->getMethod('reroutePaths');
-        $oMethod->setAccessible(true);
-
-        $aResult = $oMethod->invokeArgs($oMockTask, array(array()));
-        $this->assertEquals(array(), $aResult);
-    }
-
-    /**
-     * @covers \Himedia\Padocc\Task::reroutePaths
-     */
-    public function testReroutePathsWithSymlinksWithNoReroute ()
-    {
-        $sBaseDir = '/path/to/basedir';
-        $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-
-        /* @var $oMockProperties PropertiesInterface|\PHPUnit_Framework_MockObject_MockObject */
-        $oMockProperties = $this->getMock(
-            '\Himedia\Padocc\Properties\Adapter',
-            array('getProperty'),
-            array(),
-            '',
-            false
-        );
-        $oMockProperties->expects($this->at(0))->method('getProperty')
-            ->with($this->equalTo('with_symlinks'))
-            ->will($this->returnValue('true'));
-        $oMockProperties->expects($this->at(1))->method('getProperty')
-            ->with($this->equalTo('basedir'))
-            ->will($this->returnValue($sBaseDir));
-        $oMockProperties->expects($this->at(2))->method('getProperty')
-            ->with($this->equalTo('execution_id'))
-            ->will($this->returnValue('12345'));
-        $oMockProperties->expects($this->exactly(3))->method('getProperty');
-        $this->oDIContainer->setPropertiesAdapter($oMockProperties);
-
-        $oMockTask = $this->getMockForAbstractClass(
-            '\Himedia\Padocc\Task',
-            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
-        );
-
-        $oClass = new \ReflectionClass($oMockTask);
-        $oMethod = $oClass->getMethod('reroutePaths');
-        $oMethod->setAccessible(true);
-
-        $aSrc = array(
-            $sBaseDir .'trapped',
-            '/path/to/elsewhere',
-            '/bad' . $sBaseDir,
-            'user@server:/other/path',
-            'user@server:/bad' . $sBaseDir
-        );
-        $aDest = $aSrc;
-        $aResult = $oMethod->invokeArgs($oMockTask, array($aSrc));
-        $this->assertEquals($aDest, $aResult);
-    }
-
-    /**
-     * @covers \Himedia\Padocc\Task::reroutePaths
-     */
-    public function testReroutePathsWithSymlinksWithReroute ()
-    {
-        $sBaseDir = '/path/to/basedir';
-        $aSrc = array(
-            $sBaseDir,
-            $sBaseDir . '/subdir',
-            'user@server:' . $sBaseDir,
-            'user@server:' . $sBaseDir . '/subdir'
-        );
-        $aDest = array(
-            $sBaseDir,
-            $sBaseDir . '/subdir',
-            'user@server:' . $sBaseDir . $this->aConfig['symlink_releases_dir_suffix'] . '/12345',
-            'user@server:' . $sBaseDir . $this->aConfig['symlink_releases_dir_suffix'] . '/12345/subdir'
-        );
-
-        $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
-
-        /* @var $oMockProperties PropertiesInterface|\PHPUnit_Framework_MockObject_MockObject */
-        $oMockProperties = $this->getMock(
-            '\Himedia\Padocc\Properties\Adapter',
-            array('getProperty'),
-            array(),
-            '',
-            false
-        );
-        $oMockProperties->expects($this->at(0))->method('getProperty')
-            ->with($this->equalTo('with_symlinks'))
-            ->will($this->returnValue('true'));
-        $oMockProperties->expects($this->at(1))->method('getProperty')
-            ->with($this->equalTo('basedir'))
-            ->will($this->returnValue($sBaseDir));
-        $oMockProperties->expects($this->at(2))->method('getProperty')
-            ->with($this->equalTo('execution_id'))
-            ->will($this->returnValue('12345'));
-        $oMockProperties->expects($this->exactly(3))->method('getProperty');
-        $this->oDIContainer->setPropertiesAdapter($oMockProperties);
-
-        $oMockTask = $this->getMockForAbstractClass(
-            '\Himedia\Padocc\Task',
-            array(new \SimpleXMLElement('<foo />'), $oMockProject, $this->oDIContainer)
-        );
-        $oClass = new \ReflectionClass($oMockTask);
-        $oMethod = $oClass->getMethod('reroutePaths');
-        $oMethod->setAccessible(true);
-        $aResult = $oMethod->invokeArgs($oMockTask, array($aSrc));
-        $this->assertEquals($aDest, $aResult);
     }
 
     /**
