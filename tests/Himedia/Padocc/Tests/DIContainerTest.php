@@ -41,6 +41,7 @@ class DIContainerTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\DIContainer::setLogger
      * @covers \Himedia\Padocc\DIContainer::getLogger
+     * @covers \Himedia\Padocc\DIContainer::__construct
      */
     public function testLogger ()
     {
@@ -50,8 +51,19 @@ class DIContainerTest extends PadoccTestCase
     }
 
     /**
+     * @covers \Himedia\Padocc\DIContainer::getLogger
+     * @covers \Himedia\Padocc\DIContainer::__construct
+     */
+    public function testGetLoggerThrowExceptionIfNotSet ()
+    {
+        $this->setExpectedException('\RuntimeException', 'No LoggerInterface instance set!');
+        $this->oDIContainer->getLogger();
+    }
+
+    /**
      * @covers \Himedia\Padocc\DIContainer::setPropertiesAdapter
      * @covers \Himedia\Padocc\DIContainer::getPropertiesAdapter
+     * @covers \Himedia\Padocc\DIContainer::__construct
      */
     public function testPropertiesAdapter ()
     {
@@ -62,8 +74,19 @@ class DIContainerTest extends PadoccTestCase
     }
 
     /**
+     * @covers \Himedia\Padocc\DIContainer::getPropertiesAdapter
+     * @covers \Himedia\Padocc\DIContainer::__construct
+     */
+    public function testGetPropertiesAdapterThrowExceptionIfNotSet ()
+    {
+        $this->setExpectedException('\RuntimeException', 'No PropertiesInterface instance set!');
+        $this->oDIContainer->getPropertiesAdapter();
+    }
+
+    /**
      * @covers \Himedia\Padocc\DIContainer::setNumberingAdapter
      * @covers \Himedia\Padocc\DIContainer::getNumberingAdapter
+     * @covers \Himedia\Padocc\DIContainer::__construct
      */
     public function testNumberingAdapter ()
     {
@@ -73,13 +96,56 @@ class DIContainerTest extends PadoccTestCase
     }
 
     /**
+     * @covers \Himedia\Padocc\DIContainer::getNumberingAdapter
+     * @covers \Himedia\Padocc\DIContainer::__construct
+     */
+    public function testGetNumberingAdapterThrowExceptionIfNotSet ()
+    {
+        $this->setExpectedException('\RuntimeException', 'No NumberingInterface instance set!');
+        $this->oDIContainer->getNumberingAdapter();
+    }
+
+    /**
      * @covers \Himedia\Padocc\DIContainer::setShellAdapter
      * @covers \Himedia\Padocc\DIContainer::getShellAdapter
+     * @covers \Himedia\Padocc\DIContainer::__construct
      */
     public function testShellAdapter ()
     {
         $oInShell = new ShellAdapter(new NullLogger());
         $oOutShell = $this->oDIContainer->setShellAdapter($oInShell)->getShellAdapter();
         $this->assertEquals($oInShell, $oOutShell);
+    }
+
+    /**
+     * @covers \Himedia\Padocc\DIContainer::getShellAdapter
+     * @covers \Himedia\Padocc\DIContainer::__construct
+     */
+    public function testGetShellAdapterThrowExceptionIfNotSet ()
+    {
+        $this->setExpectedException('\RuntimeException', 'No ShellAdapter instance set!');
+        $this->oDIContainer->getShellAdapter();
+    }
+
+    /**
+     * @covers \Himedia\Padocc\DIContainer::setConfig
+     * @covers \Himedia\Padocc\DIContainer::getConfig
+     * @covers \Himedia\Padocc\DIContainer::__construct
+     */
+    public function testConfig ()
+    {
+        $aInConfig = array('a' => 'b');
+        $aOutConfig = $this->oDIContainer->setConfig($aInConfig)->getConfig();
+        $this->assertEquals($aInConfig, $aOutConfig);
+    }
+
+    /**
+     * @covers \Himedia\Padocc\DIContainer::getConfig
+     * @covers \Himedia\Padocc\DIContainer::__construct
+     */
+    public function testGetConfigThrowExceptionIfNotSet ()
+    {
+        $this->setExpectedException('\RuntimeException', 'No config array set!');
+        $this->oDIContainer->getConfig();
     }
 }

@@ -79,7 +79,7 @@ class DIContainer
     public function getLogger ()
     {
         if ($this->oLogger === null) {
-            throw new \RuntimeException('No logger set!');
+            throw new \RuntimeException('No LoggerInterface instance set!');
         }
         return $this->oLogger;
     }
@@ -105,7 +105,7 @@ class DIContainer
     public function getPropertiesAdapter ()
     {
         if ($this->oProperties === null) {
-            throw new \RuntimeException('No Properties instance set!');
+            throw new \RuntimeException('No PropertiesInterface instance set!');
         }
         return $this->oProperties;
     }
@@ -131,7 +131,7 @@ class DIContainer
     public function getShellAdapter ()
     {
         if ($this->oShell === null) {
-            throw new \RuntimeException('No Shell adapter set!');
+            throw new \RuntimeException('No ShellAdapter instance set!');
         }
         return $this->oShell;
     }
@@ -157,7 +157,7 @@ class DIContainer
     public function getNumberingAdapter ()
     {
         if ($this->oNumbering === null) {
-            throw new \RuntimeException('No Numbering adapter set!');
+            throw new \RuntimeException('No NumberingInterface instance set!');
         }
         return $this->oNumbering;
     }
@@ -179,7 +179,7 @@ class DIContainer
     public function getConfig ()
     {
         if ($this->aConfig === array()) {
-            throw new \RuntimeException('No config set!');
+            throw new \RuntimeException('No config array set!');
         }
         return $this->aConfig;
     }
