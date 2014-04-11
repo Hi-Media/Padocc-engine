@@ -41,6 +41,7 @@ class PropertiesTest extends PadoccTestCase
 
     /**
      * @covers \Himedia\Padocc\Properties\Adapter::getProperty
+     * @covers \Himedia\Padocc\Properties\Adapter::__construct
      */
     public function testGetPropertyThrowExceptionIfUnknownProperty ()
     {
@@ -51,6 +52,7 @@ class PropertiesTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Properties\Adapter::getProperty
      * @covers \Himedia\Padocc\Properties\Adapter::setProperty
+     * @covers \Himedia\Padocc\Properties\Adapter::__construct
      */
     public function testGetPropertyIfPropertyExists ()
     {
@@ -61,6 +63,7 @@ class PropertiesTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Properties\Adapter::getProperty
      * @covers \Himedia\Padocc\Properties\Adapter::setProperty
+     * @covers \Himedia\Padocc\Properties\Adapter::__construct
      */
     public function testGetPropertyWith2SetProperty ()
     {
@@ -72,6 +75,7 @@ class PropertiesTest extends PadoccTestCase
 
     /**
      * @covers \Himedia\Padocc\Properties\Adapter::loadConfigIniFile
+     * @covers \Himedia\Padocc\Properties\Adapter::__construct
      */
     public function testLoadConfigIniFileThrowExceptionIfFileNotExists ()
     {
@@ -81,6 +85,7 @@ class PropertiesTest extends PadoccTestCase
 
     /**
      * @covers \Himedia\Padocc\Properties\Adapter::loadConfigIniFile
+     * @covers \Himedia\Padocc\Properties\Adapter::__construct
      */
     public function testLoadConfigIniFileThrowExceptionIfParseFailed ()
     {
@@ -105,6 +110,7 @@ class PropertiesTest extends PadoccTestCase
 
     /**
      * @covers \Himedia\Padocc\Properties\Adapter::loadConfigIniFile
+     * @covers \Himedia\Padocc\Properties\Adapter::__construct
      */
     public function testLoadConfigIniFileWithValues ()
     {
@@ -129,6 +135,7 @@ EOT;
 
     /**
      * @covers \Himedia\Padocc\Properties\Adapter::loadConfigShellFile
+     * @covers \Himedia\Padocc\Properties\Adapter::__construct
      */
     public function testLoadConfigShellFileThrowExceptionIfFileNotExists ()
     {
@@ -138,6 +145,7 @@ EOT;
 
     /**
      * @covers \Himedia\Padocc\Properties\Adapter::loadConfigShellFile
+     * @covers \Himedia\Padocc\Properties\Adapter::__construct
      */
     public function testLoadConfigShellFileWithSimpleValues ()
     {
@@ -158,6 +166,7 @@ EOT;
 
     /**
      * @covers \Himedia\Padocc\Properties\Adapter::loadConfigShellFile
+     * @covers \Himedia\Padocc\Properties\Adapter::__construct
      */
     public function testLoadConfigShellFileWithRecursiveValues ()
     {
