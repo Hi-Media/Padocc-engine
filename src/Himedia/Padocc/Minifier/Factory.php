@@ -42,6 +42,7 @@ class Factory
 
     /**
      * Simple factory, non instanciable.
+     * @codeCoverageIgnore
      */
     private function __construct()
     {
