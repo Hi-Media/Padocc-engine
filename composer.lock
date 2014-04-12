@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "8c304ff4f9b5820aff964803bb8d75f5",
+    "hash": "109835560c67ad22a4338bcc9f66ea02",
     "packages": [
         {
             "name": "corneltek/getoptionkit",
@@ -233,16 +233,16 @@
         },
         {
             "name": "geoffroy-aubry/shell",
-            "version": "v1.1.2",
+            "version": "v1.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/geoffroy-aubry/Shell.git",
-                "reference": "25d1805eed7171e0e1c5f9db78bcbaad2dc66fdc"
+                "reference": "7d046b10fc5688617f4aa74030ed968da159925e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/geoffroy-aubry/Shell/zipball/25d1805eed7171e0e1c5f9db78bcbaad2dc66fdc",
-                "reference": "25d1805eed7171e0e1c5f9db78bcbaad2dc66fdc",
+                "url": "https://api.github.com/repos/geoffroy-aubry/Shell/zipball/7d046b10fc5688617f4aa74030ed968da159925e",
+                "reference": "7d046b10fc5688617f4aa74030ed968da159925e",
                 "shasum": ""
             },
             "require": {
@@ -254,8 +254,8 @@
                 "apigen/apigen": "2.8.0",
                 "geoffroy-aubry/logger": "1.*",
                 "phpmd/phpmd": "1.4.*",
-                "phpunit/phpunit": ">=3.7",
-                "squizlabs/php_codesniffer": "1.4.*"
+                "phpunit/phpunit": "3.7.*",
+                "squizlabs/php_codesniffer": "1.*"
             },
             "type": "library",
             "autoload": {
@@ -273,20 +273,20 @@
                     "email": "geoffroy.aubry@free.fr"
                 }
             ],
-            "time": "2014-03-31 21:41:23"
+            "time": "2014-04-11 15:18:36"
         },
         {
             "name": "geoffroy-aubry/supervisor",
-            "version": "v1.4.0",
+            "version": "v1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/geoffroy-aubry/Supervisor.git",
-                "reference": "74c86da554bb2beab18303d42957b8cd1952adec"
+                "reference": "f784c62cf3ad631a00aed786d6bebdfd9df69c67"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/geoffroy-aubry/Supervisor/zipball/74c86da554bb2beab18303d42957b8cd1952adec",
-                "reference": "74c86da554bb2beab18303d42957b8cd1952adec",
+                "url": "https://api.github.com/repos/geoffroy-aubry/Supervisor/zipball/f784c62cf3ad631a00aed786d6bebdfd9df69c67",
+                "reference": "f784c62cf3ad631a00aed786d6bebdfd9df69c67",
                 "shasum": ""
             },
             "require": {
@@ -318,7 +318,7 @@
                 "notification",
                 "supervisor"
             ],
-            "time": "2014-04-08 06:56:40"
+            "time": "2014-04-12 06:56:20"
         },
         {
             "name": "psr/log",
