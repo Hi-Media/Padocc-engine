@@ -83,8 +83,10 @@ class Deployment
     public function run ($sXmlProjectPath, $sEnvName, $sExecutionID, array $aExternalProperties, $sRollbackID)
     {
         $sXmlProjectPath = realpath($sXmlProjectPath);
+        $oProject = Project::getSXEProject($sXmlProjectPath);
+        $sProjectName = (string)$oProject['name'];
         $this->oProperties
-            ->setProperty('project_name', 'toto')
+            ->setProperty('project_name', $sProjectName)
             ->setProperty('environment_name', $sEnvName)
             ->setProperty('execution_id', $sExecutionID)
             ->setProperty('tmpdir', $this->aConfig['dir']['tmp'] . '/deploy_' . $sExecutionID)
