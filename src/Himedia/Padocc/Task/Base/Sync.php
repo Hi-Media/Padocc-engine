@@ -33,6 +33,7 @@ class Sync extends Task
      * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
      *
      * @return string nom du tag XML correspondant à cette tâche dans les config projet.
+     * @codeCoverageIgnore
      */
     public static function getTagName ()
     {

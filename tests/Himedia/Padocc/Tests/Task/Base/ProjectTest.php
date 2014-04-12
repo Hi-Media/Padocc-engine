@@ -84,39 +84,6 @@ class ProjectTest extends PadoccTestCase
     }
 
     /**
-     * @covers \Himedia\Padocc\Task\Base\Project::getAllProjectsName
-     */
-    public function testGetAllProjectsNameThrowExceptionIfNotFound ()
-    {
-        $this->setExpectedException(
-            'UnexpectedValueException',
-            "Resource path not found: '"
-        );
-        Project::getAllProjectsName($this->aConfig['dir']['tmp'] . '/not_exists_lzujlkrehvls');
-    }
-
-    /**
-     * @covers \Himedia\Padocc\Task\Base\Project::getAllProjectsName
-     */
-    public function testGetAllProjectsNameThrowExceptionIfBadXml ()
-    {
-        $this->setExpectedException(
-            'UnexpectedValueException',
-            "Bad project definition: '"
-        );
-        Project::getAllProjectsName($this->aConfig['dir']['tests'] . '/resources/base_project/2');
-    }
-
-    /**
-     * @covers \Himedia\Padocc\Task\Base\Project::getAllProjectsName
-     */
-    public function testGetAllProjectsName ()
-    {
-        $aProjectNames = Project::getAllProjectsName($this->aConfig['dir']['tests'] . '/resources/base_project/1');
-        $this->assertEquals($aProjectNames, array('ebay', 'ptpn', 'rts'));
-    }
-
-    /**
      * @covers \Himedia\Padocc\Task\Base\Project::getSXEProject
      */
     public function testGetSXEProjectThrowExceptionIfBadXML ()

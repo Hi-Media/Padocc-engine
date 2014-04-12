@@ -21,43 +21,6 @@ class Project extends WithProperties
 {
 
     /**
-     * Retourne la liste des projets dont le fichier de déploiement XML se trouve dans le chemin spécifié.
-     * La liste est triée par ordre alphabétique.
-     *
-     * @param string $sRessourcesPath chemin hébergeant des configurations de déploiement au format XML
-     * @throws \ErrorException
-     * @throws \Exception
-     * @throws \UnexpectedValueException si fichier XML mal formaté
-     * @return array la liste des projets dont le fichier de déploiement XML se trouve dans le chemin spécifié.
-     */
-    public static function getAllProjectsName ($sRessourcesPath)
-    {
-        $aProjectNames = array();
-        try {
-            $rHandle = opendir($sRessourcesPath);
-        } catch (\ErrorException $oException) {
-            if (strpos($oException->getMessage(), 'failed to open dir: No such file or directory') !== false) {
-                throw new \UnexpectedValueException("Resource path not found: '$sRessourcesPath'.");
-            } else {
-                throw $oException;
-            }
-        }
-        while ($file = readdir($rHandle)) {
-            clearstatcache();
-            $sProjectPath = $sRessourcesPath . '/' . $file;
-            if (substr($file, -4) == '.xml' && is_file($sProjectPath)) {
-                $oProject = self::getSXEProject($sProjectPath);
-                if (isset($oProject['name'])) {
-                    $aProjectNames[] = (string)$oProject['name'];
-                }
-            }
-        }
-        closedir($rHandle);
-        sort($aProjectNames);
-        return $aProjectNames;
-    }
-
-    /**
      * Retourne une instance SimpleXMLElement du projet spécifié.
      *
      * @param string $sXmlProject XML project path or XML data
@@ -85,6 +48,7 @@ class Project extends WithProperties
      * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
      *
      * @return string nom du tag XML correspondant à cette tâche dans les config projet.
+     * @codeCoverageIgnore
      */
     public static function getTagName ()
     {
