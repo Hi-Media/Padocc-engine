@@ -43,6 +43,7 @@ class Call extends WithProperties
      * @param \SimpleXMLElement $oTask Contenu XML de la tâche.
      * @param Project $oProject Super tâche projet.
      * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
+     * @throws \UnexpectedValueException if target not found or not unique in this project.
      */
     public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
     {
@@ -65,6 +66,7 @@ class Call extends WithProperties
 
     /**
      * Prépare la tâche avant exécution : vérifications basiques, analyse des serveurs concernés...
+     * @codeCoverageIgnore
      */
     public function setUp ()
     {
@@ -77,6 +79,7 @@ class Call extends WithProperties
      * Elle devrait systématiquement commencer par "parent::centralExecute();".
      * Appelé par execute().
      * @see execute()
+     * @codeCoverageIgnore
      */
     protected function centralExecute ()
     {
