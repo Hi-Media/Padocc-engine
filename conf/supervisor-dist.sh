@@ -28,7 +28,7 @@ SRC_DIR=$ROOT_DIR/src
 INC_DIR=$SRC_DIR/inc
 TMP_DIR='/tmp/padocc'
 LOG_DIR='/var/log/padocc'
-EMAIL_TEMPLATES_DIR=$(cd "$(dirname "$(readlink -f "$BASH_SOURCE")")/../vendor/geoffroy-aubry/supervisor/src/templates" && pwd)
+EMAIL_TEMPLATES_DIR=$ROOT_DIR/src/templates
 
 # All four following files must be in $LOG_DIR/ directory.
 
@@ -117,7 +117,7 @@ SUPERVISOR_CSV_FIELD_ENCLOSURE='"'
 
 # Path to 'csv-parser.awk' CSV parser
 # @see https://github.com/geoffroy-aubry/awk-csv-parser for more details.
-SUPERVISOR_CSV_PARSER="$(cd "$(dirname "$(readlink -f "$BASH_SOURCE")")/.." && pwd)/vendor/bin/csv-parser.awk"
+SUPERVISOR_CSV_PARSER="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )/vendor/bin/csv-parser.awk"
 
 ##
 # Colors and decorations types.
