@@ -352,7 +352,8 @@ class LinkTest extends PadoccTestCase
         $oTask->execute();
         $this->assertEquals(
             array(
-                '[ -h "/path/to/link" ] && echo -n 1; [ -d "/path/to/link" ] && echo 2 || ([ -f "/path/to/link" ] && echo 1 || echo 0)',
+                '[ -h "/path/to/link" ] && echo -n 1; '
+                . '[ -d "/path/to/link" ] && echo 2 || ([ -f "/path/to/link" ] && echo 1 || echo 0)',
                 'mkdir -p "$(dirname "/path/to/link")" && ln -snf "/path/to/destdir" "/path/to/link"'
             ),
             $this->aShellExecCmds
@@ -461,7 +462,8 @@ class LinkTest extends PadoccTestCase
         $sSshOptions = $this->aAllConfigs['GAubry\Shell']['ssh_options'];
         $this->assertEquals(array(
             "ssh $sSshOptions -T user@server /bin/bash <<EOF\n"
-            . 'mkdir -p "$(dirname "/path/to/destdir_releases/12345/link")" && ln -snf "/path/to/destdir_releases/12345/subdir" "/path/to/destdir_releases/12345/link"' . "\n"
+            . 'mkdir -p "$(dirname "/path/to/destdir_releases/12345/link")"'
+            . ' && ln -snf "/path/to/destdir_releases/12345/subdir" "/path/to/destdir_releases/12345/link"' . "\n"
             . 'EOF' . "\n"
         ), $this->aShellExecCmds);
     }
@@ -511,7 +513,8 @@ class LinkTest extends PadoccTestCase
         $sSshOptions = $this->aAllConfigs['GAubry\Shell']['ssh_options'];
         $this->assertEquals(array(
             "ssh $sSshOptions -T user@server /bin/bash <<EOF\n"
-            . 'mkdir -p "$(dirname "/path/to/destdir_releases/12345/link")" && ln -snf "/path/to/destdir_releases/12345/subdir" "/path/to/destdir_releases/12345/link"' . "\n"
+            . 'mkdir -p "$(dirname "/path/to/destdir_releases/12345/link")"'
+            . ' && ln -snf "/path/to/destdir_releases/12345/subdir" "/path/to/destdir_releases/12345/link"' . "\n"
             . 'EOF' . "\n"
         ), $this->aShellExecCmds);
     }

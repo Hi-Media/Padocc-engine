@@ -109,7 +109,8 @@ class DeploymentMapper
     public function update (array $aParameters)
     {
         if (empty($aParameters[$this->sPK])) {
-            throw new \RuntimeException("Missing primary key '$this->sPK' in parameters: " . print_r($aParameters, true));
+            $sMsg = "Missing primary key '$this->sPK' in parameters: " . print_r($aParameters, true);
+            throw new \RuntimeException($sMsg);
         } elseif (count($aParameters) > 1) {
             $sPKValue = $aParameters[$this->sPK];
             unset($aParameters[$this->sPK]);

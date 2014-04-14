@@ -271,11 +271,10 @@ class Padocc
         $sInfoLogPath = sprintf($this->aConfig['Himedia\Padocc']['info_log_path_pattern'], $sExecId);
         $aResult = Helpers::exec("tail -n1 '$sInfoLogPath'");
         if (preg_match(
-                '/^[0-9 :-]{22}cs;\[SUPERVISOR\] (OK|ERROR|WARNING \(#(\d+)\))\s*$/',
-                $aResult[0],
-                $aMatches
-            ) !== 1
-        ) {
+            '/^[0-9 :-]{22}cs;\[SUPERVISOR\] (OK|ERROR|WARNING \(#(\d+)\))\s*$/',
+            $aResult[0],
+            $aMatches
+        ) !== 1) {
             throw new \RuntimeException("Supervisor log result unexpected! Log file: '$sInfoLogPath'.");
         } elseif ($aMatches[1] == 'OK') {
             $sStatus = DeploymentStatus::SUCCESSFUL;

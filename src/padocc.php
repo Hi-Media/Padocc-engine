@@ -19,7 +19,8 @@ rsync -axz --delete --stats -e ssh \
     --cvs-exclude --exclude=conf/padocc.php --exclude=conf/padocc-ssh --exclude=conf/supervisor.sh \
     /home/gaubry/PhpstormProjects/Padocc-engine/ \
     gaubry@192.168.27.103:/var/www/padocc/ \
-&& ssh gaubry@192.168.27.103 "sudo mkdir -p /var/padocc/archives /var/padocc/repositories /var/log/padocc /tmp/padocc/locks"
+&& ssh gaubry@192.168.27.103 \
+    "sudo mkdir -p /var/padocc/archives /var/padocc/repositories /var/log/padocc /tmp/padocc/locks"
  */
 
 /*
