@@ -99,7 +99,7 @@ class GitExportTestTest extends PadoccTestCase
         $oProperty = $oClass->getProperty('_aFileStatus');
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockShell, array(
-            '/var/padocc/repositories/git/test_project_test_env_1' => PathStatus::STATUS_DIR,
+            $this->aConfig['dir']['repositories'] . '/git/test_project_test_env_1' => PathStatus::STATUS_DIR,
             '/tmp/my-local-repository' => PathStatus::STATUS_DIR,
             '/tmp/my-local-repository/subdir/of/repo' => PathStatus::STATUS_DIR
         ));
@@ -153,9 +153,10 @@ class GitExportTestTest extends PadoccTestCase
         $oGitTask->execute();
 
         $sGitExport = $this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['inc'] . '/gitexport.sh';
+        $sRepoDir = $this->aConfig['dir']['repositories'];
         $this->assertEquals(array(
-            $sGitExport . ' "/my/repo" "master" "/var/padocc/repositories/git/test_project_test_env_1"',
-            '/var/padocc/repositories/git/test_project_test_env_1/|/path/to/destdir||||'
+            $sGitExport . ' "/my/repo" "master" "' . $sRepoDir . '/git/test_project_test_env_1"',
+            $sRepoDir . '/git/test_project_test_env_1/|/path/to/destdir||||'
         ), $this->aShellExecCmds);
     }
 
@@ -181,9 +182,10 @@ class GitExportTestTest extends PadoccTestCase
         $oGitTask->execute();
 
         $sGitExport = $this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['inc'] . '/gitexport.sh';
+        $sRepoDir = $this->aConfig['dir']['repositories'];
         $this->assertEquals(array(
-            $sGitExport . ' "/my/repo" "master" "/var/padocc/repositories/git/test_project_test_env_1"',
-            '/var/padocc/repositories/git/test_project_test_env_1/|/path/to/destdir||this.log+that.log|*.log+*.bak|'
+            $sGitExport . ' "/my/repo" "master" "' . $sRepoDir . '/git/test_project_test_env_1"',
+            $sRepoDir . '/git/test_project_test_env_1/|/path/to/destdir||this.log+that.log|*.log+*.bak|'
         ), $this->aShellExecCmds);
     }
 
