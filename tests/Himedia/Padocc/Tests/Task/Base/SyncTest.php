@@ -2,6 +2,7 @@
 
 namespace Himedia\Padocc\Tests\Task\Base;
 
+use GAubry\Shell\PathStatus;
 use GAubry\Shell\ShellAdapter;
 use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
@@ -48,8 +49,8 @@ class SyncTest extends PadoccTestCase
         $oProperty = $oClass->getProperty('_aFileStatus');
         $oProperty->setAccessible(true);
         $oProperty->setValue($oMockShell, array(
-            '/path/to/srcdir' => 2,
-            '/path/to/srcfile' => 1
+            '/path/to/srcdir' => PathStatus::STATUS_DIR,
+            '/path/to/srcfile' => PathStatus::STATUS_FILE
         ));
 
         $oProperties = new PropertiesAdapter($oMockShell, $this->aConfig);

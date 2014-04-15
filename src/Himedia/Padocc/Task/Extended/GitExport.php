@@ -115,14 +115,7 @@ class GitExport extends Task
     {
         parent::setUp();
         $this->oLogger->info('+++');
-        try {
-            $this->oSyncTask->setUp();
-        } catch (\UnexpectedValueException $oException) {
-            if ($oException->getMessage() !== "File or directory '" . $this->aAttValues['localrepositorydir']
-                                            . $this->aAttValues['srcsubdir'] . '/' . "' not found!") {
-                throw $oException;
-            }
-        }
+        $this->oSyncTask->setUp();
         $this->oLogger->info('---');
     }
 
