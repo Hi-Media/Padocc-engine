@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "109835560c67ad22a4338bcc9f66ea02",
+    "hash": "9db5a2c34bdf00ad1ba787a2e7f52661",
     "packages": [
         {
             "name": "corneltek/getoptionkit",
@@ -277,16 +277,16 @@
         },
         {
             "name": "geoffroy-aubry/supervisor",
-            "version": "v1.5.0",
+            "version": "v1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/geoffroy-aubry/Supervisor.git",
-                "reference": "f784c62cf3ad631a00aed786d6bebdfd9df69c67"
+                "reference": "0f3addefdc4393cc41123f6fbd727724ff83723a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/geoffroy-aubry/Supervisor/zipball/f784c62cf3ad631a00aed786d6bebdfd9df69c67",
-                "reference": "f784c62cf3ad631a00aed786d6bebdfd9df69c67",
+                "url": "https://api.github.com/repos/geoffroy-aubry/Supervisor/zipball/0f3addefdc4393cc41123f6fbd727724ff83723a",
+                "reference": "0f3addefdc4393cc41123f6fbd727724ff83723a",
                 "shasum": ""
             },
             "require": {
@@ -318,7 +318,7 @@
                 "notification",
                 "supervisor"
             ],
-            "time": "2014-04-12 06:56:20"
+            "time": "2014-04-15 15:55:35"
         },
         {
             "name": "psr/log",
