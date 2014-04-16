@@ -115,7 +115,19 @@ class GitExport extends Task
     {
         parent::setUp();
         $this->oLogger->info('+++');
-        $this->oSyncTask->setUp();
+
+        // La tâche Sync vérifie que le 'srcsubdir' existe bien. Mais s'il s'agit du 1er déploiement
+        // de l'env concerné, alors le mkdir au niveau GitExport ne sera pas encore réalisé au moment
+        // du check Sync… d'où la levée d'une exception, que l'on mange !
+        try {
+            $this->oSyncTask->setUp();
+        } catch (\UnexpectedValueException $oException) {
+            if ($oException->getMessage() !== "File or directory '" . $this->aAttValues['localrepositorydir']
+                . $this->aAttValues['srcsubdir'] . '/' . "' not found!") {
+                throw $oException;
+            }
+        }
+
         $this->oLogger->info('---');
     }
 
