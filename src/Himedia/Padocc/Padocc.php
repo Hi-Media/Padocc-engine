@@ -252,7 +252,7 @@ class Padocc
         $sSupervisorParams = '--conf=' . $this->aConfig['Himedia\Padocc']['dir']['conf'] . '/supervisor.sh '
                            . "--exec-id=$sExecId";
         $sPadoccBin = $this->aConfig['Himedia\Padocc']['dir']['src'] . '/padocc.php';
-        $sPadoccParams = "--action=deploy-wos --xml=$sXmlProjectPath --env=$sEnvName";
+        $sPadoccParams = "--action=deploy-wos --xml=$sXmlProjectPath --env=$sEnvName --exec-id=$sExecId";
         foreach ($aExternalProperties as $sName => $sValue) {
             $sPadoccParams .= " -p $sName='$sValue'";
         }
