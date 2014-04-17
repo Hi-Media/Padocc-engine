@@ -15,7 +15,7 @@ use Psr\Log\NullLogger;
 /**
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
-class GitExportTestTest extends PadoccTestCase
+class GitExportTest extends PadoccTestCase
 {
     /**
      * Collection de services.
@@ -65,8 +65,14 @@ class GitExportTestTest extends PadoccTestCase
      * @param string $sRsyncPattern
      * @return array empty array
      */
-    public function shellSyncCallback ($sSrcPath, $sDestPath, array $aValues, array $aIncludedPaths, array $aExcludedPaths, $sRsyncPattern)
-    {
+    public function shellSyncCallback (
+        $sSrcPath,
+        $sDestPath,
+        array $aValues,
+        array $aIncludedPaths,
+        array $aExcludedPaths,
+        $sRsyncPattern
+    ) {
         $this->aShellExecCmds[] = "$sSrcPath|$sDestPath|" . implode('+', $aValues)
                                 . '|' . implode('+', $aIncludedPaths)
                                 . '|' . implode('+', $aExcludedPaths)
@@ -81,7 +87,6 @@ class GitExportTestTest extends PadoccTestCase
     public function setUp ()
     {
         $oLogger = new NullLogger();
-//        $oLogger = new MinimalLogger();
 
         /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockShell = $this->getMock(
