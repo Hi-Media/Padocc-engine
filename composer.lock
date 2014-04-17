@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "9db5a2c34bdf00ad1ba787a2e7f52661",
+    "hash": "a20ac18d1c2b1080d32c4b16e0c83449",
     "packages": [
         {
             "name": "corneltek/getoptionkit",
@@ -233,16 +233,16 @@
         },
         {
             "name": "geoffroy-aubry/shell",
-            "version": "v1.1.3",
+            "version": "v1.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/geoffroy-aubry/Shell.git",
-                "reference": "7d046b10fc5688617f4aa74030ed968da159925e"
+                "reference": "13d31b8f82e026f1933b7429ef0ffcea5f7d7c86"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/geoffroy-aubry/Shell/zipball/7d046b10fc5688617f4aa74030ed968da159925e",
-                "reference": "7d046b10fc5688617f4aa74030ed968da159925e",
+                "url": "https://api.github.com/repos/geoffroy-aubry/Shell/zipball/13d31b8f82e026f1933b7429ef0ffcea5f7d7c86",
+                "reference": "13d31b8f82e026f1933b7429ef0ffcea5f7d7c86",
                 "shasum": ""
             },
             "require": {
@@ -273,20 +273,20 @@
                     "email": "geoffroy.aubry@free.fr"
                 }
             ],
-            "time": "2014-04-11 15:18:36"
+            "time": "2014-04-17 08:16:46"
         },
         {
             "name": "geoffroy-aubry/supervisor",
-            "version": "v1.6.0",
+            "version": "v1.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/geoffroy-aubry/Supervisor.git",
-                "reference": "0f3addefdc4393cc41123f6fbd727724ff83723a"
+                "reference": "0459ca9743611d95b628caea05c20f7041da6d66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/geoffroy-aubry/Supervisor/zipball/0f3addefdc4393cc41123f6fbd727724ff83723a",
-                "reference": "0f3addefdc4393cc41123f6fbd727724ff83723a",
+                "url": "https://api.github.com/repos/geoffroy-aubry/Supervisor/zipball/0459ca9743611d95b628caea05c20f7041da6d66",
+                "reference": "0459ca9743611d95b628caea05c20f7041da6d66",
                 "shasum": ""
             },
             "require": {
@@ -318,7 +318,7 @@
                 "notification",
                 "supervisor"
             ],
-            "time": "2014-04-15 15:55:35"
+            "time": "2014-04-17 09:29:16"
         },
         {
             "name": "psr/log",

@@ -8,8 +8,8 @@
         "geoffroy-aubry/errorhandler": "1.*",
         "geoffroy-aubry/helpers":      "1.*",
         "geoffroy-aubry/logger":       "1.*",
-        "geoffroy-aubry/shell":        "1.*",
-        "geoffroy-aubry/supervisor":   ">=1.6",
+        "geoffroy-aubry/shell":        "1.1.*",
+        "geoffroy-aubry/supervisor":   ">=1.6.1",
         "php":                         ">=5.3.3",
         "psr/log":                     "1.0.0",
         "symfony/finder":              "~2.3"
