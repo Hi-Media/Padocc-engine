@@ -234,8 +234,9 @@ class MkDirTest extends PadoccTestCase
         $oTask->execute();
 
         $sSshOptions = $this->aAllConfigs['GAubry\Shell']['ssh_options'];
+        $bashPath    = $this->aAllConfigs['GAubry\Shell']['bash_path'];
         $this->assertEquals(array(
-            "ssh $sSshOptions -T user@server /bin/bash <<EOF\n"
+            "ssh $sSshOptions -T user@server $bashPath <<EOF\n"
             . 'mkdir -p "/path/to/destdir_releases/12345/subdir" && chmod 755 "/path/to/destdir_releases/12345/subdir"'
             . "\n" . 'EOF' . "\n"
         ), $this->aShellExecCmds);

@@ -381,7 +381,7 @@ class SyncTest extends PadoccTestCase
             ->with($this->equalTo(
                 $this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['vendor']
                 . '/geoffroy-aubry/shell/src/inc/parallelize.sh "user@server" "ssh ' . $sSshOptions . ' -T '
-                . $this->aConfig['default_remote_shell_user'] . '@[] /bin/bash <<EOF' . "\n"
+                . $this->aConfig['default_remote_shell_user'] . '@[] ' . $this->aConfig['bash_path'] . ' <<EOF' . "\n"
                 . 'mkdir -p \"/path/to/destdir_releases/12345/srcdir\"' . "\n"
                 . 'EOF' . "\n" . '"'
             ))
