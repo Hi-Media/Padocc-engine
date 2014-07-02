@@ -91,7 +91,7 @@ class TargetTest extends PadoccTestCase
             'UnexpectedValueException',
             "Bad project definition: '"
         );
-        $sXmlProjectConf = file_get_contents($this->aConfig['dir']['tests'] . '/resources/base_target/bad_xml.xml');
+        $sXmlProjectConf = file_get_contents($this->getTestsDir() . '/resources/base_target/bad_xml.xml');
         Target::getAvailableEnvsList($sXmlProjectConf);
     }
 
@@ -104,7 +104,7 @@ class TargetTest extends PadoccTestCase
             'UnexpectedValueException',
             "No environment found in "
         );
-        $sXML = $this->aConfig['dir']['tests'] . '/resources/base_target/project_without_env.xml';
+        $sXML = $this->getTestsDir() . '/resources/base_target/project_without_env.xml';
         $sXmlProjectConf = file_get_contents($sXML);
         Target::getAvailableEnvsList($sXmlProjectConf);
     }
@@ -118,7 +118,7 @@ class TargetTest extends PadoccTestCase
             'UnexpectedValueException',
             "Invalid external property in "
         );
-        $sXML = $this->aConfig['dir']['tests'] . '/resources/base_target/project_env_withinvalidproperty.xml';
+        $sXML = $this->getTestsDir() . '/resources/base_target/project_env_withinvalidproperty.xml';
         $sXmlProjectConf = file_get_contents($sXML);
         Target::getAvailableEnvsList($sXmlProjectConf);
     }
@@ -133,7 +133,7 @@ class TargetTest extends PadoccTestCase
             'UnexpectedValueException',
             "Target 'invalid' not found or not unique in this project!"
         );
-        $sXML = $this->aConfig['dir']['tests'] . '/resources/base_target/project_env_withinvalidtarget.xml';
+        $sXML = $this->getTestsDir() . '/resources/base_target/project_env_withinvalidtarget.xml';
         $sXmlProjectConf = file_get_contents($sXML);
         Target::getAvailableEnvsList($sXmlProjectConf);
     }
@@ -147,7 +147,7 @@ class TargetTest extends PadoccTestCase
         $aExpected = array(
             'my_env' => array()
         );
-        $sProjectPath = $this->aConfig['dir']['tests'] . '/resources/base_target/project_env_empty.xml';
+        $sProjectPath = $this->getTestsDir() . '/resources/base_target/project_env_empty.xml';
         $sXmlProjectConf = file_get_contents($sProjectPath);
         $aEnvsList = Target::getAvailableEnvsList($sXmlProjectConf);
         $this->assertEquals($aExpected, $aEnvsList);
@@ -162,7 +162,7 @@ class TargetTest extends PadoccTestCase
         $aExpected = array(
             'my_env' => array()
         );
-        $sProjectPath = $this->aConfig['dir']['tests'] . '/resources/base_target/project_env_without_extproperty.xml';
+        $sProjectPath = $this->getTestsDir() . '/resources/base_target/project_env_without_extproperty.xml';
         $sXmlProjectConf = file_get_contents($sProjectPath);
         $aEnvsList = Target::getAvailableEnvsList($sXmlProjectConf);
         $this->assertEquals($aExpected, $aEnvsList);
@@ -177,7 +177,7 @@ class TargetTest extends PadoccTestCase
         $aExpected = array(
             'my_env' => array('ref' => 'Branch or tag to deploy')
         );
-        $sProjectPath = $this->aConfig['dir']['tests'] . '/resources/base_target/project_env_withoneproperty.xml';
+        $sProjectPath = $this->getTestsDir() . '/resources/base_target/project_env_withoneproperty.xml';
         $sXmlProjectConf = file_get_contents($sProjectPath);
         $aEnvsList = Target::getAvailableEnvsList($sXmlProjectConf);
         $this->assertEquals($aExpected, $aEnvsList);
@@ -195,7 +195,7 @@ class TargetTest extends PadoccTestCase
                 'ref2' => 'label',
             )
         );
-        $sProjectPath = $this->aConfig['dir']['tests'] . '/resources/base_target/project_env_withproperties.xml';
+        $sProjectPath = $this->getTestsDir() . '/resources/base_target/project_env_withproperties.xml';
         $sXmlProjectConf = file_get_contents($sProjectPath);
         $aEnvsList = Target::getAvailableEnvsList($sXmlProjectConf);
         $this->assertEquals($aExpected, $aEnvsList);
@@ -214,7 +214,7 @@ class TargetTest extends PadoccTestCase
                 'ref3' => 'other...',
             )
         );
-        $sProjectPath = $this->aConfig['dir']['tests'] . '/resources/base_target/project_env_withcallandproperties.xml';
+        $sProjectPath = $this->getTestsDir() . '/resources/base_target/project_env_withcallandproperties.xml';
         $sXmlProjectConf = file_get_contents($sProjectPath);
         $aEnvsList = Target::getAvailableEnvsList($sXmlProjectConf);
         $this->assertEquals($aExpected, $aEnvsList);

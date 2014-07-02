@@ -120,7 +120,7 @@ class JSminAdapterTest extends PadoccTestCase
 
         $sResult = $method->invokeArgs(
             $oJSminAdapter,
-            array(array($this->aConfig['dir']['tests'] . '/resources/minifier/a.txt'))
+            array(array($this->getTestsDir() . '/resources/minifier/a.txt'))
         );
         $this->assertEquals("a1\na2", $sResult);
     }
@@ -140,8 +140,8 @@ class JSminAdapterTest extends PadoccTestCase
         $method->setAccessible(true);
 
         $sResult = $method->invokeArgs($oJSminAdapter, array(array(
-            $this->aConfig['dir']['tests'] . '/resources/minifier/a.txt',
-            $this->aConfig['dir']['tests'] . '/resources/minifier/b.txt'
+            $this->getTestsDir() . '/resources/minifier/a.txt',
+            $this->getTestsDir() . '/resources/minifier/b.txt'
         )));
         $this->assertEquals("a1\na2b1\nb2", $sResult);
     }
@@ -162,7 +162,7 @@ class JSminAdapterTest extends PadoccTestCase
 
         $sResult = $method->invokeArgs(
             $oJSminAdapter,
-            array(array($this->aConfig['dir']['tests'] . '/resources/minifier/*.txt'))
+            array(array($this->getTestsDir() . '/resources/minifier/*.txt'))
         );
         $this->assertEquals("a1\na2b1\nb2", $sResult);
     }
@@ -264,7 +264,7 @@ class JSminAdapterTest extends PadoccTestCase
         $sTmpPath = tempnam($this->aConfig['dir']['tmp'], 'deploy_unittest_');
         $method->invokeArgs(
             $oJSminAdapter,
-            array(array($this->aConfig['dir']['tests'] . '/resources/minifier/a.css'), $sTmpPath)
+            array(array($this->getTestsDir() . '/resources/minifier/a.css'), $sTmpPath)
         );
         $sContent = file_get_contents($sTmpPath);
         unlink($sTmpPath);

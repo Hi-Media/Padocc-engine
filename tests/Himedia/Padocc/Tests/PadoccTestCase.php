@@ -45,7 +45,17 @@ abstract class PadoccTestCase extends \PHPUnit_Framework_TestCase
         }
     }
 
-        /**
+    /**
+     * Returns the path to tests.
+     *
+     * @return string
+     */
+    public function getTestsDir()
+    {
+        return $this->aConfig['dir']['root'] . DIRECTORY_SEPARATOR . 'tests';
+    }
+
+    /**
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */

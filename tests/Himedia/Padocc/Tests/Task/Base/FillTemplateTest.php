@@ -239,7 +239,7 @@ class FillTemplateTest extends PadoccTestCase
 
         $oTask = FillTemplate::getNewInstance(
             array(
-                'srcfile' => $this->aConfig['dir']['tests'] . '/resources/base_filltemplate/config_template.php',
+                'srcfile' => $this->getTestsDir() . '/resources/base_filltemplate/config_template.php',
                 'destfile' => $this->aConfig['dir']['tmp'] . '/padocc-dist.php'
             ),
             $this->oMockProject,
@@ -320,7 +320,7 @@ EOT;
 
         $oTask = FillTemplate::getNewInstance(
             array(
-                'srcfile' => $this->aConfig['dir']['tests'] . '/resources/base_filltemplate/config_template.php',
+                'srcfile' => $this->getTestsDir() . '/resources/base_filltemplate/config_template.php',
                 'destfile' => $this->aConfig['dir']['tmp'] . '/padocc-dist.php'
             ),
             $this->oMockProject,

@@ -92,7 +92,7 @@ class ProjectTest extends PadoccTestCase
             'UnexpectedValueException',
             "Bad project definition: '"
         );
-        $sXML = file_get_contents($this->aConfig['dir']['tests'] . '/resources/base_project/2/bad_xml.xml');
+        $sXML = file_get_contents($this->getTestsDir() . '/resources/base_project/2/bad_xml.xml');
         Project::getSXEProject($sXML);
     }
 
@@ -101,10 +101,10 @@ class ProjectTest extends PadoccTestCase
      */
     public function testGetSXEProject ()
     {
-        $sXML = file_get_contents($this->aConfig['dir']['tests'] . '/resources/base_project/1/ebay.xml');
+        $sXML = file_get_contents($this->getTestsDir() . '/resources/base_project/1/ebay.xml');
         $oSXE = Project::getSXEProject($sXML);
         $oExpectedSXE = new \SimpleXMLElement(
-            $this->aConfig['dir']['tests'] . '/resources/base_project/1/ebay.xml',
+            $this->getTestsDir() . '/resources/base_project/1/ebay.xml',
             null,
             true
         );
