@@ -8,18 +8,18 @@
         "geoffroy-aubry/errorhandler": "1.*",
         "geoffroy-aubry/helpers":      "1.*",
         "geoffroy-aubry/logger":       "1.*",
-        "geoffroy-aubry/shell":        "1.*",
-        "geoffroy-aubry/supervisor":   ">=1.6",
+        "geoffroy-aubry/shell":        "~1.1",
+        "geoffroy-aubry/supervisor":   "~1.6",
         "php":                         ">=5.3.3",
-        "psr/log":                     "1.0.0",
+        "psr/log":                     "~1.0",
         "symfony/finder":              "~2.3"
     },
     "require-dev": {
-        "apigen/apigen":             "2.8.0",
-        "phpmd/phpmd":               "1.4.*",
+        "apigen/apigen":             "~2.8",
+        "phpmd/phpmd":               "~1.4",
         "phpunit/phpunit":           "3.7.*",
         "sebastian/phpcpd":          "*",
-        "squizlabs/php_codesniffer": "1.*"
+        "squizlabs/php_codesniffer": "~1.0"
     },
     "autoload": {"psr-0": {"Himedia": "src/"}}
 }
