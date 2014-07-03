@@ -3,7 +3,6 @@
 namespace Himedia\Padocc\Task\Base;
 
 use Himedia\Padocc\AttributeProperties;
-use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Task;
 
 /**
@@ -17,30 +16,25 @@ use Himedia\Padocc\Task;
 class Property extends Task
 {
     /**
-     * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
-     *
-     * @return string nom du tag XML correspondant à cette tâche dans les config projet.
-     * @codeCoverageIgnore
+     * {@inheritdoc}
      */
-    public static function getTagName ()
+    protected function init()
     {
-        return 'property';
-    }
+        parent::init();
 
-    /**
-     * Constructeur.
-     *
-     * @param \SimpleXMLElement $oTask Contenu XML de la tâche.
-     * @param Project $oProject Super tâche projet.
-     * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
-     */
-    public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
-    {
-        parent::__construct($oTask, $oProject, $oDIContainer);
         $this->aAttrProperties = array(
             'name' => AttributeProperties::REQUIRED,
             'value' => AttributeProperties::REQUIRED | AttributeProperties::ALLOW_PARAMETER
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     * @codeCoverageIgnore
+     */
+    public static function getTagName()
+    {
+        return 'property';
     }
 
     /**
@@ -54,7 +48,7 @@ class Property extends Task
         parent::centralExecute();
         $sMsg = "+++Set internal property '" . $this->aAttValues['name'] . "' to '"
               . $this->aAttValues['value'] . "'.---";
-        $this->oLogger->info($sMsg);
+        $this->getLogger()->info($sMsg);
         $this->oProperties->setProperty($this->aAttValues['name'], $this->aAttValues['value']);
     }
 }

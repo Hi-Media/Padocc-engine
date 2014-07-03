@@ -2,9 +2,7 @@
 
 namespace Himedia\Padocc\Task\Extended;
 
-use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Task;
-use Himedia\Padocc\Task\Base\Project;
 
 /**
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
@@ -12,18 +10,6 @@ use Himedia\Padocc\Task\Base\Project;
  */
 class TwengaServers extends Task
 {
-
-    /**
-     * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
-     *
-     * @return string nom du tag XML correspondant à cette tâche dans les config projet.
-     * @codeCoverageIgnore
-     */
-    public static function getTagName ()
-    {
-        return 'twengaserverexport';
-    }
-
     /**
      * Tâche d'export Git sous-jacente.
      *
@@ -38,18 +24,15 @@ class TwengaServers extends Task
     private $sTmpDir;
 
     /**
-     * Constructeur.
-     *
-     * @param \SimpleXMLElement $oTask Contenu XML de la tâche.
-     * @param Project $oProject Super tâche projet.
-     * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
+     * {@inheritdoc}
      */
-    public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
+    protected function init()
     {
-        parent::__construct($oTask, $oProject, $oDIContainer);
+        parent::init();
+
         $this->aAttrProperties = array();
         $this->sTmpDir = $this->aConfig['dir']['tmp'] . '/'
-                        . $this->oProperties->getProperty('execution_id') . '_' . self::getTagName();
+            . $this->oProperties->getProperty('execution_id') . '_' . self::getTagName();
 
         // Création de la tâche de synchronisation sous-jacente :
         $this->oNumbering->addCounterDivision();
@@ -59,10 +42,19 @@ class TwengaServers extends Task
                 'ref' => 'master',
                 'destdir' => $this->sTmpDir
             ),
-            $oProject,
-            $oDIContainer
+            $this->oProject,
+            $this->oDIContainer
         );
         $this->oNumbering->removeCounterDivision();
+    }
+
+    /**
+     * {@inheritdoc}
+     * @codeCoverageIgnore
+     */
+    public static function getTagName ()
+    {
+        return 'twengaserverexport';
     }
 
     /**
@@ -71,9 +63,9 @@ class TwengaServers extends Task
     public function setUp ()
     {
         parent::setUp();
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
         $this->oGitExportTask->setUp();
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 
     /**
@@ -87,13 +79,13 @@ class TwengaServers extends Task
     protected function check ()
     {
         parent::centralExecute();
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
         $this->oGitExportTask->execute();
         $sPathToLoad = $this->sTmpDir . '/master_synchro.cfg';
-        $this->oLogger->info("Load shell properties: $sPathToLoad+++");
+        $this->getLogger()->info("Load shell properties: $sPathToLoad+++");
         $this->oProperties->loadConfigShellFile($sPathToLoad);
         $this->oShell->remove($this->sTmpDir);
-        $this->oLogger->info('------');
+        $this->getLogger()->info('------');
     }
 
     /**

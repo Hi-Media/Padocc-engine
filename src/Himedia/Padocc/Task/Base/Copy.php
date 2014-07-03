@@ -4,7 +4,6 @@ namespace Himedia\Padocc\Task\Base;
 
 use GAubry\Shell\PathStatus;
 use Himedia\Padocc\AttributeProperties;
-use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Task;
 
 /**
@@ -17,32 +16,26 @@ use Himedia\Padocc\Task;
  */
 class Copy extends Task
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected function init()
+    {
+        parent::init();
+
+        $this->aAttrProperties = array(
+            'src' => AttributeProperties::SRC_PATH | AttributeProperties::FILEJOKER | AttributeProperties::REQUIRED,
+            'destdir' => AttributeProperties::DIR | AttributeProperties::REQUIRED
+        );
+    }
 
     /**
-     * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
-     *
-     * @return string nom du tag XML correspondant à cette tâche dans les config projet.
+     * {@inheritdoc}
      * @codeCoverageIgnore
      */
     public static function getTagName ()
     {
         return 'copy';
-    }
-
-    /**
-     * Constructeur.
-     *
-     * @param \SimpleXMLElement $oTask Contenu XML de la tâche.
-     * @param Project $oProject Super tâche projet.
-     * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
-     */
-    public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
-    {
-        parent::__construct($oTask, $oProject, $oDIContainer);
-        $this->aAttrProperties = array(
-            'src' => AttributeProperties::SRC_PATH | AttributeProperties::FILEJOKER | AttributeProperties::REQUIRED,
-            'destdir' => AttributeProperties::DIR | AttributeProperties::REQUIRED
-        );
     }
 
     /**
@@ -82,7 +75,7 @@ class Copy extends Task
     protected function centralExecute ()
     {
         parent::centralExecute();
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
 
         $aSrcPath = $this->processSimplePath($this->aAttValues['src']);
         $aDestDirs = $this->processPath($this->aAttValues['destdir']);
@@ -90,6 +83,6 @@ class Copy extends Task
             $this->oShell->copy($aSrcPath, $sDestDir);
         }
 
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 }

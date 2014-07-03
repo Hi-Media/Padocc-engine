@@ -3,7 +3,6 @@
 namespace Himedia\Padocc\Task\Base;
 
 use Himedia\Padocc\AttributeProperties;
-use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Task;
 
 /**
@@ -20,33 +19,27 @@ use Himedia\Padocc\Task;
  */
 class MkDir extends Task
 {
-
     /**
-     * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
-     *
-     * @return string nom du tag XML correspondant à cette tâche dans les config projet.
-     * @codeCoverageIgnore
+     * {@inheritdoc}
      */
-    public static function getTagName ()
+    protected function init()
     {
-        return 'mkdir';
-    }
+        parent::init();
 
-    /**
-     * Constructeur.
-     *
-     * @param \SimpleXMLElement $oTask Contenu XML de la tâche.
-     * @param Project $oProject Super tâche projet.
-     * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
-     */
-    public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
-    {
-        parent::__construct($oTask, $oProject, $oDIContainer);
         $this->aAttrProperties = array(
             'destdir' => AttributeProperties::DIR | AttributeProperties::REQUIRED
                 | AttributeProperties::ALLOW_PARAMETER,
             'mode' => 0
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     * @codeCoverageIgnore
+     */
+    public static function getTagName ()
+    {
+        return 'mkdir';
     }
 
     /**
@@ -58,13 +51,13 @@ class MkDir extends Task
     protected function centralExecute ()
     {
         parent::centralExecute();
-        $this->oLogger->info("+++Create directory '" . $this->aAttValues['destdir'] . "'.+++");
+        $this->getLogger()->info("+++Create directory '" . $this->aAttValues['destdir'] . "'.+++");
         $sMode = (empty($this->aAttValues['mode']) ? '' : $this->aAttValues['mode']);
 
         $aDestDirs = $this->processPath($this->aAttValues['destdir']);
         foreach ($aDestDirs as $sDestDir) {
             $this->oShell->mkdir($sDestDir, $sMode);
         }
-        $this->oLogger->info('------');
+        $this->getLogger()->info('------');
     }
 }

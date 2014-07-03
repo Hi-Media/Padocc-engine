@@ -4,10 +4,8 @@ namespace Himedia\Padocc\Task\Extended;
 
 use GAubry\Shell\PathStatus;
 use Himedia\Padocc\AttributeProperties;
-use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Task\Base\Environment;
 use Himedia\Padocc\Task\Base\Link;
-use Himedia\Padocc\Task\Base\Project;
 
 /**
  * Permute les liens symboliques de la dernière release vers la nouvelle à la fin du déploiement.
@@ -27,24 +25,36 @@ use Himedia\Padocc\Task\Base\Project;
  */
 class SwitchSymlink extends Link
 {
-
-    /**
-     * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
-     *
-     * @return string nom du tag XML correspondant à cette tâche dans les config projet.
-     * @codeCoverageIgnore
-     */
-    public static function getTagName ()
-    {
-        return 'switchsymlink';
-    }
-
     /**
      * Compteur d'instances de la classe.
      * @var int
      * @see getNbInstances()
      */
     private static $iNbInstances = 0;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function init()
+    {
+        parent::init();
+
+        $this->aAttrProperties = array(
+            'src' => AttributeProperties::FILE | AttributeProperties::DIR | AttributeProperties::ALLOW_PARAMETER,
+            'target' => AttributeProperties::FILE | AttributeProperties::DIR | AttributeProperties::ALLOW_PARAMETER,
+            'server' => AttributeProperties::ALLOW_PARAMETER
+        );
+        self::$iNbInstances++;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @codeCoverageIgnore
+     */
+    public static function getTagName ()
+    {
+        return 'switchsymlink';
+    }
 
     /**
      * Accesseur au compteur d'instances de la classe.
@@ -55,24 +65,6 @@ class SwitchSymlink extends Link
     public static function getNbInstances ()
     {
         return self::$iNbInstances;
-    }
-
-    /**
-     * Constructeur.
-     *
-     * @param \SimpleXMLElement $oTask Contenu XML de la tâche.
-     * @param Project $oProject Super tâche projet.
-     * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
-     */
-    public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
-    {
-        parent::__construct($oTask, $oProject, $oDIContainer);
-        $this->aAttrProperties = array(
-            'src' => AttributeProperties::FILE | AttributeProperties::DIR | AttributeProperties::ALLOW_PARAMETER,
-            'target' => AttributeProperties::FILE | AttributeProperties::DIR | AttributeProperties::ALLOW_PARAMETER,
-            'server' => AttributeProperties::ALLOW_PARAMETER
-        );
-        self::$iNbInstances++;
     }
 
     /**
@@ -95,7 +87,7 @@ class SwitchSymlink extends Link
             $sBaseSymLink = $this->oProperties->getProperty('basedir');
             $sRollbackID = $this->oProperties->getProperty('rollback_id');
             if ($sRollbackID !== '') {
-                $this->oLogger->info("Rollback to '$sRollbackID' requested.");
+                $this->getLogger()->info("Rollback to '$sRollbackID' requested.");
                 $sID = $sRollbackID;
             } else {
                 $sID = $this->oProperties->getProperty('execution_id');
@@ -118,22 +110,22 @@ class SwitchSymlink extends Link
      */
     protected function centralExecute ()
     {
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
         if ($this->oProperties->getProperty('with_symlinks') === 'true') {
             if ($this->oProperties->getProperty(Environment::SERVERS_CONCERNED_WITH_BASE_DIR) == '') {
-                $this->oLogger->info('No release found.');
+                $this->getLogger()->info('No release found.');
             } else {
                 $this->oProperties->setProperty('with_symlinks', 'false');
                 $this->checkTargets();
-                $this->oLogger->info('---');
+                $this->getLogger()->info('---');
                 parent::centralExecute();
-                $this->oLogger->info('+++');
+                $this->getLogger()->info('+++');
                 $this->oProperties->setProperty('with_symlinks', 'true');
             }
         } else {
-            $this->oLogger->info("Mode 'withsymlinks' is off: nothing to do.");
+            $this->getLogger()->info("Mode 'withsymlinks' is off: nothing to do.");
         }
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 
     /**
@@ -144,7 +136,7 @@ class SwitchSymlink extends Link
      */
     protected function checkTargets ()
     {
-        $this->oLogger->info('Check that all symlinks targets exists.+++');
+        $this->getLogger()->info('Check that all symlinks targets exists.+++');
 
         $aValidStatus = array(
             PathStatus::STATUS_DIR,
@@ -162,6 +154,6 @@ class SwitchSymlink extends Link
             }
         }
 
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 }

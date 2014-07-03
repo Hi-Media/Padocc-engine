@@ -4,7 +4,6 @@ namespace Himedia\Padocc\Task\Base;
 
 use GAubry\Shell\PathStatus;
 use Himedia\Padocc\AttributeProperties;
-use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Task\Extended\SwitchSymlink;
 
 /**
@@ -54,26 +53,12 @@ class Environment extends Target
     const SERVERS_CONCERNED_WITH_BASE_DIR = 'SERVERS_CONCERNED_WITH_BASE_DIR';
 
     /**
-     * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
-     *
-     * @return string nom du tag XML correspondant à cette tâche dans les config projet.
-     * @codeCoverageIgnore
+     * {@inheritdoc}
      */
-    public static function getTagName ()
+    protected function init()
     {
-        return 'env';
-    }
+        parent::init();
 
-    /**
-     * Constructeur.
-     *
-     * @param \SimpleXMLElement $oTask Contenu XML de la tâche.
-     * @param Project $oProject Super tâche projet.
-     * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
-     */
-    public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
-    {
-        parent::__construct($oTask, $oProject, $oDIContainer);
         $this->aAttrProperties = array_merge(
             $this->aAttrProperties,
             array(
@@ -91,6 +76,15 @@ class Environment extends Target
         $this->oProperties->setProperty('with_symlinks', $sWithSymlinks);
 
         $this->addSwithSymlinkTask();
+    }
+
+    /**
+     * {@inheritdoc}
+     * @codeCoverageIgnore
+     */
+    public static function getTagName ()
+    {
+        return 'env';
     }
 
     /**
@@ -138,7 +132,7 @@ class Environment extends Target
             }
         }
         if (count($aMsg) > 0) {
-            $this->oLogger->info('+++' . implode("\n", $aMsg) . '---');
+            $this->getLogger()->info('+++' . implode("\n", $aMsg) . '---');
         }
     }
 
@@ -170,7 +164,7 @@ class Environment extends Target
         } else {
             $sMsg = 'No server concerned with base directory.';
         }
-        $this->oLogger->info($sMsg);
+        $this->getLogger()->info($sMsg);
         $this->oProperties->setProperty(self::SERVERS_CONCERNED_WITH_BASE_DIR, implode(' ', $aServersWithSymlinks));
     }
 
@@ -179,7 +173,7 @@ class Environment extends Target
      */
     private function makeTransitionToSymlinks ()
     {
-        $this->oLogger->info('If needed, make transition to symlinks:+++');
+        $this->getLogger()->info('If needed, make transition to symlinks:+++');
         $sBaseSymLink = $this->oProperties->getProperty('basedir');
         $aServers = $this->expandPath('${' . self::SERVERS_CONCERNED_WITH_BASE_DIR . '}');
         $bTransitionMade = false;
@@ -192,17 +186,17 @@ class Environment extends Target
                 $sDir = $sExpandedPath . '/';
                 $sOriginRelease = $sServer . ':' . $sBaseSymLink . $this->aConfig['symlink_releases_dir_suffix']
                                 . '/' . $this->oProperties->getProperty('execution_id') . '_origin';
-                $this->oLogger->info("Backup '$sDir' to '$sOriginRelease'.+++");
+                $this->getLogger()->info("Backup '$sDir' to '$sOriginRelease'.+++");
                 $this->oShell->sync($sDir, $sOriginRelease, array(), array(), self::$aSmartyRsyncExclude);
                 $this->oShell->remove($sExpandedPath);
                 $this->oShell->createLink($sExpandedPath, $sOriginRelease);
-                $this->oLogger->info('---');
+                $this->getLogger()->info('---');
             }
         }
         if (! $bTransitionMade) {
-            $this->oLogger->info('No transition.');
+            $this->getLogger()->info('No transition.');
         }
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 
     /**
@@ -210,7 +204,7 @@ class Environment extends Target
      */
     private function makeTransitionFromSymlinks ()
     {
-        $this->oLogger->info('If needed, make transition from symlinks:+++');
+        $this->getLogger()->info('If needed, make transition from symlinks:+++');
         $sBaseSymLink = $this->oProperties->getProperty('basedir');
         $sPath = '${' . self::SERVERS_CONCERNED_WITH_BASE_DIR . '}:' . $sBaseSymLink;
         $bTransitionMade = false;
@@ -222,16 +216,16 @@ class Environment extends Target
                 $sTmpDest = $sExpandedPath . '_tmp';
                 $sMsg = "Remove symlink on '$sExpandedPath' base directory"
                       . " and initialize it with last release's content.";
-                $this->oLogger->info($sMsg);
+                $this->getLogger()->info($sMsg);
                 $this->oShell->sync($sDir, $sTmpDest, array(), array(), self::$aSmartyRsyncExclude);
                 $this->oShell->remove($sExpandedPath);
                 $this->oShell->execSSH("mv %s '" . $sRealPath . "'", $sTmpDest);
             }
         }
         if (! $bTransitionMade) {
-            $this->oLogger->info('No transition.');
+            $this->getLogger()->info('No transition.');
         }
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 
     /**
@@ -239,7 +233,7 @@ class Environment extends Target
      */
     private function initNewRelease ()
     {
-        $this->oLogger->info('Initialize with content of previous release:+++');
+        $this->getLogger()->info('Initialize with content of previous release:+++');
         $sBaseSymLink = $this->oProperties->getProperty('basedir');
         $aServers = $this->expandPath('${' . self::SERVERS_CONCERNED_WITH_BASE_DIR . '}');
         $sReleaseSymLink = $sBaseSymLink . $this->aConfig['symlink_releases_dir_suffix']
@@ -252,7 +246,7 @@ class Environment extends Target
             if ($aPathStatusResult[$sServer] == PathStatus::STATUS_SYMLINKED_DIR) {
                 $aServersToInit[] = $sServer;
             } else {
-                $this->oLogger->info("No previous release to initialize '$sServer:$sReleaseSymLink'.");
+                $this->getLogger()->info("No previous release to initialize '$sServer:$sReleaseSymLink'.");
             }
         }
 
@@ -266,11 +260,11 @@ class Environment extends Target
                 self::$aSmartyRsyncExclude
             );
             foreach ($aResults as $sResult) {
-                $this->oLogger->info($sResult);
+                $this->getLogger()->info($sResult);
             }
         }
 
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 
     /**
@@ -308,31 +302,31 @@ class Environment extends Target
      */
     private function removeOldestReleases ()
     {
-        $this->oLogger->info('Remove too old releases:+++');
+        $this->getLogger()->info('Remove too old releases:+++');
 
         if ($this->oProperties->getProperty(self::SERVERS_CONCERNED_WITH_BASE_DIR) == '') {
-            $this->oLogger->info('No release found.');
+            $this->getLogger()->info('No release found.');
         } else {
 
             // Check releases:
             $sBaseSymLink = $this->oProperties->getProperty('basedir') . $this->aConfig['symlink_releases_dir_suffix'];
             $aServers = $this->expandPath('${' . self::SERVERS_CONCERNED_WITH_BASE_DIR . '}');
-            $this->oLogger->info('Check releases on each server.+++');
+            $this->getLogger()->info('Check releases on each server.+++');
             $aAllReleases = $this->getAllReleases($sBaseSymLink, $aServers);
-            $this->oLogger->info('---');
+            $this->getLogger()->info('---');
 
             // Identification des releases à supprimer :
             $aAllReleasesToDelete = array();
             foreach ($aAllReleases as $sServer => $aReleases) {
                 $iNbReleases = count($aReleases);
                 if ($iNbReleases === 0) {
-                    $this->oLogger->info("No release found on server '$sServer'.");
+                    $this->getLogger()->info("No release found on server '$sServer'.");
                 } else {
                     $bIsQuotaExceeded = ($iNbReleases > $this->aConfig['symlink_max_nb_releases']);
                     $sMsg = $iNbReleases . " release(s) found on server '$sServer': quota "
                           . ($bIsQuotaExceeded ? 'exceeded' : 'not exceeded')
                           . ' (' . $this->aConfig['symlink_max_nb_releases'] . ' backups max).';
-                    $this->oLogger->info($sMsg);
+                    $this->getLogger()->info($sMsg);
 
                     if ($bIsQuotaExceeded) {
                         $aReleasesToDelete = array_slice($aReleases, $this->aConfig['symlink_max_nb_releases']);
@@ -347,7 +341,7 @@ class Environment extends Target
             foreach ($aAllReleasesToDelete as $sRelease => $aServers) {
                 if (! empty($sRelease)) {
                     $sMsg = "Remove release '$sRelease' on following server(s): " . implode(', ', $aServers) . '.';
-                    $this->oLogger->info($sMsg);
+                    $this->getLogger()->info($sMsg);
                     $sPath = "[]:$sBaseSymLink/$sRelease";
                     $sSSHCmd = $this->oShell->buildSSHCmd('rm -rf %s', $sPath);
                     $this->oShell->parallelize($aServers, $sSSHCmd, $this->aConfig['parallelization_max_nb_processes']);
@@ -355,7 +349,7 @@ class Environment extends Target
             }
 
         }
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 
     /**
@@ -366,7 +360,7 @@ class Environment extends Target
     private function removeUnnecessaryTasksForRollback ()
     {
         if ($this->oProperties->getProperty('rollback_id') !== '') {
-            $this->oLogger->info('Remove unnecessary tasks for rollback.');
+            $this->getLogger()->info('Remove unnecessary tasks for rollback.');
             $aKeptTasks = array();
             foreach ($this->aTasks as $oTask) {
                 if (($oTask instanceof Property)
@@ -389,7 +383,7 @@ class Environment extends Target
     protected function preExecute ()
     {
         parent::preExecute();
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
 
         // Supprime les tâches qui ne sont plus nécessaires pour le rollback :
         $this->removeUnnecessaryTasksForRollback();
@@ -416,6 +410,6 @@ class Environment extends Target
         } else {
             $this->makeTransitionFromSymlinks();
         }
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 }

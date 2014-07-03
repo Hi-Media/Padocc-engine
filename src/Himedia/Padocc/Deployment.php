@@ -24,7 +24,7 @@ class Deployment
 
     /**
      * Instance de services.
-     * @var DIContainer
+     * @var DIContainerInterface
      */
     private $oDIContainer;
 

@@ -3,8 +3,6 @@
 namespace Himedia\Padocc\Task;
 
 use Himedia\Padocc\AttributeProperties;
-use Himedia\Padocc\DIContainer;
-use Himedia\Padocc\Task\Base\Project;
 use Himedia\Padocc\Task;
 use Himedia\Padocc\Task\Extended\TwengaServers;
 
@@ -28,7 +26,6 @@ use Himedia\Padocc\Task\Extended\TwengaServers;
  */
 abstract class WithProperties extends Task
 {
-
     /**
      * Tâche de chargement des listes de serveurs Twenga sous-jacente.
      * @var TwengaServers
@@ -36,15 +33,12 @@ abstract class WithProperties extends Task
     private $oTwengaServersTask;
 
     /**
-     * Constructeur.
-     *
-     * @param \SimpleXMLElement $oTask Contenu XML de la tâche.
-     * @param Project $oProject Super tâche projet.
-     * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
+     * {@inheritdoc}
      */
-    public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
+    protected function init()
     {
-        parent::__construct($oTask, $oProject, $oDIContainer);
+        parent::init();
+
         $this->aAttrProperties = array(
             'loadtwengaservers' => AttributeProperties::BOOLEAN,
             'propertyshellfile' => AttributeProperties::SRC_PATH,
@@ -54,7 +48,7 @@ abstract class WithProperties extends Task
         // Création de la tâche de chargement des listes de serveurs Twenga sous-jacente :
         if (! empty($this->aAttValues['loadtwengaservers']) && $this->aAttValues['loadtwengaservers'] == 'true') {
             $this->oNumbering->addCounterDivision();
-            $this->oTwengaServersTask = TwengaServers::getNewInstance(array(), $oProject, $oDIContainer);
+            $this->oTwengaServersTask = TwengaServers::getNewInstance(array(), $this->oProject, $this->oDIContainer);
             $this->oNumbering->removeCounterDivision();
         } else {
             $this->oTwengaServersTask = null;
@@ -71,12 +65,12 @@ abstract class WithProperties extends Task
             $this->oTwengaServersTask->execute();
         }
         if (! empty($this->aAttValues['propertyshellfile'])) {
-            $this->oLogger->info('Load shell properties: ' . $this->aAttValues['propertyshellfile'] . '+++');
+            $this->getLogger()->info('Load shell properties: ' . $this->aAttValues['propertyshellfile'] . '+++');
             $this->oProperties->loadConfigShellFile($this->aAttValues['propertyshellfile']);
-            $this->oLogger->info('---');
+            $this->getLogger()->info('---');
         }
         if (! empty($this->aAttValues['propertyinifile'])) {
-            $this->oLogger->info('Load ini properties: ' . $this->aAttValues['propertyinifile']);
+            $this->getLogger()->info('Load ini properties: ' . $this->aAttValues['propertyinifile']);
             $this->oProperties->loadConfigIniFile($this->aAttValues['propertyinifile']);
         }
     }
@@ -88,9 +82,9 @@ abstract class WithProperties extends Task
     {
         parent::setUp();
         if ($this->oTwengaServersTask !== null) {
-            $this->oLogger->info('+++');
+            $this->getLogger()->info('+++');
             $this->oTwengaServersTask->setUp();
-            $this->oLogger->info('---');
+            $this->getLogger()->info('---');
         }
     }
 
@@ -103,8 +97,8 @@ abstract class WithProperties extends Task
     protected function preExecute ()
     {
         parent::preExecute();
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
         $this->loadProperties();
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 }

@@ -3,7 +3,6 @@
 namespace Himedia\Padocc\Task\Base;
 
 use Himedia\Padocc\AttributeProperties;
-use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Task;
 
 /**
@@ -11,32 +10,24 @@ use Himedia\Padocc\Task;
  */
 class Backup extends Task
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected function init()
+    {
+        $this->aAttrProperties = array(
+            'src' => AttributeProperties::SRC_PATH | AttributeProperties::FILEJOKER | AttributeProperties::REQUIRED,
+            'destfile' => AttributeProperties::FILE | AttributeProperties::REQUIRED
+        );
+    }
 
     /**
-     * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
-     *
-     * @return string nom du tag XML correspondant à cette tâche dans les config projet.
+     * {@inheritdoc}
      * @codeCoverageIgnore
      */
     public static function getTagName ()
     {
         return 'backup';
-    }
-
-    /**
-     * Constructeur.
-     *
-     * @param \SimpleXMLElement $oTask Contenu XML de la tâche.
-     * @param Project $oProject Super tâche projet.
-     * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface ...).
-     */
-    public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
-    {
-        parent::__construct($oTask, $oProject, $oDIContainer);
-        $this->aAttrProperties = array(
-            'src' => AttributeProperties::SRC_PATH | AttributeProperties::FILEJOKER | AttributeProperties::REQUIRED,
-            'destfile' => AttributeProperties::FILE | AttributeProperties::REQUIRED
-        );
     }
 
     /**
@@ -48,8 +39,8 @@ class Backup extends Task
     protected function centralExecute ()
     {
         parent::centralExecute();
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
         $this->oShell->backup($this->aAttValues['src'], $this->aAttValues['destfile']);
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 }

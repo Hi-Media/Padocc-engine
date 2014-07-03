@@ -3,7 +3,6 @@
 namespace Himedia\Padocc\Task\Base;
 
 use Himedia\Padocc\AttributeProperties;
-use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Task\WithProperties;
 use Himedia\Padocc\Task;
 
@@ -17,6 +16,11 @@ use Himedia\Padocc\Task;
  */
 class Target extends WithProperties
 {
+    /**
+     * @var array
+     * @see getAvailableTasks()
+     */
+    private static $aAvailableTasks = array();
 
     /**
      * Liste d'instances de type Task ordonnées constituant la cible.
@@ -25,9 +29,24 @@ class Target extends WithProperties
     protected $aTasks;
 
     /**
-     * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
-     *
-     * @return string nom du tag XML correspondant à cette tâche dans les config projet.
+     * {@inheritdoc}
+     */
+    protected function init()
+    {
+        parent::init();
+
+        $this->aAttrProperties = array_merge(
+            $this->aAttrProperties,
+            array('name' => AttributeProperties::REQUIRED)
+        );
+
+        $this->oNumbering->addCounterDivision();
+        $this->aTasks = $this->getTaskInstances($this->oXMLTask, $this->oProject);
+        $this->oNumbering->removeCounterDivision();
+    }
+
+    /**
+     * {@inheritdoc}
      * @codeCoverageIgnore
      */
     public static function getTagName ()
@@ -123,34 +142,6 @@ class Target extends WithProperties
     }
 
     /**
-     * Constructeur.
-     *
-     * @param \SimpleXMLElement $oTask Contenu XML de la tâche.
-     * @param Project $oProject Super tâche projet.
-     * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
-     */
-    public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
-    {
-        parent::__construct($oTask, $oProject, $oDIContainer);
-        $this->aAttrProperties = array_merge(
-            $this->aAttrProperties,
-            array('name' => AttributeProperties::REQUIRED)
-        );
-
-        $this->oNumbering->addCounterDivision();
-        $this->aTasks = $this->getTaskInstances($oTask, $this->oProject);
-        $this->oNumbering->removeCounterDivision();
-    }
-
-    /**
-     *
-     * Enter description here ...
-     * @var array
-     * @see getAvailableTasks()
-     */
-    private static $aAvailableTasks = array();
-
-    /**
      * Retourne un tableau associatif décrivant les tâches disponibles.
      *
      * @throws \RuntimeException si classe inexistante
@@ -197,7 +188,7 @@ class Target extends WithProperties
      */
     private function getTaskInstances (\SimpleXMLElement $oTarget, Project $oProject)
     {
-        $this->oLogger->info("Initialize tasks of target '" . $this->aAttValues['name'] . "'.");
+        $this->getLogger()->info("Initialize tasks of target '" . $this->aAttValues['name'] . "'.");
         $aAvailableTasks = self::getAvailableTasks();
 
         // Mise à plat des tâches car \SimpleXML regroupe celles successives de même nom
@@ -259,11 +250,11 @@ class Target extends WithProperties
     public function setUp ()
     {
         parent::setUp();
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
         foreach ($this->aTasks as $oTask) {
             $oTask->setUp();
         }
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 
     /**
@@ -276,7 +267,7 @@ class Target extends WithProperties
     {
         parent::preExecute();
         if (! empty($this->aAttValues['mailto'])) {
-            $this->oLogger->info('+++[MAILTO] ' . $this->aAttValues['mailto'] . '---');
+            $this->getLogger()->info('+++[MAILTO] ' . $this->aAttValues['mailto'] . '---');
         }
     }
 
@@ -289,10 +280,10 @@ class Target extends WithProperties
     protected function centralExecute ()
     {
         parent::centralExecute();
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
         foreach ($this->aTasks as $oTask) {
             $oTask->execute();
         }
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 }

@@ -3,7 +3,6 @@
 namespace Himedia\Padocc\Task\Base;
 
 use Himedia\Padocc\AttributeProperties;
-use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Task;
 
 /**
@@ -37,34 +36,28 @@ use Himedia\Padocc\Task;
  */
 class FillTemplate extends Task
 {
-
     /**
-     * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
-     *
-     * @return string nom du tag XML correspondant à cette tâche dans les config projet.
-     * @codeCoverageIgnore
+     * {@inheritdoc}
      */
-    public static function getTagName ()
+    protected function init()
     {
-        return 'filltemplate';
-    }
+        parent::init();
 
-    /**
-     * Constructeur.
-     *
-     * @param \SimpleXMLElement $oTask Contenu XML de la tâche.
-     * @param Project $oProject Super tâche projet.
-     * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
-     */
-    public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
-    {
-        parent::__construct($oTask, $oProject, $oDIContainer);
         $this->aAttrProperties = array(
             'srcfile' => AttributeProperties::ALLOW_PARAMETER | AttributeProperties::REQUIRED
                 | AttributeProperties::FILE,
             'destfile' => AttributeProperties::ALLOW_PARAMETER | AttributeProperties::REQUIRED
                 | AttributeProperties::FILE,
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     * @codeCoverageIgnore
+     */
+    public static function getTagName ()
+    {
+        return 'filltemplate';
     }
 
     /**
@@ -100,7 +93,7 @@ class FillTemplate extends Task
     {
         parent::centralExecute();
         $sMsg = "+++Generate '" . $this->aAttValues['destfile'] . "' from '" . $this->aAttValues['srcfile'] . "'.";
-        $this->oLogger->info($sMsg);
+        $this->getLogger()->info($sMsg);
 
         $sSrcFile = $this->processSimplePath($this->aAttValues['srcfile']);
         $sDestFile = $this->processSimplePath($this->aAttValues['destfile']);
@@ -117,12 +110,12 @@ class FillTemplate extends Task
                 $aValues[] = $sParameter;
                 $sMsg = "[WARNING] Parameter '$sParameter' not resolved in '$sSrcFile' ("
                       . $oException->getMessage() . ").";
-                $this->oLogger->warning($sMsg);
+                $this->getLogger()->warning($sMsg);
             }
         }
         $sContent = str_replace($aParameters, $aValues, $sContent);
         file_put_contents($sDestFile, $sContent);
 
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 }

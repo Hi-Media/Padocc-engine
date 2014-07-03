@@ -4,8 +4,6 @@ namespace Himedia\Padocc\Task\Base;
 
 use GAubry\Shell\PathStatus;
 use Himedia\Padocc\AttributeProperties;
-use Himedia\Padocc\DIContainer;
-use Himedia\Padocc\Shell_PathStatus;
 use Himedia\Padocc\Task;
 
 /**
@@ -28,28 +26,13 @@ use Himedia\Padocc\Task;
  */
 class Sync extends Task
 {
-
     /**
-     * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
-     *
-     * @return string nom du tag XML correspondant à cette tâche dans les config projet.
-     * @codeCoverageIgnore
+     * {@inheritdoc}
      */
-    public static function getTagName ()
+    protected function init()
     {
-        return 'sync';
-    }
+        parent::init();
 
-    /**
-     * Constructeur.
-     *
-     * @param \SimpleXMLElement $oTask Contenu XML de la tâche.
-     * @param Project $oProject Super tâche projet.
-     * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
-     */
-    public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
-    {
-        parent::__construct($oTask, $oProject, $oDIContainer);
         $this->aAttrProperties = array(
             'src' => AttributeProperties::SRC_PATH | AttributeProperties::FILEJOKER | AttributeProperties::REQUIRED
                 | AttributeProperties::ALLOW_PARAMETER,
@@ -60,6 +43,15 @@ class Sync extends Task
             // TODO AttributeProperties::DIRJOKER abusif ici, mais à cause du multivalué :
             'exclude' => AttributeProperties::FILEJOKER | AttributeProperties::DIRJOKER,
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     * @codeCoverageIgnore
+     */
+    public static function getTagName ()
+    {
+        return 'sync';
     }
 
     /**
@@ -95,7 +87,7 @@ class Sync extends Task
     {
         parent::centralExecute();
         $sMsg = "+++Synchronize '" . $this->aAttValues['src'] . "' with '" . $this->aAttValues['destdir'] . "'+++";
-        $this->oLogger->info($sMsg);
+        $this->getLogger()->info($sMsg);
 
         // include / exclude :
         $aIncludedPaths = (empty($this->aAttValues['include'])
@@ -116,9 +108,9 @@ class Sync extends Task
                 $aExcludedPaths
             );
             foreach ($aResults as $sResult) {
-                $this->oLogger->info($sResult);
+                $this->getLogger()->info($sResult);
             }
         }
-        $this->oLogger->info('------');
+        $this->getLogger()->info('------');
     }
 }

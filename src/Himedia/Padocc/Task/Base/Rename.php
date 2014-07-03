@@ -3,7 +3,6 @@
 namespace Himedia\Padocc\Task\Base;
 
 use Himedia\Padocc\AttributeProperties;
-use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Task;
 
 /**
@@ -16,34 +15,28 @@ use Himedia\Padocc\Task;
  */
 class Rename extends Task
 {
-
     /**
-     * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
-     *
-     * @return string nom du tag XML correspondant à cette tâche dans les config projet.
-     * @codeCoverageIgnore
+     * {@inheritdoc}
      */
-    public static function getTagName ()
+    protected function init()
     {
-        return 'rename';
-    }
+        parent::init();
 
-    /**
-     * Constructeur.
-     *
-     * @param \SimpleXMLElement $oTask Contenu XML de la tâche.
-     * @param Project $oProject Super tâche projet.
-     * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
-     */
-    public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
-    {
-        parent::__construct($oTask, $oProject, $oDIContainer);
         $this->aAttrProperties = array(
             'src' => AttributeProperties::SRC_PATH | AttributeProperties::REQUIRED
                 | AttributeProperties::ALLOW_PARAMETER,
             'dest' => AttributeProperties::FILE | AttributeProperties::DIR | AttributeProperties::REQUIRED
                 | AttributeProperties::ALLOW_PARAMETER
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     * @codeCoverageIgnore
+     */
+    public static function getTagName ()
+    {
+        return 'rename';
     }
 
     /**
@@ -80,8 +73,8 @@ class Rename extends Task
         parent::centralExecute();
         $aSrcPath = $this->processSimplePath($this->aAttValues['src']);
         $aDestPath = $this->processSimplePath($this->aAttValues['dest']);
-        $this->oLogger->info("+++Rename '$aSrcPath' to '$aDestPath'.");
+        $this->getLogger()->info("+++Rename '$aSrcPath' to '$aDestPath'.");
         $this->oShell->execSSH("mv %s '" . $aDestPath . "'", $aSrcPath);
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 }

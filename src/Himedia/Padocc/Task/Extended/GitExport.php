@@ -3,9 +3,7 @@
 namespace Himedia\Padocc\Task\Extended;
 
 use Himedia\Padocc\AttributeProperties;
-use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Task;
-use Himedia\Padocc\Task\Base\Project;
 use Himedia\Padocc\Task\Base\Sync;
 
 /**
@@ -35,18 +33,6 @@ use Himedia\Padocc\Task\Base\Sync;
  */
 class GitExport extends Task
 {
-
-    /**
-     * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
-     *
-     * @return string nom du tag XML correspondant à cette tâche dans les config projet.
-     * @codeCoverageIgnore
-     */
-    public static function getTagName ()
-    {
-        return 'gitexport';
-    }
-
     /**
      * Tâche de synchronisation sous-jacente.
      * @var Sync
@@ -54,15 +40,12 @@ class GitExport extends Task
     private $oSyncTask;
 
     /**
-     * Constructeur.
-     *
-     * @param \SimpleXMLElement $oTask Contenu XML de la tâche.
-     * @param Project $oProject Super tâche projet.
-     * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
+     * {@inheritdoc}
      */
-    public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
+    protected function init()
     {
-        parent::__construct($oTask, $oProject, $oDIContainer);
+        parent::init();
+
         $this->aAttrProperties = array(
             'repository' => AttributeProperties::FILE | AttributeProperties::REQUIRED,
             'ref' => AttributeProperties::REQUIRED | AttributeProperties::ALLOW_PARAMETER,
@@ -104,8 +87,17 @@ class GitExport extends Task
         if (! empty($this->aAttValues['exclude'])) {
             $aSyncAttributes['exclude'] = $this->aAttValues['exclude'];
         }
-        $this->oSyncTask = Sync::getNewInstance($aSyncAttributes, $oProject, $oDIContainer);
+        $this->oSyncTask = Sync::getNewInstance($aSyncAttributes, $this->oProject, $this->oDIContainer);
         $this->oNumbering->removeCounterDivision();
+    }
+
+    /**
+     * {@inheritdoc}
+     * @codeCoverageIgnore
+     */
+    public static function getTagName ()
+    {
+        return 'gitexport';
     }
 
     /**
@@ -114,7 +106,7 @@ class GitExport extends Task
     public function setUp ()
     {
         parent::setUp();
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
 
         // La tâche Sync vérifie que le 'srcsubdir' existe bien. Mais s'il s'agit du 1er déploiement
         // de l'env concerné, alors le mkdir au niveau GitExport ne sera pas encore réalisé au moment
@@ -128,7 +120,7 @@ class GitExport extends Task
             }
         }
 
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 
     /**
@@ -140,22 +132,22 @@ class GitExport extends Task
     protected function centralExecute ()
     {
         parent::centralExecute();
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
 
         $aRef = $this->processPath($this->aAttValues['ref']);
         $sRef = $aRef[0];
 
         $sMsg = "Export '$sRef' reference from '" . $this->aAttValues['repository'] . "' git repository+++";
-        $this->oLogger->info($sMsg);
+        $this->getLogger()->info($sMsg);
         $aResult = $this->oShell->exec(
             $this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['inc'] . '/gitexport.sh'
             . ' "' . $this->aAttValues['repository'] . '"'
             . ' "' . $sRef . '"'
             . ' "' . $this->aAttValues['localrepositorydir'] . '"'
         );
-        $this->oLogger->info(implode("\n", $aResult) . '---');
+        $this->getLogger()->info(implode("\n", $aResult) . '---');
 
         $this->oSyncTask->execute();
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 }

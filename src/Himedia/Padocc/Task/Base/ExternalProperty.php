@@ -3,7 +3,6 @@
 namespace Himedia\Padocc\Task\Base;
 
 use Himedia\Padocc\AttributeProperties;
-use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Task;
 
 /**
@@ -25,30 +24,25 @@ class ExternalProperty extends Task
     const EXTERNAL_PROPERTY_PREFIX = 'external_property_';
 
     /**
-     * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
-     *
-     * @return string nom du tag XML correspondant à cette tâche dans les config projet.
+     * {@inheritdoc}
+     */
+    protected function init()
+    {
+        parent::init();
+
+        $this->aAttrProperties = array(
+            'name' => AttributeProperties::REQUIRED,
+            'description' => AttributeProperties::REQUIRED
+        );
+    }
+
+    /**
+     * {@inheritdoc}
      * @codeCoverageIgnore
      */
     public static function getTagName ()
     {
         return 'externalproperty';
-    }
-
-    /**
-     * Constructeur.
-     *
-     * @param \SimpleXMLElement $oTask Contenu XML de la tâche.
-     * @param Project $oProject Super tâche projet.
-     * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
-     */
-    public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
-    {
-        parent::__construct($oTask, $oProject, $oDIContainer);
-        $this->aAttrProperties = array(
-            'name' => AttributeProperties::REQUIRED,
-            'description' => AttributeProperties::REQUIRED
-        );
     }
 
     /**
@@ -60,7 +54,7 @@ class ExternalProperty extends Task
     protected function centralExecute ()
     {
         parent::centralExecute();
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
         try {
             $sValue = $this->oProperties->getProperty(self::EXTERNAL_PROPERTY_PREFIX . $this->aAttValues['name']);
         } catch (\UnexpectedValueException $oException) {
@@ -69,8 +63,8 @@ class ExternalProperty extends Task
         }
         $sMsg = "Set external property '" . $this->aAttValues['name'] . "' (description: '"
               . $this->aAttValues['description'] . "') to '$sValue'.";
-        $this->oLogger->info($sMsg);
+        $this->getLogger()->info($sMsg);
         $this->oProperties->setProperty($this->aAttValues['name'], $sValue);
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 }

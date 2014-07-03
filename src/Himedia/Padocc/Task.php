@@ -7,6 +7,7 @@ use Himedia\Padocc\Numbering\NumberingInterface;
 use Himedia\Padocc\Properties\PropertiesInterface;
 use Himedia\Padocc\Task\Base\Project;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
@@ -24,7 +25,7 @@ abstract class Task
     /**
      * Collection de services.
      *
-     * @var DIContainer
+     * @var DIContainerInterface
      */
     protected $oDIContainer;
 
@@ -36,16 +37,14 @@ abstract class Task
     protected $oAttrProperties;
 
     /**
-     * Adaptater shell.
-     * @var ShellAdapter
+     * @var ShellAdapter Shell adapter
      */
     protected $oShell;
 
     /**
-     * Adaptateur de log.
-     * @var LoggerInterface
+     * @var LoggerInterface Logger adapter
      */
-    protected $oLogger;
+    private $oLogger;
 
     /**
      * @var array
@@ -53,8 +52,7 @@ abstract class Task
     protected $aConfig;
 
     /**
-     * Adaptateur de propriétés.
-     * @var PropertiesInterface
+     * @var PropertiesInterface Properties adapter
      */
     protected $oProperties;
 
@@ -120,11 +118,11 @@ abstract class Task
      *
      * @param array $aAttributes Tableau associatif listant des attributs et leur valeur.
      * @param Project $oProject Super tâche projet.
-     * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
+     * @param DIContainerInterface $oDIContainer Register de services prédéfinis (ShellInterface, ...).
      * @return Task
      * @throws \RuntimeException si appelée directement sur Task.
      */
-    public static function getNewInstance (array $aAttributes, Project $oProject, DIContainer $oDIContainer)
+    public static function getNewInstance (array $aAttributes, Project $oProject, DIContainerInterface $oDIContainer)
     {
         $sAttributes = '';
         foreach ($aAttributes as $sName => $sValue) {
@@ -140,22 +138,26 @@ abstract class Task
      * Constructeur.
      * @param \SimpleXMLElement $oXMLTask Contenu XML de la tâche.
      * @param Project $oProject Super tâche projet.
-     * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
+     * @param DIContainerInterface $oDIContainer Register de services prédéfinis (ShellInterface, ...).
      */
-    public function __construct (\SimpleXMLElement $oXMLTask, Project $oProject, DIContainer $oDIContainer)
+    public function __construct (\SimpleXMLElement $oXMLTask, Project $oProject, DIContainerInterface $oDIContainer)
     {
         $this->oXMLTask = $oXMLTask;
         $this->oProject = $oProject;
 
         $this->oDIContainer = $oDIContainer;
-        $this->oShell = $this->oDIContainer->getShellAdapter();
-        $this->oLogger = $this->oDIContainer->getLogger();
-        $this->oProperties = $this->oDIContainer->getPropertiesAdapter();
-        $this->oNumbering = $this->oDIContainer->getNumberingAdapter();
-        $this->aConfig = $this->oDIContainer->getConfig();
+        $this->aConfig = $oDIContainer->getConfig();
+
+        $this->setShellAdapter($oDIContainer->getShellAdapter());
+        $this->setNumberingAdapter($oDIContainer->getNumberingAdapter());
+        $this->setPropertiesAdapter($oDIContainer->getPropertiesAdapter());
+
+        if ($logger = $oDIContainer->getLogger()) {
+            $this->setLogger($logger);
+        }
 
         // TODO à injecter :
-        $this->oAttrProperties = new AttributeProperties($this->oDIContainer);
+        $this->setAttributePropertiesAdapter(new AttributeProperties($this->oShell));
 
         $sCounter = $this->oNumbering->getNextCounterValue();
         $this->sCounter = $sCounter;
@@ -163,6 +165,81 @@ abstract class Task
 
         $this->aAttrProperties = array();
         $this->fetchAttributes();
+
+        $this->init();
+    }
+
+    /**
+     * Initializes task.
+     *
+     * @return void
+     */
+    protected function init()
+    {
+    }
+
+    /**
+     * Gets the logger.
+     *
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        if ($this->oLogger === null) {
+            $this->oLogger = new NullLogger();
+        }
+
+        return $this->oLogger;
+    }
+
+    /**
+     * Sets a logger.
+     *
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->oLogger = $logger;
+    }
+
+    /**
+     * Sets the Shell adapter.
+     *
+     * @param ShellAdapter $adapter
+     */
+    public function setShellAdapter(ShellAdapter $adapter)
+    {
+        $this->oShell = $adapter;
+    }
+
+    /**
+     * Sets the numbering adapter.
+     *
+     * @param NumberingInterface $adapter
+     */
+    public function setNumberingAdapter(NumberingInterface $adapter)
+    {
+        $this->oNumbering = $adapter;
+    }
+
+    /**
+     * Sets the properties adapter.
+     *
+     * @param PropertiesInterface $adapter
+     */
+    public function setPropertiesAdapter(PropertiesInterface $adapter)
+    {
+        $this->oProperties = $adapter;
+    }
+
+    /**
+     * Sets the attribute properties adapter.
+     *
+     * @param AttributeProperties $adapter
+     */
+    public function setAttributePropertiesAdapter(AttributeProperties $adapter)
+    {
+        $this->oAttrProperties = $adapter;
     }
 
     /**
@@ -338,9 +415,9 @@ abstract class Task
         if (! empty($this->aAttValues['name'])) {
             $sMsg .= ': \'' . $this->aAttValues['name'] . '\'';
         }
-        $this->oLogger->info($sMsg . '+++');
+        $this->getLogger()->info($sMsg . '+++');
         $this->oAttrProperties->checkAttributes($this->aAttrProperties, $this->aAttValues);
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 
     /**
@@ -355,7 +432,7 @@ abstract class Task
         if (! empty($this->aAttValues['name'])) {
             $sMsg .= ': \'' . $this->aAttValues['name'] . '\'';
         }
-        $this->oLogger->info($sMsg);
+        $this->getLogger()->info($sMsg);
     }
 
     /**

@@ -107,11 +107,11 @@ class AttributeProperties
     /**
      * Constructeur.
      *
-     * @param DIContainer $oDIContainer
+     * @param ShellAdapter $oShell
      */
-    public function __construct (DIContainer $oDIContainer)
+    public function __construct (ShellAdapter $oShell)
     {
-        $this->oShell = $oDIContainer->getShellAdapter();
+        $this->oShell = $oShell;
     }
 
     /**

@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
  *
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
-class DIContainer
+class DIContainer implements DIContainerInterface
 {
 
     /**
@@ -59,24 +59,20 @@ class DIContainer
     }
 
     /**
-     * Enregistre l'adapteur de log.
-     *
-     * @param LoggerInterface $oLogger
-     * @return DIContainer $this
+     * {@inheritdoc}
      */
-    public function setLogger (LoggerInterface $oLogger)
+    public function setLogger(LoggerInterface $logger)
     {
-        $this->oLogger = $oLogger;
+        $this->oLogger = $logger;
         return $this;
     }
 
     /**
-     * Retourne l'adapteur de log enregistré.
+     * {@inheritdoc}
      *
-     * @return LoggerInterface l'adapteur de log enregistré.
      * @throws \RuntimeException if no logger set.
      */
-    public function getLogger ()
+    public function getLogger()
     {
         if ($this->oLogger === null) {
             throw new \RuntimeException('No LoggerInterface instance set!');
@@ -85,24 +81,20 @@ class DIContainer
     }
 
     /**
-     * Enregistre l'adapteur de propriétés.
-     *
-     * @param PropertiesInterface $oProperties
-     * @return DIContainer $this
+     * {@inheritdoc}
      */
-    public function setPropertiesAdapter (PropertiesInterface $oProperties)
+    public function setPropertiesAdapter(PropertiesInterface $propertiesAdapter)
     {
-        $this->oProperties = $oProperties;
+        $this->oProperties = $propertiesAdapter;
         return $this;
     }
 
     /**
-     * Retourne l'adapteur de propriétés enregistré.
+     * {@inheritdoc}
      *
-     * @return PropertiesInterface l'adapteur de propriétés enregistré.
      * @throws \RuntimeException if no properties instance set.
      */
-    public function getPropertiesAdapter ()
+    public function getPropertiesAdapter()
     {
         if ($this->oProperties === null) {
             throw new \RuntimeException('No PropertiesInterface instance set!');
@@ -111,24 +103,20 @@ class DIContainer
     }
 
     /**
-     * Enregistre l'adapteur de commandes Shell.
-     *
-     * @param ShellAdapter $oShell
-     * @return DIContainer $this
+     * {@inheritdoc}
      */
-    public function setShellAdapter (ShellAdapter $oShell)
+    public function setShellAdapter(ShellAdapter $shellAdapter)
     {
-        $this->oShell = $oShell;
+        $this->oShell = $shellAdapter;
         return $this;
     }
 
     /**
-     * Retourne l'adapteur de commandes Shell enregistré.
+     * {@inheritdoc}
      *
-     * @return ShellAdapter l'adapteur de commandes Shell enregistré.
      * @throws \RuntimeException if no Shell adapter set.
      */
-    public function getShellAdapter ()
+    public function getShellAdapter()
     {
         if ($this->oShell === null) {
             throw new \RuntimeException('No ShellAdapter instance set!');
@@ -137,24 +125,20 @@ class DIContainer
     }
 
     /**
-     * Enregistre l'adapteur de numérotation.
-     *
-     * @param NumberingInterface $oNumbering
-     * @return DIContainer $this
+     * {@inheritdoc}
      */
-    public function setNumberingAdapter (NumberingInterface $oNumbering)
+    public function setNumberingAdapter(NumberingInterface $numberingAdapter)
     {
-        $this->oNumbering = $oNumbering;
+        $this->oNumbering = $numberingAdapter;
         return $this;
     }
 
     /**
-     * Retourne l'adapteur de numérotation enregistré.
+     * {@inheritdoc}
      *
-     * @return NumberingInterface l'adapteur de numérotation enregistré.
      * @throws \RuntimeException if no Numbering adapter set.
      */
-    public function getNumberingAdapter ()
+    public function getNumberingAdapter()
     {
         if ($this->oNumbering === null) {
             throw new \RuntimeException('No NumberingInterface instance set!');
@@ -163,20 +147,20 @@ class DIContainer
     }
 
     /**
-     * @param array $aConfig
-     * @return DIContainer current instance.
+     * {@inheritdoc}
      */
-    public function setConfig (array $aConfig)
+    public function setConfig(array $config)
     {
-        $this->aConfig = $aConfig;
+        $this->aConfig = $config;
         return $this;
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
+     *
      * @throws \RuntimeException if no config set.
      */
-    public function getConfig ()
+    public function getConfig()
     {
         if ($this->aConfig === array()) {
             throw new \RuntimeException('No config array set!');

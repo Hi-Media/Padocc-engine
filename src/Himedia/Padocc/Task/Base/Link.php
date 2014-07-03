@@ -4,7 +4,6 @@ namespace Himedia\Padocc\Task\Base;
 
 use GAubry\Shell\PathStatus;
 use Himedia\Padocc\AttributeProperties;
-use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Task;
 
 /**
@@ -24,28 +23,13 @@ use Himedia\Padocc\Task;
  */
 class Link extends Task
 {
-
     /**
-     * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
-     *
-     * @return string nom du tag XML correspondant à cette tâche dans les config projet.
-     * @codeCoverageIgnore
+     * {@inheritdoc}
      */
-    public static function getTagName ()
+    protected function init()
     {
-        return 'link';
-    }
+        parent::init();
 
-    /**
-     * Constructeur.
-     *
-     * @param \SimpleXMLElement $oTask Contenu XML de la tâche.
-     * @param Project $oProject Super tâche projet.
-     * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
-     */
-    public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
-    {
-        parent::__construct($oTask, $oProject, $oDIContainer);
         $this->aAttrProperties = array(
             'src' => AttributeProperties::REQUIRED | AttributeProperties::FILE | AttributeProperties::DIR
                 | AttributeProperties::ALLOW_PARAMETER,
@@ -53,6 +37,15 @@ class Link extends Task
                 | AttributeProperties::ALLOW_PARAMETER,
             'server' => AttributeProperties::ALLOW_PARAMETER
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     * @codeCoverageIgnore
+     */
+    public static function getTagName ()
+    {
+        return 'link';
     }
 
     /**
@@ -101,7 +94,7 @@ class Link extends Task
     protected function centralExecute ()
     {
         parent::centralExecute();
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
 
         // La source doit être un lien symbolique ou ne pas exister :
         $sPath = $this->aAttValues['src'];
@@ -125,7 +118,7 @@ class Link extends Task
         if (! empty($this->aAttValues['server'])) {
             $sRawTargetPath = $this->aAttValues['server'] . ':' . $sRawTargetPath;
         }
-        $this->oLogger->info("Create symlink from '$sPath' to '$sRawTargetPath'.+++");
+        $this->getLogger()->info("Create symlink from '$sPath' to '$sRawTargetPath'.+++");
 
         $aTargetPaths = $this->processPath($sRawTargetPath);
         foreach ($aTargetPaths as $sTargetPath) {
@@ -137,6 +130,6 @@ class Link extends Task
             $sSrc = $this->processSimplePath($sDestServer . $sSrcRealPath);
             $this->oShell->createLink($sSrc, $sTargetPath);
         }
-        $this->oLogger->info('------');
+        $this->getLogger()->info('------');
     }
 }

@@ -3,9 +3,7 @@
 namespace Himedia\Padocc\Task\Extended;
 
 use Himedia\Padocc\AttributeProperties;
-use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Task;
-use Himedia\Padocc\Task\Base\Project;
 
 /**
  * Exporte tout ou partie du contenu d'un dépôt CVS vers une ou plusieurs destinations.
@@ -30,18 +28,6 @@ use Himedia\Padocc\Task\Base\Project;
  */
 class CVSExport extends Task
 {
-
-    /**
-     * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
-     *
-     * @return string nom du tag XML correspondant à cette tâche dans les config projet.
-     * @codeCoverageIgnore
-     */
-    public static function getTagName ()
-    {
-        return 'cvsexport';
-    }
-
     /**
      * Tâche de synchronisation sous-jacente.
      * @var Task\Base\Sync
@@ -49,15 +35,12 @@ class CVSExport extends Task
     private $oSyncTask;
 
     /**
-     * Constructeur.
-     *
-     * @param \SimpleXMLElement $oTask Contenu XML de la tâche.
-     * @param Project $oProject Super tâche projet.
-     * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
+     * {@inheritdoc}
      */
-    public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
+    protected function init()
     {
-        parent::__construct($oTask, $oProject, $oDIContainer);
+        parent::init();
+
         $this->aAttrProperties = array(
             'repository' => AttributeProperties::FILE | AttributeProperties::REQUIRED,
             'module' => AttributeProperties::DIR | AttributeProperties::REQUIRED,
@@ -84,10 +67,19 @@ class CVSExport extends Task
                 'src' => $this->aAttValues['srcdir'] . '/' . $this->aAttValues['module'] . '/',
                 'destdir' => $this->aAttValues['destdir']
             ),
-            $oProject,
-            $oDIContainer
+            $this->oProject,
+            $this->oDIContainer
         );
         $this->oNumbering->removeCounterDivision();
+    }
+
+    /**
+     * {@inheritdoc}
+     * @codeCoverageIgnore
+     */
+    public static function getTagName ()
+    {
+        return 'cvsexport';
     }
 
     /**
@@ -96,7 +88,7 @@ class CVSExport extends Task
     public function setUp ()
     {
         parent::setUp();
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
         try {
             $this->oSyncTask->setUp();
         } catch (\UnexpectedValueException $oException) {
@@ -106,7 +98,7 @@ class CVSExport extends Task
             }
         }
 
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 
     /**
@@ -118,18 +110,18 @@ class CVSExport extends Task
     protected function centralExecute ()
     {
         parent::centralExecute();
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
 
-        $this->oLogger->info("Export from '" . $this->aAttValues['repository'] . "' CVS repository+++");
+        $this->getLogger()->info("Export from '" . $this->aAttValues['repository'] . "' CVS repository+++");
         $aResult = $this->oShell->exec(
             $this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['inc'] . '/cvsexport.sh'
             . ' "' . $this->aAttValues['repository'] . '"'
             . ' "' . $this->aAttValues['module'] . '"'
             . ' "' . $this->aAttValues['srcdir'] . '"'
         );
-        $this->oLogger->info(implode("\n", $aResult) . '---');
+        $this->getLogger()->info(implode("\n", $aResult) . '---');
 
         $this->oSyncTask->execute();
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 }

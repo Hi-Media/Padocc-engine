@@ -3,7 +3,7 @@
 namespace Himedia\Padocc\Task\Base;
 
 use Himedia\Padocc\AttributeProperties;
-use Himedia\Padocc\DIContainer;
+use Himedia\Padocc\DIContainerInterface;
 use Himedia\Padocc\Task\WithProperties;
 
 /**
@@ -19,6 +19,68 @@ use Himedia\Padocc\Task\WithProperties;
  */
 class Project extends WithProperties
 {
+    /**
+     * Tâche appelée.
+     * @var Environment
+     */
+    private $oBoundTask;
+
+    /**
+     * @var string Selected environment.
+     */
+    public $sEnvName;
+
+    /**
+     * Constructor.
+     *
+     * @param string               $sXmlProject  XML project path or XML data
+     * @param string               $sEnvName     Selected environment.
+     * @param DIContainerInterface $oDIContainer Service container.
+     *
+     * @throws \UnexpectedValueException si fichier XML du projet non trouvé
+     * @throws \UnexpectedValueException si environnement non trouvé ou non unique
+     */
+    public function __construct ($sXmlProject, $sEnvName, DIContainerInterface $oDIContainer)
+    {
+        $this->sEnvName = $sEnvName;
+
+        $oSXEProject = self::getSXEProject($sXmlProject);
+
+        parent::__construct($oSXEProject, $this, $oDIContainer);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \UnexpectedValueException si fichier XML du projet non trouvé
+     * @throws \UnexpectedValueException si environnement non trouvé ou non unique
+     */
+    protected function init()
+    {
+        parent::init();
+
+        $this->aAttrProperties = array_merge(
+            $this->aAttrProperties,
+            array('name' => AttributeProperties::REQUIRED)
+        );
+
+        // Crée une instance de la tâche environnement appelée :
+        $aTargets = $this->oProject->getSXE()->xpath("env[@name='" . $this->sEnvName . "']");
+        if (count($aTargets) !== 1) {
+            throw new \UnexpectedValueException("Environment '" . $this->sEnvName . "' not found or not unique in this project!");
+        }
+
+        $this->oBoundTask = new Environment($aTargets[0], $this->oProject, $this->oDIContainer);
+    }
+
+    /**
+     * {@inheritdoc}
+     * @codeCoverageIgnore
+     */
+    public static function getTagName ()
+    {
+        return 'project';
+    }
 
     /**
      * Retourne une instance SimpleXMLElement du projet spécifié.
@@ -39,52 +101,6 @@ class Project extends WithProperties
     }
 
     /**
-     * Tâche appelée.
-     * @var Environment
-     */
-    private $oBoundTask;
-
-    /**
-     * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
-     *
-     * @return string nom du tag XML correspondant à cette tâche dans les config projet.
-     * @codeCoverageIgnore
-     */
-    public static function getTagName ()
-    {
-        return 'project';
-    }
-
-    /**
-     * Constructeur.
-     *
-     * @param string $sXmlProject XML project path or XML data
-     * @param string $sEnvName Environnement sélectionné.
-     * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
-     * @throws \UnexpectedValueException si fichier XML du projet non trouvé
-     * @throws \UnexpectedValueException si environnement non trouvé ou non unique
-     */
-    public function __construct ($sXmlProject, $sEnvName, DIContainer $oDIContainer)
-    {
-        $oSXEProject = self::getSXEProject($sXmlProject);
-        $this->sEnvName = $sEnvName;
-
-        parent::__construct($oSXEProject, $this, $oDIContainer);
-        $this->aAttrProperties = array_merge(
-            $this->aAttrProperties,
-            array('name' => AttributeProperties::REQUIRED)
-        );
-
-        // Crée une instance de la tâche environnement appelée :
-        $aTargets = $this->oProject->getSXE()->xpath("env[@name='$sEnvName']");
-        if (count($aTargets) !== 1) {
-            throw new \UnexpectedValueException("Environment '$sEnvName' not found or not unique in this project!");
-        }
-
-        $this->oBoundTask = new Environment($aTargets[0], $this->oProject, $this->oDIContainer);
-    }
-
-    /**
      * Vérifie au moyen de tests basiques que la tâche peut être exécutée.
      * Lance une exception si tel n'est pas le cas.
      *
@@ -99,13 +115,13 @@ class Project extends WithProperties
     public function check()
     {
         parent::check();
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
         foreach ($this->aAttValues as $sAttribute => $sValue) {
             if (! empty($sValue) && $sAttribute !== 'name') {
-                $this->oLogger->info("Attribute: $sAttribute = '$sValue'");
+                $this->getLogger()->info("Attribute: $sAttribute = '$sValue'");
             }
         }
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 
     /**
@@ -126,9 +142,9 @@ class Project extends WithProperties
     protected function preExecute ()
     {
         parent::preExecute();
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
         $this->oShell->mkdir($this->oProperties->getProperty('tmpdir'));
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 
     /**
@@ -151,9 +167,9 @@ class Project extends WithProperties
      */
     protected function postExecute()
     {
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
         $this->oShell->remove($this->oProperties->getProperty('tmpdir'));
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
         parent::postExecute();
     }
 

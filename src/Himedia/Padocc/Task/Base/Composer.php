@@ -3,7 +3,6 @@
 namespace Himedia\Padocc\Task\Base;
 
 use Himedia\Padocc\AttributeProperties;
-use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Task;
 
 /**
@@ -20,33 +19,27 @@ use Himedia\Padocc\Task;
  */
 class Composer extends Task
 {
-
     /**
-     * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
-     *
-     * @return string nom du tag XML correspondant à cette tâche dans les config projet.
-     * @codeCoverageIgnore
+     * {@inheritdoc}
      */
-    public static function getTagName ()
+    protected function init()
     {
-        return 'composer';
-    }
+        parent::init();
 
-    /**
-     * Constructeur.
-     *
-     * @param \SimpleXMLElement $oTask Contenu XML de la tâche.
-     * @param Project $oProject Super tâche projet.
-     * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
-     */
-    public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
-    {
-        parent::__construct($oTask, $oProject, $oDIContainer);
         $this->aAttrProperties = array(
             'dir' => AttributeProperties::DIR | AttributeProperties::REQUIRED
                 | AttributeProperties::ALLOW_PARAMETER,
             'options' => 0
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     * @codeCoverageIgnore
+     */
+    public static function getTagName()
+    {
+        return 'composer';
     }
 
     /**
@@ -78,7 +71,7 @@ class Composer extends Task
     protected function centralExecute ()
     {
         parent::centralExecute();
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
 
         $sInstallCmdPattern = '%1$s install --working-dir "%2$s" %3$s';
         $sWGetCmd = 'wget -q --no-check-certificate http://getcomposer.org/installer -O - | php';
@@ -112,18 +105,18 @@ class Composer extends Task
 
             // Optional installation:
             if (! empty($sDownloadCmd)) {
-                $this->oLogger->info('Install composer:+++');
+                $this->getLogger()->info('Install composer:+++');
                 $aResult = $this->oShell->execSSH($sDownloadCmd, $sDir);
-                $this->oLogger->info(implode("\n", $aResult) . '---');
+                $this->getLogger()->info(implode("\n", $aResult) . '---');
             }
 
             // Execution:
-            $this->oLogger->info("Execute composer on '$sDir':+++");
+            $this->getLogger()->info("Execute composer on '$sDir':+++");
             $sCmd = sprintf($sInstallCmdPattern, $sComposerBin, $sLocalPath, $this->aAttValues['options']);
             $aResult = $this->oShell->execSSH($sCmd, $sDir);
-            $this->oLogger->info(implode("\n", $aResult) . '---');
+            $this->getLogger()->info(implode("\n", $aResult) . '---');
         }
 
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 }

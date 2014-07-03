@@ -3,7 +3,6 @@
 namespace Himedia\Padocc\Task\Base;
 
 use Himedia\Padocc\AttributeProperties;
-use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Task\WithProperties;
 
 /**
@@ -19,7 +18,6 @@ use Himedia\Padocc\Task\WithProperties;
  */
 class Call extends WithProperties
 {
-
     /**
      * Tâche appelée.
      * @var Target
@@ -27,27 +25,14 @@ class Call extends WithProperties
     private $oBoundTask;
 
     /**
-     * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
+     * {@inheritdoc}
      *
-     * @return string nom du tag XML correspondant à cette tâche dans les config projet.
-     * @codeCoverageIgnore
-     */
-    public static function getTagName ()
-    {
-        return 'call';
-    }
-
-    /**
-     * Constructeur.
-     *
-     * @param \SimpleXMLElement $oTask Contenu XML de la tâche.
-     * @param Project $oProject Super tâche projet.
-     * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
      * @throws \UnexpectedValueException if target not found or not unique in this project.
      */
-    public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
+    protected function init()
     {
-        parent::__construct($oTask, $oProject, $oDIContainer);
+        parent::init();
+
         $this->aAttrProperties = array_merge(
             $this->aAttrProperties,
             array('target' => AttributeProperties::REQUIRED)
@@ -62,6 +47,15 @@ class Call extends WithProperties
             }
             $this->oBoundTask = new Target($aTargets[0], $this->oProject, $this->oDIContainer);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     * @codeCoverageIgnore
+     */
+    public static function getTagName ()
+    {
+        return 'call';
     }
 
     /**

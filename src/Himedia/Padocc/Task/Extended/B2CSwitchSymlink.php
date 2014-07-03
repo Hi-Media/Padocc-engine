@@ -3,11 +3,9 @@
 namespace Himedia\Padocc\Task\Extended;
 
 use Himedia\Padocc\AttributeProperties;
-use Himedia\Padocc\DIContainer;
 use Himedia\Padocc\Task\Base\Environment;
 use Himedia\Padocc\Task\Base\HTTP;
 use Himedia\Padocc\Task\Base\Link;
-use Himedia\Padocc\Task\Base\Project;
 
 /**
  * Si tous les attributs booléens sont à true, alors cette tâche qui se substitue à
@@ -50,18 +48,6 @@ use Himedia\Padocc\Task\Base\Project;
  */
 class B2CSwitchSymlink extends SwitchSymlink
 {
-
-    /**
-     * Retourne le nom du tag XML correspondant à cette tâche dans les config projet.
-     *
-     * @return string nom du tag XML correspondant à cette tâche dans les config projet.
-     * @codeCoverageIgnore
-     */
-    public static function getTagName ()
-    {
-        return 'b2cswitchsymlink';
-    }
-
     /**
      * Tâche de création d'appel cURL AAI sous-jacente.
      * @var HTTP
@@ -69,15 +55,12 @@ class B2CSwitchSymlink extends SwitchSymlink
     private $oHTTPTask;
 
     /**
-     * Constructeur.
-     *
-     * @param \SimpleXMLElement $oTask Contenu XML de la tâche.
-     * @param Project $oProject Super tâche projet.
-     * @param DIContainer $oDIContainer Register de services prédéfinis (ShellInterface, ...).
+     * {@inheritdoc}
      */
-    public function __construct (\SimpleXMLElement $oTask, Project $oProject, DIContainer $oDIContainer)
+    protected function init()
     {
-        parent::__construct($oTask, $oProject, $oDIContainer);
+        parent::init();
+
         $this->aAttrProperties = array_merge(
             $this->aAttrProperties,
             array(
@@ -95,8 +78,17 @@ class B2CSwitchSymlink extends SwitchSymlink
         $sAppParameter = (isset($aMappingAAI[$sEnv]) ? $aMappingAAI[$sEnv] : $sEnv);
         $sURL = 'http://aai.twenga.com/push.php?server=${WEB_SERVERS}&amp;app=' . $sAppParameter;
         $aAttributes = array('url' => $sURL);
-        $this->oHTTPTask = HTTP::getNewInstance($aAttributes, $oProject, $oDIContainer);
+        $this->oHTTPTask = HTTP::getNewInstance($aAttributes, $this->oProject, $this->oDIContainer);
         $this->oNumbering->removeCounterDivision();
+    }
+
+    /**
+     * {@inheritdoc}
+     * @codeCoverageIgnore
+     */
+    public static function getTagName ()
+    {
+        return 'b2cswitchsymlink';
     }
 
     /**
@@ -132,13 +124,13 @@ class B2CSwitchSymlink extends SwitchSymlink
     {
         parent::preExecute();
 
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
         if ($this->aAttValues['sysopsnotifications'] == 'true') {
             $sEnv = $this->oProperties->getProperty('environment_name');
             $sID = $this->oProperties->getProperty('execution_id');
             $this->sendSysopsNotification('MEP-activation', 2, "Deploy to $sEnv servers (#$sID) is switching...");
         }
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 
     /**
@@ -149,10 +141,10 @@ class B2CSwitchSymlink extends SwitchSymlink
      */
     protected function centralExecute ()
     {
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
         if ($this->oProperties->getProperty('with_symlinks') === 'true') {
             if ($this->oProperties->getProperty(Environment::SERVERS_CONCERNED_WITH_BASE_DIR) == '') {
-                $this->oLogger->info('No release found.');
+                $this->getLogger()->info('No release found.');
             } else {
                 $this->oProperties->setProperty('with_symlinks', 'false');
                 $this->checkTargets();
@@ -160,7 +152,7 @@ class B2CSwitchSymlink extends SwitchSymlink
                 // Pour chaque serveur :
                 $aServers = $this->processPath('${WEB_SERVERS}');
                 foreach ($aServers as $sServer) {
-                    $this->oLogger->info("Switch '$sServer' server:+++");
+                    $this->getLogger()->info("Switch '$sServer' server:+++");
 
                     if ($this->aAttValues['clusterRemoving'] == 'true') {
                         $this->setCluster($sServer, false);
@@ -181,7 +173,7 @@ class B2CSwitchSymlink extends SwitchSymlink
                     if ($this->aAttValues['clusterReintegration'] == 'true') {
                         $this->setCluster($sServer, true);
                     }
-                    $this->oLogger->info('---');
+                    $this->getLogger()->info('---');
                 }
 
                 // Switch des symlinks
@@ -190,7 +182,7 @@ class B2CSwitchSymlink extends SwitchSymlink
                 $aAllServers = $this->expandPath($this->aAttValues['server']);
                 $aDiff = array_diff($aAllServers, $aServers);
                 if (count($aDiff) > 0) {
-                    $this->oLogger->info('Switch other servers: ' . implode(', ', $aDiff) . '.+++');
+                    $this->getLogger()->info('Switch other servers: ' . implode(', ', $aDiff) . '.+++');
                     $this->oProperties->setProperty('remaining_servers_to_switch', implode(' ', $aDiff));
                     $aAttributes = array(
                         'src' => $this->aAttValues['src'],
@@ -200,15 +192,15 @@ class B2CSwitchSymlink extends SwitchSymlink
                     $oLinkTask = Link::getNewInstance($aAttributes, $this->oProject, $this->oDIContainer);
                     $oLinkTask->setUp();
                     $oLinkTask->execute();
-                    $this->oLogger->info('---');
+                    $this->getLogger()->info('---');
                 }
 
                 $this->oProperties->setProperty('with_symlinks', 'true');
             }
         } else {
-            $this->oLogger->info("Mode 'withsymlinks' is off: nothing to do.");
+            $this->getLogger()->info("Mode 'withsymlinks' is off: nothing to do.");
         }
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 
     /**
@@ -222,7 +214,7 @@ class B2CSwitchSymlink extends SwitchSymlink
         $sEnv = $this->oProperties->getProperty('environment_name');
         $sRollbackID = $this->oProperties->getProperty('rollback_id');
         $sID = $sRollbackID !== '' ? $sRollbackID : $this->oProperties->getProperty('execution_id');
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
 
         if ($this->aAttValues['addSQLTwBuild'] == 'true') {
             $this->addSQLTwBuild($sID, $sEnv);
@@ -232,7 +224,7 @@ class B2CSwitchSymlink extends SwitchSymlink
         }
         $this->oHTTPTask->execute();
 
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
         parent::postExecute();
     }
 
@@ -245,10 +237,10 @@ class B2CSwitchSymlink extends SwitchSymlink
      */
     private function sendSysopsNotification ($sService, $iStatus, $sMessage)
     {
-        $this->oLogger->info("Send notification to Sysops: '$sMessage'+++");
+        $this->getLogger()->info("Send notification to Sysops: '$sMessage'+++");
         $sCmd = "/home/prod/twenga/tools/send_nsca_fs3.sh $sService $iStatus \"$sMessage\"";
         $this->oShell->execSSH($sCmd, 'fs3:foo');
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 
     /**
@@ -264,10 +256,10 @@ class B2CSwitchSymlink extends SwitchSymlink
         if (! isset($aTypes[$sEnv])) {
             throw new \DomainException("Environment not handled: '$sEnv'!");
         }
-        $this->oLogger->info("Add Twenga build number $sID into 'TWENGABUILD' SQL table.+++");
+        $this->getLogger()->info("Add Twenga build number $sID into 'TWENGABUILD' SQL table.+++");
         $sCmd = "/home/prod/twenga/tools/add_twengabuild $sID " . $aTypes[$sEnv];
         $this->oShell->execSSH($sCmd, 'fs3:foo');
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 
     /**
@@ -277,10 +269,10 @@ class B2CSwitchSymlink extends SwitchSymlink
      */
     private function restartServerApache ($sServer)
     {
-        $this->oLogger->info("Restart Apache webserver '$sServer'.+++");
+        $this->getLogger()->info("Restart Apache webserver '$sServer'.+++");
         $sToExec = $this->processSimplePath($sServer . ':/root/apache_restart');
         $aResult = $this->oShell->execSSH('sudo %s', $sToExec);
-        $this->oLogger->info(implode("\n", $aResult) . '---');
+        $this->getLogger()->info(implode("\n", $aResult) . '---');
     }
 
     /**
@@ -290,14 +282,14 @@ class B2CSwitchSymlink extends SwitchSymlink
      */
     private function clearServerSmartyCaches ($sServer)
     {
-        $this->oLogger->info("Clear Smarty caches of server '$sServer':+++");
+        $this->getLogger()->info("Clear Smarty caches of server '$sServer':+++");
 
         $sCmd = "/home/prod/twenga/tools/clear_cache $sServer smarty";
         if (strcasecmp(strrchr($sServer, '.'), '.us1') === 0) {
             $sCmd = 'export FORCE_TWENGA_DC=US && ' . $sCmd . ' && export FORCE_TWENGA_DC=\'\'';
         }
         $aResult = $this->oShell->execSSH($sCmd, 'fs3:foo');
-        $this->oLogger->info(strip_tags(implode("\n", $aResult)) . '---');
+        $this->getLogger()->info(strip_tags(implode("\n", $aResult)) . '---');
     }
 
     /**
@@ -313,25 +305,25 @@ class B2CSwitchSymlink extends SwitchSymlink
         $aMsgs = ($bStatus ? array('Reintegrate', 'into', '-e') : array('Remove', 'from', '-d'));
 
         if (preg_match('/wwwtest/i', $sServer) !== 1) {
-            $this->oLogger->info($aMsgs[0] . " '$sServer' server $aMsgs[1] the cluster.+++");
+            $this->getLogger()->info($aMsgs[0] . " '$sServer' server $aMsgs[1] the cluster.+++");
             $sCmd = "/home/prod/twenga/tools/wwwcluster -s $sServer $aMsgs[2]";
             try {
                 $aResult = $this->oShell->exec($sCmd);
                 $sResult = implode("\n", $aResult);
                 if ($sResult != '') {
-                    $this->oLogger->info($sResult);
+                    $this->getLogger()->info($sResult);
                 }
             } catch (\RuntimeException $oException) {
                 if ($oException->getCode() == 2) {
                     $sResult = '[WARNING] ' . $oException->getMessage();
-                    $this->oLogger->warning($sResult);
+                    $this->getLogger()->warning($sResult);
                 } else {
                     throw $oException;
                 }
             }
-            $this->oLogger->info('---');
+            $this->getLogger()->info('---');
         } else {
-            $this->oLogger->info(" '$sServer' server is not handled by the cluster.");
+            $this->getLogger()->info(" '$sServer' server is not handled by the cluster.");
         }
     }
 
@@ -341,8 +333,8 @@ class B2CSwitchSymlink extends SwitchSymlink
     public function setUp ()
     {
         parent::setUp();
-        $this->oLogger->info('+++');
+        $this->getLogger()->info('+++');
         $this->oHTTPTask->setUp();
-        $this->oLogger->info('---');
+        $this->getLogger()->info('---');
     }
 }
