@@ -59,7 +59,8 @@ class DIContainer implements DIContainerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param LoggerInterface $logger
+     * @return self
      */
     public function setLogger(LoggerInterface $logger)
     {
@@ -81,7 +82,8 @@ class DIContainer implements DIContainerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param PropertiesInterface $propertiesAdapter
+     * @return self
      */
     public function setPropertiesAdapter(PropertiesInterface $propertiesAdapter)
     {
@@ -103,7 +105,8 @@ class DIContainer implements DIContainerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param ShellAdapter $shellAdapter
+     * @return self
      */
     public function setShellAdapter(ShellAdapter $shellAdapter)
     {
@@ -125,7 +128,8 @@ class DIContainer implements DIContainerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param NumberingInterface $numberingAdapter
+     * @return self
      */
     public function setNumberingAdapter(NumberingInterface $numberingAdapter)
     {
@@ -147,7 +151,8 @@ class DIContainer implements DIContainerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param array $config
+     * @return self
      */
     public function setConfig(array $config)
     {
