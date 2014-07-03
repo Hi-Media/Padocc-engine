@@ -48,7 +48,7 @@ class Deployment
     /**
      * Constructeur.
      */
-    public function __construct (DIContainer $oDIContainer)
+    public function __construct (DIContainerInterface $oDIContainer)
     {
         $this->oDIContainer = $oDIContainer;
         $this->oLogger = $this->oDIContainer->getLogger();
