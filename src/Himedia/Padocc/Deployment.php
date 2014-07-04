@@ -2,107 +2,101 @@
 
 namespace Himedia\Padocc;
 
-use Himedia\Padocc\Properties\PropertiesInterface;
 use Himedia\Padocc\Task\Base\ExternalProperty;
 use Himedia\Padocc\Task\Base\Project;
-use Himedia\Padocc\Task\Base\Target;
-use Psr\Log\LoggerInterface;
 
 /**
- * Définit une propriété externe qu'il sera obligatoire de fournir lors de tout déploiement.
- * Cette propriété est par la suite réutilisable dans les attributs possédant le flag ALLOW_PARAMETER.
- * À inclure dans une tâche env ou target.
+ * Deployment
  *
- * Exemple : <externalproperty name="ref" description="Branch or tag to deploy" />
- *
- * @category TwengaDeploy
- * @package Core
  * @author Geoffroy AUBRY <gaubry@hi-media.com>
  */
-class Deployment
+final class Deployment
 {
-
     /**
-     * Instance de services.
      * @var DIContainerInterface
      */
     private $oDIContainer;
 
     /**
-     * Adaptateur de propriétés.
-     * @var PropertiesInterface
-     */
-    protected $oProperties;
-
-    /**
-     * Adaptateur de log.
-     * @var LoggerInterface
-     */
-    protected $oLogger;
-
-    /**
      * @var array
      */
-    protected $aConfig;
+    private $aConfig;
 
     /**
-     * Constructeur.
+     * Constructor.
+     *
+     * @param DIContainerInterface $oDIContainer Service container
      */
-    public function __construct (DIContainerInterface $oDIContainer)
+    public function __construct(DIContainerInterface $oDIContainer)
     {
+        $this->aConfig      = $oDIContainer->getConfig();
         $this->oDIContainer = $oDIContainer;
-        $this->oLogger = $this->oDIContainer->getLogger();
-        $this->oProperties = $this->oDIContainer->getPropertiesAdapter();
-        $this->aConfig = $this->oDIContainer->getConfig();
     }
 
     /**
-     * Enregistre les propriétés externes dans l'instance PropertiesInterface.
+     * Gets the service container.
      *
-     * @param array $aExternalProperties tableau associatif nom/valeur des propriétés externes.
+     * @return DIContainerInterface
      */
-    private function setExternalProperties (array $aExternalProperties)
+    public function getContainer()
     {
-        foreach ($aExternalProperties as $sName => $sValue) {
-            $sFullName = ExternalProperty::EXTERNAL_PROPERTY_PREFIX . $sName;
-            $this->oProperties->setProperty($sFullName, str_replace('&#0160;', ' ', $sValue));
-        }
+        return $this->oDIContainer;
     }
 
     /**
      * Exécute le déploiement.
      *
-     * @param string $sXmlProjectPath chemin vers le XML de configuration du projet
-     * @param string $sEnvName
-     * @param string $sExecutionID au format YYYYMMDDHHMMSS_xxxxx, où x est un nombre aléatoire,
-     * par exemple '20111026142342_07502'
-     * @param array $aExternalProperties tableau associatif nom/valeur des propriétés externes.
-     * @param string $sRollbackID identifiant de déploiement sur lequel effectuer un rollback,
-     * par exemple '20111026142342_07502'
+     * @param string $xmlPathOrString     Path to the project XML configuration file or XML file content.
+     * @param string $environment         Name of the environment where to deploy.
+     * @param string $sExecutionID        au format YYYYMMDDHHMMSS_xxxxx, où x est un nombre aléatoire
+     * @param array  $aExternalProperties tableau associatif nom/valeur des propriétés externes.
+     * @param string $sRollbackID         identifiant de déploiement sur lequel effectuer un rollback
      */
-    public function run ($sXmlProjectPath, $sEnvName, $sExecutionID, array $aExternalProperties, $sRollbackID)
+    public function run($xmlPathOrString, $environment, $sExecutionID, array $aExternalProperties, $sRollbackID)
     {
-        $sXmlProjectPath = realpath($sXmlProjectPath);
-        $oProject = Project::getSXEProject($sXmlProjectPath);
-        $sProjectName = (string)$oProject['name'];
-        $this->oProperties
-            ->setProperty('project_name', $sProjectName)
-            ->setProperty('environment_name', $sEnvName)
-            ->setProperty('execution_id', $sExecutionID)
-            ->setProperty('tmpdir', $this->aConfig['dir']['tmp'] . '/deploy_' . $sExecutionID)
-            ->setProperty('rollback_id', $sRollbackID);
+        $logger = $this->getContainer()->getLogger();
 
-        $this->setExternalProperties($aExternalProperties);
+        // Interprets the project XML configuration into a SimpleXML object
+        $xmlProject = Project::getSXEProject($xmlPathOrString);
 
-        $this->oLogger->info("Project loaded: $sXmlProjectPath");
-//        $this->oLogger->info("[WARNING] test");
-//        throw new \RuntimeException('slkghskgh');
-        $oProject = new Project($sXmlProjectPath, $sEnvName, $this->oDIContainer);
-        $this->oLogger->info('Check tasks:+++');
-//        $this->oLogger->info("[WARNING] test");
-        $oProject->setUp();
-        $this->oLogger->info('---Execute tasks:+++');
-        $oProject->execute();
-        $this->oLogger->info('---');
+        if (file_exists($xmlPathOrString)) {
+            $logger->info(sprintf('Project loaded from file %s', realpath($xmlPathOrString)));
+        }
+
+        $this->registerProperties(array(
+            'project_name'     => (string)$xmlProject['name'],
+            'environment_name' => $environment,
+            'execution_id'     => $sExecutionID,
+            'tmpdir'           => $this->aConfig['dir']['tmp'] . '/deploy_' . $sExecutionID,
+            'rollback_id'      => $sRollbackID
+        ));
+
+        $this->registerProperties($aExternalProperties, true, ExternalProperty::EXTERNAL_PROPERTY_PREFIX);
+
+        $project = new Project($xmlProject, $environment, $this->getContainer());
+
+        $logger->info('Check tasks:+++');
+        $project->setUp();
+
+        $logger->info('---Execute tasks:+++');
+        $project->execute();
+
+        $logger->info('---');
+    }
+
+    /**
+     * Registers external properties.
+     *
+     * @param array  $properties
+     * @param bool   $escape
+     * @param string $prefix
+     */
+    private function registerProperties(array $properties, $escape = false, $prefix = '')
+    {
+        foreach ($properties as $name => $value) {
+            $qualifiedName = $prefix . $name;
+            $filteredValue = $escape ? str_replace('&#0160;', ' ', $value) : $value;
+            $this->getContainer()->getPropertiesAdapter()->setProperty($qualifiedName, $filteredValue);
+        }
     }
 }

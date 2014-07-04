@@ -33,9 +33,9 @@ class Project extends WithProperties
     /**
      * Constructor.
      *
-     * @param string               $sXmlProject  XML project path or XML data
-     * @param string               $sEnvName     Selected environment.
-     * @param DIContainerInterface $oDIContainer Service container.
+     * @param \SimpleXMLElement|string $sXmlProject  XML project path or XML data
+     * @param string                   $sEnvName     Selected environment.
+     * @param DIContainerInterface     $oDIContainer Service container.
      *
      * @throws \UnexpectedValueException si fichier XML du projet non trouvé
      * @throws \UnexpectedValueException si environnement non trouvé ou non unique
@@ -44,7 +44,11 @@ class Project extends WithProperties
     {
         $this->sEnvName = $sEnvName;
 
-        $oSXEProject = self::getSXEProject($sXmlProject);
+        if ($sXmlProject instanceof \SimpleXMLElement) {
+            $oSXEProject = $sXmlProject;
+        } else {
+            $oSXEProject = self::getSXEProject($sXmlProject);
+        }
 
         parent::__construct($oSXEProject, $this, $oDIContainer);
     }
