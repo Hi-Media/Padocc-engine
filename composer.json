@@ -1,6 +1,6 @@
 {
     "name": "hi-media/padocc-engine",
-    "description": "Platform for Automatized Deployments with pOwerful Concise Configuration",
+    "description": "PADOCC: Platform for Automatized Deployments with pOwerful Concise Configuration",
     "keywords": ["deployment", "PHP"],
     "require": {
         "corneltek/getoptionkit":      "~1.2",
@@ -16,8 +16,10 @@
     },
     "require-dev": {
         "apigen/apigen":             "~2.8",
+        "nette/nette":               "~2.1.1",
         "phpmd/phpmd":               "~1.4",
         "phpunit/phpunit":           "3.7.*",
+        "satooshi/php-coveralls":    "dev-master",
         "sebastian/phpcpd":          "*",
         "squizlabs/php_codesniffer": "~1.0"
     },
