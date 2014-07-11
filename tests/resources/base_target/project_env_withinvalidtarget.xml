@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <env name="my_env">
+        <call target="invalid" />
+    </env>
+</project>

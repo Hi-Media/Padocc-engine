@@ -6,3 +6,15 @@
 fuel/app/tmp/
 fuel/app/logs/
 fuel/app/config
+*~
+/vendor/
+/composer.phar
+/.twgit*
+/.idea/
+/conf/padocc.php
+/conf/padocc-ssh
+/conf/supervisor.sh
+/build/
+composer.phar
+conf/phpunit.xml
+/cache.properties

@@ -1,9 +1,0 @@
-<project>
-    <env name="my_env">
-        <call target="content" />
-    </env>
-
-    <target name="content">
-        <externalproperty name="ref2" />
-    </target>
-</project>
