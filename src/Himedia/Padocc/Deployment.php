@@ -47,25 +47,25 @@ final class Deployment
      * Exécute le déploiement.
      *
      * @param string $xmlPathOrString     Path to the project XML configuration file or XML file content.
-     * @param string $environment         Name of the environment where to deploy.
+     * @param string $sEnvironment        Name of the environment where to deploy.
      * @param string $sExecutionID        au format YYYYMMDDHHMMSS_xxxxx, où x est un nombre aléatoire
      * @param array  $aExternalProperties tableau associatif nom/valeur des propriétés externes.
      * @param string $sRollbackID         identifiant de déploiement sur lequel effectuer un rollback
      */
-    public function run($xmlPathOrString, $environment, $sExecutionID, array $aExternalProperties, $sRollbackID)
+    public function run($xmlPathOrString, $sEnvironment, $sExecutionID, array $aExternalProperties, $sRollbackID)
     {
-        $logger = $this->getContainer()->getLogger();
+        $oLogger = $this->getContainer()->getLogger();
 
         // Interprets the project XML configuration into a SimpleXML object
-        $xmlProject = Project::getSXEProject($xmlPathOrString);
+        $oXmlProject = Project::getSXEProject($xmlPathOrString);
 
         if (file_exists($xmlPathOrString)) {
-            $logger->info(sprintf('Project loaded from file %s', realpath($xmlPathOrString)));
+            $oLogger->info(sprintf('Project loaded from file %s', realpath($xmlPathOrString)));
         }
 
         $this->registerProperties(array(
-            'project_name'     => (string)$xmlProject['name'],
-            'environment_name' => $environment,
+            'project_name'     => (string)$oXmlProject['name'],
+            'environment_name' => $sEnvironment,
             'execution_id'     => $sExecutionID,
             'tmpdir'           => $this->aConfig['dir']['tmp'] . '/deploy_' . $sExecutionID,
             'rollback_id'      => $sRollbackID
@@ -73,30 +73,30 @@ final class Deployment
 
         $this->registerProperties($aExternalProperties, true, ExternalProperty::EXTERNAL_PROPERTY_PREFIX);
 
-        $project = new Project($xmlProject, $environment, $this->getContainer());
+        $oProject = new Project($oXmlProject, $sEnvironment, $this->getContainer());
 
-        $logger->info('Check tasks:+++');
-        $project->setUp();
+        $oLogger->info('Check tasks:+++');
+        $oProject->setUp();
 
-        $logger->info('---Execute tasks:+++');
-        $project->execute();
+        $oLogger->info('---Execute tasks:+++');
+        $oProject->execute();
 
-        $logger->info('---');
+        $oLogger->info('---');
     }
 
     /**
      * Registers external properties.
      *
-     * @param array  $properties
-     * @param bool   $escape
-     * @param string $prefix
+     * @param array  $aProperties
+     * @param bool   $bEscape
+     * @param string $sPrefix
      */
-    private function registerProperties(array $properties, $escape = false, $prefix = '')
+    private function registerProperties(array $aProperties, $bEscape = false, $sPrefix = '')
     {
-        foreach ($properties as $name => $value) {
-            $qualifiedName = $prefix . $name;
-            $filteredValue = $escape ? str_replace('&#0160;', ' ', $value) : $value;
-            $this->getContainer()->getPropertiesAdapter()->setProperty($qualifiedName, $filteredValue);
+        foreach ($aProperties as $sName => $sValue) {
+            $sQualifiedName = $sPrefix . $sName;
+            $sFilteredValue = $bEscape ? str_replace('&#0160;', ' ', $sValue) : $sValue;
+            $this->getContainer()->getPropertiesAdapter()->setProperty($sQualifiedName, $sFilteredValue);
         }
     }
 }

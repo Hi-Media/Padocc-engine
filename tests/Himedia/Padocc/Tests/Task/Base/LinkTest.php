@@ -314,9 +314,9 @@ class LinkTest extends PadoccTestCase
         $oTask->execute();
 
         $sSshOptions = $this->aAllConfigs['GAubry\Shell']['ssh_options'];
-        $bashPath    = $this->aAllConfigs['GAubry\Shell']['bash_path'];
+        $sBashPath   = $this->aAllConfigs['GAubry\Shell']['bash_path'];
         $this->assertEquals(array(
-            "ssh $sSshOptions -T user@server $bashPath <<EOF\n"
+            "ssh $sSshOptions -T user@server $sBashPath <<EOF\n"
                 . 'mkdir -p "$(dirname "/path/to/link")" && ln -snf "/path/to/destdir" "/path/to/link"' . "\n"
                 . 'EOF' . "\n"
         ), $this->aShellExecCmds);
@@ -410,9 +410,9 @@ class LinkTest extends PadoccTestCase
         $oTask->execute();
 
         $sSshOptions = $this->aAllConfigs['GAubry\Shell']['ssh_options'];
-        $bashPath    = $this->aAllConfigs['GAubry\Shell']['bash_path'];
+        $sBashPath   = $this->aAllConfigs['GAubry\Shell']['bash_path'];
         $this->assertEquals(array(
-            "ssh $sSshOptions -T user@server $bashPath <<EOF\n"
+            "ssh $sSshOptions -T user@server $sBashPath <<EOF\n"
             . 'mkdir -p "$(dirname "/path/to/link")" && ln -snf "/path/to/destdir" "/path/to/link"' . "\n"
             . 'EOF' . "\n"
         ), $this->aShellExecCmds);
@@ -462,9 +462,9 @@ class LinkTest extends PadoccTestCase
         $oTask->execute();
 
         $sSshOptions = $this->aAllConfigs['GAubry\Shell']['ssh_options'];
-        $bashPath    = $this->aAllConfigs['GAubry\Shell']['bash_path'];
+        $sBashPath   = $this->aAllConfigs['GAubry\Shell']['bash_path'];
         $this->assertEquals(array(
-            "ssh $sSshOptions -T user@server $bashPath <<EOF\n"
+            "ssh $sSshOptions -T user@server $sBashPath <<EOF\n"
             . 'mkdir -p "$(dirname "/path/to/destdir_releases/12345/link")"'
             . ' && ln -snf "/path/to/destdir_releases/12345/subdir" "/path/to/destdir_releases/12345/link"' . "\n"
             . 'EOF' . "\n"
@@ -514,9 +514,9 @@ class LinkTest extends PadoccTestCase
         $oTask->execute();
 
         $sSshOptions = $this->aAllConfigs['GAubry\Shell']['ssh_options'];
-        $bashPath    = $this->aAllConfigs['GAubry\Shell']['bash_path'];
+        $sBashPath   = $this->aAllConfigs['GAubry\Shell']['bash_path'];
         $this->assertEquals(array(
-            "ssh $sSshOptions -T user@server $bashPath <<EOF\n"
+            "ssh $sSshOptions -T user@server $sBashPath <<EOF\n"
             . 'mkdir -p "$(dirname "/path/to/destdir_releases/12345/link")"'
             . ' && ln -snf "/path/to/destdir_releases/12345/subdir" "/path/to/destdir_releases/12345/link"' . "\n"
             . 'EOF' . "\n"

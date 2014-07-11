@@ -70,7 +70,10 @@ return array(
          */
         'symlink_max_nb_releases' => 20,
 
-        // Path to Supervisor config file.
+        /**
+         * Path to Supervisor config file.
+         * @var string
+         */
         'supervisor_config' => $sRootDir . '/conf/supervisor-dist.sh',
 
         /**

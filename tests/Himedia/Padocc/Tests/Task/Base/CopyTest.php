@@ -324,9 +324,9 @@ class CopyTest extends PadoccTestCase
         $oTaskCopy->execute();
 
         $sSshOptions = $this->aAllConfigs['GAubry\Shell']['ssh_options'];
-        $bashPath    = $this->aAllConfigs['GAubry\Shell']['bash_path'];
+        $sBashPath   = $this->aAllConfigs['GAubry\Shell']['bash_path'];
         $this->assertEquals(array(
-            "ssh $sSshOptions -T user@server $bashPath <<EOF\n"
+            "ssh $sSshOptions -T user@server $sBashPath <<EOF\n"
                 . 'mkdir -p "/path/to/destdir_releases/12345/srcdir"' . "\n"
                 . 'EOF' . "\n",
             "scp $sSshOptions -rpq \"/path/to/srcdir/\"* \"user@server:/path/to/destdir_releases/12345/srcdir\""

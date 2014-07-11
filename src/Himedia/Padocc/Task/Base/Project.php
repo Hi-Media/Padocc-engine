@@ -71,7 +71,8 @@ class Project extends WithProperties
         // Crée une instance de la tâche environnement appelée :
         $aTargets = $this->oProject->getSXE()->xpath("env[@name='" . $this->sEnvName . "']");
         if (count($aTargets) !== 1) {
-            throw new \UnexpectedValueException("Environment '" . $this->sEnvName . "' not found or not unique in this project!");
+            $sMsg = "Environment '$this->sEnvName' not found or not unique in this project!";
+            throw new \UnexpectedValueException($sMsg);
         }
 
         $this->oBoundTask = new Environment($aTargets[0], $this->oProject, $this->oDIContainer);

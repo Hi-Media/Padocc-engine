@@ -259,10 +259,10 @@ class Padocc
         $sCmd = "$sSupervisorBin $sSupervisorParams $sPadoccBin \"$sPadoccParams\"";
         var_dump($sCmd);
 
-        $fp = popen($sCmd, 'r');
-        while (! feof($fp)) {
+        $handle = popen($sCmd, 'r');
+        while (! feof($handle)) {
             set_time_limit(100);
-            $results = fgets($fp, 256);
+            $results = fgets($handle, 256);
             if (strlen($results) > 0) {
                 echo $results;
             }

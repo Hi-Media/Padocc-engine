@@ -1,61 +1,6 @@
 #!/usr/bin/env php
 <?php
 
-// OK: /var/log/apache2/error.padocc.log et access.padocc.log
-// 192.168.27.103  padocc.hi-media-techno.com
-
-/*
- * TODO lors de l'install :
-        – ssh indefero.hi-media-techno.com => pour ajouter indefero aux .ssh/known_hosts
-        – ajouter user padocc dans Aura pour les projets concernés
-        – ajouter padocc dans indefero sur les projets concernés
-        – créer conf/padocc-ssh contenant la clé privée SSH
-        – installer mutt: apt-get install mutt
- */
-
-/*
- * Déploiement de Padocc sur redmine :
-rsync -axz --delete --stats -e ssh \
-    --cvs-exclude --exclude=conf/padocc.php --exclude=conf/padocc-ssh --exclude=conf/supervisor.sh \
-    /home/gaubry/PhpstormProjects/Padocc-engine/ \
-    gaubry@192.168.27.103:/var/www/padocc/ \
-&& ssh gaubry@192.168.27.103 \
-    "sudo mkdir -p /var/padocc/archives /var/padocc/repositories /var/log/padocc /tmp/padocc/locks"
- */
-
-/*
- * Test de déploiement :
-root# src/padocc.php --deploy --xml=/home/gaubry/dw-payment.xml --env=dev -p ref="stable" --param=u=i=g
- */
-
-/*
- * Apache2 VirtualHost: /etc/apache2/sites-available/padocc.hi-media-techno.com
-<VirtualHost 127.0.0.1:80>
-        ServerName padocc.hi-media-techno.com
-
-        DocumentRoot /var/www/padocc/web
-        <Directory /var/www/padocc/web >
-                Options FollowSymLinks  MultiViews -Indexes
-                AllowOverride None
-                Order allow,deny
-                allow from all
-        </Directory>
-
-        ErrorLog /var/log/apache2/error.padocc.log
-        CustomLog /var/log/apache2/access.padocc.log combined
-</VirtualHost>
- */
-
-/*
- * Scenarios :
- * src/padocc.php --action=enqueue --xml=/home/gaubry/dw-payment.xml --env=preprod -p core-ref=stable --param=apps-ref=stable
- * src/padocc.php --action=deploy  --xml=/home/gaubry/dw-payment.xml --env=preprod -p core-ref=stable --param=apps-ref=stable
- * src/padocc.php --action=get-status --exec-id=20140408125738_84476
- * src/padocc.php --action=get-queue
- * src/padocc.php --action=get-latest-deployments --project='DW Payment' --env=preprod
- * src/padocc.php --action=dequeue
- */
-
 namespace Himedia\Padocc;
 
 use GetOptionKit\GetOptionKit;
@@ -63,11 +8,6 @@ use GetOptionKit\GetOptionKit;
 require(__DIR__ . '/inc/bootstrap.php');
 /** @var $aConfig array */
 /** @var $argv array */
-
-// TODO rename execId en deployId ?
-// TODO fusionner get-info-log et get-error-log ?
-// TODO En ajoutant le supervisor au run(), les lignes [DEBUG] sont filtrées, mais seulement la 1re de chaque lot,
-// c'eat-à-dire celle contenant le tag.
 
 // Set options:
 $sActions = 'deploy, deploy-wos, dequeue, enqueue, get-env, get-status, get-queue, get-latest-deployments';
