@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="generator" content="ApiGen 2.8.0">
+
+	<title>Class Himedia\Padocc\Task\Base\Rename | Platform for Automatized Deployments with pOwerful Concise Configuration</title>
+
+	<script type="text/javascript" src="resources/combined.js?1247446639"></script>
+	<script type="text/javascript" src="elementlist.js?1902358051"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li><a href="namespace-GAubry.html">GAubry<span></span></a>
+						<ul>
+				<li><a href="namespace-GAubry.ErrorHandler.html">ErrorHandler</a>
+						</li>
+				<li><a href="namespace-GAubry.Helpers.html">Helpers</a>
+						</li>
+				<li><a href="namespace-GAubry.Logger.html">Logger</a>
+						</li>
+				<li><a href="namespace-GAubry.Shell.html">Shell</a>
+						</li>
+							</ul></li>
+				<li class="active"><a href="namespace-Himedia.html">Himedia<span></span></a>
+						<ul>
+				<li class="active main"><a href="namespace-Himedia.Padocc.html">Padocc<span></span></a>
+						<ul>
+				<li class="main"><a href="namespace-Himedia.Padocc.DB.html">DB</a>
+						</li>
+				<li class="main"><a href="namespace-Himedia.Padocc.Minifier.html">Minifier</a>
+						</li>
+				<li class="main"><a href="namespace-Himedia.Padocc.Numbering.html">Numbering</a>
+						</li>
+				<li class="main"><a href="namespace-Himedia.Padocc.Properties.html">Properties</a>
+						</li>
+				<li class="active main"><a href="namespace-Himedia.Padocc.Task.html">Task<span></span></a>
+						<ul>
+				<li class="active main"><a href="namespace-Himedia.Padocc.Task.Base.html">Base</a>
+						</li>
+				<li class="main"><a href="namespace-Himedia.Padocc.Task.Extended.html">Extended</a>
+						</li>
+							</ul></li></ul></li></ul></li>
+				<li><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-Psr.html">Psr<span></span></a>
+						<ul>
+				<li><a href="namespace-Psr.Log.html">Log</a>
+						</li>
+							</ul></li>
+			</ul>
+		</div>
+
+		<hr>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Himedia.Padocc.Task.Base.Backup.html">Backup</a></li>
+				<li><a href="class-Himedia.Padocc.Task.Base.Call.html">Call</a></li>
+				<li><a href="class-Himedia.Padocc.Task.Base.Composer.html">Composer</a></li>
+				<li><a href="class-Himedia.Padocc.Task.Base.Copy.html">Copy</a></li>
+				<li><a href="class-Himedia.Padocc.Task.Base.Environment.html">Environment</a></li>
+				<li><a href="class-Himedia.Padocc.Task.Base.ExternalProperty.html">ExternalProperty</a></li>
+				<li><a href="class-Himedia.Padocc.Task.Base.FillTemplate.html">FillTemplate</a></li>
+				<li><a href="class-Himedia.Padocc.Task.Base.HTTP.html">HTTP</a></li>
+				<li><a href="class-Himedia.Padocc.Task.Base.Link.html">Link</a></li>
+				<li><a href="class-Himedia.Padocc.Task.Base.MkDir.html">MkDir</a></li>
+				<li><a href="class-Himedia.Padocc.Task.Base.Project.html">Project</a></li>
+				<li><a href="class-Himedia.Padocc.Task.Base.Property.html">Property</a></li>
+				<li class="active"><a href="class-Himedia.Padocc.Task.Base.Rename.html">Rename</a></li>
+				<li><a href="class-Himedia.Padocc.Task.Base.Sync.html">Sync</a></li>
+				<li><a href="class-Himedia.Padocc.Task.Base.Target.html">Target</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text">
+		<input type="submit" value="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-Himedia.Padocc.Task.Base.html" title="Summary of Himedia\Padocc\Task\Base"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+			<li>
+				<a href="deprecated.html" title="List of deprecated elements"><span>Deprecated</span></a>
+			</li>
+			<li>
+				<a href="todo.html" title="Todo list"><span>Todo</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class Rename</h1>
+
+
+	<div class="description">
+	
+<p>Renomme un fichier ou un répertoire. À inclure dans une tâche env ou
+target.</p>
+
+<p>Exemple : &lt;rename src="${TMPDIR}/v3" dest="${TMPDIR}/web" /&gt;</p>
+
+	</div>
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-Himedia.Padocc.Task.html"><span>Himedia\Padocc\Task</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by">
+<b><span>Himedia\Padocc\Task\Base\Rename</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-Himedia.html">Himedia</a>\<a href="namespace-Himedia.Padocc.html">Padocc</a>\<a href="namespace-Himedia.Padocc.Task.html">Task</a>\<a href="namespace-Himedia.Padocc.Task.Base.html">Base</a><br>
+		
+
+				<b>Author:</b>
+				Geoffroy AUBRY &lt;<a
+href="mailto:gaubry&#64;hi-media.com">gaubry&#64;<!-- -->hi-media.com</a>&gt;<br>
+		<b>Located at</b> <a href="source-class-Himedia.Padocc.Task.Base.Rename.html#8-80" title="Go to source code">Himedia/Padocc/Task/Base/Rename.php</a><br>
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="init" id="_init">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_init">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.Base.Rename.html#18-31" title="Go to source code">init</a>( )</code>
+
+		<div class="description short">
+			
+<p>Initializes task.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Initializes task.</p>
+
+
+
+
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Himedia.Padocc.Task.html#_init">Himedia\Padocc\Task::init()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getTagName" id="_getTagName">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getTagName">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.Base.Rename.html#33-40" title="Go to source code">getTagName</a>( )</code>
+
+		<div class="description short">
+			
+<p>Retourne le nom du tag XML correspondant à cette tâche dans les config
+projet.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Retourne le nom du tag XML correspondant à cette tâche dans les config
+projet.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>nom du tag XML correspondant à cette tâche dans les config projet.<br>
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code>RuntimeException</code><br>si appelée directement sur Task.<br>
+				</div>
+
+				<h4>CodeCoverageIgnore</h4>
+				<div class="list">
+				</div>
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Himedia.Padocc.Task.html#_getTagName">Himedia\Padocc\Task::getTagName()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="check" id="_check">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_check">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.Base.Rename.html#42-63" title="Go to source code">check</a>( )</code>
+
+		<div class="description short">
+			
+<p>Vérifie au moyen de tests basiques que la tâche peut être exécutée.
+Lance une exception si tel n'est pas le cas.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Vérifie au moyen de tests basiques que la tâche peut être exécutée.
+Lance une exception si tel n'est pas le cas.</p>
+
+<p>Comme toute les tâches sont vérifiées avant que la première ne soit
+exécutée, doit permettre de remonter au plus tôt tout dysfonctionnement.
+Appelé avant la méthode execute().</p>
+
+
+
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code>UnexpectedValueException</code><br>en cas d'attribut ou fichier manquant<br>
+					<code>DomainException</code><br>en cas de valeur non permise<br>
+				</div>
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Himedia.Padocc.Task.html#_check">Himedia\Padocc\Task::check()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="centralExecute" id="_centralExecute">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_centralExecute">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.Base.Rename.html#65-79" title="Go to source code">centralExecute</a>( )</code>
+
+		<div class="description short">
+			
+<p>Phase de traitements centraux de l'exécution de la tâche. Elle devrait
+systématiquement commencer par "parent::centralExecute();". Appelé par
+execute().</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Phase de traitements centraux de l'exécution de la tâche. Elle devrait
+systématiquement commencer par "parent::centralExecute();". Appelé par
+execute().</p>
+
+
+
+
+
+
+				<h4>See</h4>
+				<div class="list">
+						<code><code><a href="class-Himedia.Padocc.Task.html#_execute">Himedia\Padocc\Task::execute()</a></code></code><br>
+				</div>
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Himedia.Padocc.Task.html#_centralExecute">Himedia\Padocc\Task::centralExecute()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-Himedia.Padocc.Task.html#methods">Himedia\Padocc\Task</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Himedia.Padocc.Task.html#___construct">__construct()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_execute">execute()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_expandPath">expandPath()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_fetchAttributes">fetchAttributes()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_getLogger">getLogger()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_getNewInstance">getNewInstance()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_postExecute">postExecute()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_preExecute">preExecute()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_processPath">processPath()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_processSimplePath">processSimplePath()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_registerPaths">registerPaths()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_reroutePaths">reroutePaths()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_setAttributePropertiesAdapter">setAttributePropertiesAdapter()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_setLogger">setLogger()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_setNumberingAdapter">setNumberingAdapter()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_setPropertiesAdapter">setPropertiesAdapter()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_setShellAdapter">setShellAdapter()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_setUp">setUp()</a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-Himedia.Padocc.Task.html#properties">Himedia\Padocc\Task</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Himedia.Padocc.Task.html#$aAttValues"><var>$aAttValues</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$aAttrProperties"><var>$aAttrProperties</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$aConfig"><var>$aConfig</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$aRegisteredPaths"><var>$aRegisteredPaths</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$oAttrProperties"><var>$oAttrProperties</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$oDIContainer"><var>$oDIContainer</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$oNumbering"><var>$oNumbering</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$oProject"><var>$oProject</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$oProperties"><var>$oProperties</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$oShell"><var>$oShell</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$oXMLTask"><var>$oXMLTask</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$sCounter"><var>$sCounter</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$sName"><var>$sName</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		Platform for Automatized Deployments with pOwerful Concise Configuration API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

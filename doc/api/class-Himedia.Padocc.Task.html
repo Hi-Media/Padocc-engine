@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="generator" content="ApiGen 2.8.0">
+
+	<title>Class Himedia\Padocc\Task | Platform for Automatized Deployments with pOwerful Concise Configuration</title>
+
+	<script type="text/javascript" src="resources/combined.js?1247446639"></script>
+	<script type="text/javascript" src="elementlist.js?1902358051"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li><a href="namespace-GAubry.html">GAubry<span></span></a>
+						<ul>
+				<li><a href="namespace-GAubry.ErrorHandler.html">ErrorHandler</a>
+						</li>
+				<li><a href="namespace-GAubry.Helpers.html">Helpers</a>
+						</li>
+				<li><a href="namespace-GAubry.Logger.html">Logger</a>
+						</li>
+				<li><a href="namespace-GAubry.Shell.html">Shell</a>
+						</li>
+							</ul></li>
+				<li class="active"><a href="namespace-Himedia.html">Himedia<span></span></a>
+						<ul>
+				<li class="active main"><a href="namespace-Himedia.Padocc.html">Padocc<span></span></a>
+						<ul>
+				<li class="main"><a href="namespace-Himedia.Padocc.DB.html">DB</a>
+						</li>
+				<li class="main"><a href="namespace-Himedia.Padocc.Minifier.html">Minifier</a>
+						</li>
+				<li class="main"><a href="namespace-Himedia.Padocc.Numbering.html">Numbering</a>
+						</li>
+				<li class="main"><a href="namespace-Himedia.Padocc.Properties.html">Properties</a>
+						</li>
+				<li class="main"><a href="namespace-Himedia.Padocc.Task.html">Task<span></span></a>
+						<ul>
+				<li class="main"><a href="namespace-Himedia.Padocc.Task.Base.html">Base</a>
+						</li>
+				<li class="main"><a href="namespace-Himedia.Padocc.Task.Extended.html">Extended</a>
+						</li>
+							</ul></li></ul></li></ul></li>
+				<li><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-Psr.html">Psr<span></span></a>
+						<ul>
+				<li><a href="namespace-Psr.Log.html">Log</a>
+						</li>
+							</ul></li>
+			</ul>
+		</div>
+
+		<hr>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Himedia.Padocc.AttributeProperties.html">AttributeProperties</a></li>
+				<li><a href="class-Himedia.Padocc.Deployment.html">Deployment</a></li>
+				<li><a href="class-Himedia.Padocc.DeploymentStatus.html">DeploymentStatus</a></li>
+				<li><a href="class-Himedia.Padocc.DIContainer.html">DIContainer</a></li>
+				<li><a href="class-Himedia.Padocc.Padocc.html">Padocc</a></li>
+				<li class="active"><a href="class-Himedia.Padocc.Task.html">Task</a></li>
+			</ul>
+
+			<h3>Interfaces</h3>
+			<ul>
+				<li><a href="class-Himedia.Padocc.DIContainerInterface.html">DIContainerInterface</a></li>
+			</ul>
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text">
+		<input type="submit" value="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-Himedia.Padocc.html" title="Summary of Himedia\Padocc"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+			<li>
+				<a href="deprecated.html" title="List of deprecated elements"><span>Deprecated</span></a>
+			</li>
+			<li>
+				<a href="todo.html" title="Todo list"><span>Todo</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class Task</h1>
+
+
+
+
+
+	<div>
+		<h4>Direct known subclasses</h4>
+			<a href="class-Himedia.Padocc.Task.Base.Backup.html">Himedia\Padocc\Task\Base\Backup</a>, 
+			<a href="class-Himedia.Padocc.Task.Base.Composer.html">Himedia\Padocc\Task\Base\Composer</a>, 
+			<a href="class-Himedia.Padocc.Task.Base.Sync.html">Himedia\Padocc\Task\Base\Sync</a>, 
+			<a href="class-Himedia.Padocc.Task.Extended.BuildLanguage.html">Himedia\Padocc\Task\Extended\BuildLanguage</a>, 
+			<a href="class-Himedia.Padocc.Task.Extended.CVSExport.html">Himedia\Padocc\Task\Extended\CVSExport</a>, 
+			<a href="class-Himedia.Padocc.Task.Extended.GitExport.html">Himedia\Padocc\Task\Extended\GitExport</a>, 
+			<a href="class-Himedia.Padocc.Task.Extended.Minifier.html">Himedia\Padocc\Task\Extended\Minifier</a>, 
+			<a href="class-Himedia.Padocc.Task.Extended.TwengaServers.html">Himedia\Padocc\Task\Extended\TwengaServers</a>, 
+			<a href="class-Himedia.Padocc.Task.WithProperties.html">Himedia\Padocc\Task\WithProperties</a>, 
+			<a href="class-Himedia.Padocc.Task.Base.Copy.html">Himedia\Padocc\Task\Base\Copy</a>, 
+			<a href="class-Himedia.Padocc.Task.Base.ExternalProperty.html">Himedia\Padocc\Task\Base\ExternalProperty</a>, 
+			<a href="class-Himedia.Padocc.Task.Base.FillTemplate.html">Himedia\Padocc\Task\Base\FillTemplate</a>, 
+			<a href="class-Himedia.Padocc.Task.Base.HTTP.html">Himedia\Padocc\Task\Base\HTTP</a>, 
+			<a href="class-Himedia.Padocc.Task.Base.Link.html">Himedia\Padocc\Task\Base\Link</a>, 
+			<a href="class-Himedia.Padocc.Task.Base.MkDir.html">Himedia\Padocc\Task\Base\MkDir</a>, 
+			<a href="class-Himedia.Padocc.Task.Base.Property.html">Himedia\Padocc\Task\Base\Property</a>, 
+			<a href="class-Himedia.Padocc.Task.Base.Rename.html">Himedia\Padocc\Task\Base\Rename</a>
+	</div>
+
+	<div>
+		<h4>Indirect known subclasses</h4>
+			<a href="class-Himedia.Padocc.Task.Base.Call.html">Himedia\Padocc\Task\Base\Call</a>, 
+			<a href="class-Himedia.Padocc.Task.Base.Environment.html">Himedia\Padocc\Task\Base\Environment</a>, 
+			<a href="class-Himedia.Padocc.Task.Base.Project.html">Himedia\Padocc\Task\Base\Project</a>, 
+			<a href="class-Himedia.Padocc.Task.Base.Target.html">Himedia\Padocc\Task\Base\Target</a>, 
+			<a href="class-Himedia.Padocc.Task.Extended.B2CSwitchSymlink.html">Himedia\Padocc\Task\Extended\B2CSwitchSymlink</a>, 
+			<a href="class-Himedia.Padocc.Task.Extended.SwitchSymlink.html">Himedia\Padocc\Task\Extended\SwitchSymlink</a>
+	</div>
+
+
+
+
+
+	<div class="info">
+		<b>Abstract</b><br>
+		
+		<b>Namespace:</b> <a href="namespace-Himedia.html">Himedia</a>\<a href="namespace-Himedia.Padocc.html">Padocc</a><br>
+		
+
+				<b>Author:</b>
+				Geoffroy AUBRY &lt;<a
+href="mailto:gaubry&#64;hi-media.com">gaubry&#64;<!-- -->hi-media.com</a>&gt;<br>
+		<b>Located at</b> <a href="source-class-Himedia.Padocc.Task.html#12-480" title="Go to source code">Himedia/Padocc/Task.php</a><br>
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="getTagName" id="_getTagName">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getTagName">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.html#103-112" title="Go to source code">getTagName</a>( )</code>
+
+		<div class="description short">
+			
+<p>Retourne le nom du tag XML correspondant à cette tâche dans les config
+projet.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Retourne le nom du tag XML correspondant à cette tâche dans les config
+projet.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>nom du tag XML correspondant à cette tâche dans les config projet.<br>
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code>RuntimeException</code><br>si appelée directement sur Task.<br>
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getNewInstance" id="_getNewInstance">
+
+		<td class="attributes"><code>
+			 public static
+			<code><a href="class-Himedia.Padocc.Task.html">Himedia\Padocc\Task</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getNewInstance">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.html#114-135" title="Go to source code">getNewInstance</a>( <span>array <var>$aAttributes</var></span>, <span><code><a href="class-Himedia.Padocc.Task.Base.Project.html">Himedia\Padocc\Task\Base\Project</a></code> <var>$oProject</var></span>, <span><code><a href="class-Himedia.Padocc.DIContainerInterface.html">Himedia\Padocc\DIContainerInterface</a></code> <var>$oDIContainer</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Surcharge du constructeur, dont le premier paramètre est passé d'une
+instance de \SimpleXMLElement à un tableau associatif attribut =&gt; valeur. Ne
+peut être utilisé pour créer une instance de Project.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Surcharge du constructeur, dont le premier paramètre est passé d'une
+instance de \SimpleXMLElement à un tableau associatif attribut =&gt; valeur. Ne
+peut être utilisé pour créer une instance de Project.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$aAttributes</var></dt>
+					<dd><code>array</code><br>$aAttributes Tableau associatif listant des attributs et leur valeur.</dd>
+					<dt><var>$oProject</var></dt>
+					<dd><code><code><a href="class-Himedia.Padocc.Task.Base.Project.html">Himedia\Padocc\Task\Base\Project</a></code></code><br>$oProject Super tâche projet.</dd>
+					<dt><var>$oDIContainer</var></dt>
+					<dd><code><code><a href="class-Himedia.Padocc.DIContainerInterface.html">Himedia\Padocc\DIContainerInterface</a></code></code><br>$oDIContainer Register de services prédéfinis (ShellInterface, ...).</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-Himedia.Padocc.Task.html">Himedia\Padocc\Task</a></code></code><br>
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code>RuntimeException</code><br>si appelée directement sur Task.<br>
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.html#137-170" title="Go to source code">__construct</a>( <span>SimpleXMLElement <var>$oXMLTask</var></span>, <span><code><a href="class-Himedia.Padocc.Task.Base.Project.html">Himedia\Padocc\Task\Base\Project</a></code> <var>$oProject</var></span>, <span><code><a href="class-Himedia.Padocc.DIContainerInterface.html">Himedia\Padocc\DIContainerInterface</a></code> <var>$oDIContainer</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Constructeur.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Constructeur.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$oXMLTask</var></dt>
+					<dd><code>SimpleXMLElement</code><br>$oXMLTask Contenu XML de la tâche.</dd>
+					<dt><var>$oProject</var></dt>
+					<dd><code><code><a href="class-Himedia.Padocc.Task.Base.Project.html">Himedia\Padocc\Task\Base\Project</a></code></code><br>$oProject Super tâche projet.</dd>
+					<dt><var>$oDIContainer</var></dt>
+					<dd><code><code><a href="class-Himedia.Padocc.DIContainerInterface.html">Himedia\Padocc\DIContainerInterface</a></code></code><br>$oDIContainer Register de services prédéfinis (ShellInterface, ...).</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="init" id="_init">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_init">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.html#172-179" title="Go to source code">init</a>( )</code>
+
+		<div class="description short">
+			
+<p>Initializes task.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Initializes task.</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getLogger" id="_getLogger">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-Psr.Log.LoggerInterface.html">Psr\Log\LoggerInterface</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getLogger">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.html#181-193" title="Go to source code">getLogger</a>( )</code>
+
+		<div class="description short">
+			
+<p>Gets the logger.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Gets the logger.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-Psr.Log.LoggerInterface.html">Psr\Log\LoggerInterface</a></code></code><br>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setLogger" id="_setLogger">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setLogger">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.html#195-203" title="Go to source code">setLogger</a>( <span><code><a href="class-Psr.Log.LoggerInterface.html">Psr\Log\LoggerInterface</a></code> <var>$logger</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Sets a logger.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Sets a logger.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$logger</var></dt>
+					<dd><code><code><a href="class-Psr.Log.LoggerInterface.html">Psr\Log\LoggerInterface</a></code></code><br>$logger</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setShellAdapter" id="_setShellAdapter">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setShellAdapter">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.html#205-213" title="Go to source code">setShellAdapter</a>( <span><code><a href="class-GAubry.Shell.ShellAdapter.html">GAubry\Shell\ShellAdapter</a></code> <var>$adapter</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Sets the Shell adapter.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Sets the Shell adapter.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$adapter</var></dt>
+					<dd><code><code><a href="class-GAubry.Shell.ShellAdapter.html">GAubry\Shell\ShellAdapter</a></code></code><br>$adapter</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setNumberingAdapter" id="_setNumberingAdapter">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setNumberingAdapter">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.html#215-223" title="Go to source code">setNumberingAdapter</a>( <span><code><a href="class-Himedia.Padocc.Numbering.NumberingInterface.html">Himedia\Padocc\Numbering\NumberingInterface</a></code> <var>$adapter</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Sets the numbering adapter.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Sets the numbering adapter.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$adapter</var></dt>
+					<dd><code><code><a href="class-Himedia.Padocc.Numbering.NumberingInterface.html">Himedia\Padocc\Numbering\NumberingInterface</a></code></code><br>$adapter</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setPropertiesAdapter" id="_setPropertiesAdapter">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setPropertiesAdapter">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.html#225-233" title="Go to source code">setPropertiesAdapter</a>( <span><code><a href="class-Himedia.Padocc.Properties.PropertiesInterface.html">Himedia\Padocc\Properties\PropertiesInterface</a></code> <var>$adapter</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Sets the properties adapter.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Sets the properties adapter.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$adapter</var></dt>
+					<dd><code><code><a href="class-Himedia.Padocc.Properties.PropertiesInterface.html">Himedia\Padocc\Properties\PropertiesInterface</a></code></code><br>$adapter</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setAttributePropertiesAdapter" id="_setAttributePropertiesAdapter">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setAttributePropertiesAdapter">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.html#235-243" title="Go to source code">setAttributePropertiesAdapter</a>( <span><code><a href="class-Himedia.Padocc.AttributeProperties.html">Himedia\Padocc\AttributeProperties</a></code> <var>$adapter</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Sets the attribute properties adapter.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Sets the attribute properties adapter.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$adapter</var></dt>
+					<dd><code><code><a href="class-Himedia.Padocc.AttributeProperties.html">Himedia\Padocc\AttributeProperties</a></code></code><br>$adapter</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="fetchAttributes" id="_fetchAttributes">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_fetchAttributes">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.html#245-254" title="Go to source code">fetchAttributes</a>( )</code>
+
+		<div class="description short">
+			
+<p>Récupère les attributs XML du nœud $this-&gt;oXMLTask et les enregistre
+dans $this-&gt;aAttValues.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Récupère les attributs XML du nœud $this-&gt;oXMLTask et les enregistre
+dans $this-&gt;aAttValues.</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="processPath" id="_processPath">
+
+		<td class="attributes"><code>
+			 protected 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_processPath">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.html#256-270" title="Go to source code">processPath</a>( <span>string <var>$sPath</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Appels combinés à expandPath() puis reroutePaths()</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Appels combinés à expandPath() puis reroutePaths()</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$sPath</var></dt>
+					<dd><code>string</code><br>$sPath chemin pouvant contenir des paramètres</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>liste de tous les chemins générés en remplaçant les paramètres par leurs
+valeurs et en reroutant ceux tombant dans 'basedir'.<br>
+				</div>
+
+
+				<h4>See</h4>
+				<div class="list">
+						<code><code><a href="class-Himedia.Padocc.Task.html#_expandPath">Himedia\Padocc\Task::expandPath()</a></code></code><br>
+						<code><code><a href="class-Himedia.Padocc.Task.html#_reroutePaths">Himedia\Padocc\Task::reroutePaths()</a></code></code><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="processSimplePath" id="_processSimplePath">
+
+		<td class="attributes"><code>
+			 protected 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_processSimplePath">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.html#272-290" title="Go to source code">processSimplePath</a>( <span>string <var>$sPath</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Appel à processPath(), puis retourne le premier chemin récupéré en
+s'assurant qu'il n'y en a pas d'autres.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Appel à processPath(), puis retourne le premier chemin récupéré en
+s'assurant qu'il n'y en a pas d'autres.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$sPath</var></dt>
+					<dd><code>string</code><br>$sPath chemin pouvant contenir des paramètres</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>l'unique chemin généré en remplaçant les paramètres par leurs valeurs et en
+reroutant le chemin s'il tombe dans 'basedir'.<br>
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code>RuntimeException</code><br>si plus d'un chemin a été généré<br>
+				</div>
+
+				<h4>See</h4>
+				<div class="list">
+						<code><code><a href="class-Himedia.Padocc.Task.html#_processPath">Himedia\Padocc\Task::processPath()</a></code></code><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="expandPath" id="_expandPath">
+
+		<td class="attributes"><code>
+			 protected 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_expandPath">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.html#292-335" title="Go to source code">expandPath</a>( <span>string <var>$sPath</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Retourne la liste de tous les chemins générés en remplaçant les
+paramètres du chemin spécifié par leurs valeurs.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Retourne la liste de tous les chemins générés en remplaçant les
+paramètres du chemin spécifié par leurs valeurs.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$sPath</var></dt>
+					<dd><code>string</code><br>$sPath chemin pouvant contenir des paramètres</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>liste de tous les chemins générés en remplaçant les paramètres par leurs
+valeurs,<br>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="reroutePaths" id="_reroutePaths">
+
+		<td class="attributes"><code>
+			 protected 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_reroutePaths">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.html#337-364" title="Go to source code">reroutePaths</a>( <span>array <var>$aPaths</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Reroute de façon transparente tous les chemins système inclus ou égal à
+la valeur de la propriété 'basedir' dans le répertoire de releases nommé de
+la valeur de 'basedir' avec le suffixe $aConfig['symlink_releases_dir_suffix'].
+Les autres chemins, ceux hors 'basedir', restent inchangés.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Reroute de façon transparente tous les chemins système inclus ou égal à
+la valeur de la propriété 'basedir' dans le répertoire de releases nommé de
+la valeur de 'basedir' avec le suffixe $aConfig['symlink_releases_dir_suffix'].
+Les autres chemins, ceux hors 'basedir', restent inchangés.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$aPaths</var></dt>
+					<dd><code>array</code><br>$aPaths liste de chemins sans paramètres (par exemple provenant de
+expandPath())</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>liste de ces mêmes chemins en reroutant ceux tombant dans 'basedir'.<br>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="registerPaths" id="_registerPaths">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_registerPaths">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.html#375-389" title="Go to source code">registerPaths</a>( )</code>
+
+		<div class="description short">
+			
+<p>Collecte les chemins système définis dans les attributs de la tâche, et
+les centralise au niveau de la classe pour analyse ultérieure.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Collecte les chemins système définis dans les attributs de la tâche, et
+les centralise au niveau de la classe pour analyse ultérieure.</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setUp" id="_setUp">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setUp">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.html#391-398" title="Go to source code">setUp</a>( )</code>
+
+		<div class="description short">
+			
+<p>Prépare la tâche avant exécution : vérifications basiques, analyse des
+serveurs concernés...</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Prépare la tâche avant exécution : vérifications basiques, analyse des
+serveurs concernés...</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="check" id="_check">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_check">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.html#400-421" title="Go to source code">check</a>( )</code>
+
+		<div class="description short">
+			
+<p>Vérifie au moyen de tests basiques que la tâche peut être exécutée.
+Lance une exception si tel n'est pas le cas.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Vérifie au moyen de tests basiques que la tâche peut être exécutée.
+Lance une exception si tel n'est pas le cas.</p>
+
+<p>Comme toute les tâches sont vérifiées avant que la première ne soit
+exécutée, doit permettre de remonter au plus tôt tout dysfonctionnement.
+Appelé avant la méthode execute().</p>
+
+
+
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code>UnexpectedValueException</code><br>en cas d'attribut ou fichier manquant<br>
+					<code>DomainException</code><br>en cas d'attribut non permis<br>
+				</div>
+
+				<h4>See</h4>
+				<div class="list">
+						self::$aAttributeProperties<br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="preExecute" id="_preExecute">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_preExecute">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.html#423-436" title="Go to source code">preExecute</a>( )</code>
+
+		<div class="description short">
+			
+<p>Phase de pré-traitements de l'exécution de la tâche. Elle devrait
+systématiquement commencer par "parent::preExecute();". Appelé par
+execute().</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Phase de pré-traitements de l'exécution de la tâche. Elle devrait
+systématiquement commencer par "parent::preExecute();". Appelé par
+execute().</p>
+
+
+
+
+
+
+				<h4>See</h4>
+				<div class="list">
+						<code><code><a href="class-Himedia.Padocc.Task.html#_execute">Himedia\Padocc\Task::execute()</a></code></code><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="centralExecute" id="_centralExecute">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_centralExecute">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.html#438-447" title="Go to source code">centralExecute</a>( )</code>
+
+		<div class="description short">
+			
+<p>Phase de traitements centraux de l'exécution de la tâche. Elle devrait
+systématiquement commencer par "parent::centralExecute();". Appelé par
+execute().</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Phase de traitements centraux de l'exécution de la tâche. Elle devrait
+systématiquement commencer par "parent::centralExecute();". Appelé par
+execute().</p>
+
+
+
+
+
+
+				<h4>See</h4>
+				<div class="list">
+						<code><code><a href="class-Himedia.Padocc.Task.html#_execute">Himedia\Padocc\Task::execute()</a></code></code><br>
+				</div>
+				<h4>CodeCoverageIgnore</h4>
+				<div class="list">
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="postExecute" id="_postExecute">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_postExecute">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.html#449-458" title="Go to source code">postExecute</a>( )</code>
+
+		<div class="description short">
+			
+<p>Phase de post-traitements de l'exécution de la tâche. Elle devrait
+systématiquement finir par "parent::postExecute();". Appelé par execute().</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Phase de post-traitements de l'exécution de la tâche. Elle devrait
+systématiquement finir par "parent::postExecute();". Appelé par execute().</p>
+
+
+
+
+
+
+				<h4>See</h4>
+				<div class="list">
+						<code><code><a href="class-Himedia.Padocc.Task.html#_execute">Himedia\Padocc\Task::execute()</a></code></code><br>
+				</div>
+				<h4>CodeCoverageIgnore</h4>
+				<div class="list">
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="execute" id="_execute">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_execute">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.html#460-479" title="Go to source code">execute</a>( )</code>
+
+		<div class="description short">
+			
+<p>Exécute la tâche en trois phases : pré-traitements, traitements centraux
+et post-traitements. Si l'on a la classe F fille de la tâche P, alors on peut
+s'attendre à :<br />
+P::preExecute()<br />
+F::preExecute()<br />
+P::centralExecute()<br />
+F::centralExecute()<br />
+F::postExecute()<br />
+P::postExecute()</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Exécute la tâche en trois phases : pré-traitements, traitements centraux
+et post-traitements. Si l'on a la classe F fille de la tâche P, alors on peut
+s'attendre à : P::preExecute() F::preExecute() P::centralExecute()
+F::centralExecute() F::postExecute() P::postExecute()</p>
+
+
+
+
+
+
+				<h4>See</h4>
+				<div class="list">
+						<code><code><a href="class-Himedia.Padocc.Task.html#_preExecute">Himedia\Padocc\Task::preExecute()</a></code></code><br>
+						<code><code><a href="class-Himedia.Padocc.Task.html#_centralExecute">Himedia\Padocc\Task::centralExecute()</a></code></code><br>
+						<code><code><a href="class-Himedia.Padocc.Task.html#_postExecute">Himedia\Padocc\Task::postExecute()</a></code></code><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="oNumbering" id="$oNumbering">
+		<td class="attributes"><code>
+			protected  
+			<code><a href="class-Himedia.Padocc.Numbering.NumberingInterface.html">Himedia\Padocc\Numbering\NumberingInterface</a></code>
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Himedia.Padocc.Task.html#18-23" title="Go to source code"><var>$oNumbering</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$oNumbering" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Compteur d'instances pour mieux s'y retrouver dans les logs des tâches.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Compteur d'instances pour mieux s'y retrouver dans les logs des tâches.</p>
+
+
+					<h4>See</h4>
+					<div class="list">
+							<code>mixed</code><br>
+					</div>
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="oDIContainer" id="$oDIContainer">
+		<td class="attributes"><code>
+			protected  
+			<code><a href="class-Himedia.Padocc.DIContainerInterface.html">Himedia\Padocc\DIContainerInterface</a></code>
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Himedia.Padocc.Task.html#25-30" title="Go to source code"><var>$oDIContainer</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$oDIContainer" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Collection de services.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Collection de services.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="oAttrProperties" id="$oAttrProperties">
+		<td class="attributes"><code>
+			protected  
+			<code><a href="class-Himedia.Padocc.AttributeProperties.html">Himedia\Padocc\AttributeProperties</a></code>
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Himedia.Padocc.Task.html#32-37" title="Go to source code"><var>$oAttrProperties</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$oAttrProperties" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Instance de AttributeProperties.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Instance de AttributeProperties.</p>
+
+
+					<h4>See</h4>
+					<div class="list">
+							<code><code><a href="class-Himedia.Padocc.Task.html#_check">Himedia\Padocc\Task::check()</a></code></code><br>
+					</div>
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="oShell" id="$oShell">
+		<td class="attributes"><code>
+			protected  
+			<code><a href="class-GAubry.Shell.ShellAdapter.html">GAubry\Shell\ShellAdapter</a></code>
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Himedia.Padocc.Task.html#39-42" title="Go to source code"><var>$oShell</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$oShell" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Shell adapter</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Shell adapter</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="oLogger" id="$oLogger">
+		<td class="attributes"><code>
+			private  
+			<code><a href="class-Psr.Log.LoggerInterface.html">Psr\Log\LoggerInterface</a></code>
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Himedia.Padocc.Task.html#44-47" title="Go to source code"><var>$oLogger</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$oLogger" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Logger adapter</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Logger adapter</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="aConfig" id="$aConfig">
+		<td class="attributes"><code>
+			protected  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Himedia.Padocc.Task.html#49-52" title="Go to source code"><var>$aConfig</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$aConfig" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="oProperties" id="$oProperties">
+		<td class="attributes"><code>
+			protected  
+			<code><a href="class-Himedia.Padocc.Properties.PropertiesInterface.html">Himedia\Padocc\Properties\PropertiesInterface</a></code>
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Himedia.Padocc.Task.html#54-57" title="Go to source code"><var>$oProperties</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$oProperties" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Properties adapter</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Properties adapter</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="oXMLTask" id="$oXMLTask">
+		<td class="attributes"><code>
+			protected  
+			SimpleXMLElement
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Himedia.Padocc.Task.html#59-63" title="Go to source code"><var>$oXMLTask</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$oXMLTask" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Contenu XML de la tâche.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Contenu XML de la tâche.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="oProject" id="$oProject">
+		<td class="attributes"><code>
+			protected  
+			<code><a href="class-Himedia.Padocc.Task.Base.Project.html">Himedia\Padocc\Task\Base\Project</a></code>
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Himedia.Padocc.Task.html#65-68" title="Go to source code"><var>$oProject</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$oProject" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="sCounter" id="$sCounter">
+		<td class="attributes"><code>
+			protected  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Himedia.Padocc.Task.html#70-75" title="Go to source code"><var>$sCounter</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$sCounter" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Chaîne numérotant la tâche.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Chaîne numérotant la tâche.</p>
+
+
+					<h4>See</h4>
+					<div class="list">
+							NumberingInterface::getNextCounterValue()<br>
+					</div>
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="sName" id="$sName">
+		<td class="attributes"><code>
+			protected  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Himedia.Padocc.Task.html#77-81" title="Go to source code"><var>$sName</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$sName" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Nom complet de la tâche, utilisé notamment dans le suivi d'exécution.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Nom complet de la tâche, utilisé notamment dans le suivi d'exécution.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="aAttValues" id="$aAttValues">
+		<td class="attributes"><code>
+			protected  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Himedia.Padocc.Task.html#83-88" title="Go to source code"><var>$aAttValues</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$aAttValues" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Attributs XML de la tâche. Tableau ((string) clé, (string) valeur).</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Attributs XML de la tâche. Tableau ((string) clé, (string) valeur).</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="aAttrProperties" id="$aAttrProperties">
+		<td class="attributes"><code>
+			protected  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Himedia.Padocc.Task.html#90-101" title="Go to source code"><var>$aAttrProperties</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$aAttrProperties" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Liste des propriétés des attributs déclarés de la tâche.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Liste des propriétés des attributs déclarés de la tâche.</p>
+
+<p>Structure : array('attribute' =&gt; iValue, ...) Où iValue vaut 0 ou une
+combinaison de bits au sens |, à partir des constantes de la classe
+AttributeProperties.</p>
+
+
+					<h4>See</h4>
+					<div class="list">
+							<code><code><a href="class-Himedia.Padocc.Task.html#_check">Himedia\Padocc\Task::check()</a></code></code><br>
+							<code><code><a href="class-Himedia.Padocc.AttributeProperties.html">Himedia\Padocc\AttributeProperties</a></code></code><br>
+					</div>
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="aRegisteredPaths" id="$aRegisteredPaths">
+		<td class="attributes"><code>
+			protected static 
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Himedia.Padocc.Task.html#366-373" title="Go to source code"><var>$aRegisteredPaths</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$aRegisteredPaths" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Centralisation de tous les chemins systèmes définis dans l'une ou l'autre
+des tâches. Dédoublonnés et triés par ordre alphabétique. Structure :
+array((string)path =&gt; true, ...)</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Centralisation de tous les chemins systèmes définis dans l'une ou l'autre
+des tâches. Dédoublonnés et triés par ordre alphabétique. Structure :
+array((string)path =&gt; true, ...)</p>
+
+
+					<h4>See</h4>
+					<div class="list">
+							<code><code><a href="class-Himedia.Padocc.Task.html#_registerPaths">Himedia\Padocc\Task::registerPaths()</a></code></code><br>
+					</div>
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		Platform for Automatized Deployments with pOwerful Concise Configuration API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

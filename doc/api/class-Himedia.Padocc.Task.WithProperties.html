@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="generator" content="ApiGen 2.8.0">
+
+	<title>Class Himedia\Padocc\Task\WithProperties | Platform for Automatized Deployments with pOwerful Concise Configuration</title>
+
+	<script type="text/javascript" src="resources/combined.js?1247446639"></script>
+	<script type="text/javascript" src="elementlist.js?1902358051"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li><a href="namespace-GAubry.html">GAubry<span></span></a>
+						<ul>
+				<li><a href="namespace-GAubry.ErrorHandler.html">ErrorHandler</a>
+						</li>
+				<li><a href="namespace-GAubry.Helpers.html">Helpers</a>
+						</li>
+				<li><a href="namespace-GAubry.Logger.html">Logger</a>
+						</li>
+				<li><a href="namespace-GAubry.Shell.html">Shell</a>
+						</li>
+							</ul></li>
+				<li class="active"><a href="namespace-Himedia.html">Himedia<span></span></a>
+						<ul>
+				<li class="active main"><a href="namespace-Himedia.Padocc.html">Padocc<span></span></a>
+						<ul>
+				<li class="main"><a href="namespace-Himedia.Padocc.DB.html">DB</a>
+						</li>
+				<li class="main"><a href="namespace-Himedia.Padocc.Minifier.html">Minifier</a>
+						</li>
+				<li class="main"><a href="namespace-Himedia.Padocc.Numbering.html">Numbering</a>
+						</li>
+				<li class="main"><a href="namespace-Himedia.Padocc.Properties.html">Properties</a>
+						</li>
+				<li class="active main"><a href="namespace-Himedia.Padocc.Task.html">Task<span></span></a>
+						<ul>
+				<li class="main"><a href="namespace-Himedia.Padocc.Task.Base.html">Base</a>
+						</li>
+				<li class="main"><a href="namespace-Himedia.Padocc.Task.Extended.html">Extended</a>
+						</li>
+							</ul></li></ul></li></ul></li>
+				<li><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-Psr.html">Psr<span></span></a>
+						<ul>
+				<li><a href="namespace-Psr.Log.html">Log</a>
+						</li>
+							</ul></li>
+			</ul>
+		</div>
+
+		<hr>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li class="active"><a href="class-Himedia.Padocc.Task.WithProperties.html">WithProperties</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text">
+		<input type="submit" value="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-Himedia.Padocc.Task.html" title="Summary of Himedia\Padocc\Task"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+			<li>
+				<a href="deprecated.html" title="List of deprecated elements"><span>Deprecated</span></a>
+			</li>
+			<li>
+				<a href="todo.html" title="Todo list"><span>Todo</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class WithProperties</h1>
+
+
+	<div class="description">
+	
+<p>Couche permettant aux tâches l'implémentant d'importer des propriétés
+issues de fichiers de configuration INI, de fichiers de configuration shell ou
+encore de la liste des groupes de serveurs Twenga. Ces propriétés seront
+ensuite accessibles via $this-&gt;oProperties, instance de
+PropertiesInterface.</p>
+
+<p>Toute tâche dérivant Task_WithProperties se voit ainsi dotée de trois
+attributs XML optionnels et cumulables : 'loadtwengaservers',
+'propertyshellfile' et 'propertyinifile'. Les voici illustrés dans l'ordre dans
+lequel ils sont traités si présents au sein de la même tâche :</p>
+
+<ul>
+	<li>'loadtwengaservers', "true" ou "false" (défaut), chargera la liste des
+	groupes de serveurs Twenga</li>
+
+	<li>'propertyshellfile', chemin système, par ex. "/path/to/shell_file.cfg",
+	importera en tant que propriétés les variables du fichier de configuration
+	shell</li>
+
+	<li>'propertyinifile', chemin système, par ex. "/path/to/config.ini", importera
+	en tant que propriétés les variables du fichier .INI</li>
+</ul>
+
+<p>Voir TwengaServers et PropertiesInterface pour plus de détails.</p>
+
+	</div>
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-Himedia.Padocc.Task.html"><span>Himedia\Padocc\Task</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by">
+<b><span>Himedia\Padocc\Task\WithProperties</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+	<div>
+		<h4>Direct known subclasses</h4>
+			<a href="class-Himedia.Padocc.Task.Base.Call.html">Himedia\Padocc\Task\Base\Call</a>, 
+			<a href="class-Himedia.Padocc.Task.Base.Project.html">Himedia\Padocc\Task\Base\Project</a>, 
+			<a href="class-Himedia.Padocc.Task.Base.Target.html">Himedia\Padocc\Task\Base\Target</a>
+	</div>
+
+	<div>
+		<h4>Indirect known subclasses</h4>
+			<a href="class-Himedia.Padocc.Task.Base.Environment.html">Himedia\Padocc\Task\Base\Environment</a>
+	</div>
+
+
+
+
+
+	<div class="info">
+		<b>Abstract</b><br>
+		
+		<b>Namespace:</b> <a href="namespace-Himedia.html">Himedia</a>\<a href="namespace-Himedia.Padocc.html">Padocc</a>\<a href="namespace-Himedia.Padocc.Task.html">Task</a><br>
+		
+
+				<b>Author:</b>
+				Geoffroy AUBRY &lt;<a
+href="mailto:gaubry&#64;hi-media.com">gaubry&#64;<!-- -->hi-media.com</a>&gt;<br>
+		<b>Located at</b> <a href="source-class-Himedia.Padocc.Task.WithProperties.html#9-104" title="Go to source code">Himedia/Padocc/Task/WithProperties.php</a><br>
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="init" id="_init">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_init">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.WithProperties.html#35-56" title="Go to source code">init</a>( )</code>
+
+		<div class="description short">
+			
+<p>Initializes task.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Initializes task.</p>
+
+
+
+
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Himedia.Padocc.Task.html#_init">Himedia\Padocc\Task::init()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="loadProperties" id="_loadProperties">
+
+		<td class="attributes"><code>
+			 private 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_loadProperties">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.WithProperties.html#58-76" title="Go to source code">loadProperties</a>( )</code>
+
+		<div class="description short">
+			
+<p>Lors de l'exécution de la tâche, charge les propriétés des éventuels
+fichiers de configuration INI, fichiers de configuration shell ou encore la
+liste des groupes de serveurs Twenga.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Lors de l'exécution de la tâche, charge les propriétés des éventuels
+fichiers de configuration INI, fichiers de configuration shell ou encore la
+liste des groupes de serveurs Twenga.</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setUp" id="_setUp">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setUp">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.WithProperties.html#78-89" title="Go to source code">setUp</a>( )</code>
+
+		<div class="description short">
+			
+<p>Prépare la tâche avant exécution : vérifications basiques, analyse des
+serveurs concernés...</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Prépare la tâche avant exécution : vérifications basiques, analyse des
+serveurs concernés...</p>
+
+
+
+
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Himedia.Padocc.Task.html#_setUp">Himedia\Padocc\Task::setUp()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="preExecute" id="_preExecute">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_preExecute">#</a>
+		<code><a href="source-class-Himedia.Padocc.Task.WithProperties.html#91-103" title="Go to source code">preExecute</a>( )</code>
+
+		<div class="description short">
+			
+<p>Phase de pré-traitements de l'exécution de la tâche. Elle devrait
+systématiquement commencer par "parent::preExecute();". Appelé par
+execute().</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Phase de pré-traitements de l'exécution de la tâche. Elle devrait
+systématiquement commencer par "parent::preExecute();". Appelé par
+execute().</p>
+
+
+
+
+
+
+				<h4>See</h4>
+				<div class="list">
+						<code><code><a href="class-Himedia.Padocc.Task.html#_execute">Himedia\Padocc\Task::execute()</a></code></code><br>
+				</div>
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Himedia.Padocc.Task.html#_preExecute">Himedia\Padocc\Task::preExecute()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-Himedia.Padocc.Task.html#methods">Himedia\Padocc\Task</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Himedia.Padocc.Task.html#___construct">__construct()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_centralExecute">centralExecute()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_check">check()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_execute">execute()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_expandPath">expandPath()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_fetchAttributes">fetchAttributes()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_getLogger">getLogger()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_getNewInstance">getNewInstance()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_getTagName">getTagName()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_postExecute">postExecute()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_processPath">processPath()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_processSimplePath">processSimplePath()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_registerPaths">registerPaths()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_reroutePaths">reroutePaths()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_setAttributePropertiesAdapter">setAttributePropertiesAdapter()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_setLogger">setLogger()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_setNumberingAdapter">setNumberingAdapter()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_setPropertiesAdapter">setPropertiesAdapter()</a>, 
+			<a href="class-Himedia.Padocc.Task.html#_setShellAdapter">setShellAdapter()</a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="oTwengaServersTask" id="$oTwengaServersTask">
+		<td class="attributes"><code>
+			private  
+			<code><a href="class-Himedia.Padocc.Task.Extended.TwengaServers.html">Himedia\Padocc\Task\Extended\TwengaServers</a></code>
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Himedia.Padocc.Task.WithProperties.html#29-33" title="Go to source code"><var>$oTwengaServersTask</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$oTwengaServersTask" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Tâche de chargement des listes de serveurs Twenga sous-jacente.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Tâche de chargement des listes de serveurs Twenga sous-jacente.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-Himedia.Padocc.Task.html#properties">Himedia\Padocc\Task</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Himedia.Padocc.Task.html#$aAttValues"><var>$aAttValues</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$aAttrProperties"><var>$aAttrProperties</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$aConfig"><var>$aConfig</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$aRegisteredPaths"><var>$aRegisteredPaths</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$oAttrProperties"><var>$oAttrProperties</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$oDIContainer"><var>$oDIContainer</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$oNumbering"><var>$oNumbering</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$oProject"><var>$oProject</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$oProperties"><var>$oProperties</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$oShell"><var>$oShell</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$oXMLTask"><var>$oXMLTask</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$sCounter"><var>$sCounter</var></a>, 
+			<a href="class-Himedia.Padocc.Task.html#$sName"><var>$sName</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		Platform for Automatized Deployments with pOwerful Concise Configuration API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="generator" content="ApiGen 2.8.0">
+
+	<title>Class GAubry\Shell\ShellAdapter | Platform for Automatized Deployments with pOwerful Concise Configuration</title>
+
+	<script type="text/javascript" src="resources/combined.js?1247446639"></script>
+	<script type="text/javascript" src="elementlist.js?1902358051"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li class="active"><a href="namespace-GAubry.html">GAubry<span></span></a>
+						<ul>
+				<li><a href="namespace-GAubry.ErrorHandler.html">ErrorHandler</a>
+						</li>
+				<li><a href="namespace-GAubry.Helpers.html">Helpers</a>
+						</li>
+				<li><a href="namespace-GAubry.Logger.html">Logger</a>
+						</li>
+				<li class="active"><a href="namespace-GAubry.Shell.html">Shell</a>
+						</li>
+							</ul></li>
+				<li><a href="namespace-Himedia.html">Himedia<span></span></a>
+						<ul>
+				<li class="main"><a href="namespace-Himedia.Padocc.html">Padocc<span></span></a>
+						<ul>
+				<li class="main"><a href="namespace-Himedia.Padocc.DB.html">DB</a>
+						</li>
+				<li class="main"><a href="namespace-Himedia.Padocc.Minifier.html">Minifier</a>
+						</li>
+				<li class="main"><a href="namespace-Himedia.Padocc.Numbering.html">Numbering</a>
+						</li>
+				<li class="main"><a href="namespace-Himedia.Padocc.Properties.html">Properties</a>
+						</li>
+				<li class="main"><a href="namespace-Himedia.Padocc.Task.html">Task<span></span></a>
+						<ul>
+				<li class="main"><a href="namespace-Himedia.Padocc.Task.Base.html">Base</a>
+						</li>
+				<li class="main"><a href="namespace-Himedia.Padocc.Task.Extended.html">Extended</a>
+						</li>
+							</ul></li></ul></li></ul></li>
+				<li><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-Psr.html">Psr<span></span></a>
+						<ul>
+				<li><a href="namespace-Psr.Log.html">Log</a>
+						</li>
+							</ul></li>
+			</ul>
+		</div>
+
+		<hr>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-GAubry.Shell.PathStatus.html">PathStatus</a></li>
+				<li class="active"><a href="class-GAubry.Shell.ShellAdapter.html">ShellAdapter</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text">
+		<input type="submit" value="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-GAubry.Shell.html" title="Summary of GAubry\Shell"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+			<li>
+				<a href="deprecated.html" title="List of deprecated elements"><span>Deprecated</span></a>
+			</li>
+			<li>
+				<a href="todo.html" title="Todo list"><span>Todo</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class ShellAdapter</h1>
+
+
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-GAubry.html">GAubry</a>\<a href="namespace-GAubry.Shell.html">Shell</a><br>
+		
+
+		<b>Located at</b> <a href="source-class-GAubry.Shell.ShellAdapter.html#8-669" title="Go to source code">shell/src/GAubry/Shell/ShellAdapter.php</a><br>
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-GAubry.Shell.ShellAdapter.html#70-83" title="Go to source code">__construct</a>( <span><code><a href="class-Psr.Log.LoggerInterface.html">Psr\Log\LoggerInterface</a></code> <var>$oLogger</var></span>, <span>array <var>$aConfig</var> = <span class="php-keyword1">array</span>()</span> )</code>
+
+		<div class="description short">
+			
+<p>Constructor.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Constructor.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$oLogger</var></dt>
+					<dd><code><code><a href="class-Psr.Log.LoggerInterface.html">Psr\Log\LoggerInterface</a></code></code><br>$oLogger Used to log exectued shell commands</dd>
+					<dt><var>$aConfig</var></dt>
+					<dd><code>array</code><br>$aConfig see $aDefaultConfig</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="parallelize" id="_parallelize">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_parallelize">#</a>
+		<code><a href="source-class-GAubry.Shell.ShellAdapter.html#85-170" title="Go to source code">parallelize</a>( <span>array <var>$aValues</var></span>, <span>string <var>$sPattern</var></span>, <span>integer <var>$iMax</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Launch parallel processes running pattern filled with each of specified
+values. If number of values is greater than $iMax, then several batches are
+launched.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Launch parallel processes running pattern filled with each of specified
+values. If number of values is greater than $iMax, then several batches are
+launched.</p>
+
+<p>Example: $this-&gt;parallelize(array('user1@server', 'user2@server'), "ssh []
+/bin/bash &lt;&lt;EOF\nls -l\nEOF\n", 2); Example:
+$this-&gt;parallelize(array('a', 'b'), 'cat /path/to/resources/[].txt', 2);</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$aValues</var></dt>
+					<dd><code>array</code><br>$aValues liste de valeurs qui viendront remplacer le(s) '[]' du pattern</dd>
+					<dt><var>$sPattern</var></dt>
+					<dd><code>string</code><br>$sPattern pattern possédant une ou plusieurs occurences de paires de crochets
+vides '[]' qui seront remplacées dans les processus lancés en parallèle par
+l'une des valeurs spécifiées.</dd>
+					<dt><var>$iMax</var></dt>
+					<dd><code>integer</code><br>$iMax nombre maximal de processus lancés en parallèles</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>liste de tableau associatif : array( array( 'value' =&gt; (string)"l'une des
+valeurs de $aValues", 'error_code' =&gt; (int)code de retour Shell,
+'elapsed_time' =&gt; (int) temps approximatif en secondes, 'cmd' =&gt; (string)
+commande shell exécutée, 'output' =&gt; (string) sortie standard, 'error'
+=&gt; (string) sortie d'erreur standard, ), ... )<br>
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code>RuntimeException</code><br>si le moindre code de retour Shell non nul apparaît.<br>
+					<code>RuntimeException</code><br>si une valeur hors de $aValues apparaît dans les entrées 'value'.<br>
+					<code>RuntimeException</code><br>s'il manque des valeurs de $aValues dans le résultat final.<br>
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="exec" id="_exec">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_exec">#</a>
+		<code><a href="source-class-GAubry.Shell.ShellAdapter.html#172-192" title="Go to source code">exec</a>( <span>string <var>$sCmd</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Exécute la commande shell spécifiée et retourne la sortie découpée par
+ligne dans un tableau. En cas d'erreur shell (code d'erreur &lt;&gt; 0), lance
+une exception incluant le message d'erreur.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Exécute la commande shell spécifiée et retourne la sortie découpée par
+ligne dans un tableau. En cas d'erreur shell (code d'erreur &lt;&gt; 0), lance
+une exception incluant le message d'erreur.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$sCmd</var></dt>
+					<dd><code>string</code><br>$sCmd</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>tableau indexé du flux de sortie shell découpé par ligne<br>
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code>RuntimeException</code><br>en cas d'erreur shell<br>
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="execSSH" id="_execSSH">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_execSSH">#</a>
+		<code><a href="source-class-GAubry.Shell.ShellAdapter.html#194-208" title="Go to source code">execSSH</a>( <span>string <var>$sPatternCmd</var></span>, <span>string <var>$sParam</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Exécute la commande shell spécifiée en l'encapsulant au besoin dans une
+connexion SSH pour atteindre les hôtes distants.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Exécute la commande shell spécifiée en l'encapsulant au besoin dans une
+connexion SSH pour atteindre les hôtes distants.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$sPatternCmd</var></dt>
+					<dd><code>string</code><br>$sPatternCmd commande au format printf</dd>
+					<dt><var>$sParam</var></dt>
+					<dd><code>string</code><br>$sParam paramètre du pattern $sPatternCmd, permettant en plus de décider si
+l'on doit encapsuler la commande dans un SSH (si serveur distant) ou non.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>tableau indexé du flux de sortie shell découpé par ligne<br>
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code>RuntimeException</code><br>en cas d'erreur shell<br>
+				</div>
+
+				<h4>See</h4>
+				<div class="list">
+						<code><code><a href="class-GAubry.Shell.ShellAdapter.html#_isRemotePath">GAubry\Shell\ShellAdapter::isRemotePath()</a></code></code><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="buildSSHCmd" id="_buildSSHCmd">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_buildSSHCmd">#</a>
+		<code><a href="source-class-GAubry.Shell.ShellAdapter.html#210-233" title="Go to source code">buildSSHCmd</a>( <span>string <var>$sPatternCmd</var></span>, <span>string <var>$sParam</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Retourne la commande Shell spécifiée envoyée à sprintf avec $sParam, et
+encapsule au besoin le tout dans une connexion SSH pour atteindre les hôtes
+distants (si $sParam est un hôte distant).</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Retourne la commande Shell spécifiée envoyée à sprintf avec $sParam, et
+encapsule au besoin le tout dans une connexion SSH pour atteindre les hôtes
+distants (si $sParam est un hôte distant).</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$sPatternCmd</var></dt>
+					<dd><code>string</code><br>$sPatternCmd commande au format printf</dd>
+					<dt><var>$sParam</var></dt>
+					<dd><code>string</code><br>$sParam paramètre du pattern $sPatternCmd, permettant en plus de décider si
+l'on doit encapsuler la commande dans un SSH (si serveur distant) ou non.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>la commande Shell spécifiée envoyée à sprintf avec $sParam, et encapsule au
+besoin le tout dans une connexion SSH pour atteindre les hôtes distants (si
+$sParam est un hôte distant).<br>
+				</div>
+
+
+				<h4>See</h4>
+				<div class="list">
+						<code><code><a href="class-GAubry.Shell.ShellAdapter.html#_isRemotePath">GAubry\Shell\ShellAdapter::isRemotePath()</a></code></code><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getPathStatus" id="_getPathStatus">
+
+		<td class="attributes"><code>
+			 public 
+			integer
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getPathStatus">#</a>
+		<code><a href="source-class-GAubry.Shell.ShellAdapter.html#235-269" title="Go to source code">getPathStatus</a>( <span>string <var>$sPath</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Retourne l'une des constantes de Shell_PathStatus, indiquant pour le chemin
+spécifié s'il est inexistant, un fichier, un répertoire, un lien symbolique
+sur fichier ou encore un lien symbolique sur répertoire.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Retourne l'une des constantes de Shell_PathStatus, indiquant pour le chemin
+spécifié s'il est inexistant, un fichier, un répertoire, un lien symbolique
+sur fichier ou encore un lien symbolique sur répertoire.</p>
+
+<p>Les éventuels slash terminaux sont supprimés. Si le statut est différent
+de inexistant, l'appel est mis en cache. Un appel à remove() s'efforce de
+maintenir cohérent ce cache.</p>
+
+<p>Le chemin spécifié peut concerner un hôte distant (user@server:/path),
+auquel cas un appel SSH sera effectué.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$sPath</var></dt>
+					<dd><code>string</code><br>$sPath chemin à tester, de la forme [user@server:]/path</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>integer</code><br>l'une des constantes de Shell_PathStatus<br>
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code>RuntimeException</code><br>en cas d'erreur shell<br>
+				</div>
+
+				<h4>See</h4>
+				<div class="list">
+						Shell_PathStatus<br>
+						<code><code><a href="class-GAubry.Shell.ShellAdapter.html#$_aFileStatus">GAubry\Shell\ShellAdapter::<var>$_aFileStatus</var></a></code></code><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getParallelSSHPathStatus" id="_getParallelSSHPathStatus">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getParallelSSHPathStatus">#</a>
+		<code><a href="source-class-GAubry.Shell.ShellAdapter.html#271-322" title="Go to source code">getParallelSSHPathStatus</a>( <span>string <var>$sPath</var></span>, <span>array <var>$aServers</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Pour chaque serveur retourne l'une des constantes de Shell_PathStatus,
+indiquant pour le chemin spécifié s'il est inexistant, un fichier, un
+répertoire, un lien symbolique sur fichier ou encore un lien symbolique sur
+répertoire.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Pour chaque serveur retourne l'une des constantes de Shell_PathStatus,
+indiquant pour le chemin spécifié s'il est inexistant, un fichier, un
+répertoire, un lien symbolique sur fichier ou encore un lien symbolique sur
+répertoire.</p>
+
+<p>Comme getPathStatus(), mais sur une liste de serveurs.</p>
+
+<p>Les éventuels slash terminaux sont supprimés. Si le statut est différent
+de inexistant, l'appel est mis en cache. Un appel à remove() s'efforce de
+maintenir cohérent ce cache.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$sPath</var></dt>
+					<dd><code>string</code><br>$sPath chemin à tester, sans mention de serveur</dd>
+					<dt><var>$aServers</var></dt>
+					<dd><code>array</code><br>$aServers liste de serveurs sur lesquels faire la demande de statut</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>tableau associatif listant par serveur (clé) le status (valeur, constante de
+Shell_PathStatus)<br>
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code>RuntimeException</code><br>en cas d'erreur shell<br>
+				</div>
+
+				<h4>See</h4>
+				<div class="list">
+						<code><code><a href="class-GAubry.Shell.ShellAdapter.html#_getPathStatus">GAubry\Shell\ShellAdapter::getPathStatus()</a></code></code><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isRemotePath" id="_isRemotePath">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isRemotePath">#</a>
+		<code><a href="source-class-GAubry.Shell.ShellAdapter.html#324-347" title="Go to source code">isRemotePath</a>( <span>string <var>$sPath</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Retourne un triplet dont la 1re valeur (bool) indique si le chemin spécifié
+commence par '[user@]servername_or_ip:', la 2e (string) est le serveur (ou
+chaîne vide si $sPath est local), et la 3e (string) est le chemin dépourvu de
+l'éventuel serveur.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Retourne un triplet dont la 1re valeur (bool) indique si le chemin spécifié
+commence par '[user@]servername_or_ip:', la 2e (string) est le serveur (ou
+chaîne vide si $sPath est local), et la 3e (string) est le chemin dépourvu de
+l'éventuel serveur.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$sPath</var></dt>
+					<dd><code>string</code><br>$sPath chemin au format [[user@]servername_or_ip:]/path</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>triplet dont la 1re valeur (bool) indique si le chemin spécifié commence par
+'[user@]servername_or_ip:', la 2e (string) est le serveur (ou chaîne vide si
+$sPath est local), et la 3e (string) est le chemin dépourvu de l'éventuel
+serveur.<br>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="copy" id="_copy">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_copy">#</a>
+		<code><a href="source-class-GAubry.Shell.ShellAdapter.html#349-380" title="Go to source code">copy</a>( <span>string <var>$sSrcPath</var></span>, <span>string <var>$sDestPath</var></span>, <span>boolean <var>$bIsDestFile</var> = <span class="php-keyword1">false</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Copie un chemin vers un autre. Les jokers '<em>' et '?' sont autorisés. Par
+exemple copiera le contenu de $sSrcPath si celui-ci se termine par '/</em>'. Si
+le chemin de destination n'existe pas, il sera créé.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Copie un chemin vers un autre. Les jokers '<em>' et '?' sont autorisés. Par
+exemple copiera le contenu de $sSrcPath si celui-ci se termine par '/</em>'. Si
+le chemin de destination n'existe pas, il sera créé.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$sSrcPath</var></dt>
+					<dd><code>string</code><br>$sSrcPath chemin source, au format [[user@]hostname_or_ip:]/path</dd>
+					<dt><var>$sDestPath</var></dt>
+					<dd><code>string</code><br>$sDestPath chemin de destination, au format [[user@]hostname_or_ip:]/path</dd>
+					<dt><var>$bIsDestFile</var></dt>
+					<dd><code>boolean</code><br>$bIsDestFile précise si le chemin de destination est un simple fichier ou non,
+information nécessaire si l'on doit créer une partie de ce chemin si
+inexistant</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>tableau indexé du flux de sortie shell découpé par ligne<br>
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code>RuntimeException</code><br>en cas d'erreur shell<br>
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="createLink" id="_createLink">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_createLink">#</a>
+		<code><a href="source-class-GAubry.Shell.ShellAdapter.html#382-402" title="Go to source code">createLink</a>( <span>string <var>$sLinkPath</var></span>, <span>string <var>$sTargetPath</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Crée un lien symbolique de chemin $sLinkPath vers la cible $sTargetPath.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Crée un lien symbolique de chemin $sLinkPath vers la cible $sTargetPath.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$sLinkPath</var></dt>
+					<dd><code>string</code><br>$sLinkPath nom du lien, au format [[user@]hostname_or_ip:]/path</dd>
+					<dt><var>$sTargetPath</var></dt>
+					<dd><code>string</code><br>$sTargetPath cible sur laquelle faire pointer le lien, au format
+[[user@]hostname_or_ip:]/path</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>tableau indexé du flux de sortie shell découpé par ligne<br>
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code>DomainException</code><br>si les chemins référencent des serveurs différents<br>
+					<code>RuntimeException</code><br>en cas d'erreur shell<br>
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="escapePath" id="_escapePath">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_escapePath">#</a>
+		<code><a href="source-class-GAubry.Shell.ShellAdapter.html#404-417" title="Go to source code">escapePath</a>( <span>string <var>$sPath</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Entoure le chemin de guillemets doubles en tenant compte des jokers '<em>' et
+'?' qui ne les supportent pas. Par exemple : '/a/b/img*jpg', donnera :
+'"/a/b/img"</em>"jpg"'. Pour rappel, '*' vaut pour 0 à n caractères, '?' vaut
+pour exactement 1 caractère (et non 0 à 1).</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Entoure le chemin de guillemets doubles en tenant compte des jokers '<em>' et
+'?' qui ne les supportent pas. Par exemple : '/a/b/img*jpg', donnera :
+'"/a/b/img"</em>"jpg"'. Pour rappel, '*' vaut pour 0 à n caractères, '?' vaut
+pour exactement 1 caractère (et non 0 à 1).</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$sPath</var></dt>
+					<dd><code>string</code><br>$sPath</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="remove" id="_remove">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_remove">#</a>
+		<code><a href="source-class-GAubry.Shell.ShellAdapter.html#419-447" title="Go to source code">remove</a>( <span>string <var>$sPath</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Supprime le chemin spécifié, répertoire ou fichier, distant ou local.
+S'efforce de maintenir cohérent le cache de statut de chemins rempli par
+getPathStatus().</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Supprime le chemin spécifié, répertoire ou fichier, distant ou local.
+S'efforce de maintenir cohérent le cache de statut de chemins rempli par
+getPathStatus().</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$sPath</var></dt>
+					<dd><code>string</code><br>$sPath chemin à supprimer, au format [[user@]hostname_or_ip:]/path</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>tableau indexé du flux de sortie shell découpé par ligne<br>
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code>DomainException</code><br>si chemin invalide (garde-fou)<br>
+					<code>RuntimeException</code><br>en cas d'erreur shell<br>
+				</div>
+
+				<h4>See</h4>
+				<div class="list">
+						<code><code><a href="class-GAubry.Shell.ShellAdapter.html#_getPathStatus">GAubry\Shell\ShellAdapter::getPathStatus()</a></code></code><br>
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="backup" id="_backup">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_backup">#</a>
+		<code><a href="source-class-GAubry.Shell.ShellAdapter.html#449-496" title="Go to source code">backup</a>( <span>string <var>$sSrcPath</var></span>, <span>string <var>$sBackupPath</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Effectue un tar gzip du répertoire $sSrcPath dans $sBackupPath.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Effectue un tar gzip du répertoire $sSrcPath dans $sBackupPath.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$sSrcPath</var></dt>
+					<dd><code>string</code><br>$sSrcPath au format [[user@]hostname_or_ip:]/path</dd>
+					<dt><var>$sBackupPath</var></dt>
+					<dd><code>string</code><br>$sBackupPath au format [[user@]hostname_or_ip:]/path</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>tableau indexé du flux de sortie shell découpé par ligne<br>
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code>RuntimeException</code><br>en cas d'erreur shell<br>
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="mkdir" id="_mkdir">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_mkdir">#</a>
+		<code><a href="source-class-GAubry.Shell.ShellAdapter.html#498-532" title="Go to source code">mkdir</a>( <span>string <var>$sPath</var></span>, <span>string <var>$sMode</var> = <span class="php-quote">''</span></span>, <span>array <var>$aValues</var> = <span class="php-keyword1">array</span>()</span> )</code>
+
+		<div class="description short">
+			
+<p>Crée le chemin spécifié s'il n'existe pas déjà, avec les droits
+éventuellement transmis dans tous les cas.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Crée le chemin spécifié s'il n'existe pas déjà, avec les droits
+éventuellement transmis dans tous les cas.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$sPath</var></dt>
+					<dd><code>string</code><br>$sPath chemin à créer, au format [[user@]hostname_or_ip:]/path</dd>
+					<dt><var>$sMode</var></dt>
+					<dd><code>string</code><br>$sMode droits utilisateur du chemin appliqués même si ce dernier existe
+déjà. Par exemple '644'.</dd>
+					<dt><var>$aValues</var></dt>
+					<dd><code>array</code><br>$aValues liste de valeurs (string) optionnelles pour générer autant de
+demandes de synchronisation en parallèle. Dans ce cas ces valeurs viendront
+remplacer l'une après l'autre les occurences de crochets vide '[]' présents
+dans $sSrcPath ou $sDestPath.</dd>
+				</dl></div>
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code>RuntimeException</code><br>en cas d'erreur shell<br>
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="sync" id="_sync">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_sync">#</a>
+		<code><a href="source-class-GAubry.Shell.ShellAdapter.html#534-607" title="Go to source code">sync</a>( <span>string <var>$sSrcPath</var></span>, <span>string <var>$sDestPath</var></span>, <span>array <var>$aValues</var> = <span class="php-keyword1">array</span>()</span>, <span>array <var>$aIncludedPaths</var> = <span class="php-keyword1">array</span>()</span>, <span>array <var>$aExcludedPaths</var> = <span class="php-keyword1">array</span>()</span>, <span>string <var>$sRsyncPattern</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Synchronise une source avec une ou plusieurs destinations.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Synchronise une source avec une ou plusieurs destinations.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$sSrcPath</var></dt>
+					<dd><code>string</code><br>$sSrcPath au format [[user@]hostname_or_ip:]/path</dd>
+					<dt><var>$sDestPath</var></dt>
+					<dd><code>string</code><br>$sDestPath chaque destination au format [[user@]hostname_or_ip:]/path</dd>
+					<dt><var>$aValues</var></dt>
+					<dd><code>array</code><br>$aValues liste de valeurs (string) optionnelles pour générer autant de
+demandes de synchronisation en parallèle. Dans ce cas ces valeurs viendront
+remplacer l'une après l'autre les occurences de crochets vide '[]' présents
+dans $sSrcPath ou $sDestPath.</dd>
+					<dt><var>$aIncludedPaths</var></dt>
+					<dd><code>array</code><br>$aIncludedPaths chemins à transmettre aux paramètres --include de la commande
+shell rsync. Il précéderons les paramètres --exclude.</dd>
+					<dt><var>$aExcludedPaths</var></dt>
+					<dd><code>array</code><br>$aExcludedPaths chemins à transmettre aux paramètres --exclude de la commande
+shell rsync</dd>
+					<dt><var>$sRsyncPattern</var></dt>
+					<dd><code>string</code><br>$sRsyncPattern</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>tableau indexé du flux de sortie shell des commandes rsync exécutées,
+découpé par ligne et analysé par _resumeSyncResult()<br>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="_resumeSyncResult" id="__resumeSyncResult">
+
+		<td class="attributes"><code>
+			 private 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#__resumeSyncResult">#</a>
+		<code><a href="source-class-GAubry.Shell.ShellAdapter.html#609-668" title="Go to source code">_resumeSyncResult</a>( <span>array <var>$aRawResult</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Analyse la sortie shell de commandes rsync et en propose un résumé.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Analyse la sortie shell de commandes rsync et en propose un résumé.</p>
+
+<p>Exemple : - entrée : Number of files: 1774 Number of files transferred: 2
+Total file size: 64093953 bytes Total transferred file size: 178 bytes Literal
+data: 178 bytes Matched data: 0 bytes File list size: 39177 File list generation
+time: 0.013 seconds File list transfer time: 0.000 seconds Total bytes sent:
+39542 Total bytes received: 64 sent 39542 bytes received 64 bytes 26404.00
+bytes/sec total size is 64093953 speedup is 1618.29 - sortie : Number of
+transferred files ( / total): 2 / 1774 Total transferred file size ( / total):
+&lt;1 / 61 Mio</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$aRawResult</var></dt>
+					<dd><code>array</code><br>$aRawResult tableau indexé du flux de sortie shell de la commande rsync,
+découpé par ligne</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>du tableau indexé du flux de sortie shell de commandes rsync résumé et
+découpé par ligne<br>
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="_aFileStatus" id="$_aFileStatus">
+		<td class="attributes"><code>
+			private  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-GAubry.Shell.ShellAdapter.html#14-21" title="Go to source code"><var>$_aFileStatus</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$_aFileStatus" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Cache of status of file system paths.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Cache of status of file system paths.</p>
+
+
+					<h4>See</h4>
+					<div class="list">
+							<code><code><a href="class-GAubry.Shell.ShellAdapter.html#_getPathStatus">GAubry\Shell\ShellAdapter::getPathStatus()</a></code></code><br>
+							Shell_PathStatus<br>
+					</div>
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="_oLogger" id="$_oLogger">
+		<td class="attributes"><code>
+			private  
+			<code><a href="class-Psr.Log.LoggerInterface.html">Psr\Log\LoggerInterface</a></code>
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-GAubry.Shell.ShellAdapter.html#23-29" title="Go to source code"><var>$_oLogger</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$_oLogger" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>PSR-3 logger</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>PSR-3 logger</p>
+
+
+					<h4>See</h4>
+					<div class="list">
+							<code><code><a href="class-GAubry.Shell.ShellAdapter.html#_exec">GAubry\Shell\ShellAdapter::exec()</a></code></code><br>
+					</div>
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="aDefaultConfig" id="$aDefaultConfig">
+		<td class="attributes"><code>
+			private static 
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-GAubry.Shell.ShellAdapter.html#31-53" title="Go to source code"><var>$aDefaultConfig</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>(
+    <span class="php-comment">// (string) Path of Bash:</span>
+    <span class="php-quote">'bash_path'</span> =&gt; <span class="php-quote">'/bin/bash'</span>,
+
+    <span class="php-comment">// (string) List of '-o option' options used for all SSH and SCP commands:</span>
+    <span class="php-quote">'ssh_options'</span> =&gt; <span class="php-quote">'-o ServerAliveInterval=10 -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes'</span>,
+
+    <span class="php-comment">// (int) Maximal number of command shells launched simultaneously (parallel processes):</span>
+    <span class="php-quote">'parallelization_max_nb_processes'</span> =&gt; <span class="php-num">10</span>,
+
+    <span class="php-comment">// (int) Maximal number of parallel RSYNC (overriding 'parallelization_max_nb_processes'):</span>
+    <span class="php-quote">'rsync_max_nb_processes'</span> =&gt; <span class="php-num">5</span>,
+
+    <span class="php-comment">// (array) List of exclusion patterns for RSYNC command (converted into list of '--exclude &lt;pattern&gt;'):</span>
+    <span class="php-quote">'default_rsync_exclude'</span> =&gt; <span class="php-keyword1">array</span>(
+        <span class="php-quote">'.bzr/'</span>, <span class="php-quote">'.cvsignore'</span>, <span class="php-quote">'.git/'</span>, <span class="php-quote">'.gitignore'</span>, <span class="php-quote">'.svn/'</span>, <span class="php-quote">'cvslog.*'</span>, <span class="php-quote">'CVS'</span>, <span class="php-quote">'CVS.adm'</span>
+    )
+)</code></td>
+		<td class="description"><div>
+			<a href="#$aDefaultConfig" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Default configuration.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Default configuration.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="_aConfig" id="$_aConfig">
+		<td class="attributes"><code>
+			private  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-GAubry.Shell.ShellAdapter.html#55-61" title="Go to source code"><var>$_aConfig</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$_aConfig" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Current configuration.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Current configuration.</p>
+
+
+					<h4>See</h4>
+					<div class="list">
+							<code>mixed</code><br>
+					</div>
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="sParallelizeCmdPattern" id="$sParallelizeCmdPattern">
+		<td class="attributes"><code>
+			private  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-GAubry.Shell.ShellAdapter.html#63-68" title="Go to source code"><var>$sParallelizeCmdPattern</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$sParallelizeCmdPattern" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Bash pattern command to call 'parallelize.sh' script.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Bash pattern command to call 'parallelize.sh' script.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		Platform for Automatized Deployments with pOwerful Concise Configuration API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>
