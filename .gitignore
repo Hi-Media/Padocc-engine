@@ -3,9 +3,6 @@
 /.project
 /resources
 /tags
-fuel/app/tmp/
-fuel/app/logs/
-fuel/app/config
 *~
 /vendor/
 /composer.phar
@@ -18,3 +15,4 @@ fuel/app/config
 composer.phar
 conf/phpunit.xml
 /cache.properties
+/doc/build/
