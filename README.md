@@ -4,7 +4,7 @@
 [![Build Status](http://img.shields.io/travis/Hi-Media/Padocc-engine/stable.svg?style=flat)](http://travis-ci.org/Hi-Media/Padocc-engine)
 [![Coverage Status](http://img.shields.io/coveralls/Hi-Media/Padocc-engine/stable.svg?style=flat)](https://coveralls.io/r/Hi-Media/Padocc-engine)
 
-*Coming soon*
+*Coming soon…*
 
 ## Table of Contents
 
@@ -37,7 +37,7 @@ See [.travis.yml](.travis.yml) file for build details.
 
 ## Contributions
 All suggestions for improvement or direct contributions are very welcome.
-Please report bugs or ask questions using the [Issue Tracker](issues).
+Please report bugs or ask questions using the [Issue Tracker](https://github.com/Hi-Media/Padocc-engine/issues).
 
 ## Versioning
 
