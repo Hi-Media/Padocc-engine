@@ -17,6 +17,7 @@
     "require-dev": {
         "apigen/apigen":             "~2.8",
         "nette/nette":               "~2.1.1",
+        "pdepend/pdepend":           "~1.1",
         "phpmd/phpmd":               "~1.4",
         "phpunit/phpunit":           "3.7.*",
         "satooshi/php-coveralls":    "dev-master",
