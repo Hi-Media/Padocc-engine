@@ -1,6 +1,6 @@
 {
     "name": "hi-media/padocc-engine",
-    "description": "PADOCC: Platform for Automatized Deployments with pOwerful Concise Configuration",
+    "description": "Padocc's engine: Platform for Automatized Deployments with pOwerful Concise Configuration",
     "keywords": ["deployment", "PHP"],
     "require": {
         "corneltek/getoptionkit":      "~1.2",

@@ -91,7 +91,8 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'default'
+#html_theme = 'default'
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -99,7 +100,7 @@ html_theme = 'default'
 #html_theme_options = {}
 
 # Add any paths that contain custom themes here, relative to this directory.
-#html_theme_path = []
+html_theme_path = ['themes']
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -171,7 +172,7 @@ htmlhelp_basename = 'PADOCCdoc'
 
 latex_elements = {
 # The paper size ('letterpaper' or 'a4paper').
-#'papersize': 'letterpaper',
+'papersize': 'a4paper',
 
 # The font size ('10pt', '11pt' or '12pt').
 #'pointsize': '10pt',
@@ -183,7 +184,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'PADOCC.tex', u'PADOCC Documentation',
+  ('index', 'Padocc-egnine.tex', u'Padocc Egnine Documentation',
    u'HiMedia', 'manual'),
 ]
 
@@ -199,7 +200,7 @@ latex_documents = [
 #latex_show_pagerefs = False
 
 # If true, show URL addresses after external links.
-#latex_show_urls = False
+latex_show_urls = True
 
 # Documents to append as an appendix to all manuals.
 #latex_appendices = []
@@ -213,7 +214,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'padocc', u'PADOCC Documentation',
+    ('index', 'padocc', u'Padocc Egnine Documentation',
      [u'HiMedia'], 1)
 ]
 
@@ -227,7 +228,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'PADOCC', u'PADOCC Documentation',
+  ('index', 'Padocc-egnine', u'Padocc Egnine Documentation',
    u'HiMedia', 'PADOCC', 'One line description of project.',
    'Miscellaneous'),
 ]
