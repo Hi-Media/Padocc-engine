@@ -2,6 +2,17 @@
     "name": "hi-media/padocc-engine",
     "description": "Padocc's engine: Platform for Automatized Deployments with pOwerful Concise Configuration",
     "keywords": ["deployment", "PHP"],
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name":  "Geoffroy Aubry",
+            "email": "gaubry@hi-media.com"
+        },
+        {
+            "name":  "Geoffroy Letournel",
+            "email": "gletournel@hi-media.com"
+        }
+    ],
     "require": {
         "corneltek/getoptionkit":      "~1.2",
         "ext-PDO":                     "*",

@@ -3,6 +3,7 @@
 [![Latest stable version](http://img.shields.io/packagist/v/Hi-Media/Padocc-engine.svg?style=flat "Latest stable version")](https://packagist.org/packages/Hi-Media/Padocc-engine)
 [![Build Status](http://img.shields.io/travis/Hi-Media/Padocc-engine/stable.svg?style=flat)](http://travis-ci.org/Hi-Media/Padocc-engine)
 [![Coverage Status](http://img.shields.io/coveralls/Hi-Media/Padocc-engine/stable.svg?style=flat)](https://coveralls.io/r/Hi-Media/Padocc-engine)
+[![License](http://img.shields.io/packagist/l/Hi-Media/Padocc-engine.svg?style=flat)](https://packagist.org/packages/Hi-Media/Padocc-engine)
 
 *Coming soon…*
 

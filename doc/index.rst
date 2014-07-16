@@ -25,8 +25,11 @@ Welcome to Padocc engine's documentation!
          <img alt="Dependency status" src="https://www.versioneye.com/user/projects/xxx/badge.svg?style=flat">
      </a>
 
-.. Pour la licence :
-.. http://img.shields.io/packagist/l/geoffroy-aubry/ErrorHandler.svg?style=flat
+.. raw:: html
+
+    <a class="reference external image-reference" href="https://packagist.org/packages/Hi-Media/Padocc-engine" title="License">
+        <img alt="License" src="http://img.shields.io/packagist/l/Hi-Media/Padocc-engine.svg?style=flat">
+    </a>
 
 
 *Coming soon…*
