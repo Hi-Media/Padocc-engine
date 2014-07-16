@@ -1,0 +1,49 @@
+source: [src, lib, vendor/geoffroy-aubry, vendor/psr]
+
+destination: build/api
+
+extensions: [php]
+
+exclude: [*/tests/*, */Test/*, */vendor/composer]
+
+charset: UTF-8
+
+main: Himedia\Padocc
+
+title: Hi-media Padocc
+
+groups: namespaces
+
+allowedHtml: [b, i, a, ul, ol, li, p, br, var, samp, kbd, tt]
+
+autocomplete: [classes, constants, functions, methods, properties, classconstants]
+
+accessLevels: [public, protected, private]
+
+internal: No
+
+php: No
+
+tree: Yes
+
+deprecated: Yes
+
+todo: Yes
+
+sourceCode: Yes
+
+download: No
+
+report:
+
+wipeout: Yes
+
+quiet: No
+
+progressbar: No
+
+colors: Yes
+
+updateCheck: No
+
+debug: No
