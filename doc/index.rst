@@ -21,8 +21,8 @@ Welcome to Padocc engine's documentation!
 
 .. raw:: html
 
-     <a class="reference external image-reference" href="https://www.versioneye.com/user/projects/xxx" title="Dependency status">
-         <img alt="Dependency status" src="https://www.versioneye.com/user/projects/xxx/badge.svg?style=flat">
+     <a class="reference external image-reference" href="https://www.versioneye.com/user/projects/53c63f0e77dd1c2a8e0000d6" title="Dependency status">
+         <img alt="Dependency status" src="https://www.versioneye.com/user/projects/53c63f0e77dd1c2a8e0000d6/badge.svg?style=flat">
      </a>
 
 .. raw:: html

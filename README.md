@@ -3,6 +3,7 @@
 [![Latest stable version](http://img.shields.io/packagist/v/Hi-Media/Padocc-engine.svg?style=flat "Latest stable version")](https://packagist.org/packages/Hi-Media/Padocc-engine)
 [![Build Status](http://img.shields.io/travis/Hi-Media/Padocc-engine/stable.svg?style=flat)](http://travis-ci.org/Hi-Media/Padocc-engine)
 [![Coverage Status](http://img.shields.io/coveralls/Hi-Media/Padocc-engine/stable.svg?style=flat)](https://coveralls.io/r/Hi-Media/Padocc-engine)
+[![Dependency Status](https://www.versioneye.com/user/projects/53c63f0e77dd1c2a8e0000d6/badge.svg?style=flat)](https://www.versioneye.com/user/projects/53c63f0e77dd1c2a8e0000d6)
 [![License](http://img.shields.io/packagist/l/Hi-Media/Padocc-engine.svg?style=flat)](https://packagist.org/packages/Hi-Media/Padocc-engine)
 
 *Coming soon…*
@@ -32,6 +33,7 @@ See [CHANGELOG](CHANGELOG.md) file for details.
 [![Latest stable version](http://img.shields.io/packagist/v/Hi-Media/Padocc-engine.svg?style=flat "Latest stable version")](https://packagist.org/packages/Hi-Media/Padocc-engine)
 [![Build Status](http://img.shields.io/travis/Hi-Media/Padocc-engine/stable.svg?style=flat)](http://travis-ci.org/Hi-Media/Padocc-engine)
 [![Coverage Status](http://img.shields.io/coveralls/Hi-Media/Padocc-engine/stable.svg?style=flat)](https://coveralls.io/r/Hi-Media/Padocc-engine)
+[![Dependency Status](https://www.versioneye.com/user/projects/53c63f0e77dd1c2a8e0000d6/badge.svg?style=flat)](https://www.versioneye.com/user/projects/53c63f0e77dd1c2a8e0000d6)
 
 [Travis CI](http://travis-ci.org/) is used to build and test Padocc's engine.
 See [.travis.yml](.travis.yml) file for build details.
