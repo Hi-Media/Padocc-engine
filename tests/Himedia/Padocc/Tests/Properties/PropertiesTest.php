@@ -110,7 +110,7 @@ class PropertiesTest extends PadoccTestCase
 
         $this->setExpectedException(
             'RuntimeException',
-            "Load property file '" . $this->aConfig['dir']['tmp'] . "/deploy_unittest_"
+            "Load property file '" . realpath($this->aConfig['dir']['tmp']) . "/deploy_unittest_"
         );
         try {
             $this->oProperties->loadConfigIniFile($sTmpPath);

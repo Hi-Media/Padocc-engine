@@ -131,7 +131,7 @@ class ComposertTest extends PadoccTestCase
         /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockShell = $this->oDIContainer->getShellAdapter();
         $oMockShell->expects($this->at(0))
-            ->method('execSSH')->will($this->returnValue(array($sConfig)));
+            ->method('execSSH')->will($this->returnValue($sConfig));
         $oMockShell->expects($this->any())
             ->method('execSSH')->will($this->returnCallback(array($this, 'shellExecCallback')));
 
@@ -157,10 +157,10 @@ class ComposertTest extends PadoccTestCase
         $sWGet = 'wget -q --no-check-certificate http://getcomposer.org/installer -O - | php';
         $sCURL = 'curl -sS https://getcomposer.org/installer | php';
         return array(
-            array('100', '/path/to/dir', '',         array("$sComposer --no-dev")),
-            array('111', '/path/to/dir', '--no-dev', array("$sComposer --no-dev")),
-            array('011', '/path/to/dir', '--a --b',  array($sWGet, "$sComposerPhar --a --b")),
-            array('001', '/path/to/dir', '',         array($sCURL, "$sComposerPhar --no-dev"))
+            array(array('1', '0', '0'), '/path/to/dir', '',         array("$sComposer --no-dev")),
+            array(array('1', '1', '1'), '/path/to/dir', '--no-dev', array("$sComposer --no-dev")),
+            array(array('0', '1', '1'), '/path/to/dir', '--a --b',  array($sWGet, "$sComposerPhar --a --b")),
+            array(array('0', '0', '1'), '/path/to/dir', '',         array($sCURL, "$sComposerPhar --no-dev"))
         );
     }
 

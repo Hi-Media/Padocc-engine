@@ -95,17 +95,17 @@ class Composer extends Task
         $sInstallCmdPattern = '%1$s install --working-dir "%2$s" %3$s';
         $sWGetCmd = 'wget -q --no-check-certificate http://getcomposer.org/installer -O - | php';
         $sCURLCmd = 'curl -sS https://getcomposer.org/installer | php';
-        $sCheckCmd = 'which composer 1>/dev/null 2>&1 && echo -n 1 || echo -n 0; '
-              . 'which wget     1>/dev/null 2>&1 && echo -n 1 || echo -n 0; '
-              . 'which curl     1>/dev/null 2>&1 && echo 1    || echo 0';
+        $sCheckCmd = 'which composer 1>/dev/null 2>&1 && echo 1 || echo 0; '
+              . 'which wget 1>/dev/null 2>&1 && echo 1 || echo 0; '
+              . 'which curl 1>/dev/null 2>&1 && echo 1 || echo 0';
 
         $aDirs = $this->processPath($this->aAttValues['dir']);
         foreach ($aDirs as $sDir) {
             list(, , $sLocalPath) = $this->oShell->isRemotePath($sDir);
             $aResult = $this->oShell->execSSH($sCheckCmd, $sDir);
-            $isComposerInstalled = (substr($aResult[0], 0, 1) === '1');
-            $isWGetInstalled = (substr($aResult[0], 1, 1) === '1');
-            $isCURLInstalled = (substr($aResult[0], 2, 1) === '1');
+            $isComposerInstalled = (isset($aResult[0]) && $aResult[0] === '1');
+            $isWGetInstalled = (isset($aResult[1]) && $aResult[1] === '1');
+            $isCURLInstalled = (isset($aResult[2]) && $aResult[2] === '1');
 
             // Config:
             if ($isComposerInstalled) {
