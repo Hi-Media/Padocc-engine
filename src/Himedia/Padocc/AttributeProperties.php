@@ -35,6 +35,12 @@ use GAubry\Shell\ShellAdapter;
 class AttributeProperties
 {
     /**
+     * Propriété d'attribut : l'attribut est facultatif.
+     * @var int
+     */
+    const OPTIONAL = 0;
+
+    /**
      * Propriété d'attribut : autorise l'utilisation des '${parameter}'.
      * @var int
      */
