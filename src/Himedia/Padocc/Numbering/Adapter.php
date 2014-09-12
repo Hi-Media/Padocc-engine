@@ -59,7 +59,7 @@ class Adapter implements NumberingInterface
      * @param string $sSeparator chaîne intercalée entre chaque niveau hiérarchique
      * @codeCoverageIgnore
      */
-    public function __construct ($sSeparator = '.')
+    public function __construct($sSeparator = '.')
     {
         $this->sSeparator = $sSeparator;
         $this->aCounter = array(0);
@@ -72,7 +72,7 @@ class Adapter implements NumberingInterface
      *
      * @return string prochaine valeur du compteur hiérarchique en intercalant le séparateur entre chaque niveau
      */
-    public function getNextCounterValue ()
+    public function getNextCounterValue()
     {
         $this->aCounter[$this->iCurrentDivision]++;
         if (count($this->aCounter) > $this->iCurrentDivision+1) {
@@ -87,7 +87,7 @@ class Adapter implements NumberingInterface
      *
      * @return NumberingInterface $this
      */
-    public function addCounterDivision ()
+    public function addCounterDivision()
     {
         $this->iCurrentDivision++;
         if ($this->iCurrentDivision >= count($this->aCounter)) {
@@ -101,7 +101,7 @@ class Adapter implements NumberingInterface
      *
      * @return NumberingInterface $this
      */
-    public function removeCounterDivision ()
+    public function removeCounterDivision()
     {
         if ($this->iCurrentDivision > 0) {
             $this->iCurrentDivision--;

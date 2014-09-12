@@ -96,7 +96,7 @@ class CVSExport extends Task
      * {@inheritdoc}
      * @codeCoverageIgnore
      */
-    public static function getTagName ()
+    public static function getTagName()
     {
         return 'cvsexport';
     }
@@ -104,7 +104,7 @@ class CVSExport extends Task
     /**
      * Prépare la tâche avant exécution : vérifications basiques, analyse des serveurs concernés...
      */
-    public function setUp ()
+    public function setUp()
     {
         parent::setUp();
         $this->getLogger()->info('+++');
@@ -126,7 +126,7 @@ class CVSExport extends Task
      * Appelé par execute().
      * @see execute()
      */
-    protected function centralExecute ()
+    protected function centralExecute()
     {
         parent::centralExecute();
         $this->getLogger()->info('+++');

@@ -31,7 +31,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers \Himedia\Padocc\Minifier\Factory::getInstance
      */
-    public function testGetInstanceThrowExceptionWhenUnknownType ()
+    public function testGetInstanceThrowExceptionWhenUnknownType()
     {
         $oShell = new ShellAdapter(new NullLogger());
         $this->setExpectedException('BadMethodCallException', "Unknown type: '-1'!");
@@ -41,7 +41,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers \Himedia\Padocc\Minifier\Factory::getInstance
      */
-    public function testGetInstanceJSMin ()
+    public function testGetInstanceJSMin()
     {
         $oShell = new ShellAdapter(new NullLogger());
         $oMinifier = Factory::getInstance(Factory::TYPE_JSMIN, $oShell);

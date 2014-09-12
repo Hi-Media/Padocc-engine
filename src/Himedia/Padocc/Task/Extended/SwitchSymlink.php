@@ -69,7 +69,7 @@ class SwitchSymlink extends Link
      * {@inheritdoc}
      * @codeCoverageIgnore
      */
-    public static function getTagName ()
+    public static function getTagName()
     {
         return 'switchsymlink';
     }
@@ -80,7 +80,7 @@ class SwitchSymlink extends Link
      * @return int nombre d'instances de la classe.
      * @see $iNbInstances
      */
-    public static function getNbInstances ()
+    public static function getNbInstances()
     {
         return self::$iNbInstances;
     }
@@ -96,7 +96,7 @@ class SwitchSymlink extends Link
      * @throws \UnexpectedValueException en cas d'attribut ou fichier manquant
      * @throws \DomainException en cas de valeur non permise
      */
-    public function check ()
+    public function check()
     {
         if (! isset($this->aAttValues['src'])
             && ! isset($this->aAttValues['target'])
@@ -126,7 +126,7 @@ class SwitchSymlink extends Link
      * Appelé par execute().
      * @see execute()
      */
-    protected function centralExecute ()
+    protected function centralExecute()
     {
         $this->getLogger()->info('+++');
         if ($this->oProperties->getProperty('with_symlinks') === 'true') {
@@ -152,7 +152,7 @@ class SwitchSymlink extends Link
      *
      * @throws \RuntimeException si l'un des répertoires cible des liens n'existe pas
      */
-    protected function checkTargets ()
+    protected function checkTargets()
     {
         $this->getLogger()->info('Check that all symlinks targets exists.+++');
 

@@ -48,7 +48,7 @@ class Composer extends Task
         $this->aAttrProperties = array(
             'dir' => AttributeProperties::DIR | AttributeProperties::REQUIRED
                 | AttributeProperties::ALLOW_PARAMETER,
-            'options' => 0
+            'options' => AttributeProperties::OPTIONAL
         );
     }
 
@@ -72,7 +72,7 @@ class Composer extends Task
      * @throws \UnexpectedValueException en cas d'attribut ou fichier manquant
      * @throws \DomainException en cas de valeur non permise
      */
-    public function check ()
+    public function check()
     {
         parent::check();
 
@@ -87,7 +87,7 @@ class Composer extends Task
      * Appelé par execute().
      * @see execute()
      */
-    protected function centralExecute ()
+    protected function centralExecute()
     {
         parent::centralExecute();
         $this->getLogger()->info('+++');

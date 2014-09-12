@@ -76,7 +76,7 @@ abstract class WithProperties extends Task
      * Lors de l'exécution de la tâche, charge les propriétés des éventuels fichiers de configuration INI,
      * fichiers de configuration shell ou encore la liste des groupes de serveurs Twenga.
      */
-    private function loadProperties ()
+    private function loadProperties()
     {
         if (! empty($this->aAttValues['loadtwengaservers']) && $this->aAttValues['loadtwengaservers'] == 'true') {
             $this->oTwengaServersTask->execute();
@@ -95,7 +95,7 @@ abstract class WithProperties extends Task
     /**
      * Prépare la tâche avant exécution : vérifications basiques, analyse des serveurs concernés...
      */
-    public function setUp ()
+    public function setUp()
     {
         parent::setUp();
         if ($this->oTwengaServersTask !== null) {
@@ -111,7 +111,7 @@ abstract class WithProperties extends Task
      * Appelé par execute().
      * @see execute()
      */
-    protected function preExecute ()
+    protected function preExecute()
     {
         parent::preExecute();
         $this->getLogger()->info('+++');

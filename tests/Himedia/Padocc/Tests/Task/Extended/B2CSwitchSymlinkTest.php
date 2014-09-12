@@ -60,7 +60,7 @@ class B2CSwitchSymlinkTest extends PadoccTestCase
      * @param string $sCmd commande Shell qui aurait dûe être exécutée.
      * @see $aShellExecCmds
      */
-    public function shellExecCallback ($sCmd)
+    public function shellExecCallback($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
     }
@@ -80,7 +80,7 @@ class B2CSwitchSymlinkTest extends PadoccTestCase
      * @param int $iLevel priorité du message.
      * @see $aWarnMessages
      */
-    public function logCallback ($iLevel, $sMsg)
+    public function logCallback($iLevel, $sMsg)
     {
         $this->aMessages[$iLevel][] = $sMsg;
     }
@@ -89,7 +89,7 @@ class B2CSwitchSymlinkTest extends PadoccTestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp ()
+    public function setUp()
     {
         /* @var $oLogger MinimalLogger|\PHPUnit_Framework_MockObject_MockObject */
         $oLogger = $this->getMock('\GAubry\Logger\MinimalLogger', array('log'), array(LogLevel::ERROR));
@@ -130,7 +130,7 @@ class B2CSwitchSymlinkTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task\Extended\B2CSwitchSymlink::setCluster
      */
-    public function testSetClusterThrowException ()
+    public function testSetClusterThrowException()
     {
         /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockShell = $this->oDIContainer->getShellAdapter();
@@ -164,7 +164,7 @@ class B2CSwitchSymlinkTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task\Extended\B2CSwitchSymlink::setCluster
      */
-    public function testSetClusterWithWarning ()
+    public function testSetClusterWithWarning()
     {
         /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockShell = $this->oDIContainer->getShellAdapter();

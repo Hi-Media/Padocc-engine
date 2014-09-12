@@ -47,7 +47,7 @@ class DeploymentMapper
      *
      * @param DBAdapterInterface $oDB
      */
-    public function __construct (DBAdapterInterface $oDB)
+    public function __construct(DBAdapterInterface $oDB)
     {
         $this->oDB = $oDB;
         $this->sTable = 'deployments';
@@ -59,7 +59,7 @@ class DeploymentMapper
      *
      * @param array $aParameters key-value list of columns and values to insert
      */
-    public function insert (array $aParameters)
+    public function insert(array $aParameters)
     {
         if (count($aParameters) > 0) {
             $sColumns = implode(', ', array_keys($aParameters));
@@ -84,7 +84,7 @@ class DeploymentMapper
      * @param int $iOffset
      * @return array all rows with \PDO::FETCH_ASSOC mode
      */
-    public function select (array $aFilter, $aOrderBy = array(), $iLimit = 100, $iOffset = 0)
+    public function select(array $aFilter, $aOrderBy = array(), $iLimit = 100, $iOffset = 0)
     {
         // WHERE clause:
         if (count($aFilter) > 0) {
@@ -126,7 +126,7 @@ class DeploymentMapper
      * @param array $aParameters key-value list of columns and values to update, including primary key value.
      * @throws \RuntimeException if no value for primary key is found in $aParameters.
      */
-    public function update (array $aParameters)
+    public function update(array $aParameters)
     {
         if (empty($aParameters[$this->sPK])) {
             $sMsg = "Missing primary key '$this->sPK' in parameters: " . print_r($aParameters, true);

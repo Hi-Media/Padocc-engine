@@ -60,7 +60,7 @@ class SwitchSymlinkTest extends PadoccTestCase
      * @param string $sCmd commande Shell qui aurait dûe être exécutée.
      * @see $aShellExecCmds
      */
-    public function shellExecCallback ($sCmd)
+    public function shellExecCallback($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
     }
@@ -69,7 +69,7 @@ class SwitchSymlinkTest extends PadoccTestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp ()
+    public function setUp()
     {
         $oLogger = new NullLogger();
 
@@ -118,7 +118,7 @@ class SwitchSymlinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::__construct
      * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::check
      */
-    public function testCheckWithoutAttrServerThrowExceptionIfServersNotEquals1 ()
+    public function testCheckWithoutAttrServerThrowExceptionIfServersNotEquals1()
     {
         $oTask = SwitchSymlink::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
@@ -135,7 +135,7 @@ class SwitchSymlinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::__construct
      * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::check
      */
-    public function testCheckWithoutAttrServerThrowExceptionIfServersNotEquals2 ()
+    public function testCheckWithoutAttrServerThrowExceptionIfServersNotEquals2()
     {
         $oTask = SwitchSymlink::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
@@ -152,7 +152,7 @@ class SwitchSymlinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::__construct
      * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::check
      */
-    public function testCheckWithoutAttrServerThrowExceptionIfServersNotEquals3 ()
+    public function testCheckWithoutAttrServerThrowExceptionIfServersNotEquals3()
     {
         $oTask = SwitchSymlink::getNewInstance(array(
             'src' => '/path/to/link',
@@ -169,7 +169,7 @@ class SwitchSymlinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::__construct
      * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::check
      */
-    public function testCheckWithAttrServerThrowExceptionIfServersNotEquals1 ()
+    public function testCheckWithAttrServerThrowExceptionIfServersNotEquals1()
     {
         $oTask = SwitchSymlink::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
@@ -187,7 +187,7 @@ class SwitchSymlinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::__construct
      * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::check
      */
-    public function testCheckWithAttrServerThrowExceptionIfServersNotEquals2 ()
+    public function testCheckWithAttrServerThrowExceptionIfServersNotEquals2()
     {
         $oTask = SwitchSymlink::getNewInstance(array(
             'src' => '/path/to/link',
@@ -205,7 +205,7 @@ class SwitchSymlinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::__construct
      * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::check
      */
-    public function testCheckWithAttrServerThrowExceptionIfServersNotEquals3 ()
+    public function testCheckWithAttrServerThrowExceptionIfServersNotEquals3()
     {
         $oTask = SwitchSymlink::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
@@ -223,7 +223,7 @@ class SwitchSymlinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::__construct
      * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::check
      */
-    public function testCheckWithAttrServerThrowExceptionIfTwoOtherServers ()
+    public function testCheckWithAttrServerThrowExceptionIfTwoOtherServers()
     {
         $oTask = SwitchSymlink::getNewInstance(array(
             'src' => 'user@server1:/path/to/link',
@@ -242,7 +242,7 @@ class SwitchSymlinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::__construct
      * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::check
      */
-    public function testCheckWithoutAttributes ()
+    public function testCheckWithoutAttributes()
     {
         $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');
@@ -270,7 +270,7 @@ class SwitchSymlinkTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::__construct
      * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::check
      */
-    public function testCheckWithoutAttributesWithRollback ()
+    public function testCheckWithoutAttributesWithRollback()
     {
         $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');
@@ -297,7 +297,7 @@ class SwitchSymlinkTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task\Extended\SwitchSymlink::getNbInstances
      */
-    public function testGetNbInstances ()
+    public function testGetNbInstances()
     {
         $i0 = SwitchSymlink::getNbInstances();
         SwitchSymlink::getNewInstance(array(), $this->oMockProject, $this->oDIContainer);

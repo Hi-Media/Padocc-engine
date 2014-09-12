@@ -56,7 +56,7 @@ class BuildLanguage extends Task
      * @return string nom du tag XML correspondant à cette tâche dans les config projet.
      * @codeCoverageIgnore
      */
-    public static function getTagName ()
+    public static function getTagName()
     {
         return 'buildlanguage';
     }
@@ -67,7 +67,7 @@ class BuildLanguage extends Task
      * Appelé par execute().
      * @see execute()
      */
-    protected function centralExecute ()
+    protected function centralExecute()
     {
         parent::centralExecute();
         $this->getLogger()->info('+++');

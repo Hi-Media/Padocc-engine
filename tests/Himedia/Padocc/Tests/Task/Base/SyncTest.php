@@ -51,7 +51,7 @@ class SyncTest extends PadoccTestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp ()
+    public function setUp()
     {
         $oLogger = new NullLogger();
 
@@ -98,7 +98,7 @@ class SyncTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Sync::__construct
      * @covers \Himedia\Padocc\Task\Base\Sync::check
      */
-    public function testCheckWithSrcFile ()
+    public function testCheckWithSrcFile()
     {
         $oTaskCopy = Sync::getNewInstance(
             array('src' => '/path/to/srcfile', 'destdir' => '/path/to/destdir'),
@@ -116,7 +116,7 @@ class SyncTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Sync::__construct
      * @covers \Himedia\Padocc\Task\Base\Sync::check
      */
-    public function testCheckWithSrcDirWithoutLeadingSlash ()
+    public function testCheckWithSrcDirWithoutLeadingSlash()
     {
         $oTaskCopy = Sync::getNewInstance(
             array('src' => '/path/to/srcdir', 'destdir' => '/path/to/destdir'),
@@ -134,7 +134,7 @@ class SyncTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Sync::__construct
      * @covers \Himedia\Padocc\Task\Base\Sync::check
      */
-    public function testCheckWithSrcDirWithLeadingSlash ()
+    public function testCheckWithSrcDirWithLeadingSlash()
     {
         $oTaskCopy = Sync::getNewInstance(
             array('src' => '/path/to/srcdir/', 'destdir' => '/path/to/destdir'),
@@ -152,7 +152,7 @@ class SyncTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Sync::__construct
      * @covers \Himedia\Padocc\Task\Base\Sync::check
      */
-    public function testCheckWithSrcDirWithLeadingPattern ()
+    public function testCheckWithSrcDirWithLeadingPattern()
     {
         $oTaskCopy = Sync::getNewInstance(
             array('src' => '/path/to/srcdir/*', 'destdir' => '/path/to/destdir'),
@@ -172,7 +172,7 @@ class SyncTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Sync::centralExecute
      * @covers \Himedia\Padocc\Task\Base\Sync::postExecute
      */
-    public function testExecuteWithSrcDir ()
+    public function testExecuteWithSrcDir()
     {
         $aRawRsyncResult = array('---[-]-->0|0s', '[CMD]', '...', '[OUT]',
             'Number of files: 1774',
@@ -235,7 +235,7 @@ class SyncTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Sync::centralExecute
      * @covers \Himedia\Padocc\Task\Base\Sync::postExecute
      */
-    public function testExecuteWithSrcDirAndInclude ()
+    public function testExecuteWithSrcDirAndInclude()
     {
         $aRawRsyncResult = array('---[-]-->0|0s', '[CMD]', '...', '[OUT]',
             'Number of files: 1774',
@@ -298,7 +298,7 @@ class SyncTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Sync::centralExecute
      * @covers \Himedia\Padocc\Task\Base\Sync::postExecute
      */
-    public function testExecuteWithSrcDirAndIncludeAndExclude ()
+    public function testExecuteWithSrcDirAndIncludeAndExclude()
     {
         $aRawRsyncResult = array('---[-]-->0|0s', '[CMD]', '...', '[OUT]',
             'Number of files: 1774',
@@ -363,7 +363,7 @@ class SyncTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Sync::centralExecute
      * @covers \Himedia\Padocc\Task\Base\Sync::postExecute
      */
-    public function testExecuteWithSrcDirAndSymLinks ()
+    public function testExecuteWithSrcDirAndSymLinks()
     {
         $aMkdirExecResult = array(
             '---[user@server]-->0|0s', '[CMD]', '...', '[OUT]', '[ERR]', '///',

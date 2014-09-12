@@ -1,13 +1,15 @@
 <?php
 
-namespace Himedia\Padocc\Tests\Task\Base;
+namespace Himedia\Padocc\Tests\Task\Extended;
 
+use GAubry\Shell\PathStatus;
 use GAubry\Shell\ShellAdapter;
 use Himedia\Padocc\DIContainer;
-use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
 use Himedia\Padocc\Numbering\Adapter as NumberingAdapter;
+use Himedia\Padocc\Properties\Adapter as PropertiesAdapter;
+use Himedia\Padocc\Task\Base\Bower;
+use Himedia\Padocc\Task\Base\Composer;
 use Himedia\Padocc\Task\Base\Project;
-use Himedia\Padocc\Task\Base\Property;
 use Himedia\Padocc\Tests\PadoccTestCase;
 use Psr\Log\NullLogger;
 
@@ -27,12 +29,11 @@ use Psr\Log\NullLogger;
  * limitations under the License.
  *
  * @copyright 2014 HiMedia Group
- * @author Geoffroy Aubry <gaubry@hi-media.com>
+ * @author Geoffroy Letournel <gletournel@hi-media.com>
  * @license Apache License, Version 2.0
  */
-class PropertyTest extends PadoccTestCase
+class BowerTest extends PadoccTestCase
 {
-
     /**
      * Collection de services.
      * @var DIContainer
@@ -57,11 +58,13 @@ class PropertyTest extends PadoccTestCase
      * Log tous les appels dans le tableau indexé $this->aShellExecCmds.
      *
      * @param string $sCmd commande Shell qui aurait dûe être exécutée.
+     * @return array empty array
      * @see $aShellExecCmds
      */
     public function shellExecCallback($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
+        return array();
     }
 
     /**
@@ -73,12 +76,28 @@ class PropertyTest extends PadoccTestCase
         $oLogger = new NullLogger();
 
         /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
-        $oMockShell = $this->getMock('\GAubry\Shell\ShellAdapter', array('exec'), array($oLogger));
-        $oMockShell->expects($this->any())->method('exec')
-            ->will($this->returnCallback(array($this, 'shellExecCallback')));
+        $oMockShell = $this->getMock(
+            '\GAubry\Shell\ShellAdapter',
+            array('exec', 'execSSH'),
+            array($oLogger, $this->aAllConfigs['GAubry\Shell'])
+        );
         $this->aShellExecCmds = array();
 
+        $oClass = new \ReflectionClass('\GAubry\Shell\ShellAdapter');
+        $oProperty = $oClass->getProperty('_aFileStatus');
+        $oProperty->setAccessible(true);
+        $oProperty->setValue($oMockShell, array(
+            $this->aConfig['dir']['repositories'] . '/git/test_project_test_env_1' => PathStatus::STATUS_DIR,
+            '/tmp/my-local-repository' => PathStatus::STATUS_DIR,
+            '/tmp/my-local-repository/subdir/of/repo' => PathStatus::STATUS_DIR
+        ));
+
+
         $oProperties = new PropertiesAdapter($oMockShell, $this->aConfig);
+        $oProperties
+            ->setProperty('project_name', 'test_project')
+            ->setProperty('environment_name', 'test_env')
+            ->setProperty('with_symlinks', 'false');
         $oNumbering = new NumberingAdapter();
 
         $this->oDIContainer = new DIContainer();
@@ -103,18 +122,41 @@ class PropertyTest extends PadoccTestCase
     }
 
     /**
-     * @covers \Himedia\Padocc\Task\Base\Property::__construct
-     * @covers \Himedia\Padocc\Task\Base\Property::centralExecute
+     * Returns a list of options that are supposed to throw an exception when executing the task.
+     *
+     * @see testUnauthorizedOptionThrowsDomainException
+     *
+     * @return array
      */
-    public function testCentralExecute()
+    public function getUnauthorizedOptions()
     {
-        $oProperty = Property::getNewInstance(
-            array('name' => 'my_prop', 'value' => 'my value'),
-            $this->oMockProject,
-            $this->oDIContainer
+        return array(
+            array('-o'),
+            array('--opt value'),
+            array('--quiet --offline'),
+            array('--config.interactive=true')
         );
-        $oProperty->setUp();
-        $oProperty->execute();
-        $this->assertEquals('my value', $this->oDIContainer->getPropertiesAdapter()->getProperty('my_prop'));
+    }
+
+    /**
+     * @dataProvider getUnauthorizedOptions
+     *
+     * @expectedException \DomainException
+     * @expectedExceptionMessage Option not allowed
+     *
+     * @covers \Himedia\Padocc\Task\Base\Bower::__construct
+     * @covers \Himedia\Padocc\Task\Base\Bower::check
+     * @covers \Himedia\Padocc\Task\Base\Bower::centralExecute
+     */
+    public function testUnauthorizedOptionThrowsDomainException($options)
+    {
+        $attributes = array(
+            'dir'     => '/path/to/dir',
+            'options' => $options
+        );
+
+        $task = Bower::getNewInstance($attributes, $this->oMockProject, $this->oDIContainer);
+        $task->setUp();
+        $task->execute();
     }
 }

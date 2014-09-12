@@ -35,6 +35,13 @@ use GAubry\Shell\ShellAdapter;
 class AttributeProperties
 {
     /**
+     * Propriété d'attribut : l'attribut est facultatif.
+     * Par défaut si self::REQUIRED n'est pas spécifié.
+     * @var int
+     */
+    const OPTIONAL = 0;
+
+    /**
      * Propriété d'attribut : autorise l'utilisation des '${parameter}'.
      * @var int
      */
@@ -68,6 +75,7 @@ class AttributeProperties
 
     /**
      * Propriété d'attribut : l'attribut est obligatoire.
+     * Si non spécifié alors l'attribut est self::OPTIONAL.
      * @var int
      */
     const REQUIRED = 32;
@@ -129,7 +137,7 @@ class AttributeProperties
      *
      * @param ShellAdapter $oShell
      */
-    public function __construct (ShellAdapter $oShell)
+    public function __construct(ShellAdapter $oShell)
     {
         $this->oShell = $oShell;
     }
@@ -142,7 +150,7 @@ class AttributeProperties
      * @param array &$aProperties tableau associatif 'nom d'attribut' => propriétés de l'attribut
      * @see aAttributeProperties
      */
-    private function normalizeAttributeProperties (array &$aProperties)
+    private function normalizeAttributeProperties(array &$aProperties)
     {
         foreach ($aProperties as $sAttribute => $iProperties) {
             if (($iProperties & self::SRC_PATH) > 0) {
@@ -165,7 +173,7 @@ class AttributeProperties
      * @param array $aValues tableau associatif (nom d'attribut => (string)valeur)
      * @throws \DomainException en cas d'attribut non permis
      */
-    private function checkUnknownAttributes (array $aProperties, array $aValues)
+    private function checkUnknownAttributes(array $aProperties, array $aValues)
     {
         $aAvailablesAttr = array_keys($aProperties);
         $aUnknownAttributes = array_diff(array_keys($aValues), $aAvailablesAttr);
@@ -189,7 +197,7 @@ class AttributeProperties
      * @throws \UnexpectedValueException en cas d'attribut ou fichier manquant
      * @throws \DomainException en cas d'attribut non permis
      */
-    public function checkAttributes (array &$aProperties, array &$aValues)
+    public function checkAttributes(array &$aProperties, array &$aValues)
     {
         $this->normalizeAttributeProperties($aProperties);
         $this->checkUnknownAttributes($aProperties, $aValues);
@@ -227,7 +235,7 @@ class AttributeProperties
      * @param string $sValue valeur de l'attribut
      * @return string valeur potentiellement formatée de l'attribut au regard de ses propriétés.
      */
-    private function formatAttribute ($iProperties, $sValue)
+    private function formatAttribute($iProperties, $sValue)
     {
         if (! empty($sValue)) {
             if (($iProperties & self::DIR) > 0 || ($iProperties & self::FILE) > 0) {
@@ -248,7 +256,7 @@ class AttributeProperties
      * @throws \UnexpectedValueException en cas d'attribut ou fichier manquant
      * @throws \DomainException en cas de valeur non permise
      */
-    private function checkAttribute ($sName, $iProperties, $sValue)
+    private function checkAttribute($sName, $iProperties, $sValue)
     {
         if (empty($sValue) && ($iProperties & self::REQUIRED) > 0) {
             throw new \UnexpectedValueException("'$sName' attribute is required!");

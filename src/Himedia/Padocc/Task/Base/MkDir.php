@@ -48,7 +48,7 @@ class MkDir extends Task
         $this->aAttrProperties = array(
             'destdir' => AttributeProperties::DIR | AttributeProperties::REQUIRED
                 | AttributeProperties::ALLOW_PARAMETER,
-            'mode' => 0
+            'mode' => AttributeProperties::OPTIONAL
         );
     }
 
@@ -56,7 +56,7 @@ class MkDir extends Task
      * {@inheritdoc}
      * @codeCoverageIgnore
      */
-    public static function getTagName ()
+    public static function getTagName()
     {
         return 'mkdir';
     }
@@ -67,7 +67,7 @@ class MkDir extends Task
      * Appelé par execute().
      * @see execute()
      */
-    protected function centralExecute ()
+    protected function centralExecute()
     {
         parent::centralExecute();
         $this->getLogger()->info("+++Create directory '" . $this->aAttValues['destdir'] . "'.+++");

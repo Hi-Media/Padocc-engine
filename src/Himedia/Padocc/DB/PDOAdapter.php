@@ -74,7 +74,7 @@ class PDOAdapter implements DBAdapterInterface
      * @param string $sQueriesLogPath path where to log all queries by DB
      * @return PDOAdapter
     */
-    public static function getInstance (array $aDSN, $sQueriesLogPath = '')
+    public static function getInstance(array $aDSN, $sQueriesLogPath = '')
     {
         $sKey = implode('|', $aDSN);
         if (! isset(self::$aInstances[$sKey])) {
@@ -107,7 +107,7 @@ class PDOAdapter implements DBAdapterInterface
      * @param PDO $oPDO PDO instance
      * @throws \BadMethodCallException iff backend PDO instance is already set.
      */
-    public function setPDOInstance (PDO $oPDO)
+    public function setPDOInstance(PDO $oPDO)
     {
         if ($this->oPDO === null) {
             $this->oPDO = $oPDO;
@@ -119,7 +119,7 @@ class PDOAdapter implements DBAdapterInterface
     /**
      * Establishes the connection with the database and set backend PDO instance.
      */
-    private function connect ()
+    private function connect()
     {
         if ($this->oPDO === null) {
             $aDSN = $this->aDSN;
@@ -183,7 +183,7 @@ class PDOAdapter implements DBAdapterInterface
      * If no value is supplied, PDOStatement::fetchColumn() fetches the first column.
      * @return string content of specified column of the first row of query's result
      */
-    public function fetchColumn ($sQuery, $iColumnNumber = 0)
+    public function fetchColumn($sQuery, $iColumnNumber = 0)
     {
         $oPDOStatement = $this->query($sQuery);
         $sResult = $oPDOStatement->fetchColumn($iColumnNumber);
@@ -199,7 +199,7 @@ class PDOAdapter implements DBAdapterInterface
      * @param string $sQuery Statement to execute.
      * @return array returns the first row of of the specified SQL statement.
      */
-    public function fetchRow ($sQuery)
+    public function fetchRow($sQuery)
     {
         $oPDOStatement = $this->query($sQuery);
         $aRow = $oPDOStatement->fetch(PDO::FETCH_ASSOC);
@@ -217,7 +217,7 @@ class PDOAdapter implements DBAdapterInterface
      * all of the remaining rows in the result set. The array represents each
      * row as an array of column values.
      */
-    public function fetchAll ($sQuery)
+    public function fetchAll($sQuery)
     {
         $oPDOStatement = $this->query($sQuery);
         $aRows = $oPDOStatement->fetchAll(PDO::FETCH_ASSOC);
@@ -231,7 +231,7 @@ class PDOAdapter implements DBAdapterInterface
      * @return \PDOStatement a PDOStatement object
      * @throws \PDOException on error
      */
-    public function query ($sQuery)
+    public function query($sQuery)
     {
         if ($this->oPDO === null) {
             $this->connect();
@@ -254,7 +254,7 @@ class PDOAdapter implements DBAdapterInterface
      * @return int the number of rows that were modified
      * or deleted by the SQL statement. If no rows were affected returns 0.
      */
-    public function exec ($sQuery)
+    public function exec($sQuery)
     {
         if ($this->oPDO === null) {
             $this->connect();
@@ -279,7 +279,7 @@ class PDOAdapter implements DBAdapterInterface
      * @throws \PDOException if error
      * @return \PDOStatement a PDOStatement object.
      */
-    public function prepare ($sQuery)
+    public function prepare($sQuery)
     {
         if ($this->oPDO === null) {
             $this->connect();
@@ -288,7 +288,7 @@ class PDOAdapter implements DBAdapterInterface
         return $this->oPDO->prepare($sQuery);
     }
 
-    public function executePreparedStatement (\PDOStatement $oStatement, array $aValues)
+    public function executePreparedStatement(\PDOStatement $oStatement, array $aValues)
     {
         try {
             $bResult = $oStatement->execute($aValues);
@@ -309,7 +309,7 @@ class PDOAdapter implements DBAdapterInterface
      * the database, else returns a string representing the last value retrieved from the specified sequence
      * object.
      */
-    public function lastInsertId ($sSequenceName = null)
+    public function lastInsertId($sSequenceName = null)
     {
         if ($this->oPDO === null) {
             $this->connect();
@@ -329,7 +329,7 @@ class PDOAdapter implements DBAdapterInterface
      * Returns <b>FALSE</b> if the driver does not support quoting in
      * this way.
      */
-    public function quote ($sValue, $iType = \PDO::PARAM_STR)
+    public function quote($sValue, $iType = \PDO::PARAM_STR)
     {
         if ($this->oPDO === null) {
             $this->connect();
@@ -343,7 +343,7 @@ class PDOAdapter implements DBAdapterInterface
      *
      * @return bool TRUE on success or FALSE on failure.
      */
-    public function beginTransaction ()
+    public function beginTransaction()
     {
         if ($this->oPDO === null) {
             $this->connect();
@@ -357,7 +357,7 @@ class PDOAdapter implements DBAdapterInterface
      *
      * @return bool TRUE on success or FALSE on failure.
      */
-    public function rollBack ()
+    public function rollBack()
     {
         if ($this->oPDO === null) {
             $this->connect();
@@ -371,7 +371,7 @@ class PDOAdapter implements DBAdapterInterface
      *
      * @return bool TRUE on success or FALSE on failure.
      */
-    public function commit ()
+    public function commit()
     {
         if ($this->oPDO === null) {
             $this->connect();
@@ -380,7 +380,7 @@ class PDOAdapter implements DBAdapterInterface
         return $this->oPDO->commit();
     }
 
-    public function formatValue ($mValue)
+    public function formatValue($mValue)
     {
         if ($mValue === null) {
             return 'NULL';

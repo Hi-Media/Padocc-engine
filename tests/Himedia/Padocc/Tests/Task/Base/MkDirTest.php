@@ -61,7 +61,7 @@ class MkDirTest extends PadoccTestCase
      * @param string $sCmd commande Shell qui aurait dûe être exécutée.
      * @see $aShellExecCmds
      */
-    public function shellExecCallback ($sCmd)
+    public function shellExecCallback($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
     }
@@ -70,7 +70,7 @@ class MkDirTest extends PadoccTestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp ()
+    public function setUp()
     {
         $oLogger = new NullLogger();
 
@@ -120,7 +120,7 @@ class MkDirTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\MkDir::__construct
      * @covers \Himedia\Padocc\Task\Base\MkDir::check
      */
-    public function testCheckWithoutMode ()
+    public function testCheckWithoutMode()
     {
         $oTask = MkDir::getNewInstance(
             array('destdir' => '/path/to/destdir'),
@@ -137,7 +137,7 @@ class MkDirTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\MkDir::__construct
      * @covers \Himedia\Padocc\Task\Base\MkDir::check
      */
-    public function testCheckWithMode ()
+    public function testCheckWithMode()
     {
         $oTask = MkDir::getNewInstance(
             array('destdir' => '/path/to/destdir', 'mode' => '755'),
@@ -157,7 +157,7 @@ class MkDirTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\MkDir::centralExecute
      * @covers \Himedia\Padocc\Task\Base\MkDir::postExecute
      */
-    public function testExecuteWithoutMode ()
+    public function testExecuteWithoutMode()
     {
         /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProperties = $this->getMock(
@@ -189,7 +189,7 @@ class MkDirTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\MkDir::centralExecute
      * @covers \Himedia\Padocc\Task\Base\MkDir::postExecute
      */
-    public function testExecuteWithMode ()
+    public function testExecuteWithMode()
     {
         /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProperties = $this->getMock(
@@ -222,7 +222,7 @@ class MkDirTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\MkDir::centralExecute
      * @covers \Himedia\Padocc\Task\Base\MkDir::postExecute
      */
-    public function testExecuteWithModeAndSymLinks ()
+    public function testExecuteWithModeAndSymLinks()
     {
         /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProperties = $this->getMock(

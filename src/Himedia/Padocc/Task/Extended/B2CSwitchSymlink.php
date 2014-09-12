@@ -105,7 +105,7 @@ class B2CSwitchSymlink extends SwitchSymlink
      * {@inheritdoc}
      * @codeCoverageIgnore
      */
-    public static function getTagName ()
+    public static function getTagName()
     {
         return 'b2cswitchsymlink';
     }
@@ -121,7 +121,7 @@ class B2CSwitchSymlink extends SwitchSymlink
      * @throws \UnexpectedValueException en cas d'attribut ou fichier manquant
      * @throws \DomainException en cas de valeur non permise
      */
-    public function check ()
+    public function check()
     {
         parent::check();
 
@@ -139,7 +139,7 @@ class B2CSwitchSymlink extends SwitchSymlink
      * Appelé par execute().
      * @see execute()
      */
-    protected function preExecute ()
+    protected function preExecute()
     {
         parent::preExecute();
 
@@ -158,7 +158,7 @@ class B2CSwitchSymlink extends SwitchSymlink
      * Appelé par execute().
      * @see execute()
      */
-    protected function centralExecute ()
+    protected function centralExecute()
     {
         $this->getLogger()->info('+++');
         if ($this->oProperties->getProperty('with_symlinks') === 'true') {
@@ -228,7 +228,7 @@ class B2CSwitchSymlink extends SwitchSymlink
      * Appelé par execute().
      * @see execute()
      */
-    protected function postExecute ()
+    protected function postExecute()
     {
         $sEnv = $this->oProperties->getProperty('environment_name');
         $sRollbackID = $this->oProperties->getProperty('rollback_id');
@@ -254,7 +254,7 @@ class B2CSwitchSymlink extends SwitchSymlink
      * @param int $iStatus 0 ok, 1 warning, 2 critical
      * @param string $sMessage
      */
-    private function sendSysopsNotification ($sService, $iStatus, $sMessage)
+    private function sendSysopsNotification($sService, $iStatus, $sMessage)
     {
         $this->getLogger()->info("Send notification to Sysops: '$sMessage'+++");
         $sCmd = "/home/prod/twenga/tools/send_nsca_fs3.sh $sService $iStatus \"$sMessage\"";
@@ -269,7 +269,7 @@ class B2CSwitchSymlink extends SwitchSymlink
      * @param string $sEnv Environnement
      * @throws \DomainException quand environnement non capturé
      */
-    private function addSQLTwBuild ($sID, $sEnv)
+    private function addSQLTwBuild($sID, $sEnv)
     {
         $aTypes = array('qa' => 'Q', 'bct' => 'B', 'internal' => 'I', 'preprod' => 'X', 'prod' => 'P');
         if (! isset($aTypes[$sEnv])) {
@@ -286,7 +286,7 @@ class B2CSwitchSymlink extends SwitchSymlink
      *
      * @param string $sServer au format [user@]servername_or_ip
      */
-    private function restartServerApache ($sServer)
+    private function restartServerApache($sServer)
     {
         $this->getLogger()->info("Restart Apache webserver '$sServer'.+++");
         $sToExec = $this->processSimplePath($sServer . ':/root/apache_restart');
@@ -299,7 +299,7 @@ class B2CSwitchSymlink extends SwitchSymlink
      *
      * @param string $sServer au format [user@]servername_or_ip
      */
-    private function clearServerSmartyCaches ($sServer)
+    private function clearServerSmartyCaches($sServer)
     {
         $this->getLogger()->info("Clear Smarty caches of server '$sServer':+++");
 
@@ -319,7 +319,7 @@ class B2CSwitchSymlink extends SwitchSymlink
      * @throws \Exception
      * @throws \RuntimeException
      */
-    private function setCluster ($sServer, $bStatus)
+    private function setCluster($sServer, $bStatus)
     {
         $aMsgs = ($bStatus ? array('Reintegrate', 'into', '-e') : array('Remove', 'from', '-d'));
 
@@ -349,7 +349,7 @@ class B2CSwitchSymlink extends SwitchSymlink
     /**
      * Prépare la tâche avant exécution : vérifications basiques, analyse des serveurs concernés...
      */
-    public function setUp ()
+    public function setUp()
     {
         parent::setUp();
         $this->getLogger()->info('+++');

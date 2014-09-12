@@ -54,7 +54,7 @@ class CallTest extends PadoccTestCase
      * @param string $sCmd commande Shell qui aurait dûe être exécutée.
      * @see $aShellExecCmds
      */
-    public function shellExecCallback ($sCmd)
+    public function shellExecCallback($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
     }
@@ -63,7 +63,7 @@ class CallTest extends PadoccTestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp ()
+    public function setUp()
     {
         /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
         $oLogger     = new NullLogger();
@@ -105,7 +105,7 @@ class CallTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task\Base\Call::__construct
      */
-    public function testNewThrowExceptionIfTargetNotFound ()
+    public function testNewThrowExceptionIfTargetNotFound()
     {
         /* @var $oMockProject Project|\PHPUnit_Framework_MockObject_MockObject */
         $sXML = '<target name="my_target"></target>';
@@ -127,7 +127,7 @@ class CallTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task\Base\Call::__construct
      */
-    public function testNewThrowExceptionIfTargetNotUnique ()
+    public function testNewThrowExceptionIfTargetNotUnique()
     {
         /* @var $oMockProject Project|\PHPUnit_Framework_MockObject_MockObject */
         $sXML = '<project><target name="my_target"></target><target name="my_target"></target></project>';
@@ -149,7 +149,7 @@ class CallTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task\Base\Call::__construct
      */
-    public function testNew ()
+    public function testNew()
     {
         /* @var $oMockProject Project|\PHPUnit_Framework_MockObject_MockObject */
         $sXML = '<project><target name="my_target"></target></project>';

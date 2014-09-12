@@ -63,7 +63,7 @@ class Adapter implements PropertiesInterface
      * @param ShellAdapter $oShell instance utilisée pour charger les fichiers de configuration shell
      * @param array $aConfig
      */
-    public function __construct (ShellAdapter $oShell, array $aConfig)
+    public function __construct(ShellAdapter $oShell, array $aConfig)
     {
         $this->aProperties = array();
         $this->oShell = $oShell;
@@ -77,7 +77,7 @@ class Adapter implements PropertiesInterface
      * @return string valeur de la propriété spécifiée.
      * @throws \UnexpectedValueException si propriété inconnue
      */
-    public function getProperty ($sPropertyName)
+    public function getProperty($sPropertyName)
     {
         if (! isset($this->aProperties[strtolower($sPropertyName)])) {
             throw new \UnexpectedValueException("Unknown property '$sPropertyName'!");
@@ -92,7 +92,7 @@ class Adapter implements PropertiesInterface
      * @param string $sValue
      * @return PropertiesInterface $this
      */
-    public function setProperty ($sPropertyName, $sValue)
+    public function setProperty($sPropertyName, $sValue)
     {
         $this->aProperties[strtolower($sPropertyName)] = (string)$sValue;
         return $this;
@@ -107,7 +107,7 @@ class Adapter implements PropertiesInterface
      * @throws \RuntimeException si erreur de chargement du fichier INI
      * @throws \UnexpectedValueException si fichier INI introuvable
      */
-    public function loadConfigIniFile ($sIniPath)
+    public function loadConfigIniFile($sIniPath)
     {
         if (! file_exists($sIniPath)) {
             throw new \UnexpectedValueException("Property file '$sIniPath' not found!");
@@ -143,7 +143,7 @@ class Adapter implements PropertiesInterface
      * @throws \RuntimeException si erreur de chargement du fichier
      * @throws \UnexpectedValueException si fichier shell introuvable
      */
-    public function loadConfigShellFile ($sConfigShellPath)
+    public function loadConfigShellFile($sConfigShellPath)
     {
         if (! file_exists($sConfigShellPath)) {
             throw new \UnexpectedValueException("Property file '$sConfigShellPath' not found!");

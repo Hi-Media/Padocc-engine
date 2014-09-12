@@ -52,7 +52,7 @@ class ProjectTest extends PadoccTestCase
      * @param string $sCmd commande Shell qui aurait dûe être exécutée.
      * @see $aShellExecCmds
      */
-    public function shellExecCallback ($sCmd)
+    public function shellExecCallback($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
     }
@@ -61,7 +61,7 @@ class ProjectTest extends PadoccTestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp ()
+    public function setUp()
     {
         $oLogger = new NullLogger();
 
@@ -103,7 +103,7 @@ class ProjectTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task\Base\Project::getSXEProject
      */
-    public function testGetSXEProjectThrowExceptionIfBadXML ()
+    public function testGetSXEProjectThrowExceptionIfBadXML()
     {
         $this->setExpectedException(
             'UnexpectedValueException',
@@ -116,7 +116,7 @@ class ProjectTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task\Base\Project::getSXEProject
      */
-    public function testGetSXEProject ()
+    public function testGetSXEProject()
     {
         $sXML = file_get_contents($this->getTestsDir() . '/resources/base_project/1/ebay.xml');
         $oSXE = Project::getSXEProject($sXML);
@@ -131,7 +131,7 @@ class ProjectTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task\Base\Project::__construct
      */
-    public function testNewThrowExceptionIfBadXML ()
+    public function testNewThrowExceptionIfBadXML()
     {
         $sXML = 'bla bla';
         $this->setExpectedException(
@@ -144,7 +144,7 @@ class ProjectTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task\Base\Project::__construct
      */
-    public function testNewThrowExceptionIfEnvNotFound ()
+    public function testNewThrowExceptionIfEnvNotFound()
     {
         $sXML = <<<EOT
 <?xml version="1.0" encoding="UTF-8"?>
@@ -161,7 +161,7 @@ EOT;
     /**
      * @covers \Himedia\Padocc\Task\Base\Project::__construct
      */
-    public function testNewThrowExceptionIfMultipleEnv ()
+    public function testNewThrowExceptionIfMultipleEnv()
     {
         $sXML = <<<EOT
 <?xml version="1.0" encoding="UTF-8"?>
@@ -181,7 +181,7 @@ EOT;
      * @covers \Himedia\Padocc\Task\Base\Project::__construct
      * @covers \Himedia\Padocc\Task\Base\Project::check
      */
-    public function testCheck ()
+    public function testCheck()
     {
         $sXML = <<<EOT
 <?xml version="1.0" encoding="UTF-8"?>

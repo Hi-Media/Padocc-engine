@@ -68,7 +68,7 @@ class Target extends WithProperties
      * {@inheritdoc}
      * @codeCoverageIgnore
      */
-    public static function getTagName ()
+    public static function getTagName()
     {
         return 'target';
     }
@@ -83,7 +83,7 @@ class Target extends WithProperties
      * @throws \UnexpectedValueException si noeud <target /> non trouvé ou non unique mais référencé par un
      * 		noeud <call />.
      */
-    private static function getSXEExternalProperties (\SimpleXMLElement $oSXEProject, \SimpleXMLElement $oNode)
+    private static function getSXEExternalProperties(\SimpleXMLElement $oSXEProject, \SimpleXMLElement $oNode)
     {
         // Récupération du nom des balises XML :
         $sExtPropertyTagName = ExternalProperty::getTagName();
@@ -133,7 +133,7 @@ class Target extends WithProperties
      * @throws \UnexpectedValueException si noeud <target /> non trouvé ou non unique mais référencé par un
      * 		noeud <call />.
      */
-    public static function getAvailableEnvsList ($sXmlProject)
+    public static function getAvailableEnvsList($sXmlProject)
     {
         $oSXEProject = Project::getSXEProject($sXmlProject);
         $aTargets = $oSXEProject->xpath("//env");
@@ -167,7 +167,7 @@ class Target extends WithProperties
      * @throws \LogicException si collision de nom de tag XML
      * @return array tableau associatif des tâches disponibles : array('sTag' => 'sClassName', ...)
      */
-    private static function getAvailableTasks ()
+    private static function getAvailableTasks()
     {
         if (count(self::$aAvailableTasks) === 0) {
             $aAvailableTasks = array();
@@ -205,7 +205,7 @@ class Target extends WithProperties
      * @throws \Exception si tag XML inconnu.
      * @see Task
      */
-    private function getTaskInstances (\SimpleXMLElement $oTarget, Project $oProject)
+    private function getTaskInstances(\SimpleXMLElement $oTarget, Project $oProject)
     {
         $this->getLogger()->info("Initialize tasks of target '" . $this->aAttValues['name'] . "'.");
         $aAvailableTasks = self::getAvailableTasks();
@@ -248,7 +248,7 @@ class Target extends WithProperties
      * @throws \UnexpectedValueException en cas d'attribut ou fichier manquant
      * @throws \DomainException en cas de valeur non permise
      */
-    public function check ()
+    public function check()
     {
         parent::check();
 
@@ -266,7 +266,7 @@ class Target extends WithProperties
     /**
      * Prépare la tâche avant exécution : vérifications basiques, analyse des serveurs concernés...
      */
-    public function setUp ()
+    public function setUp()
     {
         parent::setUp();
         $this->getLogger()->info('+++');
@@ -282,7 +282,7 @@ class Target extends WithProperties
      * Appelé par execute().
      * @see execute()
      */
-    protected function preExecute ()
+    protected function preExecute()
     {
         parent::preExecute();
         if (! empty($this->aAttValues['mailto'])) {
@@ -296,7 +296,7 @@ class Target extends WithProperties
      * Appelé par execute().
      * @see execute()
      */
-    protected function centralExecute ()
+    protected function centralExecute()
     {
         parent::centralExecute();
         $this->getLogger()->info('+++');

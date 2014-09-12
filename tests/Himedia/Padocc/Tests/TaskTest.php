@@ -43,7 +43,7 @@ class TaskTest extends PadoccTestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp ()
+    public function setUp()
     {
         $oLogger     = new NullLogger();
         $oShell      = new ShellAdapter($oLogger);
@@ -72,7 +72,7 @@ class TaskTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task::expandPath
      * @dataProvider dataProviderTestExpandPath
      */
-    public function testExpandPath (array $aProperties, $sPath, array $aExpected)
+    public function testExpandPath(array $aProperties, $sPath, array $aExpected)
     {
         foreach ($aProperties as $sKey => $sValue) {
             $this->oDIContainer->getPropertiesAdapter()->setProperty($sKey, $sValue);
@@ -94,7 +94,7 @@ class TaskTest extends PadoccTestCase
     /**
      * Data provider pour testExpandPath()
      */
-    public function dataProviderTestExpandPath ()
+    public function dataProviderTestExpandPath()
     {
         return array(
             array(array(), 'test', array('test')),
@@ -122,7 +122,7 @@ class TaskTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task::reroutePaths
      * @dataProvider dataProviderTestReroutePaths
      */
-    public function testReroutePaths (array $aProperties, $aPaths, $aExpected)
+    public function testReroutePaths(array $aProperties, $aPaths, $aExpected)
     {
         foreach ($aProperties as $sKey => $sValue) {
             $this->oDIContainer->getPropertiesAdapter()->setProperty($sKey, $sValue);
@@ -144,7 +144,7 @@ class TaskTest extends PadoccTestCase
     /**
      * Data provider pour testReroutePaths()
      */
-    public function dataProviderTestReroutePaths ()
+    public function dataProviderTestReroutePaths()
     {
         $sBaseDir = '/path/to/basedir';
         return array(
@@ -189,7 +189,7 @@ class TaskTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task::processPath
      * @dataProvider dataProviderTestProcessPath
      */
-    public function testProcessPath (array $aProperties, $sPath, array $aExpected)
+    public function testProcessPath(array $aProperties, $sPath, array $aExpected)
     {
         foreach ($aProperties as $sKey => $sValue) {
             $this->oDIContainer->getPropertiesAdapter()->setProperty($sKey, $sValue);
@@ -211,7 +211,7 @@ class TaskTest extends PadoccTestCase
     /**
      * Data provider pour testProcessPath()
      */
-    public function dataProviderTestProcessPath ()
+    public function dataProviderTestProcessPath()
     {
         $sBaseDir = '/path/to/basedir';
         $sReroutePrefix = 'user@server:' . $sBaseDir . $this->aConfig['symlink_releases_dir_suffix'] . '/123';
@@ -235,7 +235,7 @@ class TaskTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task::processSimplePath
      */
-    public function testProcessSimplePathThrowExceptionIfMultipleExpansion ()
+    public function testProcessSimplePathThrowExceptionIfMultipleExpansion()
     {
         $sBaseDir = '/path/to/basedir';
         $aProperties = array('with_symlinks' => 'true', 'basedir' => $sBaseDir, 'execution_id' => 123, 'a' => '1 2');
@@ -262,7 +262,7 @@ class TaskTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task::processSimplePath
      * @dataProvider dataProviderTestProcessSimplePathOk
      */
-    public function testProcessSimplePathOk (array $aProperties, $sPath, $sExpected)
+    public function testProcessSimplePathOk(array $aProperties, $sPath, $sExpected)
     {
         foreach ($aProperties as $sKey => $sValue) {
             $this->oDIContainer->getPropertiesAdapter()->setProperty($sKey, $sValue);
@@ -284,7 +284,7 @@ class TaskTest extends PadoccTestCase
     /**
      * Data provider pour testProcessSimplePathOk()
      */
-    public function dataProviderTestProcessSimplePathOk ()
+    public function dataProviderTestProcessSimplePathOk()
     {
         $sBaseDir = '/path/to/basedir';
         $sReroutePrefix = 'user@server:' . $sBaseDir . $this->aConfig['symlink_releases_dir_suffix'] . '/123';
@@ -300,7 +300,7 @@ class TaskTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task::check
      */
-    public function testCheckWhenEmpty ()
+    public function testCheckWhenEmpty()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
@@ -325,7 +325,7 @@ class TaskTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task::check
      */
-    public function testCheckWhenNotEmpty ()
+    public function testCheckWhenNotEmpty()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
@@ -351,7 +351,7 @@ class TaskTest extends PadoccTestCase
      * AttributeProperties exception well transmitted?
      * @covers \Himedia\Padocc\Task::check
      */
-    public function testCheckThrowExceptionIfUnknownAttribute ()
+    public function testCheckThrowExceptionIfUnknownAttribute()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
@@ -376,7 +376,7 @@ class TaskTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task::getTagName
      */
-    public function testGetTagNameThrowException ()
+    public function testGetTagNameThrowException()
     {
         $this->setExpectedException('RuntimeException', 'Not implemented at this level!');
         Task::getTagName();
@@ -385,7 +385,7 @@ class TaskTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task::getNewInstance
      */
-    public function testGetNewInstanceThrowException ()
+    public function testGetNewInstanceThrowException()
     {
         /* @var $oMockProject Task\Base\Project|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
@@ -398,7 +398,7 @@ class TaskTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task::fetchAttributes
      * @covers \Himedia\Padocc\Task::__construct
      */
-    public function testGetNewInstanceOk ()
+    public function testGetNewInstanceOk()
     {
         /* @var $oMockProject Task\Base\Project|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
@@ -409,7 +409,7 @@ class TaskTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task::registerPaths
      */
-    public function testRegisterPaths ()
+    public function testRegisterPaths()
     {
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
         $oMockTask = $this->getMockForAbstractClass(

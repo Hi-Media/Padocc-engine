@@ -44,7 +44,7 @@ class Padocc
 
     private $oDeploymentMapper;
 
-    public function __construct (array $aConfig)
+    public function __construct(array $aConfig)
     {
         $this->aConfig = $aConfig;
         $oDB = PDOAdapter::getInstance($this->aConfig['Himedia\Padocc']['db']);
@@ -65,7 +65,7 @@ class Padocc
      * @param string $sXmlProject XML project path or XML data
      * @return array environments and external properties of specified project.
      */
-    public function getEnvAndExtParameters ($sXmlProject)
+    public function getEnvAndExtParameters($sXmlProject)
     {
         $aEnv = Target::getAvailableEnvsList($sXmlProject);
         return $aEnv;
@@ -78,7 +78,7 @@ class Padocc
      * @return array triplet containing DB record of specified exec_id, content of execution log, and errors.
      * @throws \RuntimeException if info log or error log not found
      */
-    public function getStatus ($sExecId)
+    public function getStatus($sExecId)
     {
         $aFilter = array(
             array(
@@ -112,7 +112,7 @@ class Padocc
         );
     }
 
-    public function getQueueAndRunning ()
+    public function getQueueAndRunning()
     {
         $aFilter = array(
             array(
@@ -124,7 +124,7 @@ class Padocc
         return $aResult;
     }
 
-    public function getLatestDeployments ($sProjectName, $sEnvName)
+    public function getLatestDeployments($sProjectName, $sEnvName)
     {
         $aFilter = array(
             array(
@@ -154,7 +154,7 @@ class Padocc
      * @param string $sRollbackID identifiant de déploiement sur lequel effectuer un rollback,
      * par exemple '20111026142342_07502'
      */
-    public function runWOSupervisor (
+    public function runWOSupervisor(
         $sXmlProjectPath,
         $sEnvName,
         $sExecutionID,
@@ -176,7 +176,7 @@ class Padocc
         $oDeployment->run($sXmlProjectPath, $sEnvName, $sExecutionID, $aExternalProperties, $sRollbackID);
     }
 
-    public function enqueue ($sXmlProjectPath, $sEnvName, array $aExternalProperties)
+    public function enqueue($sXmlProjectPath, $sEnvName, array $aExternalProperties)
     {
         $sExecId = date('YmdHis') . sprintf('_%05d', rand(0, 99999));
         $oProject = Project::getSXEProject($sXmlProjectPath);
@@ -196,7 +196,7 @@ class Padocc
         return $sExecId;
     }
 
-    public function dequeue ()
+    public function dequeue()
     {
         $aFilter = array(
             array(
@@ -235,7 +235,7 @@ class Padocc
      * @return string $sExecutionID
      * @throws \RuntimeException if Supervisor log result are unexpected.
      */
-    public function run ($sXmlProjectPath, $sEnvName, $sExecId, array $aExternalProperties, $sRollbackID)
+    public function run($sXmlProjectPath, $sEnvName, $sExecId, array $aExternalProperties, $sRollbackID)
     {
         $aFilter = array(
             array(

@@ -60,7 +60,7 @@ class GitExportTest extends PadoccTestCase
      * @return array empty array
      * @see $aShellExecCmds
      */
-    public function shellExecCallback ($sCmd)
+    public function shellExecCallback($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
         return array();
@@ -81,7 +81,7 @@ class GitExportTest extends PadoccTestCase
      * @param string $sRsyncPattern
      * @return array empty array
      */
-    public function shellSyncCallback (
+    public function shellSyncCallback(
         $sSrcPath,
         $sDestPath,
         array $aValues,
@@ -100,7 +100,7 @@ class GitExportTest extends PadoccTestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp ()
+    public function setUp()
     {
         $oLogger = new NullLogger();
 
@@ -159,7 +159,7 @@ class GitExportTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Extended\GitExport::setUp
      * @covers \Himedia\Padocc\Task\Extended\GitExport::centralExecute
      */
-    public function testOverall ()
+    public function testOverall()
     {
         $oGitTask = GitExport::getNewInstance(
             array(
@@ -186,7 +186,7 @@ class GitExportTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Extended\GitExport::setUp
      * @covers \Himedia\Padocc\Task\Extended\GitExport::centralExecute
      */
-    public function testOverallWithIncludeExclude ()
+    public function testOverallWithIncludeExclude()
     {
         $oGitTask = GitExport::getNewInstance(
             array(
@@ -215,7 +215,7 @@ class GitExportTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Extended\GitExport::setUp
      * @covers \Himedia\Padocc\Task\Extended\GitExport::centralExecute
      */
-    public function testOverallWithLocalRepoAndSubdir ()
+    public function testOverallWithLocalRepoAndSubdir()
     {
         $oGitTask = GitExport::getNewInstance(
             array(

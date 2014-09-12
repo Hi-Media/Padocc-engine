@@ -42,7 +42,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp ()
+    public function setUp()
     {
         $oLogger     = new NullLogger();
         $oShell      = new ShellAdapter($oLogger);
@@ -73,7 +73,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      * @covers \Himedia\Padocc\AttributeProperties::checkUnknownAttributes
      */
-    public function testCheckAttributesWhenNoProperties ()
+    public function testCheckAttributesWhenNoProperties()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
@@ -101,7 +101,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      * @covers \Himedia\Padocc\AttributeProperties::checkUnknownAttributes
      */
-    public function testCheckAttributesWithNeutralProperty ()
+    public function testCheckAttributesWithNeutralProperty()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
@@ -129,7 +129,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      * @covers \Himedia\Padocc\AttributeProperties::checkUnknownAttributes
      */
-    public function testCheckAttributesWithMultivaluedProperty ()
+    public function testCheckAttributesWithMultivaluedProperty()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
@@ -158,7 +158,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      * @covers \Himedia\Padocc\AttributeProperties::checkUnknownAttributes
      */
-    public function testCheckAttributesWithEmptyProperty ()
+    public function testCheckAttributesWithEmptyProperty()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
@@ -184,7 +184,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::checkUnknownAttributes
      */
-    public function testCheckUnknownAttributesThrowExceptionIfUnknownAttribute ()
+    public function testCheckUnknownAttributesThrowExceptionIfUnknownAttribute()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
@@ -210,7 +210,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      */
-    public function testCheckAttributeThrowExceptionIfRequiredAttribute ()
+    public function testCheckAttributeThrowExceptionIfRequiredAttribute()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
@@ -236,7 +236,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::formatAttribute
      */
-    public function testFormatAttributeWithFile ()
+    public function testFormatAttributeWithFile()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
@@ -262,7 +262,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::formatAttribute
      */
-    public function testFormatAttributeWithDir ()
+    public function testFormatAttributeWithDir()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
@@ -288,7 +288,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      */
-    public function testCheckAttributeThrowExceptionIfDirectoryJokerWithoutDirjokerAttribute ()
+    public function testCheckAttributeThrowExceptionIfDirectoryJokerWithoutDirjokerAttribute()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
@@ -317,7 +317,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      */
-    public function testCheckAttributeThrowExceptionIfFileJokerWithoutFilejokerAttribute ()
+    public function testCheckAttributeThrowExceptionIfFileJokerWithoutFilejokerAttribute()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
@@ -346,7 +346,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      */
-    public function testCheckAttributeThrowExceptionIfBadURLAttribute ()
+    public function testCheckAttributeThrowExceptionIfBadURLAttribute()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
@@ -372,7 +372,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      */
-    public function testCheckAttributeThrowExceptionIfBadEmailAttribute ()
+    public function testCheckAttributeThrowExceptionIfBadEmailAttribute()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
@@ -398,7 +398,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      */
-    public function testCheckAttributeThrowExceptionIfGoodEmailsWithoutMultiAttribute ()
+    public function testCheckAttributeThrowExceptionIfGoodEmailsWithoutMultiAttribute()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
@@ -424,7 +424,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      */
-    public function testCheckAttributeThrowExceptionIfBadBooleanAttribute ()
+    public function testCheckAttributeThrowExceptionIfBadBooleanAttribute()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
@@ -453,7 +453,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      */
-    public function testCheckAttributeThrowExceptionIfParameterWithoutAllowparametersAttribute ()
+    public function testCheckAttributeThrowExceptionIfParameterWithoutAllowparametersAttribute()
     {
         /* @var $oMockTask Task|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProject = $this->getMock('\Himedia\Padocc\Task\Base\Project', array(), array(), '', false);
@@ -482,7 +482,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::checkAttribute
      */
-    public function testCheckAttributeParameterThrowExceptionWithSrcpathAttribute ()
+    public function testCheckAttributeParameterThrowExceptionWithSrcpathAttribute()
     {
         /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockShell = $this->getMock(
@@ -521,7 +521,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::normalizeAttributeProperties
      */
-    public function testNormalizeAttributePropertiesWithAttrSrcPath ()
+    public function testNormalizeAttributePropertiesWithAttrSrcPath()
     {
         $aAttrProperties = array(
             'srcpath1' => AttributeProperties::SRC_PATH,
@@ -558,7 +558,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::normalizeAttributeProperties
      */
-    public function testNormalizeAttributePropertiesWithAttrFileJoker ()
+    public function testNormalizeAttributePropertiesWithAttrFileJoker()
     {
         $aAttrProperties = array(
             'srcpath1' => AttributeProperties::FILEJOKER,
@@ -591,7 +591,7 @@ class AttributePropertiesTest extends PadoccTestCase
      * @covers \Himedia\Padocc\AttributeProperties::checkAttributes
      * @covers \Himedia\Padocc\AttributeProperties::normalizeAttributeProperties
      */
-    public function testNormalizeAttributePropertiesWithAttrDirJoker ()
+    public function testNormalizeAttributePropertiesWithAttrDirJoker()
     {
         $aAttrProperties = array(
             'srcpath1' => AttributeProperties::DIRJOKER,
