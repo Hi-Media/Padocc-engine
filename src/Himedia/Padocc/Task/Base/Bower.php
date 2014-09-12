@@ -55,7 +55,6 @@ use Himedia\Padocc\Task;
  * Installs project dependencies as defined in the manifest file <tt>/tmp/build/foo.com/conf/bower.json</tt>.
  *
  * @copyright 2014 HiMedia Group
- * @author Geoffroy Aubry <gaubry@hi-media.com>
  * @author Geoffroy Letournel <gletournel@hi-media.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  */

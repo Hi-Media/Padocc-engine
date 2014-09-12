@@ -29,7 +29,7 @@ use Psr\Log\NullLogger;
  * limitations under the License.
  *
  * @copyright 2014 HiMedia Group
- * @author Geoffroy Aubry <gaubry@hi-media.com>
+ * @author Geoffroy Letournel <gletournel@hi-media.com>
  * @license Apache License, Version 2.0
  */
 class BowerTest extends PadoccTestCase
