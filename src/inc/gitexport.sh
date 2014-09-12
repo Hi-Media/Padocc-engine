@@ -19,6 +19,7 @@
 #       /tmp/tracker_export
 #
 # @author Geoffroy AUBRY <gaubry@himedia.com>
+# @author Geoffroy Letournel <gletournel@hi-media.com>
 #
 
 repository="$1"

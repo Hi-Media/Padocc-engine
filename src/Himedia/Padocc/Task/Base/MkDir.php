@@ -48,7 +48,7 @@ class MkDir extends Task
         $this->aAttrProperties = array(
             'destdir' => AttributeProperties::DIR | AttributeProperties::REQUIRED
                 | AttributeProperties::ALLOW_PARAMETER,
-            'mode' => 0
+            'mode' => AttributeProperties::OPTIONAL
         );
     }
 

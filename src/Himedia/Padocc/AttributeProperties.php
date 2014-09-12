@@ -35,6 +35,13 @@ use GAubry\Shell\ShellAdapter;
 class AttributeProperties
 {
     /**
+     * Propriété d'attribut : l'attribut est facultatif.
+     * Par défaut si self::REQUIRED n'est pas spécifié.
+     * @var int
+     */
+    const OPTIONAL = 0;
+
+    /**
      * Propriété d'attribut : autorise l'utilisation des '${parameter}'.
      * @var int
      */
@@ -68,6 +75,7 @@ class AttributeProperties
 
     /**
      * Propriété d'attribut : l'attribut est obligatoire.
+     * Si non spécifié alors l'attribut est self::OPTIONAL.
      * @var int
      */
     const REQUIRED = 32;

@@ -31,7 +31,7 @@ use Psr\Log\NullLogger;
  * @author Geoffroy Aubry <gaubry@hi-media.com>
  * @license Apache License, Version 2.0
  */
-class ComposertTest extends PadoccTestCase
+class ComposerTest extends PadoccTestCase
 {
     /**
      * Collection de services.
