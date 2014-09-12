@@ -68,7 +68,7 @@ class DIContainer implements DIContainerInterface
     /**
      * Constructeur.
      */
-    public function __construct ()
+    public function __construct()
     {
         $this->oLogger     = null;
         $this->oProperties = null;

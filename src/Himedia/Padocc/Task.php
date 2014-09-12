@@ -123,7 +123,7 @@ abstract class Task
      * @return string nom du tag XML correspondant à cette tâche dans les config projet.
      * @throws \RuntimeException si appelée directement sur Task.
      */
-    public static function getTagName ()
+    public static function getTagName()
     {
         throw new \RuntimeException('Not implemented at this level!');
     }
@@ -139,7 +139,7 @@ abstract class Task
      * @return Task
      * @throws \RuntimeException si appelée directement sur Task.
      */
-    public static function getNewInstance (array $aAttributes, Project $oProject, DIContainerInterface $oDIContainer)
+    public static function getNewInstance(array $aAttributes, Project $oProject, DIContainerInterface $oDIContainer)
     {
         $sAttributes = '';
         foreach ($aAttributes as $sName => $sValue) {
@@ -157,7 +157,7 @@ abstract class Task
      * @param Project $oProject Super tâche projet.
      * @param DIContainerInterface $oDIContainer Register de services prédéfinis (ShellInterface, ...).
      */
-    public function __construct (\SimpleXMLElement $oXMLTask, Project $oProject, DIContainerInterface $oDIContainer)
+    public function __construct(\SimpleXMLElement $oXMLTask, Project $oProject, DIContainerInterface $oDIContainer)
     {
         $this->oXMLTask = $oXMLTask;
         $this->oProject = $oProject;
@@ -262,7 +262,7 @@ abstract class Task
     /**
      * Récupère les attributs XML du nœud $this->oXMLTask et les enregistre dans $this->aAttValues.
      */
-    protected function fetchAttributes ()
+    protected function fetchAttributes()
     {
         $this->aAttValues = array();
         foreach ($this->oXMLTask->attributes() as $key => $val) {
@@ -279,7 +279,7 @@ abstract class Task
      * @see expandPath()
      * @see reroutePaths()
      */
-    protected function processPath ($sPath)
+    protected function processPath($sPath)
     {
         $aExpandedPaths = $this->expandPath($sPath);
         $aReroutedPaths = $this->reroutePaths($aExpandedPaths);
@@ -296,7 +296,7 @@ abstract class Task
      * @throws \RuntimeException si plus d'un chemin a été généré
      * @see processPath()
      */
-    protected function processSimplePath ($sPath)
+    protected function processSimplePath($sPath)
     {
         $aProcessedPaths = $this->processPath($sPath);
         if (count($aProcessedPaths) !== 1) {
@@ -313,7 +313,7 @@ abstract class Task
      * @param string $sPath chemin pouvant contenir des paramètres
      * @return array liste de tous les chemins générés en remplaçant les paramètres par leurs valeurs,
      */
-    protected function expandPath ($sPath)
+    protected function expandPath($sPath)
     {
         if (preg_match_all('/\$\{([^}]+)\}/', $sPath, $aMatches) > 0) {
             // On traite dans un premier temps un maximum de remplacements sans récursivité :
@@ -360,7 +360,7 @@ abstract class Task
      * @param array $aPaths liste de chemins sans paramètres (par exemple provenant de expandPath())
      * @return array liste de ces mêmes chemins en reroutant ceux tombant dans 'basedir'.
      */
-    protected function reroutePaths (array $aPaths)
+    protected function reroutePaths(array $aPaths)
     {
         if ($this->oProperties->getProperty('with_symlinks') === 'true') {
             $sBaseSymLink = $this->oProperties->getProperty('basedir');
@@ -393,7 +393,7 @@ abstract class Task
      * Collecte les chemins système définis dans les attributs de la tâche,
      * et les centralise au niveau de la classe pour analyse ultérieure.
      */
-    protected function registerPaths ()
+    protected function registerPaths()
     {
         foreach ($this->aAttrProperties as $sAttribute => $iProperties) {
             if ((($iProperties & AttributeProperties::DIR) > 0 || ($iProperties & AttributeProperties::FILE) > 0)
@@ -408,7 +408,7 @@ abstract class Task
     /**
      * Prépare la tâche avant exécution : vérifications basiques, analyse des serveurs concernés...
      */
-    public function setUp ()
+    public function setUp()
     {
         $this->check();
         $this->registerPaths();
@@ -426,7 +426,7 @@ abstract class Task
      * @throws \DomainException en cas d'attribut non permis
      * @see self::$aAttributeProperties
      */
-    protected function check ()
+    protected function check()
     {
         $sMsg = "Check '" . $this->sName . "' task";
         if (! empty($this->aAttValues['name'])) {
@@ -443,7 +443,7 @@ abstract class Task
      * Appelé par execute().
      * @see execute()
      */
-    protected function preExecute ()
+    protected function preExecute()
     {
         $sMsg = "Execute '" . $this->sName . "' task";
         if (! empty($this->aAttValues['name'])) {
@@ -459,7 +459,7 @@ abstract class Task
      * @see execute()
      * @codeCoverageIgnore
      */
-    protected function centralExecute ()
+    protected function centralExecute()
     {
     }
 
@@ -470,7 +470,7 @@ abstract class Task
      * @see execute()
      * @codeCoverageIgnore
      */
-    protected function postExecute ()
+    protected function postExecute()
     {
     }
 
@@ -488,7 +488,7 @@ abstract class Task
      * @see centralExecute()
      * @see postExecute()
      */
-    public function execute ()
+    public function execute()
     {
         $this->preExecute();
         $this->centralExecute();

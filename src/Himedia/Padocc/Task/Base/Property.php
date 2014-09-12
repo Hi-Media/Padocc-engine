@@ -62,7 +62,7 @@ class Property extends Task
      * Appelé par execute().
      * @see execute()
      */
-    protected function centralExecute ()
+    protected function centralExecute()
     {
         parent::centralExecute();
         $sMsg = "+++Set internal property '" . $this->aAttValues['name'] . "' to '"

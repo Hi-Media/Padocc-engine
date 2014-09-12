@@ -59,7 +59,7 @@ class ExternalProperty extends Task
      * {@inheritdoc}
      * @codeCoverageIgnore
      */
-    public static function getTagName ()
+    public static function getTagName()
     {
         return 'externalproperty';
     }
@@ -70,7 +70,7 @@ class ExternalProperty extends Task
      * Appelé par execute().
      * @see execute()
      */
-    protected function centralExecute ()
+    protected function centralExecute()
     {
         parent::centralExecute();
         $this->getLogger()->info('+++');

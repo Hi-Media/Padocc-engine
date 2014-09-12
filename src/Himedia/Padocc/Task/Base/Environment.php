@@ -101,7 +101,7 @@ class Environment extends Target
      * {@inheritdoc}
      * @codeCoverageIgnore
      */
-    public static function getTagName ()
+    public static function getTagName()
     {
         return 'env';
     }
@@ -110,7 +110,7 @@ class Environment extends Target
      * Ajoute une tâche SwitchSymlink en toute dernière étape de déploiement
      * si le XML du projet n'en a pas spécifié.
      */
-    private function addSwithSymlinkTask ()
+    private function addSwithSymlinkTask()
     {
         if (SwitchSymlink::getNbInstances() === 0
             && $this->oProperties->getProperty('with_symlinks') === 'true'
@@ -137,7 +137,7 @@ class Environment extends Target
      * @throws \UnexpectedValueException en cas d'attribut ou fichier manquant
      * @throws \DomainException en cas de valeur non permise
      */
-    public function check ()
+    public function check()
     {
         parent::check();
         if ($this->aAttValues['basedir'][0] !== '/') {
@@ -159,7 +159,7 @@ class Environment extends Target
      * Extrait la liste des serveurs concernés par le déploiement à partir de self::$aRegisteredPaths
      * et l'enregistre dans la propriété self::SERVERS_CONCERNED_WITH_BASE_DIR.
      */
-    private function analyzeRegisteredPaths ()
+    private function analyzeRegisteredPaths()
     {
         $aPathsToHandle = array();
         $aPaths = array_keys(self::$aRegisteredPaths);
@@ -190,7 +190,7 @@ class Environment extends Target
     /**
      * Gère la transition d'un déploiement sans stratégie de liens symboliques vers cette stratégie.
      */
-    private function makeTransitionToSymlinks ()
+    private function makeTransitionToSymlinks()
     {
         $this->getLogger()->info('If needed, make transition to symlinks:+++');
         $sBaseSymLink = $this->oProperties->getProperty('basedir');
@@ -221,7 +221,7 @@ class Environment extends Target
     /**
      * Gère la transition d'un déploiement avec stratégie de liens symboliques vers une approche sans.
      */
-    private function makeTransitionFromSymlinks ()
+    private function makeTransitionFromSymlinks()
     {
         $this->getLogger()->info('If needed, make transition from symlinks:+++');
         $sBaseSymLink = $this->oProperties->getProperty('basedir');
@@ -250,7 +250,7 @@ class Environment extends Target
     /**
      * Initialise la nouvelle release avec le contenu de l'ancienne, dans le but d'accélerer le déploiement.
      */
-    private function initNewRelease ()
+    private function initNewRelease()
     {
         $this->getLogger()->info('Initialize with content of previous release:+++');
         $sBaseSymLink = $this->oProperties->getProperty('basedir');
@@ -294,7 +294,7 @@ class Environment extends Target
      * @return array tableau associatif "sServer" => aReleases,
      * où aReleases est la liste des releases du serveur associé, de la plus jeune à la plus vieille.
      */
-    private function getAllReleases ($sExpandedPath, array $aServers)
+    private function getAllReleases($sExpandedPath, array $aServers)
     {
         $sPattern = '^[0-9]{14}_[0-9]{5}(_origin)?$';
         $sCmd = "if [ -d %1\$s ] && ls -1 %1\$s | grep -qE '$sPattern'; "
@@ -319,7 +319,7 @@ class Environment extends Target
     /**
      * Supprime les vieilles releases surnuméraires sur chaque serveur concerné par le déploiement.
      */
-    private function removeOldestReleases ()
+    private function removeOldestReleases()
     {
         $this->getLogger()->info('Remove too old releases:+++');
 
@@ -376,7 +376,7 @@ class Environment extends Target
      *
      * @see $this->aTasks
      */
-    private function removeUnnecessaryTasksForRollback ()
+    private function removeUnnecessaryTasksForRollback()
     {
         if ($this->oProperties->getProperty('rollback_id') !== '') {
             $this->getLogger()->info('Remove unnecessary tasks for rollback.');
@@ -399,7 +399,7 @@ class Environment extends Target
      * Appelé par execute().
      * @see execute()
      */
-    protected function preExecute ()
+    protected function preExecute()
     {
         parent::preExecute();
         $this->getLogger()->info('+++');

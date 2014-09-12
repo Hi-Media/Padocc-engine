@@ -74,7 +74,7 @@ class FillTemplate extends Task
      * {@inheritdoc}
      * @codeCoverageIgnore
      */
-    public static function getTagName ()
+    public static function getTagName()
     {
         return 'filltemplate';
     }
@@ -90,7 +90,7 @@ class FillTemplate extends Task
      * @throws \UnexpectedValueException en cas d'attribut ou fichier manquant
      * @throws \DomainException en cas de valeur non permise
      */
-    public function check ()
+    public function check()
     {
         parent::check();
 
@@ -108,7 +108,7 @@ class FillTemplate extends Task
      * Appelé par execute().
      * @see execute()
      */
-    protected function centralExecute ()
+    protected function centralExecute()
     {
         parent::centralExecute();
         $sMsg = "+++Generate '" . $this->aAttValues['destfile'] . "' from '" . $this->aAttValues['srcfile'] . "'.";

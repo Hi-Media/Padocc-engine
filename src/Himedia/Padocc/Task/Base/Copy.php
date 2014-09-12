@@ -52,7 +52,7 @@ class Copy extends Task
      * {@inheritdoc}
      * @codeCoverageIgnore
      */
-    public static function getTagName ()
+    public static function getTagName()
     {
         return 'copy';
     }
@@ -68,7 +68,7 @@ class Copy extends Task
      * @throws \UnexpectedValueException en cas d'attribut ou fichier manquant
      * @throws \DomainException en cas de valeur non permise
      */
-    public function check ()
+    public function check()
     {
         // TODO si *|? alors s'assurer qu'il en existe ?
         // TODO droit seulement à \w et / et ' ' ?
@@ -91,7 +91,7 @@ class Copy extends Task
      * Appelé par execute().
      * @see execute()
      */
-    protected function centralExecute ()
+    protected function centralExecute()
     {
         parent::centralExecute();
         $this->getLogger()->info('+++');

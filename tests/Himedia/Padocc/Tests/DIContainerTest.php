@@ -40,7 +40,7 @@ class DIContainerTest extends PadoccTestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp ()
+    public function setUp()
     {
         $this->oDIContainer = new DIContainer();
     }
@@ -59,7 +59,7 @@ class DIContainerTest extends PadoccTestCase
      * @covers \Himedia\Padocc\DIContainer::getLogger
      * @covers \Himedia\Padocc\DIContainer::__construct
      */
-    public function testLogger ()
+    public function testLogger()
     {
         $oInLogger = new NullLogger();
         $oOutLogger = $this->oDIContainer->setLogger($oInLogger)->getLogger();
@@ -70,7 +70,7 @@ class DIContainerTest extends PadoccTestCase
      * @covers \Himedia\Padocc\DIContainer::getLogger
      * @covers \Himedia\Padocc\DIContainer::__construct
      */
-    public function testGetLoggerThrowExceptionIfNotSet ()
+    public function testGetLoggerThrowExceptionIfNotSet()
     {
         $this->setExpectedException('\RuntimeException', 'No LoggerInterface instance set!');
         $this->oDIContainer->getLogger();
@@ -81,7 +81,7 @@ class DIContainerTest extends PadoccTestCase
      * @covers \Himedia\Padocc\DIContainer::getPropertiesAdapter
      * @covers \Himedia\Padocc\DIContainer::__construct
      */
-    public function testPropertiesAdapter ()
+    public function testPropertiesAdapter()
     {
         $oShell = new ShellAdapter(new NullLogger());
         $oInProperties = new PropertiesAdapter($oShell, $this->aConfig);
@@ -93,7 +93,7 @@ class DIContainerTest extends PadoccTestCase
      * @covers \Himedia\Padocc\DIContainer::getPropertiesAdapter
      * @covers \Himedia\Padocc\DIContainer::__construct
      */
-    public function testGetPropertiesAdapterThrowExceptionIfNotSet ()
+    public function testGetPropertiesAdapterThrowExceptionIfNotSet()
     {
         $this->setExpectedException('\RuntimeException', 'No PropertiesInterface instance set!');
         $this->oDIContainer->getPropertiesAdapter();
@@ -104,7 +104,7 @@ class DIContainerTest extends PadoccTestCase
      * @covers \Himedia\Padocc\DIContainer::getNumberingAdapter
      * @covers \Himedia\Padocc\DIContainer::__construct
      */
-    public function testNumberingAdapter ()
+    public function testNumberingAdapter()
     {
         $oInNumbering = new NumberingAdapter();
         $oOutNumbering = $this->oDIContainer->setNumberingAdapter($oInNumbering)->getNumberingAdapter();
@@ -115,7 +115,7 @@ class DIContainerTest extends PadoccTestCase
      * @covers \Himedia\Padocc\DIContainer::getNumberingAdapter
      * @covers \Himedia\Padocc\DIContainer::__construct
      */
-    public function testGetNumberingAdapterThrowExceptionIfNotSet ()
+    public function testGetNumberingAdapterThrowExceptionIfNotSet()
     {
         $this->setExpectedException('\RuntimeException', 'No NumberingInterface instance set!');
         $this->oDIContainer->getNumberingAdapter();
@@ -126,7 +126,7 @@ class DIContainerTest extends PadoccTestCase
      * @covers \Himedia\Padocc\DIContainer::getShellAdapter
      * @covers \Himedia\Padocc\DIContainer::__construct
      */
-    public function testShellAdapter ()
+    public function testShellAdapter()
     {
         $oInShell = new ShellAdapter(new NullLogger());
         $oOutShell = $this->oDIContainer->setShellAdapter($oInShell)->getShellAdapter();
@@ -137,7 +137,7 @@ class DIContainerTest extends PadoccTestCase
      * @covers \Himedia\Padocc\DIContainer::getShellAdapter
      * @covers \Himedia\Padocc\DIContainer::__construct
      */
-    public function testGetShellAdapterThrowExceptionIfNotSet ()
+    public function testGetShellAdapterThrowExceptionIfNotSet()
     {
         $this->setExpectedException('\RuntimeException', 'No ShellAdapter instance set!');
         $this->oDIContainer->getShellAdapter();
@@ -148,7 +148,7 @@ class DIContainerTest extends PadoccTestCase
      * @covers \Himedia\Padocc\DIContainer::getConfig
      * @covers \Himedia\Padocc\DIContainer::__construct
      */
-    public function testConfig ()
+    public function testConfig()
     {
         $aInConfig = array('a' => 'b');
         $aOutConfig = $this->oDIContainer->setConfig($aInConfig)->getConfig();
@@ -159,7 +159,7 @@ class DIContainerTest extends PadoccTestCase
      * @covers \Himedia\Padocc\DIContainer::getConfig
      * @covers \Himedia\Padocc\DIContainer::__construct
      */
-    public function testGetConfigThrowExceptionIfNotSet ()
+    public function testGetConfigThrowExceptionIfNotSet()
     {
         $this->setExpectedException('\RuntimeException', 'No config array set!');
         $this->oDIContainer->getConfig();

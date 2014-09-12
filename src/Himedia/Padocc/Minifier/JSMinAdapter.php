@@ -52,7 +52,7 @@ class JSMinAdapter implements MinifierInterface
      * @param string $sJSMinBinPath chemin du binaire JSMin
      * @param ShellAdapter $oShell instance utilisée pour exécuter le binaire jsmin
      */
-    public function __construct ($sJSMinBinPath, ShellAdapter $oShell)
+    public function __construct($sJSMinBinPath, ShellAdapter $oShell)
     {
         $this->sBinPath = $sJSMinBinPath;
         $this->oShell = $oShell;
@@ -69,7 +69,7 @@ class JSMinAdapter implements MinifierInterface
      * @throws \UnexpectedValueException si la destination est un CSS quand les sources sont des JS ou inversement
      * @throws \DomainException si des fichiers ne se terminent ni par '.js', ni par '.css'
      */
-    public function minify (array $aSrcPaths, $sDestPath)
+    public function minify(array $aSrcPaths, $sDestPath)
     {
         if (count($aSrcPaths) === 0) {
             throw new \BadMethodCallException('Source files missing!');
@@ -117,7 +117,7 @@ class JSMinAdapter implements MinifierInterface
      * @param string $sDestPath chemin/fichier dans lequel enregistrer le résultat du minify
      * @throws \RuntimeException en cas d'erreur shell
      */
-    protected function minifyJS (array $aSrcPaths, $sDestPath)
+    protected function minifyJS(array $aSrcPaths, $sDestPath)
     {
         $sHeader = $this->getHeader($aSrcPaths);
         $sCmd = 'cat';
@@ -135,7 +135,7 @@ class JSMinAdapter implements MinifierInterface
      * @param string $sDestPath chemin/fichier dans lequel enregistrer le résultat du minify
      * @throws \RuntimeException si l'un des fichiers est introuvable
      */
-    protected function minifyCSS (array $aSrcPaths, $sDestPath)
+    protected function minifyCSS(array $aSrcPaths, $sDestPath)
     {
         $sContent = $this->getContent($aSrcPaths);
 
@@ -162,7 +162,7 @@ class JSMinAdapter implements MinifierInterface
      * @return string une ligne de commentaire, à insérer en 1re ligne d'un fichier CSS ou JS minifié,
      * énumérant tous les fichiers sources le constituant.
      */
-    private function getHeader (array $aSrcPaths)
+    private function getHeader(array $aSrcPaths)
     {
         if (count($aSrcPaths) === 1) {
             $sHeader = "/* Contains: " . reset($aSrcPaths) . ' */' . "\n";
@@ -185,7 +185,7 @@ class JSMinAdapter implements MinifierInterface
      * @return string le plus long préfixe commun aux chaînes fournies.
      * @see http://stackoverflow.com/questions/1336207/finding-common-prefix-of-array-of-strings/1336357#1336357
      */
-    private function getLargestCommonPrefix (array $aStrings)
+    private function getLargestCommonPrefix(array $aStrings)
     {
         // take the first item as initial prefix:
         $sPrefix = array_shift($aStrings);
@@ -216,7 +216,7 @@ class JSMinAdapter implements MinifierInterface
      * @throws \RuntimeException si l'un des fichiers est introuvable
      * @see minifyCSS()
      */
-    private function getContent (array $aSrcPaths)
+    private function getContent(array $aSrcPaths)
     {
         $aExpandedPaths = array();
         foreach ($aSrcPaths as $sPath) {

@@ -60,7 +60,7 @@ class ComposerTest extends PadoccTestCase
      * @return array empty array
      * @see $aShellExecCmds
      */
-    public function shellExecCallback ($sCmd)
+    public function shellExecCallback($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
         return array();
@@ -70,7 +70,7 @@ class ComposerTest extends PadoccTestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp ()
+    public function setUp()
     {
         $oLogger = new NullLogger();
 
@@ -126,7 +126,7 @@ class ComposerTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Composer::centralExecute
      * @dataProvider dataProviderTestOverall
      */
-    public function testOverall ($sConfig, $sDir, $sOptions, array $aCalls)
+    public function testOverall($sConfig, $sDir, $sOptions, array $aCalls)
     {
         /* @var $oMockShell ShellAdapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockShell = $this->oDIContainer->getShellAdapter();
@@ -150,7 +150,7 @@ class ComposerTest extends PadoccTestCase
     /**
      * Data provider pour testProcessPath()
      */
-    public function dataProviderTestOverall ()
+    public function dataProviderTestOverall()
     {
         $sComposer = 'composer install --working-dir "/path/to/dir"';
         $sComposerPhar = 'php composer.phar install --working-dir "/path/to/dir"';
@@ -169,7 +169,7 @@ class ComposerTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Composer::check
      * @covers \Himedia\Padocc\Task\Base\Composer::centralExecute
      */
-    public function testOverallThrowExceptionIfInstallImpossible ()
+    public function testOverallThrowExceptionIfInstallImpossible()
     {
         $aAttributes = array('dir' => '/path/to/dir');
         $oComposerTask = Composer::getNewInstance($aAttributes, $this->oMockProject, $this->oDIContainer);

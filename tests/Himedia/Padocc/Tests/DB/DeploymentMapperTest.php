@@ -33,7 +33,7 @@ class DeploymentMapperTest extends \PHPUnit_Framework_TestCase
      * @covers \Himedia\Padocc\DB\DeploymentMapper::__construct
      * @dataProvider dataProviderTestInsert
      */
-    public function testInsert (array $aParameters, $sQuery)
+    public function testInsert(array $aParameters, $sQuery)
     {
         $oMockPDOStmt = $this->getMock('\PDOStatement', array('execute'), array());
         $oMockPDOStmt->expects($this->any())->method('execute')->with(array_values($aParameters));
@@ -50,7 +50,7 @@ class DeploymentMapperTest extends \PHPUnit_Framework_TestCase
     /**
      * Data provider pour testInsert()
      */
-    public function dataProviderTestInsert ()
+    public function dataProviderTestInsert()
     {
         return array(
             array(array(), ''),
@@ -64,7 +64,7 @@ class DeploymentMapperTest extends \PHPUnit_Framework_TestCase
      * @covers \Himedia\Padocc\DB\DeploymentMapper::__construct
      * @dataProvider dataProviderTestUpdate
      */
-    public function testUpdateThrowExceptionIfPKMissing ()
+    public function testUpdateThrowExceptionIfPKMissing()
     {
         /* @var $oMockDB DBAdapterInterface|\PHPUnit_Framework_MockObject_MockObject */
         $oMockDB = $this->getMock('\Himedia\Padocc\DB\PDOAdapter', array(), array(), '', false);
@@ -79,7 +79,7 @@ class DeploymentMapperTest extends \PHPUnit_Framework_TestCase
      * @covers \Himedia\Padocc\DB\DeploymentMapper::__construct
      * @dataProvider dataProviderTestUpdate
      */
-    public function testUpdate (array $aParameters, $sQuery, array $aValues)
+    public function testUpdate(array $aParameters, $sQuery, array $aValues)
     {
         $oMockPDOStmt = $this->getMock('\PDOStatement', array('execute'), array());
         $oMockPDOStmt->expects($this->any())->method('execute')->with($aValues);
@@ -96,7 +96,7 @@ class DeploymentMapperTest extends \PHPUnit_Framework_TestCase
     /**
      * Data provider pour testUpdate()
      */
-    public function dataProviderTestUpdate ()
+    public function dataProviderTestUpdate()
     {
         return array(
             array(array('exec_id' => 1), '', array()),
@@ -118,7 +118,7 @@ class DeploymentMapperTest extends \PHPUnit_Framework_TestCase
      * @covers \Himedia\Padocc\DB\DeploymentMapper::__construct
      * @dataProvider dataProviderTestSelect
      */
-    public function testSelect (array $aFilter, array $aOrderBy, $iLimit, $iOffset, $sQuery, array $aValues)
+    public function testSelect(array $aFilter, array $aOrderBy, $iLimit, $iOffset, $sQuery, array $aValues)
     {
         $oMockPDOStmt = $this->getMock('\PDOStatement', array('execute', 'fetchAll'), array());
         $oMockPDOStmt->expects($this->any())->method('execute')->with($aValues);
@@ -137,7 +137,7 @@ class DeploymentMapperTest extends \PHPUnit_Framework_TestCase
     /**
      * Data provider pour testSelect()
      */
-    public function dataProviderTestSelect ()
+    public function dataProviderTestSelect()
     {
         return array(
             array(

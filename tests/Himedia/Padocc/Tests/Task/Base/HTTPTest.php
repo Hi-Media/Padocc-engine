@@ -59,7 +59,7 @@ class HTTPTest extends PadoccTestCase
      * @param string $sCmd commande Shell qui aurait dûe être exécutée.
      * @see $aShellExecCmds
      */
-    public function shellExecCallback ($sCmd)
+    public function shellExecCallback($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
     }
@@ -68,7 +68,7 @@ class HTTPTest extends PadoccTestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp ()
+    public function setUp()
     {
         $oLogger = new NullLogger();
 
@@ -118,7 +118,7 @@ class HTTPTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\HTTP::centralExecute
      * @covers \Himedia\Padocc\Task\Base\HTTP::postExecute
      */
-    public function testExecuteThrowExceptionIfCURLReturnErrorMsg ()
+    public function testExecuteThrowExceptionIfCURLReturnErrorMsg()
     {
         $oLogger = $this->oDIContainer->getLogger();
         $oMockShell = new ShellAdapter($oLogger, $this->aConfig);
@@ -149,7 +149,7 @@ class HTTPTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\HTTP::centralExecute
      * @covers \Himedia\Padocc\Task\Base\HTTP::postExecute
      */
-    public function testExecuteWithOneURL ()
+    public function testExecuteWithOneURL()
     {
         /* @var $oTaskHTTP HTTP|\PHPUnit_Framework_MockObject_MockObject */
         $sXML = '<http url="http://www.xyz.com/index.php?a=26&amp;b=ttt" />';
@@ -176,7 +176,7 @@ class HTTPTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\HTTP::centralExecute
      * @covers \Himedia\Padocc\Task\Base\HTTP::postExecute
      */
-    public function testExecuteWithMultiURL ()
+    public function testExecuteWithMultiURL()
     {
         /* @var $oMockProperties \Himedia\Padocc\Properties\Adapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProperties = $this->getMock(

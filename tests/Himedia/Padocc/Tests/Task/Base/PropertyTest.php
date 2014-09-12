@@ -59,7 +59,7 @@ class PropertyTest extends PadoccTestCase
      * @param string $sCmd commande Shell qui aurait dûe être exécutée.
      * @see $aShellExecCmds
      */
-    public function shellExecCallback ($sCmd)
+    public function shellExecCallback($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
     }
@@ -68,7 +68,7 @@ class PropertyTest extends PadoccTestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp ()
+    public function setUp()
     {
         $oLogger = new NullLogger();
 
@@ -106,7 +106,7 @@ class PropertyTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Property::__construct
      * @covers \Himedia\Padocc\Task\Base\Property::centralExecute
      */
-    public function testCentralExecute ()
+    public function testCentralExecute()
     {
         $oProperty = Property::getNewInstance(
             array('name' => 'my_prop', 'value' => 'my value'),

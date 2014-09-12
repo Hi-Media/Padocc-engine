@@ -44,7 +44,7 @@ class Factory
      * @throws \BadMethodCallException si type inconnu.
      * @return MinifierInterface une instance de MinifierInterface selon le $iType spécifié.
      */
-    public static function getInstance ($iType, ShellAdapter $oShell)
+    public static function getInstance($iType, ShellAdapter $oShell)
     {
         switch ($iType) {
             case self::TYPE_JSMIN:

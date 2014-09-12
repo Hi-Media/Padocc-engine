@@ -72,7 +72,7 @@ class Call extends WithProperties
      * {@inheritdoc}
      * @codeCoverageIgnore
      */
-    public static function getTagName ()
+    public static function getTagName()
     {
         return 'call';
     }
@@ -81,7 +81,7 @@ class Call extends WithProperties
      * Prépare la tâche avant exécution : vérifications basiques, analyse des serveurs concernés...
      * @codeCoverageIgnore
      */
-    public function setUp ()
+    public function setUp()
     {
         parent::setUp();
         $this->oBoundTask->setUp();
@@ -94,7 +94,7 @@ class Call extends WithProperties
      * @see execute()
      * @codeCoverageIgnore
      */
-    protected function centralExecute ()
+    protected function centralExecute()
     {
         parent::centralExecute();
         $this->oBoundTask->execute();

@@ -59,7 +59,7 @@ class Project extends WithProperties
      * @throws \UnexpectedValueException si fichier XML du projet non trouvé
      * @throws \UnexpectedValueException si environnement non trouvé ou non unique
      */
-    public function __construct ($sXmlProject, $sEnvName, DIContainerInterface $oDIContainer)
+    public function __construct($sXmlProject, $sEnvName, DIContainerInterface $oDIContainer)
     {
         $this->sEnvName = $sEnvName;
 
@@ -101,7 +101,7 @@ class Project extends WithProperties
      * {@inheritdoc}
      * @codeCoverageIgnore
      */
-    public static function getTagName ()
+    public static function getTagName()
     {
         return 'project';
     }
@@ -113,7 +113,7 @@ class Project extends WithProperties
      * @throws \UnexpectedValueException si XML du projet mal formaté
      * @return \SimpleXMLElement instance du projet spécifié
      */
-    public static function getSXEProject ($sXmlProject)
+    public static function getSXEProject($sXmlProject)
     {
         $bIsURL = (substr($sXmlProject, 0, 5) != '<?xml');
         try {
@@ -151,7 +151,7 @@ class Project extends WithProperties
     /**
      * Prépare la tâche avant exécution : vérifications basiques, analyse des serveurs concernés...
      */
-    public function setUp ()
+    public function setUp()
     {
         parent::setUp();
         $this->oBoundTask->setUp();
@@ -163,7 +163,7 @@ class Project extends WithProperties
      * Appelé par execute().
      * @see execute()
      */
-    protected function preExecute ()
+    protected function preExecute()
     {
         parent::preExecute();
         $this->getLogger()->info('+++');
@@ -177,7 +177,7 @@ class Project extends WithProperties
      * Appelé par execute().
      * @see execute()
      */
-    protected function centralExecute ()
+    protected function centralExecute()
     {
         parent::centralExecute();
         $this->oBoundTask->execute();
@@ -201,7 +201,7 @@ class Project extends WithProperties
      * Retourne le contenu XML de la tâche.
      * @return \SimpleXMLElement le contenu XML de la tâche.
      */
-    public function getSXE ()
+    public function getSXE()
     {
         return $this->oXMLTask;
     }

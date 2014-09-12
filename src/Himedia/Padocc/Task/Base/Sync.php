@@ -68,7 +68,7 @@ class Sync extends Task
      * {@inheritdoc}
      * @codeCoverageIgnore
      */
-    public static function getTagName ()
+    public static function getTagName()
     {
         return 'sync';
     }
@@ -84,7 +84,7 @@ class Sync extends Task
      * @throws \UnexpectedValueException en cas d'attribut ou fichier manquant
      * @throws \DomainException en cas de valeur non permise
      */
-    public function check ()
+    public function check()
     {
         parent::check();
 
@@ -102,7 +102,7 @@ class Sync extends Task
      * Appelé par execute().
      * @see execute()
      */
-    protected function centralExecute ()
+    protected function centralExecute()
     {
         parent::centralExecute();
         $sMsg = "+++Synchronize '" . $this->aAttValues['src'] . "' with '" . $this->aAttValues['destdir'] . "'+++";

@@ -52,7 +52,7 @@ class HTTP extends Task
      * {@inheritdoc}
      * @codeCoverageIgnore
      */
-    public static function getTagName ()
+    public static function getTagName()
     {
         return 'http';
     }
@@ -68,7 +68,7 @@ class HTTP extends Task
      * @throws \UnexpectedValueException en cas d'attribut ou fichier manquant
      * @throws \DomainException en cas de valeur non permise
      */
-    public function check ()
+    public function check()
     {
         parent::check();
     }
@@ -79,7 +79,7 @@ class HTTP extends Task
      * Appelé par execute().
      * @see execute()
      */
-    protected function centralExecute ()
+    protected function centralExecute()
     {
         parent::centralExecute();
         $this->getLogger()->info('+++Call URL: ' . $this->aAttValues['url'] . '+++');

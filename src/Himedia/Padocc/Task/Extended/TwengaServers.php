@@ -69,7 +69,7 @@ class TwengaServers extends Task
      * {@inheritdoc}
      * @codeCoverageIgnore
      */
-    public static function getTagName ()
+    public static function getTagName()
     {
         return 'twengaserverexport';
     }
@@ -77,7 +77,7 @@ class TwengaServers extends Task
     /**
      * Prépare la tâche avant exécution : vérifications basiques, analyse des serveurs concernés...
      */
-    public function setUp ()
+    public function setUp()
     {
         parent::setUp();
         $this->getLogger()->info('+++');
@@ -93,7 +93,7 @@ class TwengaServers extends Task
      * doit permettre de remonter au plus tôt tout dysfonctionnement.
      * Appelé avant la méthode execute().
      */
-    protected function check ()
+    protected function check()
     {
         parent::centralExecute();
         $this->getLogger()->info('+++');
@@ -111,7 +111,7 @@ class TwengaServers extends Task
      * Appelé par execute().
      * @see execute()
      */
-    protected function centralExecute ()
+    protected function centralExecute()
     {
         parent::centralExecute();
     }

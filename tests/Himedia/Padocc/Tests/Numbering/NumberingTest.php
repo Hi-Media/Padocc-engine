@@ -43,7 +43,7 @@ class NumberingTest extends \PHPUnit_Framework_TestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp ()
+    public function setUp()
     {
         $this->oNumbering = new Adapter(self::SEPARATOR);
     }
@@ -60,7 +60,7 @@ class NumberingTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers \Himedia\Padocc\Numbering\Adapter::getNextCounterValue
      */
-    public function testGetNextCounterValueAtFirstCall ()
+    public function testGetNextCounterValueAtFirstCall()
     {
         $sCounterValue = $this->oNumbering->getNextCounterValue();
         $this->assertEquals('1', $sCounterValue);
@@ -70,7 +70,7 @@ class NumberingTest extends \PHPUnit_Framework_TestCase
      * @covers \Himedia\Padocc\Numbering\Adapter::addCounterDivision
      * @covers \Himedia\Padocc\Numbering\Adapter::getNextCounterValue
      */
-    public function testGetNextCounterValueAfterAddCounterDivision ()
+    public function testGetNextCounterValueAfterAddCounterDivision()
     {
         $sCounterValue = $this->oNumbering->addCounterDivision()->getNextCounterValue();
         $this->assertEquals('0' . self::SEPARATOR . '1', $sCounterValue);
@@ -81,7 +81,7 @@ class NumberingTest extends \PHPUnit_Framework_TestCase
      * @covers \Himedia\Padocc\Numbering\Adapter::getNextCounterValue
      * @covers \Himedia\Padocc\Numbering\Adapter::removeCounterDivision
      */
-    public function testGetNextCounterValueAfterAddAndRemoveCounterDivision ()
+    public function testGetNextCounterValueAfterAddAndRemoveCounterDivision()
     {
         $sCounterValue = $this->oNumbering->addCounterDivision()->removeCounterDivision()->getNextCounterValue();
         $this->assertEquals('1', $sCounterValue);
@@ -91,7 +91,7 @@ class NumberingTest extends \PHPUnit_Framework_TestCase
      * @covers \Himedia\Padocc\Numbering\Adapter::getNextCounterValue
      * @covers \Himedia\Padocc\Numbering\Adapter::removeCounterDivision
      */
-    public function testGetNextCounterValueAfterRemoveCounterDivision ()
+    public function testGetNextCounterValueAfterRemoveCounterDivision()
     {
         $sCounterValue = $this->oNumbering->removeCounterDivision()->getNextCounterValue();
         $this->assertEquals('1', $sCounterValue);
@@ -102,7 +102,7 @@ class NumberingTest extends \PHPUnit_Framework_TestCase
      * @covers \Himedia\Padocc\Numbering\Adapter::getNextCounterValue
      * @covers \Himedia\Padocc\Numbering\Adapter::removeCounterDivision
      */
-    public function testGetNextCounterValueAfterMultipleCalls1 ()
+    public function testGetNextCounterValueAfterMultipleCalls1()
     {
         $this->oNumbering->getNextCounterValue(); // 1
         $this->oNumbering
@@ -122,7 +122,7 @@ class NumberingTest extends \PHPUnit_Framework_TestCase
      * @covers \Himedia\Padocc\Numbering\Adapter::getNextCounterValue
      * @covers \Himedia\Padocc\Numbering\Adapter::removeCounterDivision
      */
-    public function testGetNextCounterValueAfterMultipleCalls2 ()
+    public function testGetNextCounterValueAfterMultipleCalls2()
     {
         $this->oNumbering->getNextCounterValue(); // 1
         $this->oNumbering

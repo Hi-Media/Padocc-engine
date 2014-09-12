@@ -100,7 +100,7 @@ class Bower extends Task
      *
      * @throws \DomainException When trying to use an option which is not allowed
      */
-    public function check ()
+    public function check()
     {
         parent::check();
 

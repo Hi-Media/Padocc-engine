@@ -52,7 +52,7 @@ class TargetTest extends PadoccTestCase
      * @param string $sCmd commande Shell qui aurait dûe être exécutée.
      * @see $aShellExecCmds
      */
-    public function shellExecCallback ($sCmd)
+    public function shellExecCallback($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
     }
@@ -61,7 +61,7 @@ class TargetTest extends PadoccTestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp ()
+    public function setUp()
     {
         $oLogger = new NullLogger();
 
@@ -102,7 +102,7 @@ class TargetTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
      */
-    public function testGetAvailableEnvsListThrowExceptionIfBadXML ()
+    public function testGetAvailableEnvsListThrowExceptionIfBadXML()
     {
         $this->setExpectedException(
             'UnexpectedValueException',
@@ -115,7 +115,7 @@ class TargetTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
      */
-    public function testGetAvailableEnvsListThrowExceptionIfNoEnv ()
+    public function testGetAvailableEnvsListThrowExceptionIfNoEnv()
     {
         $this->setExpectedException(
             'UnexpectedValueException',
@@ -129,7 +129,7 @@ class TargetTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
      */
-    public function testGetAvailableEnvsListThrowExceptionIfInvalidProperty ()
+    public function testGetAvailableEnvsListThrowExceptionIfInvalidProperty()
     {
         $this->setExpectedException(
             'UnexpectedValueException',
@@ -144,7 +144,7 @@ class TargetTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
      * @covers \Himedia\Padocc\Task\Base\Target::getSXEExternalProperties
      */
-    public function testGetAvailableEnvsListThrowExceptionIfInvalidTarget ()
+    public function testGetAvailableEnvsListThrowExceptionIfInvalidTarget()
     {
         $this->setExpectedException(
             'UnexpectedValueException',
@@ -159,7 +159,7 @@ class TargetTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
      * @covers \Himedia\Padocc\Task\Base\Target::getSXEExternalProperties
      */
-    public function testGetAvailableEnvsListWithEmptyEnv ()
+    public function testGetAvailableEnvsListWithEmptyEnv()
     {
         $aExpected = array(
             'my_env' => array()
@@ -174,7 +174,7 @@ class TargetTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
      * @covers \Himedia\Padocc\Task\Base\Target::getSXEExternalProperties
      */
-    public function testGetAvailableEnvsListWithoutExtProperty ()
+    public function testGetAvailableEnvsListWithoutExtProperty()
     {
         $aExpected = array(
             'my_env' => array()
@@ -189,7 +189,7 @@ class TargetTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
      * @covers \Himedia\Padocc\Task\Base\Target::getSXEExternalProperties
      */
-    public function testGetAvailableEnvsListWithOneProperty ()
+    public function testGetAvailableEnvsListWithOneProperty()
     {
         $aExpected = array(
             'my_env' => array('ref' => 'Branch or tag to deploy')
@@ -204,7 +204,7 @@ class TargetTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
      * @covers \Himedia\Padocc\Task\Base\Target::getSXEExternalProperties
      */
-    public function testGetAvailableEnvsListWithProperties ()
+    public function testGetAvailableEnvsListWithProperties()
     {
         $aExpected = array(
             'my_env' => array(
@@ -222,7 +222,7 @@ class TargetTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Target::getAvailableEnvsList
      * @covers \Himedia\Padocc\Task\Base\Target::getSXEExternalProperties
      */
-    public function testGetAvailableEnvsListWithCallAndProperties ()
+    public function testGetAvailableEnvsListWithCallAndProperties()
     {
         $aExpected = array(
             'my_env' => array(

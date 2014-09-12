@@ -61,7 +61,7 @@ class CopyTest extends PadoccTestCase
      * @param string $sCmd commande Shell qui aurait dûe être exécutée.
      * @see $aShellExecCmds
      */
-    public function shellExecCallback ($sCmd)
+    public function shellExecCallback($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
     }
@@ -70,7 +70,7 @@ class CopyTest extends PadoccTestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp ()
+    public function setUp()
     {
         $oLogger = new NullLogger();
 
@@ -121,7 +121,7 @@ class CopyTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Copy::__construct
      * @covers \Himedia\Padocc\Task\Base\Copy::check
      */
-    public function testCheckWithSrcFile ()
+    public function testCheckWithSrcFile()
     {
         $oTaskCopy = Copy::getNewInstance(
             array('src' => '/path/to/srcfile', 'destdir' => '/path/to/destdir'),
@@ -139,7 +139,7 @@ class CopyTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Copy::__construct
      * @covers \Himedia\Padocc\Task\Base\Copy::check
      */
-    public function testCheckWithSrcFileAndJoker ()
+    public function testCheckWithSrcFileAndJoker()
     {
         $oTaskCopy = Copy::getNewInstance(
             array('src' => '/path/to/src*file?', 'destdir' => '/path/to/destdir'),
@@ -157,7 +157,7 @@ class CopyTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Copy::__construct
      * @covers \Himedia\Padocc\Task\Base\Copy::check
      */
-    public function testCheckWithSrcDirWithoutLeadingSlash ()
+    public function testCheckWithSrcDirWithoutLeadingSlash()
     {
         $oTaskCopy = Copy::getNewInstance(
             array('src' => '/path/to/srcdir', 'destdir' => '/path/to/destdir'),
@@ -175,7 +175,7 @@ class CopyTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Copy::__construct
      * @covers \Himedia\Padocc\Task\Base\Copy::check
      */
-    public function testCheckWithSrcDirWithLeadingSlash ()
+    public function testCheckWithSrcDirWithLeadingSlash()
     {
         $oTaskCopy = Copy::getNewInstance(
             array('src' => '/path/to/srcdir/', 'destdir' => '/path/to/destdir'),
@@ -195,7 +195,7 @@ class CopyTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Copy::centralExecute
      * @covers \Himedia\Padocc\Task\Base\Copy::postExecute
      */
-    public function testExecuteWithSrcFile ()
+    public function testExecuteWithSrcFile()
     {
         /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProperties = $this->getMock(
@@ -231,7 +231,7 @@ class CopyTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Copy::centralExecute
      * @covers \Himedia\Padocc\Task\Base\Copy::postExecute
      */
-    public function testExecuteWithSrcDir ()
+    public function testExecuteWithSrcDir()
     {
         /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProperties = $this->getMock(
@@ -267,7 +267,7 @@ class CopyTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Copy::centralExecute
      * @covers \Himedia\Padocc\Task\Base\Copy::postExecute
      */
-    public function testExecuteWithSrcFileAndJoker ()
+    public function testExecuteWithSrcFileAndJoker()
     {
         /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProperties = $this->getMock(
@@ -303,7 +303,7 @@ class CopyTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Copy::centralExecute
      * @covers \Himedia\Padocc\Task\Base\Copy::postExecute
      */
-    public function testExecuteWithSrcDirAndSymLinks ()
+    public function testExecuteWithSrcDirAndSymLinks()
     {
         /* @var $oMockProperties Adapter|\PHPUnit_Framework_MockObject_MockObject */
         $oMockProperties = $this->getMock(

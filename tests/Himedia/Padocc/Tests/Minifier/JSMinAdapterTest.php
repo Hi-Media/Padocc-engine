@@ -49,7 +49,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @param string $sCmd commande Shell qui aurait dûe être exécutée.
      * @see $aShellExecCmds
      */
-    public function shellExecCallback ($sCmd)
+    public function shellExecCallback($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
     }
@@ -58,7 +58,7 @@ class JSminAdapterTest extends PadoccTestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp ()
+    public function setUp()
     {
         $this->aShellExecCmds = array();
 
@@ -88,7 +88,7 @@ class JSminAdapterTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getContent
      */
-    public function testGetContentWithoutFiles ()
+    public function testGetContentWithoutFiles()
     {
         $oJSminAdapter = new JSMinAdapter(
             $this->aConfig['jsmin_path'],
@@ -106,7 +106,7 @@ class JSminAdapterTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getContent
      */
-    public function testGetContentThrowExceptionIfNotFound ()
+    public function testGetContentThrowExceptionIfNotFound()
     {
         $oJSminAdapter = new JSMinAdapter(
             $this->aConfig['jsmin_path'],
@@ -124,7 +124,7 @@ class JSminAdapterTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getContent
      */
-    public function testGetContentWith1File ()
+    public function testGetContentWith1File()
     {
         $oJSminAdapter = new JSMinAdapter(
             $this->aConfig['jsmin_path'],
@@ -145,7 +145,7 @@ class JSminAdapterTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getContent
      */
-    public function testGetContentWithFiles ()
+    public function testGetContentWithFiles()
     {
         $oJSminAdapter = new JSMinAdapter(
             $this->aConfig['jsmin_path'],
@@ -166,7 +166,7 @@ class JSminAdapterTest extends PadoccTestCase
     /**
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getContent
      */
-    public function testGetContentWithFileWithJoker ()
+    public function testGetContentWithFileWithJoker()
     {
         $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
@@ -190,7 +190,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getHeader
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getLargestCommonPrefix
      */
-    public function testMinifyJSWith1File ()
+    public function testMinifyJSWith1File()
     {
         $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
@@ -215,7 +215,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getHeader
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getLargestCommonPrefix
      */
-    public function testMinifyJSWithFiles ()
+    public function testMinifyJSWithFiles()
     {
         $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
@@ -243,7 +243,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getHeader
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getLargestCommonPrefix
      */
-    public function testMinifyJSWithJoker ()
+    public function testMinifyJSWithJoker()
     {
         $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
@@ -268,7 +268,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getHeader
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::getLargestCommonPrefix
      */
-    public function testMinifyCSSWith1File ()
+    public function testMinifyCSSWith1File()
     {
         $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
@@ -298,7 +298,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::__construct
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::minify
      */
-    public function testMinifyThrowExceptionWhenNoSrc ()
+    public function testMinifyThrowExceptionWhenNoSrc()
     {
         $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
@@ -313,7 +313,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::__construct
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::minify
      */
-    public function testMinifyThrowExceptionWhenDifferentSrcExtensions ()
+    public function testMinifyThrowExceptionWhenDifferentSrcExtensions()
     {
         $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
@@ -328,7 +328,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::__construct
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::minify
      */
-    public function testMinifyThrowExceptionWhenNoCompatibleDest ()
+    public function testMinifyThrowExceptionWhenNoCompatibleDest()
     {
         $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
@@ -343,7 +343,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::__construct
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::minify
      */
-    public function testMinifyThrowExceptionWhenNeitherJSNorCSS ()
+    public function testMinifyThrowExceptionWhenNeitherJSNorCSS()
     {
         $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
@@ -358,7 +358,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::__construct
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::minify
      */
-    public function testMinifyWithJS ()
+    public function testMinifyWithJS()
     {
         $oMockJSminAdapter = $this->getMock(
             '\Himedia\Padocc\Minifier\JSMinAdapter',
@@ -381,7 +381,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::__construct
      * @covers \Himedia\Padocc\Minifier\JSMinAdapter::minify
      */
-    public function testMinifyWithCSS ()
+    public function testMinifyWithCSS()
     {
         $oMockJSminAdapter = $this->getMock(
             '\Himedia\Padocc\Minifier\JSMinAdapter',
@@ -406,7 +406,7 @@ class JSminAdapterTest extends PadoccTestCase
      * @param array $aPaths liste de chaînes à comparer
      * @param string $sExpected le plus long préfixe commun aux chaînes fournies.
      */
-    public function testGetLargestCommonPrefix (array $aPaths, $sExpected)
+    public function testGetLargestCommonPrefix(array $aPaths, $sExpected)
     {
         $oJSminAdapter = new JSMinAdapter(
             '/path/to/jsmin',
@@ -424,7 +424,7 @@ class JSminAdapterTest extends PadoccTestCase
     /**
      * Data provider pour testGetLargestCommonPrefix()
      */
-    public static function dataProviderTestGetLargestCommonPrefix ()
+    public static function dataProviderTestGetLargestCommonPrefix()
     {
         return array(
             array(array(''), ''),

@@ -53,7 +53,7 @@ class ExternalPropertyTest extends PadoccTestCase
      * @param string $sCmd commande Shell qui aurait dûe être exécutée.
      * @see $aShellExecCmds
      */
-    public function shellExecCallback ($sCmd)
+    public function shellExecCallback($sCmd)
     {
         $this->aShellExecCmds[] = $sCmd;
     }
@@ -62,7 +62,7 @@ class ExternalPropertyTest extends PadoccTestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp ()
+    public function setUp()
     {
         $oLogger = new NullLogger();
 
@@ -97,7 +97,7 @@ class ExternalPropertyTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\ExternalProperty::__construct
      * @covers \Himedia\Padocc\Task\Base\ExternalProperty::centralExecute
      */
-    public function testCentralExecuteThrowExceptionIfPropertyNotFound ()
+    public function testCentralExecuteThrowExceptionIfPropertyNotFound()
     {
         /* @var $oMockProject Project|\PHPUnit_Framework_MockObject_MockObject */
         $sXML = '<project></project>';
@@ -123,7 +123,7 @@ class ExternalPropertyTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\ExternalProperty::__construct
      * @covers \Himedia\Padocc\Task\Base\ExternalProperty::centralExecute
      */
-    public function testCentralExecuteWith1Property ()
+    public function testCentralExecuteWith1Property()
     {
         $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');
@@ -158,7 +158,7 @@ class ExternalPropertyTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\ExternalProperty::__construct
      * @covers \Himedia\Padocc\Task\Base\ExternalProperty::centralExecute
      */
-    public function testCentralExecuteWithProperties ()
+    public function testCentralExecuteWithProperties()
     {
         $oClass = new \ReflectionClass('\Himedia\Padocc\Properties\Adapter');
         $oProperty = $oClass->getProperty('aProperties');
