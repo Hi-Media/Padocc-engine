@@ -48,7 +48,7 @@ class Composer extends Task
         $this->aAttrProperties = array(
             'dir' => AttributeProperties::DIR | AttributeProperties::REQUIRED
                 | AttributeProperties::ALLOW_PARAMETER,
-            'options' => 0
+            'options' => AttributeProperties::OPTIONAL
         );
     }
 
