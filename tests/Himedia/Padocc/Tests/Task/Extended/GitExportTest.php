@@ -175,8 +175,9 @@ class GitExportTest extends PadoccTestCase
 
         $sGitExport = $this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['inc'] . '/gitexport.sh';
         $sRepoDir = $this->aConfig['dir']['repositories'];
+        $sSshKey = $this->aConfig['dir']['conf'] . '/padocc-ssh';
         $this->assertEquals(array(
-            $sGitExport . ' "/my/repo" "master" "' . $sRepoDir . '/git/test_project_test_env_1"',
+            $sGitExport . ' "/my/repo" "master" "' . $sRepoDir . '/git/test_project_test_env_1" "' . $sSshKey . '"',
             $sRepoDir . '/git/test_project_test_env_1/|/path/to/destdir||||'
         ), $this->aShellExecCmds);
     }
@@ -204,8 +205,9 @@ class GitExportTest extends PadoccTestCase
 
         $sGitExport = $this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['inc'] . '/gitexport.sh';
         $sRepoDir = $this->aConfig['dir']['repositories'];
+        $sSshKey = $this->aConfig['dir']['conf'] . '/padocc-ssh';
         $this->assertEquals(array(
-            $sGitExport . ' "/my/repo" "master" "' . $sRepoDir . '/git/test_project_test_env_1"',
+            $sGitExport . ' "/my/repo" "master" "' . $sRepoDir . '/git/test_project_test_env_1" "' . $sSshKey . '"',
             $sRepoDir . '/git/test_project_test_env_1/|/path/to/destdir||this.log+that.log|*.log+*.bak|'
         ), $this->aShellExecCmds);
     }
@@ -232,8 +234,9 @@ class GitExportTest extends PadoccTestCase
         $oGitTask->execute();
 
         $sGitExport = $this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['inc'] . '/gitexport.sh';
+        $sSshKey = $this->aConfig['dir']['conf'] . '/padocc-ssh';
         $this->assertEquals(array(
-            $sGitExport . ' "/my/repo" "master" "/tmp/my-local-repository"',
+            $sGitExport . ' "/my/repo" "master" "/tmp/my-local-repository" "' . $sSshKey . '"',
             '/tmp/my-local-repository/subdir/of/repo/|/path/to/destdir||||'
         ), $this->aShellExecCmds);
     }

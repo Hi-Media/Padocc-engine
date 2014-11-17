@@ -118,11 +118,20 @@ class Sync extends Task
 
         list($bIsDestRemote, $sDestServer, $sDestRawPath) = $this->oShell->isRemotePath($this->aAttValues['destdir']);
         $sDestPath = ($bIsDestRemote ? '[]:' . $sDestRawPath : $sDestRawPath);
+
+        // Add default remote SSH user if none:
+        $aDestServers = $this->processPath($sDestServer);
+        foreach ($aDestServers as $idx => $sPath) {
+            if (preg_match('/^[^@]+$/', $sPath) === 1) {
+                $aDestServers[$idx] = $this->aConfig['default_remote_shell_user'] . '@' . $sPath;
+            }
+        }
+
         foreach ($this->processPath($sDestPath) as $sDestRealPath) {
             $aResults = $this->oShell->sync(
                 $this->processSimplePath($this->aAttValues['src']),
                 $this->processSimplePath($sDestRealPath),
-                $this->processPath($sDestServer),
+                $aDestServers,
                 $aIncludedPaths,
                 $aExcludedPaths
             );

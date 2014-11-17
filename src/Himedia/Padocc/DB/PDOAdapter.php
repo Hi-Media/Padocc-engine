@@ -116,16 +116,34 @@ class PDOAdapter implements DBAdapterInterface
         }
     }
 
+    private function getPdoInstance($sDSN, $sUsername, $sPassword, array $aPdoOptions)
+    {
+        try {
+            $oPDO = new PDO($sDSN, $sUsername, $sPassword, $aPdoOptions);
+        } catch (\PDOException $oException) {
+            $sMsg = $oException->getMessage() . ". DSN was: '$sDSN'.";
+            throw new \RuntimeException($sMsg, 1, $oException);
+        }
+        return $oPDO;
+    }
+
     /**
      * Establishes the connection with the database and set backend PDO instance.
      */
     private function connect()
     {
+        $aPdoOptions = array(
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES   => true,
+            PDO::ATTR_TIMEOUT            => 5
+        );
+
         if ($this->oPDO === null) {
             $aDSN = $this->aDSN;
             $sKey = implode('|', $aDSN);
             if (! isset(self::$aPDOInstances[$sKey])) {
-                if (in_array($aDSN['driver'], array('pdo_mysql', 'pdo_pgsql'))) {
+                if ($aDSN['driver'] == 'pdo_mysql') {
                     $sDSN = sprintf(
                         '%s:host=%s;port=%s;dbname=%s',
                         substr($aDSN['driver'], 4),
@@ -133,44 +151,41 @@ class PDOAdapter implements DBAdapterInterface
                         $aDSN['port'],
                         $aDSN['db_name']
                     );
-                    try {
-                        $oPDO = new PDO(
-                            $sDSN,
-                            $aDSN['username'],
-                            $aDSN['password'],
-                            array(
-                                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-                                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                                PDO::ATTR_EMULATE_PREPARES   => true,
-                                PDO::ATTR_TIMEOUT            => 5
-                            )
-                        );
-                    } catch (\PDOException $oException) {
-                        $sMsg = $oException->getMessage() . ". DSN was: '$sDSN'.";
-                        throw new \RuntimeException($sMsg, 1, $oException);
-                    }
+                    $oPDO = $this->getPdoInstance($sDSN, $aDSN['username'], $aDSN['password'], $aPdoOptions);
                     $oPDO->query("SET NAMES 'UTF8';");
 
                     // Set UTC timezone:
-                    if ($aDSN['driver'] == 'pdo_mysql') {
-                        $oPDO->query("SET time_zone = '+00:00';");
-                        $oPDO->query("SET SESSION time_zone = '+00:00';");
-                    }
+                    $oPDO->query("SET time_zone = '+00:00';");
+                    $oPDO->query("SET SESSION time_zone = '+00:00';");
+
+                } elseif ($aDSN['driver'] == 'pdo_pgsql') {
+                    $sDSN = sprintf(
+                        '%s:host=%s;port=%s;dbname=%s',
+                        substr($aDSN['driver'], 4),
+                        $aDSN['hostname'],
+                        $aDSN['port'],
+                        $aDSN['db_name']
+                    );
+                    $oPDO = $this->getPdoInstance($sDSN, $aDSN['username'], $aDSN['password'], $aPdoOptions);
+                    $oPDO->query("SET NAMES 'UTF8';");
 
                     // Set application_name if Postgresql AND v9+:
-                    if ($aDSN['driver'] == 'pdo_pgsql') {
-                        $oPDOStatement = $oPDO->query("SHOW server_version_num;");
-                        $iPgVersion = (int)$oPDOStatement->fetchColumn(0);
-                        if ($iPgVersion >= 90000) {
-                            $oPDO->query("SET application_name TO 'Padocc';");
-                        }
+                    $oPDOStatement = $oPDO->query("SHOW server_version_num;");
+                    $iPgVersion    = (int)$oPDOStatement->fetchColumn(0);
+                    if ($iPgVersion >= 90000) {
+                        $oPDO->query("SET application_name TO 'Padocc';");
                     }
 
-                    self::$aPDOInstances[$sKey] = $oPDO;
+                } elseif ($aDSN['driver'] == 'pdo_sqlite') {
+                    $oPDO = $this->getPdoInstance('sqlite:' . $aDSN['hostname'], null, null, $aPdoOptions);
+
                 } else {
                     throw new \UnexpectedValueException("Unknown driver type '{$aDSN['driver']}'", 1);
                 }
+
+                self::$aPDOInstances[$sKey] = $oPDO;
             }
+
             $this->oPDO = self::$aPDOInstances[$sKey];
         }
     }

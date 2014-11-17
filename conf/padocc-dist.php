@@ -3,18 +3,22 @@
 $sRootDir = realpath(__DIR__ . '/..');
 $aDirs = array(
     'root'     => $sRootDir,
+    'conf'     => $sRootDir . '/conf',
+    'lib'      => $sRootDir . '/lib',
+    'src'      => $sRootDir . '/src',
     'inc'      => $sRootDir . '/src/inc',
+    'tests'    => $sRootDir . '/tests',
     'tmp'      => '/tmp/padocc',
     'locks'    => '/tmp/padocc/locks',
     'log'      => '/var/log/padocc',
     'vendor'   => $sRootDir . '/vendor',
-    'archives' => '/var/padocc/archives',
+    'data'     => '/var/padocc',
 
     /**
      * Répertoire de stockage intermédiaire des dépôts CVS ou Git.
      * @var string
      */
-    'repositories' => '/tmp/deployment_repositories'
+    'repositories' => '/var/padocc/repositories',
 );
 
 return array(
@@ -26,16 +30,22 @@ return array(
         'default_remote_shell_user' => 'padocc',
 
         /**
+         * SSH private key used for git & SSH commands.
+         * @var string
+         */
+        'ssh_key' => $aDirs['conf'] . '/padocc-ssh',
+
+        /**
          * DB connection.
          * @var array
          */
         'db' => array(
-            'driver'   => '',   // string: 'pdo_mysql', 'pdo_pgsql'
-            'hostname' => '',   // string: 'localhost'
-            'port'     => 3306, // int
-            'db_name'  => '',
-            'username' => '',
-            'password' => ''
+            'driver'   => '',   // string in {'pdo_mysql', 'pdo_pgsql', 'pdo_sqlite'}
+            'hostname' => '',   // string, e.g. 'localhost' or $aDirs['data'] . '/db.sqlite3'
+            'port'     => 3306, // int, unused by sqlite
+            'db_name'  => '',   // string, unused by sqlite
+            'username' => '',   // string, unused by sqlite
+            'password' => ''    // string, unused by sqlite
         ),
 
         /**
@@ -74,7 +84,7 @@ return array(
          * Path to Supervisor config file.
          * @var string
          */
-        'supervisor_config' => $sRootDir . '/conf/supervisor-dist.sh',
+        'supervisor_config' => $sRootDir . '/conf/supervisor.sh',
 
         /**
          * Chemin vers le shell bash.
@@ -152,7 +162,7 @@ return array(
 
         // (string) List of '-o option' options used for all SSH and SCP commands:
         'ssh_options' => '-o ServerAliveInterval=10 -o StrictHostKeyChecking=no -o ConnectTimeout=10 '
-                       . '-o BatchMode=yes -i ' . $sRootDir . '/conf/padocc-ssh',
+                       . '-o BatchMode=yes -i ' . $aDirs['conf'] . '/padocc-ssh',
 
         // (int) Maximal number of command shells launched simultaneously (parallel processes):
         'parallelization_max_nb_processes' => 10,

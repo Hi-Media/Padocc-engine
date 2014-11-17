@@ -163,6 +163,7 @@ class GitExport extends Task
             . ' "' . $this->aAttValues['repository'] . '"'
             . ' "' . $sRef . '"'
             . ' "' . $this->aAttValues['localrepositorydir'] . '"'
+            . ' "' . $this->aConfig['ssh_key'] . '"'
         );
         $this->getLogger()->info(implode("\n", $aResult) . '---');
 

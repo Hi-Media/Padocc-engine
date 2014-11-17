@@ -184,7 +184,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'Padocc-egnine.tex', u'Padocc Egnine Documentation',
+  ('index', 'Padocc-engine.tex', u'Padocc Engine Documentation',
    u'HiMedia', 'manual'),
 ]
 
@@ -214,7 +214,7 @@ latex_show_urls = True
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'padocc', u'Padocc Egnine Documentation',
+    ('index', 'padocc', u'Padocc Engine Documentation',
      [u'HiMedia'], 1)
 ]
 
@@ -228,7 +228,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'Padocc-egnine', u'Padocc Egnine Documentation',
+  ('index', 'Padocc-engine', u'Padocc Engine Documentation',
    u'HiMedia', 'PADOCC', 'One line description of project.',
    'Miscellaneous'),
 ]
