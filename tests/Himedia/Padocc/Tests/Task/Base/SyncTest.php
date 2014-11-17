@@ -407,7 +407,8 @@ class SyncTest extends PadoccTestCase
         $oMockShell->expects($this->at(1))->method('exec')
             ->with($this->equalTo(
                 $this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['vendor']
-                . '/geoffroy-aubry/shell/src/inc/parallelize.sh "' . $sUserParam . '" "rsync -axz --delete --exclude=\".bzr/\"'
+                . '/geoffroy-aubry/shell/src/inc/parallelize.sh'
+                . ' "' . $sUserParam . '" "rsync -axz --delete --exclude=\".bzr/\"'
                 . ' --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\"'
                 . ' --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e \"ssh '
                 . $this->aAllConfigs['GAubry\Shell']['ssh_options'] . '\" \"/path/to/srcdir/\" \"'

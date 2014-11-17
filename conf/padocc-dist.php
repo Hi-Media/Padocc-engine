@@ -33,7 +33,7 @@ return array(
          * SSH private key used for git & SSH commands.
          * @var string
          */
-        'ssh_key' => '',
+        'ssh_key' => $aDirs['conf'] . '/padocc-ssh',
 
         /**
          * DB connection.

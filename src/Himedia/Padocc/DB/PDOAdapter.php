@@ -116,7 +116,7 @@ class PDOAdapter implements DBAdapterInterface
         }
     }
 
-    private function getPdoInstance ($sDSN, $sUsername, $sPassword, array $aPdoOptions)
+    private function getPdoInstance($sDSN, $sUsername, $sPassword, array $aPdoOptions)
     {
         try {
             $oPDO = new PDO($sDSN, $sUsername, $sPassword, $aPdoOptions);
@@ -144,7 +144,8 @@ class PDOAdapter implements DBAdapterInterface
             $sKey = implode('|', $aDSN);
             if (! isset(self::$aPDOInstances[$sKey])) {
                 if ($aDSN['driver'] == 'pdo_mysql') {
-                    $sDSN = sprintf('%s:host=%s;port=%s;dbname=%s',
+                    $sDSN = sprintf(
+                        '%s:host=%s;port=%s;dbname=%s',
                         substr($aDSN['driver'], 4),
                         $aDSN['hostname'],
                         $aDSN['port'],
@@ -158,7 +159,8 @@ class PDOAdapter implements DBAdapterInterface
                     $oPDO->query("SET SESSION time_zone = '+00:00';");
 
                 } elseif ($aDSN['driver'] == 'pdo_pgsql') {
-                    $sDSN = sprintf('%s:host=%s;port=%s;dbname=%s',
+                    $sDSN = sprintf(
+                        '%s:host=%s;port=%s;dbname=%s',
                         substr($aDSN['driver'], 4),
                         $aDSN['hostname'],
                         $aDSN['port'],
