@@ -362,13 +362,14 @@ class SyncTest extends PadoccTestCase
      * @covers \Himedia\Padocc\Task\Base\Sync::preExecute
      * @covers \Himedia\Padocc\Task\Base\Sync::centralExecute
      * @covers \Himedia\Padocc\Task\Base\Sync::postExecute
+     * @dataProvider dataProviderTestExecuteWithSrcDirAndSymLinks
      */
-    public function testExecuteWithSrcDirAndSymLinks()
+    public function testExecuteWithSrcDirAndSymLinks($sUserDestDir, $sUserParam)
     {
         $aMkdirExecResult = array(
-            '---[user@server]-->0|0s', '[CMD]', '...', '[OUT]', '[ERR]', '///',
+            "---[$sUserParam]-->0|0s", '[CMD]', '...', '[OUT]', '[ERR]', '///',
         );
-        $aRawRsyncResult = array('---[user@server]-->0|0s', '[CMD]', '...', '[OUT]',
+        $aRawRsyncResult = array("---[$sUserParam]-->0|0s", '[CMD]', '...', '[OUT]',
             'Number of files: 1774',
             'Number of files transferred: 2',
             'Total file size: 64093953 bytes',
@@ -397,8 +398,8 @@ class SyncTest extends PadoccTestCase
         $oMockShell->expects($this->at(0))->method('exec')
             ->with($this->equalTo(
                 $this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['vendor']
-                . '/geoffroy-aubry/shell/src/inc/parallelize.sh "user@server" "ssh ' . $sSshOptions . ' -T '
-                . $this->aConfig['default_remote_shell_user'] . '@[] ' . $this->aConfig['bash_path'] . ' <<EOF' . "\n"
+                . '/geoffroy-aubry/shell/src/inc/parallelize.sh "' . $sUserParam . '" "ssh ' . $sSshOptions . ' -T '
+                . '[] ' . $this->aConfig['bash_path'] . ' <<EOF' . "\n"
                 . 'mkdir -p \"/path/to/destdir_releases/12345/srcdir\"' . "\n"
                 . 'EOF' . "\n" . '"'
             ))
@@ -406,20 +407,31 @@ class SyncTest extends PadoccTestCase
         $oMockShell->expects($this->at(1))->method('exec')
             ->with($this->equalTo(
                 $this->aConfig['bash_path'] . ' ' . $this->aConfig['dir']['vendor']
-                . '/geoffroy-aubry/shell/src/inc/parallelize.sh "user@server" "rsync -axz --delete --exclude=\".bzr/\"'
+                . '/geoffroy-aubry/shell/src/inc/parallelize.sh "' . $sUserParam . '" "rsync -axz --delete --exclude=\".bzr/\"'
                 . ' --exclude=\".cvsignore\" --exclude=\".git/\" --exclude=\".gitignore\" --exclude=\".svn/\"'
                 . ' --exclude=\"cvslog.*\" --exclude=\"CVS\" --exclude=\"CVS.adm\" --stats -e \"ssh '
                 . $this->aAllConfigs['GAubry\Shell']['ssh_options'] . '\" \"/path/to/srcdir/\" \"'
-                . $this->aConfig['default_remote_shell_user'] . '@[]:/path/to/destdir_releases/12345/srcdir\""'
+                . '[]:/path/to/destdir_releases/12345/srcdir\""'
             ))
             ->will($this->returnValue($aRawRsyncResult));
         $oMockShell->expects($this->exactly(2))->method('exec');
 
         $oTaskCopy = Sync::getNewInstance(array(
             'src' => '/path/to/srcdir',
-            'destdir' => 'user@server:/path/to/destdir'
+            'destdir' => "$sUserDestDir:/path/to/destdir"
         ), $this->oMockProject, $this->oDIContainer);
         $oTaskCopy->setUp();
         $oTaskCopy->execute();
+    }
+
+    /**
+     * Data provider pour testExecuteWithSrcDirAndSymLinks()
+     */
+    public function dataProviderTestExecuteWithSrcDirAndSymLinks()
+    {
+        return array(
+            array('user@server', 'user@server'),
+            array('server', $this->aConfig['default_remote_shell_user'] . '@server'),
+        );
     }
 }

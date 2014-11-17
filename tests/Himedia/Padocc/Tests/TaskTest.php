@@ -99,7 +99,7 @@ class TaskTest extends PadoccTestCase
         return array(
             array(array(), 'test', array('test')),
             array(array(), 'server:test', array($this->aConfig['default_remote_shell_user'] . '@server:test')),
-            array(array(), '[]:test', array($this->aConfig['default_remote_shell_user'] . '@[]:test')),
+            array(array(), '[]:test', array('[]:test')),
             array(array(), 'user@server:test', array('user@server:test')),
             array(array(), 'http://test', array('http://test')),
 
