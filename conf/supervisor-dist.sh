@@ -23,12 +23,12 @@
 
 # PATHS
 ROOT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../vendor/geoffroy-aubry/supervisor" && pwd )"
-CONF_DIR=$ROOT_DIR/conf
-SRC_DIR=$ROOT_DIR/src
-INC_DIR=$SRC_DIR/inc
+CONF_DIR="$ROOT_DIR/conf"
+SRC_DIR="$ROOT_DIR/src"
+INC_DIR="$SRC_DIR/inc"
 TMP_DIR='/tmp/padocc'
 LOG_DIR='/var/log/padocc'
-EMAIL_TEMPLATES_DIR=$ROOT_DIR/src/templates
+EMAIL_TEMPLATES_DIR="$SRC_DIR/templates"
 
 # All four following files must be in $LOG_DIR/ directory.
 

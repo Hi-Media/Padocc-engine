@@ -1,6 +1,13 @@
 Change log
 ==========
 
+## Version 2.2.0 (2014-11-17)
+
+Features:
+
+  - Add compatibility with SQLite.
+  - Allow to define SSH key used with Git.
+
 ## Version 2.1.0 (2014-09-12)
 
 Features:
