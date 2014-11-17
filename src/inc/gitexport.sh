@@ -26,7 +26,8 @@ repository="$1"
 reponame='origin'
 ref="$2"
 srcdir="$3"
-mustclean="$4"
+sshkey="$4"
+mustclean="$5"
 
 if [ -z "$repository" ] || [ -z "$ref" ] || [ -z "$srcdir" ]; then
     echo 'Missing parameters!' >&2
@@ -36,11 +37,13 @@ fi
 mkdir -p "$srcdir" && cd "$srcdir" || exit $?
 
 # Injection of SSH options into git commands:
-DIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)
-SSH_KEY=${DIR}/../../conf/padocc-ssh
-echo "ssh -i $SSH_KEY \$@" > /tmp/.git_ssh.$$
-chmod +x /tmp/.git_ssh.$$
-export GIT_SSH=/tmp/.git_ssh.$$
+#DIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)
+#SSH_KEY=${DIR}/../../conf/padocc-ssh
+if [ ! -z "$sshkey" ]; then
+    echo "ssh -i $sshkey \$@" > /tmp/.git_ssh.$$
+    chmod +x /tmp/.git_ssh.$$
+    export GIT_SSH=/tmp/.git_ssh.$$
+fi
 
 # remove temporary file on exit:
 trap 'rm -f /tmp/.git_ssh.$$' 0
